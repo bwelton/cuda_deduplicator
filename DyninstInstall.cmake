@@ -23,6 +23,7 @@ set(DYNINST_VERSION "HEAD")
 cmake_host_system_information(RESULT BUILD_HOST QUERY HOSTNAME)
 if ("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]")
 	## We are on titan, use the following version of dyninst
+	message(INFO " We detected that we are on ORNL Titan, Using Dyninst REV a8252fd")
 	set(DYNINST_VERSION "a8252fd9ace7dd837f98b0db750c588560feea95")
 endif("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]")
 

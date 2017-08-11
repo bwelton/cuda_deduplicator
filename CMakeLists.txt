@@ -7,6 +7,7 @@ project(cuda_deduplicator)
 find_package(Boost COMPONENTS system thread REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package(PythonInterp REQUIRED)
+find_package(CUDA REQUIRED)
 
 if (PYTHON_VERSION_STRING VERSION_GREATER 3.0 OR PYTHON_VERSION_STRING VERSION_LESS 2.7)
 	message(WARNING "This package is not tested with python versions < 2.7 or > 3.0 ")
@@ -14,4 +15,6 @@ endif(PYTHON_VERSION_STRING VERSION_GREATER 3.0 OR PYTHON_VERSION_STRING VERSION
 
 ## Get dyninst library info
 include(${CMAKE_SOURCE_DIR}/DyninstInstall.cmake)
+include(${CMAKE_SOURCE_DIR}/CudaLibDetect.cmake)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/inst_lib)
 

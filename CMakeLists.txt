@@ -1,20 +1,26 @@
+## Check if we are using the cray compiler wrappers
+#  If so we are on a cray machine
 cmake_minimum_required (VERSION 2.8.11)
 SET(CMAKE_CXX_STANDARD 11)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-
 project(cuda_deduplicator)
-
 find_package(Boost COMPONENTS system thread REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package(PythonInterp REQUIRED)
+
+cmake_host_system_information(RESULT BUILD_HOST QUERY HOSTNAME)
+if ("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]")
+	set(CRAY_MACHINE "Yes")
+	set(CUDA_TOOLKIT_ROOT_DIR "$ENV{CRAY_CUDATOOLKIT_DIR}")
+endif("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]")
 find_package(CUDA REQUIRED)
 
-if (PYTHON_VERSION_STRING VERSION_GREATER 3.0 OR PYTHON_VERSION_STRING VERSION_LESS 2.7)
-	message(WARNING "This package is not tested with python versions < 2.7 or > 3.0 ")
-endif(PYTHON_VERSION_STRING VERSION_GREATER 3.0 OR PYTHON_VERSION_STRING VERSION_LESS 2.7)
 
+## Setup Python Paths
+include(${CMAKE_SOURCE_DIR}/PythonInstall.cmake)
 ## Get dyninst library info
 include(${CMAKE_SOURCE_DIR}/DyninstInstall.cmake)
+## Setup Cuda
 include(${CMAKE_SOURCE_DIR}/CudaLibDetect.cmake)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/inst_lib)
 

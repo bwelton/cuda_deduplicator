@@ -20,12 +20,23 @@ set(DYNINST_VERSION "HEAD")
 
 ## Check if the machine is ORNL Titan
 ## If it is, we must select a specific version of dyninst
-cmake_host_system_information(RESULT BUILD_HOST QUERY HOSTNAME)
+
 if ("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]")
 	## We are on titan, use the following version of dyninst
 	message(INFO " We detected that we are on ORNL Titan, Using Dyninst REV a8252fd")
 	set(DYNINST_VERSION "a8252fd9ace7dd837f98b0db750c588560feea95")
 endif("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]")
+
+if (DEFINED CRAY_MACHINE)
+	if (NOT DEFINED LIBELF_LIBFILE)
+		set(LIBELF_LIBFILE "$ENV{LIBELF_DIR}/lib/libelf.so")
+		set(LIBELF_INCLUDE "$ENV{LIBELF_DIR}/include")
+	endif(NOT DEFINED LIBELF_LIBFILE)
+	if (NOT DEFINED LIBDWARF_LIBFILE)
+		set(LIBDWARF_LIBFILE "$ENV{LIBDWARF_DIR}/lib/libdwarf.so")
+		set(LIBDWARF_INCLUDE "$ENV{LIBDWARF_DIR}/include")
+	endif(NOT DEFINED LIBDWARF_LIBFILE)
+endif(DEFINED CRAY_MACHINE)
 
 if (NOT DEFINED LIBELF_LIBFILE)
 	message(ERROR " LIBELF_LIBFILE is not set, set -DLIBELF_LIBFILE=<full path to libelf.so>")
@@ -57,6 +68,8 @@ if (NOT DEFINED ${DYNINST_ROOT})
   		UPDATE_COMMAND ""
 	)
 	set(DYNINST_ROOT "${CMAKE_INSTALL_PREFIX}")
+else (NOT DEFINED ${DYNINST_ROOT})
+	add_custom_target(dyninst)
 endif(NOT DEFINED ${DYNINST_ROOT})
 get_filename_component(LIBELF_DIR "${LIBELF_LIBFILE}" DIRECTORY)
 get_filename_component(LIBDWARF_DIR "${LIBDWARF_LIBFILE}" DIRECTORY)

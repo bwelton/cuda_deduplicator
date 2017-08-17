@@ -23,4 +23,5 @@ include(${CMAKE_SOURCE_DIR}/DyninstInstall.cmake)
 ## Setup Cuda
 include(${CMAKE_SOURCE_DIR}/CudaLibDetect.cmake)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/inst_lib)
-
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/common)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/deduplicate)

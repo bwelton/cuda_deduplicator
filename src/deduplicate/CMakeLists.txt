@@ -1,3 +1,13 @@
+file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/defs)
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/deduplicate/defs/DetectDuplicates.def.in"
+	"${CMAKE_INSTALL_PREFIX}/defs/DetectDuplicates.def"
+)
+
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/deduplicate/defs/Deduplicate.def.in"
+	"${CMAKE_INSTALL_PREFIX}/defs/Deduplicate.def"
+)
 add_library(dedup SHARED "deduplicator.cpp" "CudaDeviceWrappers.cpp")
 target_link_libraries(dedup ${Boost_LIBRARIES})
 target_link_libraries(dedup "-lpthread")

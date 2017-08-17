@@ -1,5 +1,5 @@
 # cuda_deduplicator
-Tool for detecting and correcting duplicate transfers in CUDA applications. This is done by wrapping the function CUDA driver API function calls to intercept the data being transfered to/from device. This project supports the following features:
+Tool for detecting and correcting duplicate transfers in CUDA applications. This is done by wrapping the CUDA driver API function calls to intercept the data being transfered to/from device. This project supports the following features:
 
 **Detection of Duplicate Transfers**
 
@@ -18,8 +18,7 @@ Functions by creating a temporary cache in GPU memory for data transfers. When a
 
 **Building and Installation**
 
-cd build
-cmake ..
+cd build && cmake .. && make install
 
 **Required build parameters**
 
@@ -39,6 +38,31 @@ The following parameters are not required but can reduce compilation time if set
 
 - -DDYNINST_ROOT=*Path to the installation directory of dyninst* (containing /lib and /include)
 - -DPYTHON_ROOT=*Path to the installation directory of python 2.7*
+- -DCMAKE_INSTALL_PREFIX=*Installation Directory*
+
+**Usage**
+
+For gathering statistical information on duplicate transfers (detection but no correction) run the following command from the root install directory (CMAKE_INSTALL_PREFIX directory):
+
+1. bash ./bin/inst_app.sh */path/to/LIBCUDA.so*/libcuda.so.1 ./defs/DetectDuplicates.def.in */path/to/save/rewritten/libcuda*/libcuda.so.1 (WARNING: Do not attempt to overwrite the original libcuda.so.1)
+2. export LD_LIBRARY_PATH=*/path/to/save/rewritten/libcuda*:*/CMAKE/INSTALL/PREFIX/PATH*/lib:$LD_LIBRARY_PATH
+3. Run your application, statistical information printed to STDERR at end of execution.
+
+If you are interested in automatic correction of duplicate transfers, perform the following:
+
+1. bash ./bin/inst_app.sh */path/to/LIBCUDA.so*/libcuda.so.1 ./defs/Deduplicate.def */path/to/save/rewritten/libcuda*/libcuda.so.1 (WARNING: Do not attempt to overwrite the original libcuda.so.1)
+2. export LD_LIBRARY_PATH=*/path/to/save/rewritten/libcuda*:*/CMAKE/INSTALL/PREFIX/PATH*/lib:$LD_LIBRARY_PATH
+3. Run your application, statistical information (number of duplicates caught and corrected) printed to STDERR at end of execution.
+
+**Known Issues/Works In Progress**
+
+- ORNL Titan has issues with certain versions of dyninst, right now it is recommended not setting DYNINST_ROOT such that we can build a compatible version (git rev a8252fd). It is likely that dyninst issues impact other cray platforms, it is highly recommended you try building with git rev a8252fd of Dyninst if you run into issues.
+- Deduplicate correction is highly experimental and may not show the performance benefits you may expect. 
+- Automated correction of duplicates may require Cuda MPS support to be enabled to function correctly (specifically in cases where multiple different threads on the same node are using CUDA in different CUDA contexts). 
+
+**Disclaimer**
+
+This software should be considered research grade right now, use at your own risk. 
 
 
 

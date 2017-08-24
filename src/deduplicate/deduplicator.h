@@ -29,8 +29,9 @@
 #include "LogInfo.h"
 #include "xxhash32.h"
 
+//#define DEBUG_OUTPUT 1
 #define ALLOCATION_SIZE 5242880
-#define ALLOCATION_COUNT 40
+#define ALLOCATION_COUNT 20
 #define TIMEOUT 10 //Timeout data after 10 successful transfers have taken place.
 #define MAX_DATA_SIZE_BYTES 10485760 // Maximum size of data that can be temporarily stored
 

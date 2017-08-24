@@ -25,8 +25,14 @@ inline cudaError_t gpuAssert(cudaError_t code, const char *file, int line, bool 
 void Deduplicate::GenerateAllocation() {
 	if(cudaMalloc(&_devPtr, ALLOCATION_SIZE * ALLOCATION_COUNT) != CUDA_SUCCESS) {
 		fprintf(stderr, "%s\n", "COULD NOT ALLOCATE CUDA STORAGE");
+		LogOutput("%s\n", "COULD NOT ALLOCATE CUDA STORAGE");
 		exit(-1);
 	}
+	#ifdef DEBUG_OUTPUT
+	LogOutput("%s: %llu\n","Successfully allocated CUDA Memory", ALLOCATION_SIZE * ALLOCATION_COUNT);
+	#endif
+
+
 	for (int i = 0; i < ALLOCATION_COUNT; i++) {
 		DeviceMemory tmp;
 		DevMemPtr tmp2;
@@ -91,9 +97,9 @@ Deduplicate::~Deduplicate() {
 
 uint32_t Deduplicate::HashData(char * data, size_t size) {
 	uint32_t result = 0;
-#ifdef USE_PRIVATE 
+//#ifdef USE_PRIVATE 
 	result = XXHash32::hash(data, size, 0);
-#endif
+//#endif
 	return result;
 }
 
@@ -112,9 +118,12 @@ DataStruct Deduplicate::DeduplicateData(DataStruct ret) {
 		return ret;
 	}
 
-#ifdef USE_PRIVATE 
+//#ifdef USE_PRIVATE 
 	ret.hash = HashData((char*)ret.storePTR,ret.size);
+#ifdef DEBUG_OUTPUT
+	LogOutput("\nTransfer Hash: %u Size: %llu \n", ret.hash, ret.size);
 #endif
+//#endif
 	AllocateLocalIPC();
 	{
 		boost::recursive_mutex::scoped_lock lock(_mtx);

@@ -4,6 +4,11 @@ configure_file (
   "${PROJECT_BINARY_DIR}/scripts/inst_app.sh"
   @ONLY
   )
+configure_file (
+  "${PROJECT_SOURCE_DIR}/src/scripts/SetEnv.sh.in"
+  "${PROJECT_BINARY_DIR}/scripts/SetEnv.sh"
+  @ONLY
+  )
 
 install(FILES ${PROJECT_BINARY_DIR}/scripts/inst_app.sh 
 		DESTINATION bin)

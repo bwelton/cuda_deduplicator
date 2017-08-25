@@ -77,6 +77,10 @@ public:
 	void LogOutput(char * fmt,...);
 	DataStruct AddNew(DataStruct ret);
 	void TrackTransfer(int id, int64_t size, char * data, float transfer_time);
+	void RecordStacktrace(uint32_t data_hash, bool duplicate, std::string stacktrace);
+	void TrackTransfer(int id, int64_t size, char * data, float transfer_time, std::string stacktrace);
+	std::pair<uint32_t, bool> DetectDuplicate(int id, int64_t size, char * data, float transfer_time);
+	void WriteStraces();
 private:
 
 	size_t _collisionCount;
@@ -101,6 +105,11 @@ private:
 	cudaD2DCall func_call;
 	double _totTransferTime, _totDuplicateTime;
 	std::shared_ptr<LogInfo> _log;
+	// Stack hashing
+	std::map<uint32_t, std::string> _stacks;
+	std::map<uint32_t, std::vector<uint32_t>> _datahash_collisions;
+
+
 };
 
 extern std::shared_ptr<Deduplicate> Dedup;

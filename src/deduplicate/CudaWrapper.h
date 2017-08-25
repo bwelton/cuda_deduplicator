@@ -2,6 +2,10 @@
 #include <boost/preprocessor/array/enum.hpp>
 #include "deduplicator.h"
 
+#ifdef ENABLE_STACKTRACING
+#include "strace.h"
+#endif 
+
 
 struct CudaTimers {
 	cudaEvent_t start, stop;

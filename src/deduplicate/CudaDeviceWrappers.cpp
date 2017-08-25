@@ -27,15 +27,24 @@ void DeviceToHostDedup(void * dst, void * src, size_t bytecount, bool blocking =
 }
 
 void HostToDeviceDetect(float time, void * dst, void * src, size_t bytecount) {
+	
+#ifdef ENABLE_STACKTRACING
+	STORAGE_PTR->TrackTransfer(0, bytecount, (char *)src, time, GenStackTrace());
+#else 
 	STORAGE_PTR->TrackTransfer(0, bytecount, (char *)src, time);
+#endif
 }
 
 void DeviceToHostDetect(float time, void * dst, void * src, size_t bytecount) {
 	// Destination is the host and that is the only place we can do the check
+#ifdef ENABLE_STACKTRACING
+	STORAGE_PTR->TrackTransfer(0, bytecount, (char*)dst, time, GenStackTrace());
+#else
 	STORAGE_PTR->TrackTransfer(0, bytecount, (char*)dst, time);
+#endif
+
 }
 
-//GEN_WRAP_MACRO_RETURN_COMMON(cuMemcpy_detect, 3, int)
 
 // Tracking Calls
 UNSUPPORTED_CALL(cuMemcpy_detect, 3, int)
@@ -134,6 +143,7 @@ WRAP_SUPPORTED_CALL_TIME(cuMemcpyHtoDAsync_dedup, 4, int)
 	int error = (int)CUDA_SUCCESS;
 	DataStruct ret = HostToDeviceDedup(a, b, (size_t)c, false, (CUstream) d);
 	if (ret.duplicate == false) {
+		STORAGE_PTR->LogOutput("No existing duplicate found, perform transfer H2DAsync");
 		int v = CALL_UNDERLYING_ARGS(cuMemcpyHtoDAsync_dedup, 4);
 		if (v != error){
 			STORAGE_PTR->LogOutput("Could not perform underlying transfer - cuMemcpyH2DAsync");
@@ -141,6 +151,8 @@ WRAP_SUPPORTED_CALL_TIME(cuMemcpyHtoDAsync_dedup, 4, int)
 		}
 		ret.storePTR = (void *) a;
 		STORAGE_PTR->AddNew(ret);
+	} else {
+		STORAGE_PTR->LogOutput("Duplicate found- H2D Async");
 	}
 	return error;
 }
@@ -149,6 +161,9 @@ WRAP_SUPPORTED_CALL_TIME(cuMemcpyHtoD_dedup, 3, int)
 	int error = (int)CUDA_SUCCESS;
 	DataStruct ret = HostToDeviceDedup(a, b, (size_t)c, true, 0);	
 	if (ret.duplicate == false) {
+		#ifdef DEBUG_OUTPUT
+		STORAGE_PTR->LogOutput("No existing duplicate found, perform transfer H2D");
+		#endif
 		int v = CALL_UNDERLYING_ARGS(cuMemcpyHtoD_dedup, 3);
 		if (v != error){
 			STORAGE_PTR->LogOutput("Could not perform underlying transfer - cuMemcpyH2D");
@@ -157,7 +172,10 @@ WRAP_SUPPORTED_CALL_TIME(cuMemcpyHtoD_dedup, 3, int)
 		ret.storePTR = (void *) a;
 		STORAGE_PTR->AddNew(ret);
 	} else {
-		error = cudaDeviceSynchronize();		
+		// #ifdef DEBUG_OUTPUT
+		// STORAGE_PTR->LogOutput("Duplicate found- H2D");
+		// #endif
+		// error = cudaDeviceSynchronize();		
 	}
 	return error;
 }
@@ -167,6 +185,9 @@ WRAP_SUPPORTED_CALL_TIME(cuMemcpyAtoD_dedup, 4, int)
 	int error = (int)CUDA_SUCCESS;
 	DataStruct ret = HostToDeviceDedup(a, (void *)(((char*)b)+(size_t)c), (size_t)d, true, 0);	
 	if (ret.duplicate == false) {
+		#ifdef DEBUG_OUTPUT
+		STORAGE_PTR->LogOutput("No existing duplicate found, perform transfer A2D");
+		#endif
 		int v = CALL_UNDERLYING_ARGS(cuMemcpyAtoD_dedup, 4);
 		if (v != error){
 			STORAGE_PTR->LogOutput("Could not perform underlying transfer - cuMemcpyA2D");
@@ -175,6 +196,9 @@ WRAP_SUPPORTED_CALL_TIME(cuMemcpyAtoD_dedup, 4, int)
 		ret.storePTR = (void *) a;
 		STORAGE_PTR->AddNew(ret);
 	} else {
+		#ifdef DEBUG_OUTPUT
+		STORAGE_PTR->LogOutput("Duplicate found- A2D");
+		#endif
 		error = cudaDeviceSynchronize();		
 	}
 	return error;

@@ -39,6 +39,7 @@ The following parameters are not required but can reduce compilation time if set
 - -DDYNINST_ROOT=*Path to the installation directory of dyninst* (containing /lib and /include)
 - -DPYTHON_ROOT=*Path to the installation directory of python 2.7*
 - -DCMAKE_INSTALL_PREFIX=*Installation Directory*
+- -DENABLE_STRACE=1 *Enables stacktrace support. when a duplicate is detected a stacktrace showing the location of the duplicate transfer will be printed*
 
 **Usage**
 

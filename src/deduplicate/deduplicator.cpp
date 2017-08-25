@@ -93,6 +93,7 @@ Deduplicate::~Deduplicate() {
   fprintf(stderr, "Total Transfer: %llu, Total Size: %lld\n", _totalCount, _totalSize); 
   fprintf(stderr, "Missed Collisions: %llu, Total Size: %lld\n",_missedHashes, _missedSize );
   fprintf(stderr, "Transfer Errors: %llu, Caught duplicates: %llu\n",_transferErrors,_caughtDuplicates );
+  WriteStraces();
 }
 
 uint32_t Deduplicate::HashData(char * data, size_t size) {
@@ -197,11 +198,12 @@ void Deduplicate::TrackTransfer(int id, int64_t size, char * data) {
 
 }
 
-void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time) {
+std::pair<uint32_t, bool> Deduplicate::DetectDuplicate(int id, int64_t size, char * data, float transfer_time) {
 	// Track transfer but do not actually perform deduplication....
 	// Independent of the deduplicator
+	bool duplicate = false;
 	if (size == 0)
-		return;
+		return std::make_pair(0, false);
 
 	uint32_t hash = HashData(data, size);
 
@@ -211,13 +213,60 @@ void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfe
 		_collisionCount++;
 		_collisionSize += size;
 		_totDuplicateTime += transfer_time;
+		duplicate = true;
 	} else {
 		_previousHash[hash] = size;
 	}
 	_totalSize += size;
 	_totalCount += 1;
 	_totTransferTime += transfer_time;
+	return std::make_pair(hash, duplicate);
 }
+
+
+void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time) {
+	std::pair<uint32_t, bool> ret = DetectDuplicate(id, size, data, transfer_time);
+}
+
+void Deduplicate::RecordStacktrace(uint32_t data_hash, bool duplicate, std::string stacktrace) {
+	uint32_t stack_hash = HashData((char *)stacktrace.c_str(), stacktrace.size());	
+	if (_stacks.find(stack_hash) == _stacks.end())
+		_stacks[stack_hash] = stacktrace;
+
+	if (_datahash_collisions.find(data_hash) != _datahash_collisions.end()) {
+		_datahash_collisions[data_hash].push_back(stack_hash);
+	} else {
+		_datahash_collisions[data_hash] = std::vector<uint32_t>();
+		_datahash_collisions[data_hash].push_back(stack_hash);
+	}
+}
+
+void Deduplicate::WriteStraces() {
+	LogOutput("Stack Summary\n\tHash\tCount\n");
+	for (auto i : _datahash_collisions) {
+		if (i.second.size() <= 1)
+			continue;
+		LogOutput("\t%u\t\n", i.first, i.second.size());
+	}
+	LogOutput("Start Stack Flush\n");
+	for (auto i : _datahash_collisions) {
+		if (i.second.size() <= 1)
+			continue;
+		LogOutput("Stack Summary for Duplicates for %u\n\n", i.first);
+		LogOutput("Originating Transfer:\n%s\n\n\nStacks Transferring Duplicates:\n", _stacks[i.second[0]].c_str());
+		for (int t = 1; t < i.second.size(); t++)
+			LogOutput("Duplicate Stack:\n%s\n", _stacks[i.second[t]].c_str());
+	}
+	LogOutput("Output Complete\n");
+}
+
+void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time, std::string stacktrace) {
+	// Track transfer but do not actually perform deduplication....
+	// Independent of the deduplicator
+	std::pair<uint32_t, bool> ret = DetectDuplicate(id, size, data, transfer_time);
+	RecordStacktrace(ret.first, ret.second, stacktrace);
+}
+
 
 void Deduplicate::TrackTransfer(int id, int64_t size) {
 }

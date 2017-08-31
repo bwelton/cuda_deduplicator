@@ -29,18 +29,19 @@ void DeviceToHostDedup(void * dst, void * src, size_t bytecount, bool blocking =
 void HostToDeviceDetect(float time, void * dst, void * src, size_t bytecount) {
 	
 #ifdef ENABLE_STACKTRACING
-	STORAGE_PTR->TrackTransfer(0, bytecount, (char *)src, time, GenStackTrace());
+	STORAGE_PTR->TrackTransfer(0, bytecount, (char *)src, time, HOSTTODEVICE, GenStackTrace());
 #else 
-	STORAGE_PTR->TrackTransfer(0, bytecount, (char *)src, time);
+	STORAGE_PTR->TrackTransfer(0, bytecount, (char *)src, time, HOSTTODEVICE);
 #endif
 }
 
 void DeviceToHostDetect(float time, void * dst, void * src, size_t bytecount) {
+	cudaDeviceSynchronize();
 	// Destination is the host and that is the only place we can do the check
 #ifdef ENABLE_STACKTRACING
-	STORAGE_PTR->TrackTransfer(0, bytecount, (char*)dst, time, GenStackTrace());
+	STORAGE_PTR->TrackTransfer(0, bytecount, (char*)dst, time, DEVICETOHOST, GenStackTrace());
 #else
-	STORAGE_PTR->TrackTransfer(0, bytecount, (char*)dst, time);
+	STORAGE_PTR->TrackTransfer(0, bytecount, (char*)dst, time, DEVICETOHOST);
 #endif
 
 }
@@ -102,15 +103,21 @@ UNSUPPORTED_CALL(cuMemcpyD2DAsync_detect, 4, int)
 }
 
 WRAP_SUPPORTED_CALL_TIME(cuMemcpyD2H_detect, 3, int)
+	//uint32_t beforeTransfer = XXHash32::hash((void *) a, (size_t)c, 0);
 	TIMER_MACRO(cuMemcpyD2H_detect, 3, (cudaStream_t) 0, int);
 	DeviceToHostDetect(TIMER_PTR->GetTime(), (void *) a, (void *)b, (size_t) c);
+	//uint32_t afterTransfer = XXHash32::hash((void *) a, (size_t)c, 0);
+	//fprintf(stderr, "%u,%u - %p\n", beforeTransfer, afterTransfer, (void*)a);
 	return ret_value;
 }
 
 
 WRAP_SUPPORTED_CALL_TIME(cuMemcpyD2HAsync_detect, 4, int) 
+	//uint32_t beforeTransfer = XXHash32::hash((void *) a, (size_t)c, 0);
 	TIMER_MACRO(cuMemcpyD2HAsync_detect, 4, (cudaStream_t) d, int);
 	DeviceToHostDetect(TIMER_PTR->GetTime(), (void *) a, (void *)b, (size_t) c);
+	//uint32_t afterTransfer = XXHash32::hash((void *) a, (size_t)c, 0);
+	//fprintf(stderr, "%u,%u - %p\n", beforeTransfer, afterTransfer, (void*)a);
 	return ret_value;
 }
 
@@ -203,5 +210,66 @@ WRAP_SUPPORTED_CALL_TIME(cuMemcpyAtoD_dedup, 4, int)
 	}
 	return error;
 }
+
+// Experimental wrappers for hoomd
+// WRAP_SUPPORTED_CALL_TIME(cuMemcpyDTH_dedup, 3, int) 
+// 	int error = (int)CUDA_SUCCESS;
+// 	if (STORAGE_PTR->tcount1 < 15) {
+// 		STORAGE_PTR->tcount1++;
+// 		int v = CALL_UNDERLYING_ARGS(cuMemcpyDTH_dedup, 3);
+// 		return v;		
+// 	}
+// 	uint32_t beforeTransfer = XXHash32::hash((void *) a, (size_t)c, 0);
+// 	if (beforeTransfer == 148298089) {
+// 		if (STORAGE_PTR->transferedOnce == true) {
+// 			//fprintf(stderr, "%s: %u\n", "Caught Duplicate:", beforeTransfer);
+// 			memcpy((void *) a, STORAGE_PTR->cache, (size_t) c);
+// 			return error;
+// 		} else {
+// 			int v = CALL_UNDERLYING_ARGS(cuMemcpyDTH_dedup, 3);
+// 			STORAGE_PTR->cache = (char*) malloc((size_t)c);
+// 			memcpy(STORAGE_PTR->cache,(void *) a, (size_t) c);
+// 			STORAGE_PTR->transferedOnce = true;
+// 			return v;
+// 		}
+// 	} else if (beforeTransfer == 4022131285) {
+// 		//fprintf(stderr, "%s: %u\n", "Caught Duplicate:", beforeTransfer);
+// 		return error;
+// 	} else {
+// 		int v = CALL_UNDERLYING_ARGS(cuMemcpyDTH_dedup, 3);
+// 		return v;
+// 	}
+// 	return error;
+// }
+
+// WRAP_SUPPORTED_CALL_TIME(cuMemcpyDTHAsync_dedup, 4, int) 
+// 	int error = (int)CUDA_SUCCESS;
+// 	if (STORAGE_PTR->tcount1 < 15) {
+// 		STORAGE_PTR->tcount1++;
+// 		int v = CALL_UNDERLYING_ARGS(cuMemcpyDTHAsync_dedup, 4);
+// 		return v;		
+// 	}
+// 	uint32_t beforeTransfer = XXHash32::hash((void *) a, (size_t)c, 0);
+// 	if (beforeTransfer == 148298089) {
+// 		if (STORAGE_PTR->transferedOnce == true) {
+// 			//fprintf(stderr, "%s: %u\n", "Caught Duplicate:", beforeTransfer);
+// 			memcpy((void *) a, STORAGE_PTR->cache, (size_t) c);
+// 			return error;
+// 		} else {
+// 			int v = CALL_UNDERLYING_ARGS(cuMemcpyDTHAsync_dedup, 4);
+// 			STORAGE_PTR->cache = (char*) malloc((size_t)c);
+// 			memcpy(STORAGE_PTR->cache,(void *) a, (size_t) c);
+// 			STORAGE_PTR->transferedOnce = true;
+// 			return v;
+// 		}
+// 	} else if (beforeTransfer == 4022131285) {
+// 		//fprintf(stderr, "%s: %u\n", "Caught Duplicate:", beforeTransfer);
+// 		return error;
+// 	} else {
+// 		int v = CALL_UNDERLYING_ARGS(cuMemcpyDTH_dedup, 3);
+// 		return v;
+// 	}
+// 	return error;
+// }
 
 }

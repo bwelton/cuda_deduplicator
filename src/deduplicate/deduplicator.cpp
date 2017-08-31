@@ -1,5 +1,6 @@
 #include "deduplicator.h"
 std::shared_ptr<Deduplicate> Dedup;
+const char *ttypes[] = { "Device to Host", "Host to Device" };
 boost::recursive_mutex _mtx; 
 boost::recursive_mutex _log_mtx;
 // Thread Local Storage for device memory ptrs.
@@ -25,12 +26,19 @@ inline cudaError_t gpuAssert(cudaError_t code, const char *file, int line, bool 
 void Deduplicate::GenerateAllocation() {
 	if(cudaMalloc(&_devPtr, ALLOCATION_SIZE * ALLOCATION_COUNT) != CUDA_SUCCESS) {
 		fprintf(stderr, "%s\n", "COULD NOT ALLOCATE CUDA STORAGE");
-		LogOutput("%s\n", "COULD NOT ALLOCATE CUDA STORAGE");
+		fprintf(stderr,"%s\n", "COULD NOT ALLOCATE CUDA STORAGE");
 		exit(-1);
 	}
 	#ifdef DEBUG_OUTPUT
-	LogOutput("%s: %llu\n","Successfully allocated CUDA Memory", ALLOCATION_SIZE * ALLOCATION_COUNT);
+	fprintf(stderr,"%s: %llu\n","Successfully allocated CUDA Memory", ALLOCATION_SIZE * ALLOCATION_COUNT);
 	#endif
+
+	#ifdef ENABLE_STACKTRACING
+	fprintf(stderr,"%s\n", "Stack tracing is enabled");
+	#else
+	fprintf(stderr,"%s\n", "Stack tracing is disabled");
+	#endif
+
 
 
 	for (int i = 0; i < ALLOCATION_COUNT; i++) {
@@ -56,6 +64,9 @@ Deduplicate::Deduplicate() {
 	_missedSize = 0;
 	_transferErrors = 0;
 	_caughtDuplicates = 0;
+	transferedOnce = false;
+	tcount1 = 0;
+
 }
 
 void Deduplicate::AllocateLocalIPC(){
@@ -88,11 +99,11 @@ void Deduplicate::AllocateLocalIPC(){
 }
 
 Deduplicate::~Deduplicate() {
-  fprintf(stderr, "Collisions: %llu, Size: %lld\n", _collisionCount, _collisionSize); 
-  fprintf(stderr, "Total Transfer Time: %f, Time Spent Transferring Duplicates: %f\n", _totTransferTime, _totDuplicateTime);
-  fprintf(stderr, "Total Transfer: %llu, Total Size: %lld\n", _totalCount, _totalSize); 
-  fprintf(stderr, "Missed Collisions: %llu, Total Size: %lld\n",_missedHashes, _missedSize );
-  fprintf(stderr, "Transfer Errors: %llu, Caught duplicates: %llu\n",_transferErrors,_caughtDuplicates );
+  fprintf(stderr,"[DUPLICATE DETECTION] - Collisions: %llu, Size: %lld\n", _collisionCount, _collisionSize); 
+  fprintf(stderr,"[DUPLICATE DETECTION] - Total Transfer Time: %f, Time Spent Transferring Duplicates: %f\n", _totTransferTime, _totDuplicateTime);
+  fprintf(stderr,"[DUPLICATE DETECTION] - Total Transfer: %llu, Total Size: %lld\n", _totalCount, _totalSize); 
+  fprintf(stderr,"[DUPLICATE DETECTION] - Missed Collisions: %llu, Total Size: %lld\n",_missedHashes, _missedSize );
+  fprintf(stderr,"[DUPLICATE DETECTION] - Transfer Errors: %llu, Caught duplicates: %llu\n",_transferErrors,_caughtDuplicates );
   WriteStraces();
 }
 
@@ -122,7 +133,7 @@ DataStruct Deduplicate::DeduplicateData(DataStruct ret) {
 //#ifdef USE_PRIVATE 
 	ret.hash = HashData((char*)ret.storePTR,ret.size);
 #ifdef DEBUG_OUTPUT
-	LogOutput("\nTransfer Hash: %u Size: %llu \n", ret.hash, ret.size);
+	fprintf(stderr,"\nTransfer Hash: %u Size: %llu \n", ret.hash, ret.size);
 #endif
 //#endif
 	AllocateLocalIPC();
@@ -187,11 +198,16 @@ DataStruct Deduplicate::AddNew(DataStruct ret) {
 }
 
 void Deduplicate::LogOutput(char * fmt,...) {
-    va_list args;
+    va_list arg, arg2;
+    va_start(arg, fmt);
+    va_copy(arg2, arg);
+	va_end(arg);
+    vfprintf(stderr, fmt, arg2);
 
-    va_start(args, fmt);
-    _log.get()->Write(fmt, args);
-    va_end(args);
+    va_end(arg2);
+    // va_start(args, fmt);
+    // _log.get()->Write(fmt, args);
+    // va_end(args);
 }
 
 void Deduplicate::TrackTransfer(int id, int64_t size, char * data) {
@@ -224,8 +240,9 @@ std::pair<uint32_t, bool> Deduplicate::DetectDuplicate(int id, int64_t size, cha
 }
 
 
-void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time) {
+void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time, TRANSFER_TYPE type) {
 	std::pair<uint32_t, bool> ret = DetectDuplicate(id, size, data, transfer_time);
+	fprintf(stderr,"[DUPLICATE DETECTION] - Transfer %s is %s duplicate\n", ttypes[type], (ret.second ? "a": "NOT a"));
 }
 
 void Deduplicate::RecordStacktrace(uint32_t data_hash, bool duplicate, std::string stacktrace) {
@@ -242,28 +259,36 @@ void Deduplicate::RecordStacktrace(uint32_t data_hash, bool duplicate, std::stri
 }
 
 void Deduplicate::WriteStraces() {
-	LogOutput("Stack Summary\n\tHash\tCount\n");
+	fprintf(stderr,"Stack Summary\n\tHash\tCount\n");
 	for (auto i : _datahash_collisions) {
 		if (i.second.size() <= 1)
 			continue;
-		LogOutput("\t%u\t\n", i.first, i.second.size());
+		fprintf(stderr,"\t%u\t%llu\n", i.first, i.second.size());
 	}
-	LogOutput("Start Stack Flush\n");
+	fprintf(stderr,"Start Stack Flush\n");
 	for (auto i : _datahash_collisions) {
 		if (i.second.size() <= 1)
 			continue;
-		LogOutput("Stack Summary for Duplicates for %u\n\n", i.first);
-		LogOutput("Originating Transfer:\n%s\n\n\nStacks Transferring Duplicates:\n", _stacks[i.second[0]].c_str());
-		for (int t = 1; t < i.second.size(); t++)
-			LogOutput("Duplicate Stack:\n%s\n", _stacks[i.second[t]].c_str());
+		std::map<uint32_t, int> dupCount;
+		fprintf(stderr,"Stack Summary for Duplicates for %u\n\n", i.first);
+		fprintf(stderr,"Originating Transfer:\n%s\n\n\nStacks Transferring Duplicates:\n", _stacks[i.second[0]].c_str());
+		for (int t = 1; t < i.second.size(); t++) {
+			if (dupCount.find(i.second[t]) == dupCount.end())
+				dupCount[i.second[t]] = 0;
+			dupCount[i.second[t]]++;
+		}
+		for (auto n : dupCount) {
+			fprintf(stderr,"Duplicate Stack - Count %d:\n%s\n", n.second, _stacks[n.first].c_str());
+		}
 	}
-	LogOutput("Output Complete\n");
+	fprintf(stderr,"Output Complete\n");
 }
 
-void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time, std::string stacktrace) {
+void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time, TRANSFER_TYPE type, std::string stacktrace) {
 	// Track transfer but do not actually perform deduplication....
 	// Independent of the deduplicator
 	std::pair<uint32_t, bool> ret = DetectDuplicate(id, size, data, transfer_time);
+	fprintf(stderr,"[DUPLICATE DETECTION] - Transfer %s is %s duplicate, SRC/DST: %p\n", ttypes[type], (ret.second ? "a": "NOT a"), data);
 	RecordStacktrace(ret.first, ret.second, stacktrace);
 }
 

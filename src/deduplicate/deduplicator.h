@@ -35,6 +35,12 @@
 #define TIMEOUT 10 //Timeout data after 10 successful transfers have taken place.
 #define MAX_DATA_SIZE_BYTES 10485760 // Maximum size of data that can be temporarily stored
 
+enum TRANSFER_TYPE {
+	DEVICETOHOST = 0,
+	HOSTTODEVICE,
+};
+
+
 struct DataStruct {
 	bool duplicate;
 	void * storePTR;
@@ -76,11 +82,14 @@ public:
 	DeviceMemory GrabLast();
 	void LogOutput(char * fmt,...);
 	DataStruct AddNew(DataStruct ret);
-	void TrackTransfer(int id, int64_t size, char * data, float transfer_time);
+	void TrackTransfer(int id, int64_t size, char * data, float transfer_time,TRANSFER_TYPE type);
 	void RecordStacktrace(uint32_t data_hash, bool duplicate, std::string stacktrace);
-	void TrackTransfer(int id, int64_t size, char * data, float transfer_time, std::string stacktrace);
+	void TrackTransfer(int id, int64_t size, char * data, float transfer_time, TRANSFER_TYPE type, std::string stacktrace);
 	std::pair<uint32_t, bool> DetectDuplicate(int id, int64_t size, char * data, float transfer_time);
 	void WriteStraces();
+	bool transferedOnce;
+	int tcount1;
+	char * cache;
 private:
 
 	size_t _collisionCount;

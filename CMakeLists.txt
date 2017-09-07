@@ -8,11 +8,15 @@ find_package(Boost COMPONENTS system thread REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package(PythonInterp REQUIRED)
 
+if (NOT DEFINED SPACK_INSTALL)
+	set(SPACK_INSTALL "no")
+endif(NOT DEFINED SPACK_INSTALL)
+
 cmake_host_system_information(RESULT BUILD_HOST QUERY HOSTNAME)
-if ("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]")
+if ("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND "${SPACK_INSTALL}" NOT "yes")
 	set(CRAY_MACHINE "Yes")
 	set(CUDA_TOOLKIT_ROOT_DIR "$ENV{CRAY_CUDATOOLKIT_DIR}")
-endif("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]")
+endif("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND "${SPACK_INSTALL}" NOT "yes")
 find_package(CUDA REQUIRED)
 
 

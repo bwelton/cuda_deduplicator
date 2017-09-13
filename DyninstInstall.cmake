@@ -55,7 +55,7 @@ if (NOT DEFINED LIBDWARF_INCLUDE)
 endif(NOT DEFINED LIBDWARF_INCLUDE)
 
 ## Check if existing dyninst install was passed
-if (NOT DEFINED ${DYNINST_ROOT})
+if (NOT DEFINED DYNINST_ROOT)
 	message(INFO " DYNINST_ROOT not set, compiling dyninst from source")
 	ExternalProject_Add(
   		dyninst
@@ -68,9 +68,9 @@ if (NOT DEFINED ${DYNINST_ROOT})
   		UPDATE_COMMAND ""
 	)
 	set(DYNINST_ROOT "${CMAKE_INSTALL_PREFIX}")
-else (NOT DEFINED ${DYNINST_ROOT})
+else (NOT DEFINED DYNINST_ROOT)
 	add_custom_target(dyninst)
-endif(NOT DEFINED ${DYNINST_ROOT})
+endif(NOT DEFINED DYNINST_ROOT)
 get_filename_component(LIBELF_DIR "${LIBELF_LIBFILE}" DIRECTORY)
 get_filename_component(LIBDWARF_DIR "${LIBDWARF_LIBFILE}" DIRECTORY)
 set(DYNINST_LIBRARY_DIR "-L${DYNINST_ROOT}/lib")

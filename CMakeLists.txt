@@ -13,10 +13,10 @@ if (NOT DEFINED SPACK_INSTALL)
 endif(NOT DEFINED SPACK_INSTALL)
 
 cmake_host_system_information(RESULT BUILD_HOST QUERY HOSTNAME)
-if ("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND "${SPACK_INSTALL}" NOT "yes")
+if ("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND NOT "${SPACK_INSTALL}"  MATCHES "yes")
 	set(CRAY_MACHINE "Yes")
 	set(CUDA_TOOLKIT_ROOT_DIR "$ENV{CRAY_CUDATOOLKIT_DIR}")
-endif("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND "${SPACK_INSTALL}" NOT "yes")
+endif("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND NOT "${SPACK_INSTALL}" MATCHES "yes")
 find_package(CUDA REQUIRED)
 
 

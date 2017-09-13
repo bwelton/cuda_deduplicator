@@ -21,11 +21,11 @@ set(DYNINST_VERSION "HEAD")
 ## Check if the machine is ORNL Titan
 ## If it is, we must select a specific version of dyninst
 
-if ("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND "${SPACK_INSTALL}" NOT "yes")
+if ("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND NOT "${SPACK_INSTALL}" MATCHES "yes")
 	## We are on titan, use the following version of dyninst
 	message(INFO " We detected that we are on ORNL Titan, Using Dyninst REV a8252fd")
 	set(DYNINST_VERSION "a8252fd9ace7dd837f98b0db750c588560feea95")
-endif("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND "${SPACK_INSTALL}" NOT "yes")
+endif("${BUILD_HOST}" MATCHES "(titan-ext)[1-7]" AND NOT "${SPACK_INSTALL}" MATCHES "yes")
 
 if (DEFINED CRAY_MACHINE)
 	if (NOT DEFINED LIBELF_LIBFILE)

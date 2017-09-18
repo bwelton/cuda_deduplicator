@@ -8,6 +8,7 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/src/deduplicate/defs/Deduplicate.def.in"
 	"${CMAKE_INSTALL_PREFIX}/defs/Deduplicate.def"
 )
+
 if (NOT DEFINED ENABLE_STRACE)
 	add_library(dedup SHARED "deduplicator.cpp" "CudaDeviceWrappers.cpp")
 else (NOT DEFINED ENABLE_STRACE)
@@ -15,6 +16,8 @@ else (NOT DEFINED ENABLE_STRACE)
 	target_link_libraries(dedup ${DYNINST_LIBRARIES})
 	add_definitions("-DENABLE_STACKTRACING")
 endif(NOT DEFINED ENABLE_STRACE)
+
+
 target_link_libraries(dedup ${Boost_LIBRARIES})
 target_link_libraries(dedup "-lpthread")
 INCLUDE_DIRECTORIES(dedup ${CUDA_TOOLKIT_ROOT_DIR}/include)

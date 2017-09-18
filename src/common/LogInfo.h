@@ -12,13 +12,24 @@ private:
 	
 public:
 	LogInfo(FILE * fd = stderr) {
-		_fd = fd; 
+		if (fd < 0){
+			_fd = stderr;
+			fprintf(stderr, "%s\n", "[LOGINFO] Could not open output file, using stderr");
+		}
+		else {
+			_fd = fd; 
+		}
 	}
 
 	~LogInfo() {
 		fflush(_fd);
+		fclose(_fd);
 	}
+	void Write(std::string & out) {
+		boost::recursive_mutex::scoped_lock lock(_log_mtx);
+		fprintf(_fd, "%s\n", out.c_str());
 
+	}
 	void Write(char * fmt, ...) {
 		boost::recursive_mutex::scoped_lock lock(_log_mtx);
 	    va_list ap;

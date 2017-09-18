@@ -1,8 +1,10 @@
 #include "deduplicator.h"
 std::shared_ptr<Deduplicate> Dedup;
+//const char * OUT_FILENAME_DEDUP="dedup_outlog.log"
 const char *ttypes[] = { "Device to Host", "Host to Device" };
 boost::recursive_mutex _mtx; 
 boost::recursive_mutex _log_mtx;
+
 // Thread Local Storage for device memory ptrs.
 // The reason for this is to support future work where
 //   multiple devices may be in use (where each thread will 
@@ -29,6 +31,7 @@ void Deduplicate::GenerateAllocation() {
 		fprintf(stderr,"%s\n", "COULD NOT ALLOCATE CUDA STORAGE");
 		exit(-1);
 	}
+
 	#ifdef DEBUG_OUTPUT
 	fprintf(stderr,"%s: %llu\n","Successfully allocated CUDA Memory", ALLOCATION_SIZE * ALLOCATION_COUNT);
 	#endif
@@ -39,6 +42,11 @@ void Deduplicate::GenerateAllocation() {
 	fprintf(stderr,"%s\n", "Stack tracing is disabled");
 	#endif
 
+	#ifdef TRANSFER_TIMELINE
+	fprintf(stderr, "%s\n", "Transfer Timeline is enabled");
+	#else
+	fprintf(stderr, "%s\n", "Transfer Timeline is disabled");
+	#endif
 
 
 	for (int i = 0; i < ALLOCATION_COUNT; i++) {
@@ -52,9 +60,9 @@ void Deduplicate::GenerateAllocation() {
 	}		
 }
 
-Deduplicate::Deduplicate() {
+Deduplicate::Deduplicate(FILE * out_location = stderr) {
 	boost::recursive_mutex::scoped_lock lock(_mtx);
-	_log.reset(new LogInfo(stderr));
+	_log.reset(new LogInfo(out_location));
 	GenerateAllocation();
 	_collisionCount = 0;
 	_collisionSize = 0;
@@ -66,11 +74,9 @@ Deduplicate::Deduplicate() {
 	_caughtDuplicates = 0;
 	transferedOnce = false;
 	tcount1 = 0;
-
 }
 
 void Deduplicate::AllocateLocalIPC(){
-
 	if (_dev_mem.size() == 0) {
 		void * tmp;
 		boost::recursive_mutex::scoped_lock lock(_mtx);
@@ -99,11 +105,19 @@ void Deduplicate::AllocateLocalIPC(){
 }
 
 Deduplicate::~Deduplicate() {
+  // Send General Output to STDERR 
   fprintf(stderr,"[DUPLICATE DETECTION] - Collisions: %llu, Size: %lld\n", _collisionCount, _collisionSize); 
   fprintf(stderr,"[DUPLICATE DETECTION] - Total Transfer Time: %f, Time Spent Transferring Duplicates: %f\n", _totTransferTime, _totDuplicateTime);
   fprintf(stderr,"[DUPLICATE DETECTION] - Total Transfer: %llu, Total Size: %lld\n", _totalCount, _totalSize); 
   fprintf(stderr,"[DUPLICATE DETECTION] - Missed Collisions: %llu, Total Size: %lld\n",_missedHashes, _missedSize );
   fprintf(stderr,"[DUPLICATE DETECTION] - Transfer Errors: %llu, Caught duplicates: %llu\n",_transferErrors,_caughtDuplicates );
+
+  // Copy that same output to the logfile
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Collisions: %llu, Size: %lld\n" % _collisionCount % _collisionSize)));
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Total Transfer Time: %f, Time Spent Transferring Duplicates: %f\n" % _totTransferTime % _totDuplicateTime)));
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Total Transfer: %llu, Total Size: %lld\n" % _totalCount % _totalSize)));
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Missed Collisions: %llu, Total Size: %lld\n" % _missedHashes % _missedSize)));
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer Errors: %llu, Caught duplicates: %llu\n" % _transferErrors % _caughtDuplicates)));
   WriteStraces();
 }
 
@@ -197,17 +211,8 @@ DataStruct Deduplicate::AddNew(DataStruct ret) {
 	return ret;
 }
 
-void Deduplicate::LogOutput(char * fmt,...) {
-    va_list arg, arg2;
-    va_start(arg, fmt);
-    va_copy(arg2, arg);
-	va_end(arg);
-    vfprintf(stderr, fmt, arg2);
-
-    va_end(arg2);
-    // va_start(args, fmt);
-    // _log.get()->Write(fmt, args);
-    // va_end(args);
+void Deduplicate::LogOutput(std::string & out) {
+	_log.get()->Write(out);
 }
 
 void Deduplicate::TrackTransfer(int id, int64_t size, char * data) {
@@ -242,7 +247,11 @@ std::pair<uint32_t, bool> Deduplicate::DetectDuplicate(int id, int64_t size, cha
 
 void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time, TRANSFER_TYPE type) {
 	std::pair<uint32_t, bool> ret = DetectDuplicate(id, size, data, transfer_time);
-	fprintf(stderr,"[DUPLICATE DETECTION] - Transfer %s is %s duplicate\n", ttypes[type], (ret.second ? "a": "NOT a"));
+	//fprintf(stderr,"[DUPLICATE DETECTION] - Transfer %s is %s duplicate\n", ttypes[type], (ret.second ? "a": "NOT a"));
+	LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer %s is %s duplicate\n" % ttypes[type] % (ret.second ? "a": "NOT a"))));
+	#ifdef TRANSFER_TIMELINE
+	AddTransfer(std::string(ttypes[type]), ret.first, size);
+	#endif
 }
 
 void Deduplicate::RecordStacktrace(uint32_t data_hash, bool duplicate, std::string stacktrace) {
@@ -259,37 +268,48 @@ void Deduplicate::RecordStacktrace(uint32_t data_hash, bool duplicate, std::stri
 }
 
 void Deduplicate::WriteStraces() {
-	fprintf(stderr,"Stack Summary\n\tHash\tCount\n");
+	//fprintf(stderr,"Stack Summary\n\tHash\tCount\n");
+	LogOutput(boost::str(boost::format("Stack Summary\n\tHash\tCount\n")));
 	for (auto i : _datahash_collisions) {
 		if (i.second.size() <= 1)
 			continue;
-		fprintf(stderr,"\t%u\t%llu\n", i.first, i.second.size());
+		//fprintf(stderr,"\t%u\t%llu\n", i.first, i.second.size());
+		LogOutput(boost::str(boost::format("\t%u\t%llu\n" % i.first % i.second.size())));
 	}
-	fprintf(stderr,"Start Stack Flush\n");
+	//fprintf(stderr,"Start Stack Flush\n");
+	LogOutput(std::string("Start Stack Flush\n"));
+
 	for (auto i : _datahash_collisions) {
 		if (i.second.size() <= 1)
 			continue;
 		std::map<uint32_t, int> dupCount;
-		fprintf(stderr,"Stack Summary for Duplicates for %u\n\n", i.first);
-		fprintf(stderr,"Originating Transfer:\n%s\n\n\nStacks Transferring Duplicates:\n", _stacks[i.second[0]].c_str());
+		LogOutput(boost::str(boost::format("Stack Summary for Duplicates for %u\n\n" % i.first)));
+		//fprintf(stderr,"Stack Summary for Duplicates for %u\n\n", i.first);
+		LogOutput(boost::str(boost::format("Originating Transfer:\n%s\n\n\nStacks Transferring Duplicates:\n" % _stacks[i.second[0]].c_str())));
+		//fprintf(stderr,"Originating Transfer:\n%s\n\n\nStacks Transferring Duplicates:\n", _stacks[i.second[0]].c_str());
 		for (int t = 1; t < i.second.size(); t++) {
 			if (dupCount.find(i.second[t]) == dupCount.end())
 				dupCount[i.second[t]] = 0;
 			dupCount[i.second[t]]++;
 		}
 		for (auto n : dupCount) {
-			fprintf(stderr,"Duplicate Stack - Count %d:\n%s\n", n.second, _stacks[n.first].c_str());
+			LogOutput(boost::str(boost::format("Duplicate Stack - Count %d:\n%s\n" % n.second % _stacks[n.first].c_str())));
+			//fprintf(stderr,"Duplicate Stack - Count %d:\n%s\n", n.second, _stacks[n.first].c_str());
 		}
 	}
-	fprintf(stderr,"Output Complete\n");
+	LogOutput(std::string("Output Complete\n"));
 }
 
 void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time, TRANSFER_TYPE type, std::string stacktrace) {
 	// Track transfer but do not actually perform deduplication....
 	// Independent of the deduplicator
 	std::pair<uint32_t, bool> ret = DetectDuplicate(id, size, data, transfer_time);
-	fprintf(stderr,"[DUPLICATE DETECTION] - Transfer %s is %s duplicate, SRC/DST: %p\n", ttypes[type], (ret.second ? "a": "NOT a"), data);
+	//fprintf(stderr,"[DUPLICATE DETECTION] - Transfer %s is %s duplicate, SRC/DST: %p\n", ttypes[type], (ret.second ? "a": "NOT a"), data);
+	LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer %s is %s duplicate, SRC/DST: %p\n" % ttypes[type] % (ret.second ? "a": "NOT a") % data)));
 	RecordStacktrace(ret.first, ret.second, stacktrace);
+	#ifdef TRANSFER_TIMELINE
+	AddTransfer(std::string(ttypes[type]), ret.first, size);
+	#endif
 }
 
 

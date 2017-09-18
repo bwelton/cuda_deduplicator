@@ -26,8 +26,13 @@
 #include <stdarg.h>
 #include <condition_variable>
 #include <boost/thread/recursive_mutex.hpp>
+#include <boost/format.hpp>
 #include "LogInfo.h"
 #include "xxhash32.h"
+#ifdef TRANSFER_TIMELINE
+#include "TransferTimeline.h"
+#endif
+
 
 //#define DEBUG_OUTPUT 1
 #define ALLOCATION_SIZE 5242880
@@ -70,7 +75,7 @@ enum OutLocation {
 typedef void (*cudaD2DCall)(void *, void *, size_t, cudaStream_t);
 class Deduplicate{
 public:
-	Deduplicate();
+	Deduplicate(FILE * out_location = stderr);
 	~Deduplicate();
 	void GenerateAllocation();
 	void AllocateLocalIPC();
@@ -80,7 +85,7 @@ public:
 	cudaError_t PerformCachedTransfer(DataStruct ret);
 	DataStruct DeduplicateData(DataStruct ret);
 	DeviceMemory GrabLast();
-	void LogOutput(char * fmt,...);
+	void LogOutput(std::string & out);
 	DataStruct AddNew(DataStruct ret);
 	void TrackTransfer(int id, int64_t size, char * data, float transfer_time,TRANSFER_TYPE type);
 	void RecordStacktrace(uint32_t data_hash, bool duplicate, std::string stacktrace);
@@ -94,7 +99,7 @@ private:
 
 	size_t _collisionCount;
 	int64_t _collisionSize;
-        int64_t _totalSize;
+    int64_t _totalSize;
 	size_t _totalCount;
 	size_t _caughtDuplicates;
 	std::map<uint32_t, void *> _storedCopies;
@@ -118,14 +123,18 @@ private:
 	std::map<uint32_t, std::string> _stacks;
 	std::map<uint32_t, std::vector<uint32_t>> _datahash_collisions;
 
-
+#ifdef TRANSFER_TIMELINE
+	TransferTimeline _timeline;
+#endif
 };
+
+const char * OUT_FILE="dedup_out.txt";
 
 extern std::shared_ptr<Deduplicate> Dedup;
 #define BUILD_STORAGE_CLASS \
 	if (Dedup.get() == NULL) { \
 		fprintf(stderr, "%s\n", "Setting up our global data structure"); \
-		Dedup.reset(new Deduplicate()); \
+		Dedup.reset(new Deduplicate(fopen(OUT_FILE,"w"))); \
 	} 
 
 #define STORAGE_PTR Dedup.get()

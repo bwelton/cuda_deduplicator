@@ -85,7 +85,7 @@ public:
 	cudaError_t PerformCachedTransfer(DataStruct ret);
 	DataStruct DeduplicateData(DataStruct ret);
 	DeviceMemory GrabLast();
-	void LogOutput(std::string & out);
+	void LogOutput(std::string out);
 	DataStruct AddNew(DataStruct ret);
 	void TrackTransfer(int id, int64_t size, char * data, float transfer_time,TRANSFER_TYPE type);
 	void RecordStacktrace(uint32_t data_hash, bool duplicate, std::string stacktrace);

@@ -60,7 +60,7 @@ void Deduplicate::GenerateAllocation() {
 	}		
 }
 
-Deduplicate::Deduplicate(FILE * out_location = stderr) {
+Deduplicate::Deduplicate(FILE * out_location) {
 	boost::recursive_mutex::scoped_lock lock(_mtx);
 	_log.reset(new LogInfo(out_location));
 	GenerateAllocation();
@@ -211,7 +211,7 @@ DataStruct Deduplicate::AddNew(DataStruct ret) {
 	return ret;
 }
 
-void Deduplicate::LogOutput(std::string & out) {
+void Deduplicate::LogOutput(std::string out) {
 	_log.get()->Write(out);
 }
 

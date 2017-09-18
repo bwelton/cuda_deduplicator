@@ -128,13 +128,13 @@ private:
 #endif
 };
 
-const char * OUT_FILE="dedup_out.txt";
+//const char * OUT_FILE="dedup_out.txt";
 
 extern std::shared_ptr<Deduplicate> Dedup;
 #define BUILD_STORAGE_CLASS \
 	if (Dedup.get() == NULL) { \
 		fprintf(stderr, "%s\n", "Setting up our global data structure"); \
-		Dedup.reset(new Deduplicate(fopen(OUT_FILE,"w"))); \
+		Dedup.reset(new Deduplicate(fopen("dedup_out.txt","w"))); \
 	} 
 
 #define STORAGE_PTR Dedup.get()

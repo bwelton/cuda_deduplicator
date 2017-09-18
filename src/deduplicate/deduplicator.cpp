@@ -113,11 +113,11 @@ Deduplicate::~Deduplicate() {
   fprintf(stderr,"[DUPLICATE DETECTION] - Transfer Errors: %llu, Caught duplicates: %llu\n",_transferErrors,_caughtDuplicates );
 
   // Copy that same output to the logfile
-  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Collisions: %llu, Size: %lld\n" % _collisionCount % _collisionSize)));
-  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Total Transfer Time: %f, Time Spent Transferring Duplicates: %f\n" % _totTransferTime % _totDuplicateTime)));
-  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Total Transfer: %llu, Total Size: %lld\n" % _totalCount % _totalSize)));
-  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Missed Collisions: %llu, Total Size: %lld\n" % _missedHashes % _missedSize)));
-  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer Errors: %llu, Caught duplicates: %llu\n" % _transferErrors % _caughtDuplicates)));
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Collisions: %llu, Size: %lld\n") % _collisionCount % _collisionSize));
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Total Transfer Time: %f, Time Spent Transferring Duplicates: %f\n") % _totTransferTime % _totDuplicateTime));
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Total Transfer: %llu, Total Size: %lld\n") % _totalCount % _totalSize));
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Missed Collisions: %llu, Total Size: %lld\n") % _missedHashes % _missedSize));
+  LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer Errors: %llu, Caught duplicates: %llu\n") % _transferErrors % _caughtDuplicates));
   WriteStraces();
 }
 
@@ -248,7 +248,7 @@ std::pair<uint32_t, bool> Deduplicate::DetectDuplicate(int id, int64_t size, cha
 void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfer_time, TRANSFER_TYPE type) {
 	std::pair<uint32_t, bool> ret = DetectDuplicate(id, size, data, transfer_time);
 	//fprintf(stderr,"[DUPLICATE DETECTION] - Transfer %s is %s duplicate\n", ttypes[type], (ret.second ? "a": "NOT a"));
-	LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer %s is %s duplicate\n" % ttypes[type] % (ret.second ? "a": "NOT a"))));
+	LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer %s is %s duplicate\n") % ttypes[type] % (ret.second ? "a": "NOT a")));
 	#ifdef TRANSFER_TIMELINE
 	AddTransfer(std::string(ttypes[type]), ret.first, size);
 	#endif
@@ -274,7 +274,7 @@ void Deduplicate::WriteStraces() {
 		if (i.second.size() <= 1)
 			continue;
 		//fprintf(stderr,"\t%u\t%llu\n", i.first, i.second.size());
-		LogOutput(boost::str(boost::format("\t%u\t%llu\n" % i.first % i.second.size())));
+		LogOutput(boost::str(boost::format("\t%u\t%llu\n") % i.first % i.second.size()));
 	}
 	//fprintf(stderr,"Start Stack Flush\n");
 	LogOutput(std::string("Start Stack Flush\n"));
@@ -283,9 +283,9 @@ void Deduplicate::WriteStraces() {
 		if (i.second.size() <= 1)
 			continue;
 		std::map<uint32_t, int> dupCount;
-		LogOutput(boost::str(boost::format("Stack Summary for Duplicates for %u\n\n" % i.first)));
+		LogOutput(boost::str(boost::format("Stack Summary for Duplicates for %u\n\n") % i.first));
 		//fprintf(stderr,"Stack Summary for Duplicates for %u\n\n", i.first);
-		LogOutput(boost::str(boost::format("Originating Transfer:\n%s\n\n\nStacks Transferring Duplicates:\n" % _stacks[i.second[0]].c_str())));
+		LogOutput(boost::str(boost::format("Originating Transfer:\n%s\n\n\nStacks Transferring Duplicates:\n") % _stacks[i.second[0]].c_str()));
 		//fprintf(stderr,"Originating Transfer:\n%s\n\n\nStacks Transferring Duplicates:\n", _stacks[i.second[0]].c_str());
 		for (int t = 1; t < i.second.size(); t++) {
 			if (dupCount.find(i.second[t]) == dupCount.end())
@@ -293,7 +293,7 @@ void Deduplicate::WriteStraces() {
 			dupCount[i.second[t]]++;
 		}
 		for (auto n : dupCount) {
-			LogOutput(boost::str(boost::format("Duplicate Stack - Count %d:\n%s\n" % n.second % _stacks[n.first].c_str())));
+			LogOutput(boost::str(boost::format("Duplicate Stack - Count %d:\n%s\n") % n.second % _stacks[n.first].c_str()));
 			//fprintf(stderr,"Duplicate Stack - Count %d:\n%s\n", n.second, _stacks[n.first].c_str());
 		}
 	}
@@ -305,7 +305,7 @@ void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfe
 	// Independent of the deduplicator
 	std::pair<uint32_t, bool> ret = DetectDuplicate(id, size, data, transfer_time);
 	//fprintf(stderr,"[DUPLICATE DETECTION] - Transfer %s is %s duplicate, SRC/DST: %p\n", ttypes[type], (ret.second ? "a": "NOT a"), data);
-	LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer %s is %s duplicate, SRC/DST: %p\n" % ttypes[type] % (ret.second ? "a": "NOT a") % data)));
+	LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer %s is %s duplicate, SRC/DST: %p\n") % ttypes[type] % (ret.second ? "a": "NOT a") % data));
 	RecordStacktrace(ret.first, ret.second, stacktrace);
 	#ifdef TRANSFER_TIMELINE
 	AddTransfer(std::string(ttypes[type]), ret.first, size);

@@ -17,7 +17,7 @@ if (DEFINED ENABLE_STRACE AND "${ENABLE_STRACE}" MATCHES "yes")
 endif(DEFINED ENABLE_STRACE AND "${ENABLE_STRACE}" MATCHES "yes")
 
 if (DEFINED ENABLE_TIMELINE AND "${ENABLE_TIMELINE}" MATCHES "yes") 
-	target_sources(dedup PUBLIC "TransferTimeline.cpp")
+	target_sources(dedup PRIVATE "TransferTimeline.cpp")
 	add_definitions("-DTRANSFER_TIMELINE")
 endif (DEFINED ENABLE_TIMELINE AND "${ENABLE_TIMELINE}" MATCHES "yes")
 

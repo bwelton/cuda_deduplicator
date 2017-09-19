@@ -9,6 +9,7 @@ configure_file (
 	"${CMAKE_INSTALL_PREFIX}/defs/Deduplicate.def"
 )
 add_library(dedup SHARED "deduplicator.cpp" "CudaDeviceWrappers.cpp" "TransferTimeline.cpp")
+add_definitions("-DTRANSFER_TIMELINE")
 if (DEFINED ENABLE_STRACE AND "${ENABLE_STRACE}" MATCHES "yes")
 	target_sources(dedup PUBLIC "strace.cpp")
 	target_link_libraries(dedup ${DYNINST_LIBRARIES})

@@ -10,9 +10,9 @@ class TransferTimeline{
 public:
 	TransferTimeline();
 	~TransferTimeline();
-	Write(std::string & a);
-	AddTransfer(std::string & type, uint32_t id, size_t size);
-	WriteLogEntry(std::string & type, uint32_t id, size_t size, uint64_t count, uint64_t origTransfer);
+	void Write(std::string a);
+	void AddTransfer(std::string & type, uint32_t id, size_t size);
+	void WriteLogEntry(std::string & type, uint32_t id, size_t size, uint64_t count, uint64_t origTransfer);
 private:
 	boost::recursive_mutex _mtx;
 	std::shared_ptr<LogInfo> _log;

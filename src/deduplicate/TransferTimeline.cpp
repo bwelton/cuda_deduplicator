@@ -22,7 +22,7 @@ void TransferTimeline::WriteLogEntry(std::string & type, uint32_t id, size_t siz
 }
 
 
-void TransferTimeline::Write(std::string & a){
+void TransferTimeline::Write(std::string a){
 	_log.get()->Write(a);
 }
 

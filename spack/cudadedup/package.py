@@ -9,6 +9,11 @@ class Cudadedup(Package):
     depends_on('python@2.7.13+shared')
     depends_on('cuda')
     depends_on('cmake', type="build")
+
+    ## Variants 
+    variant('stacktrace', default=False, description="Enable Stacktracing for found duplicates.")
+    variant('timeline', default=False, description="Enable Transfer Timeline.")
+
     def install(self, spec, prefix):
         ## Find the location of libcuda.so.... 
         libcuda_path = ""
@@ -30,6 +35,13 @@ class Cudadedup(Package):
         else:
             raise InstallError("Could not find libcuda.so in any of the standard places...")
         libcuda_art = join_path(spec["cuda"].prefix, "lib64/libcudart.so")
+        timeline = "no"
+        strace = "no"
+        if "+timeline" in spec:
+            timeline = "yes"
+
+        if "+stacktrace" in spec:
+            strace = "yes"
 
         with working_dir("spack-build", create=True):
             cmake("..", 
@@ -44,6 +56,8 @@ class Cudadedup(Package):
                 "-DCUDA_TOOLKIT_ROOT_DIR=%s" % spec["cuda"].prefix,
                 "-DLIBCUDA_SO=%s" % libcuda_path,
                 "-DLIBCUDART_SO=%s" % libcuda_art,
+                "-DENABLE_STRACE=%s" % strace,
+                "-DENABLE_TIMELINE=%s" % timeline,
                 "-DSPACK_INSTALL=yes", *std_cmake_args)
             make()
             make('install')

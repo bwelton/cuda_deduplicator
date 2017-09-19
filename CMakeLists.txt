@@ -1,6 +1,6 @@
 ## Check if we are using the cray compiler wrappers
 #  If so we are on a cray machine
-cmake_minimum_required (VERSION 2.8.11)
+cmake_minimum_required (VERSION 3.1)
 SET(CMAKE_CXX_STANDARD 11)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 project(cuda_deduplicator)

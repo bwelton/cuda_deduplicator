@@ -124,7 +124,7 @@ private:
 	std::map<uint32_t, std::vector<uint32_t>> _datahash_collisions;
 
 #ifdef TRANSFER_TIMELINE
-	TransferTimeline _timeline;
+	std::shared_ptr<TransferTimeline> _timeline;
 #endif
 };
 

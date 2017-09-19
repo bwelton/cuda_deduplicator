@@ -63,6 +63,9 @@ void Deduplicate::GenerateAllocation() {
 Deduplicate::Deduplicate(FILE * out_location) {
 	boost::recursive_mutex::scoped_lock lock(_mtx);
 	_log.reset(new LogInfo(out_location));
+	#ifdef TRANSFER_TIMELINE
+	_timeline.reset(new TransferTimeline());
+	#endif 
 	GenerateAllocation();
 	_collisionCount = 0;
 	_collisionSize = 0;
@@ -250,7 +253,7 @@ void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfe
 	//fprintf(stderr,"[DUPLICATE DETECTION] - Transfer %s is %s duplicate\n", ttypes[type], (ret.second ? "a": "NOT a"));
 	LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer %s is %s duplicate\n") % ttypes[type] % (ret.second ? "a": "NOT a")));
 	#ifdef TRANSFER_TIMELINE
-	_timeline.AddTransfer(std::string(ttypes[type]), ret.first, size);
+	_timeline.get()->AddTransfer(std::string(ttypes[type]), ret.first, size);
 	#endif
 }
 
@@ -308,7 +311,7 @@ void Deduplicate::TrackTransfer(int id, int64_t size, char * data, float transfe
 	LogOutput(boost::str(boost::format("[DUPLICATE DETECTION] - Transfer %s is %s duplicate, SRC/DST: %p\n") % ttypes[type] % (ret.second ? "a": "NOT a") % data));
 	RecordStacktrace(ret.first, ret.second, stacktrace);
 	#ifdef TRANSFER_TIMELINE
-	_timeline.AddTransfer(std::string(ttypes[type]), ret.first, size);
+	_timeline.get()->AddTransfer(std::string(ttypes[type]), ret.first, size);
 	#endif
 }
 

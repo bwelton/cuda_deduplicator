@@ -1,6 +1,6 @@
 #include "TransferTimeline.h"
 const char * OUT_FILENAME="dedup_timeline.log";
-void TransferTimeline::AddTransfer(std::string & type, uint32_t id, size_t size) {
+void TransferTimeline::AddTransfer(std::string type, uint32_t id, size_t size) {
 	uint64_t origTransfer = 0;
 	uint64_t count = 0;
 	{

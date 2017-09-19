@@ -11,7 +11,7 @@ public:
 	TransferTimeline();
 	~TransferTimeline();
 	void Write(std::string a);
-	void AddTransfer(std::string & type, uint32_t id, size_t size);
+	void AddTransfer(std::string type, uint32_t id, size_t size);
 	void WriteLogEntry(std::string & type, uint32_t id, size_t size, uint64_t count, uint64_t origTransfer);
 private:
 	boost::recursive_mutex _mtx;

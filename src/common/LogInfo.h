@@ -27,8 +27,7 @@ public:
 	}
 	void Write(std::string & out) {
 		boost::recursive_mutex::scoped_lock lock(_log_mtx);
-		fprintf(_fd, "%s\n", out.c_str());
-
+		fprintf(_fd, "%s", out.c_str());
 	}
 	void Write(char * fmt, ...) {
 		boost::recursive_mutex::scoped_lock lock(_log_mtx);

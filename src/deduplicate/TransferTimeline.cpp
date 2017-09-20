@@ -39,4 +39,8 @@ TransferTimeline::TransferTimeline() {
 	_count = 1;
 }
 
+TransferTimeline::~TransferTimeline() {
+	
+}
+
 

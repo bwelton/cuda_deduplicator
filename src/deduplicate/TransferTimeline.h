@@ -14,8 +14,8 @@ public:
 	void AddTransfer(std::string type, uint32_t id, size_t size);
 	void WriteLogEntry(std::string & type, uint32_t id, size_t size, uint64_t count, uint64_t origTransfer);
 private:
-	boost::recursive_mutex _mtx;
-	std::shared_ptr<LogInfo> _log;
+	boost::recursive_mutex _timeline_mtx;
+	std::shared_ptr<LogInfo> _timeline_log;
 	std::map<uint32_t, uint64_t> _pastTransfers;
 	uint64_t _count; 
 };

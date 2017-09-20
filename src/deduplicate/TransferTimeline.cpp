@@ -4,7 +4,7 @@ void TransferTimeline::AddTransfer(std::string type, uint32_t id, size_t size) {
 	uint64_t origTransfer = 0;
 	uint64_t count = 0;
 	{
-		boost::recursive_mutex::scoped_lock lock(_mtx);
+		boost::recursive_mutex::scoped_lock lock(_timeline_mtx);
 		if (_pastTransfers.find(id) != _pastTransfers.end())
 			origTransfer = _pastTransfers[id];
 		else
@@ -23,11 +23,17 @@ void TransferTimeline::WriteLogEntry(std::string & type, uint32_t id, size_t siz
 
 
 void TransferTimeline::Write(std::string a){
-	_log.get()->Write(a);
+	_timeline_log.get()->Write(a);
 }
 
 TransferTimeline::TransferTimeline() {
-	_log.reset(new LogInfo(fopen(OUT_FILENAME,"w")));
+	FILE * pfile = fopen("dedup_timeline.log");
+	if (pfile == NULL){
+		fprintf(stderr, "%s\n", "Could not open timeline log file, writing output to stderr" );
+		_timeline_log.reset(new LogInfo(stderr));
+	else {
+		_timeline_log.reset(new LogInfo(pfile));
+	}
 	_count = 1;
 }
 

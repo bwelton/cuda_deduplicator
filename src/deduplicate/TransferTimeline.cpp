@@ -28,14 +28,14 @@ void TransferTimeline::Write(std::string a){
 }
 
 TransferTimeline::TransferTimeline() {
-	// FILE * pfile = fopen("dedup_timeline.log", "w");
-	// if (pfile == NULL){
-	// 	fprintf(stderr, "%s\n", "Could not open timeline log file, writing output to stderr" );
-	// 	_timeline_log.reset(new LogInfo(stderr));
-	// }
-	// else {
-	// 	_timeline_log.reset(new LogInfo(pfile));
-	// }
+	FILE * pfile = fopen("dedup_timeline.log", "w");
+	if (pfile == NULL){
+		fprintf(stderr, "%s\n", "Could not open timeline log file, writing output to stderr" );
+		_timeline_log.reset(new LogInfo(stderr));
+	}
+	else {
+		_timeline_log.reset(new LogInfo(pfile));
+	}
 	_count = 1;
 }
 

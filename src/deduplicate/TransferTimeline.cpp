@@ -31,6 +31,7 @@ TransferTimeline::TransferTimeline() {
 	if (pfile == NULL){
 		fprintf(stderr, "%s\n", "Could not open timeline log file, writing output to stderr" );
 		_timeline_log.reset(new LogInfo(stderr));
+	}
 	else {
 		_timeline_log.reset(new LogInfo(pfile));
 	}

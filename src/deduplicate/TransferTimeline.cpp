@@ -1,5 +1,6 @@
 #include "TransferTimeline.h"
 const char * OUT_FILENAME="dedup_timeline.log";
+boost::recursive_mutex _timeline_mtx;
 void TransferTimeline::AddTransfer(std::string type, uint32_t id, size_t size) {
 	uint64_t origTransfer = 0;
 	uint64_t count = 0;
@@ -27,14 +28,14 @@ void TransferTimeline::Write(std::string a){
 }
 
 TransferTimeline::TransferTimeline() {
-	FILE * pfile = fopen("dedup_timeline.log", "w");
-	if (pfile == NULL){
-		fprintf(stderr, "%s\n", "Could not open timeline log file, writing output to stderr" );
-		_timeline_log.reset(new LogInfo(stderr));
-	}
-	else {
-		_timeline_log.reset(new LogInfo(pfile));
-	}
+	// FILE * pfile = fopen("dedup_timeline.log", "w");
+	// if (pfile == NULL){
+	// 	fprintf(stderr, "%s\n", "Could not open timeline log file, writing output to stderr" );
+	// 	_timeline_log.reset(new LogInfo(stderr));
+	// }
+	// else {
+	// 	_timeline_log.reset(new LogInfo(pfile));
+	// }
 	_count = 1;
 }
 

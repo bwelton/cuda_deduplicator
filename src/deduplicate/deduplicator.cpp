@@ -64,7 +64,7 @@ Deduplicate::Deduplicate(FILE * out_location) {
 	boost::recursive_mutex::scoped_lock lock(_mtx);
 	_log.reset(new LogInfo(out_location));
 	#ifdef TRANSFER_TIMELINE
-	//_timeline.reset(new TransferTimeline());
+	_timeline.reset(new TransferTimeline());
 	#endif 
 	GenerateAllocation();
 	_collisionCount = 0;

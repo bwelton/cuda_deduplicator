@@ -1,7 +1,9 @@
 from spack import *
 import os.path
 class Cudadedup(Package):
-    version('master', git='https://github.com/bwelton/cuda_deduplicator.git', branch='master')
+    version('master', git='https://github.com/bwelton/cuda_deduplicator.git', branch='master', preferred=True)
+    version('develop', git='https://github.com/bwelton/cuda_deduplicator.git', branch='develop')
+    version('v0.1', git='https://github.com/bwelton/cuda_deduplicator.git', branch='master', tag="v0.1")
     # depends_on('libelf')
     depends_on("elf@1", type="link")
     depends_on('libdwarf')

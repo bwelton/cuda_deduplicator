@@ -1,0 +1,10 @@
+mkdir -p @CMAKE_INSTALL_PREFIX@/tests/runs
+cd @CMAKE_INSTALL_PREFIX@/tests/runs
+
+# Build the instrimentation library
+rm -f ./libcuda.so.1
+bash @CMAKE_INSTALL_PREFIX@/bin/inst_app.sh @LIBCUDA_SO@ @CMAKE_INSTALL_PREFIX@/defs/DetectDuplicates.def ./libcuda.so.1
+export LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/tests/runs:$LD_LIBRARY_PATH
+
+## Launch the tests
+@LAUNCHER@ @CMAKE_INSTALL_PREFIX@/tests/basic_checker_test

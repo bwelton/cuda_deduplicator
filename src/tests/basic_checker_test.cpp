@@ -71,7 +71,7 @@ void CheckWriteASyncSize(std::vector<int> sizes) {
 	uint64_t expected_size = 0;
 	for (auto i : sizes) {
 		DeviceMemory<double> dev(i);
-		dev.WriteAsync();
+		dev.WriteAsync(tmp);
 	}
 }
 
@@ -101,7 +101,7 @@ void CheckWriteCombinedSize(std::vector<int> sizes) {
 	for (auto i : sizes) {
 		DeviceMemory<double> dev(i);
 		if (i % 2 == 0)
-			dev.WriteAsync();
+			dev.WriteAsync(tmp);
 		else
 			dev.WriteSync();
 	}
@@ -137,7 +137,7 @@ void CheckReadSyncSize(std::vector<int> sizes) {
 
 BOOST_AUTO_TEST_CASE(check_read_size_sync) {
 	// Checks to make sure the interceptor is getting the size correct
-	// for each write transfer call.
+	// for each read transfer call.
 	TestingFixture t;
 	std::vector<int> sizes;
 	int expected = 0;
@@ -160,13 +160,13 @@ void CheckReadASyncSize(std::vector<int> sizes) {
 	uint64_t expected_size = 0;
 	for (auto i : sizes) {
 		DeviceMemory<double> dev(i);
-		dev.ReadAsync();
+		dev.ReadAsync(tmp);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(check_read_size_async) {
 	// Checks to make sure the interceptor is getting the size correct
-	// for each write transfer call.
+	// for each read transfer call.
 	TestingFixture t;
 	std::vector<int> sizes;
 	int expected = 0;
@@ -189,7 +189,7 @@ void CheckReadCombinedSize(std::vector<int> sizes) {
 	for (auto i : sizes) {
 		DeviceMemory<double> dev(i);
 		if (i % 2)
-			dev.ReadAsync();
+			dev.ReadAsync(tmp);
 		else
 			dev.ReadSync();
 	}
@@ -197,7 +197,7 @@ void CheckReadCombinedSize(std::vector<int> sizes) {
 
 BOOST_AUTO_TEST_CASE(check_read_size_combined) {
 	// Checks to make sure the interceptor is getting the size correct
-	// for each write transfer call.
+	// for each read transfer call.
 	TestingFixture t;
 	std::vector<int> sizes;
 	int expected = 0;
@@ -211,6 +211,241 @@ BOOST_AUTO_TEST_CASE(check_read_size_combined) {
 	std::pair<int, int> ret = ParseTotalTransferAndSize();
 	BOOST_CHECK(ret.first == 20);
 	BOOST_CHECK(ret.second == expected);
+}
+
+void CheckReadDuplicates(std::vector<int> sizes) {
+	RedirectOutputToFile();
+	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
+	uint64_t expected_size = 0;
+	for (auto i : sizes) {
+		DeviceMemory<double> dev(i);
+		dev.ReadSync();
+		// Second read to get "duplicate" data.
+		dev.ReadSync();
+	}
+}
+
+BOOST_AUTO_TEST_CASE(check_read_duplicates) {
+	// Check that read duplicates are being detected.
+	TestingFixture t;
+	std::vector<int> sizes;
+	int expected = 0;
+	for (int i = 0; i < 20; i++) {
+		int tmp = (int) (rand() % 4096) + 1024;
+		sizes.push_back(tmp);
+		// Double is the testing datatype size
+		expected += tmp * sizeof(double);
+	}
+	BOOST_REQUIRE(t.LaunchAndWait(boost::bind(CheckReadDuplicates, sizes)) == 0);
+	std::pair<int, int> ret = ParseCollisionCountAndSize();
+	BOOST_CHECK(ret.first == 20);
+	BOOST_CHECK(ret.second == expected);	
+}
+
+void CheckReadAsyncDuplicates(std::vector<int> sizes) {
+	RedirectOutputToFile();
+	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
+	uint64_t expected_size = 0;
+	for (auto i : sizes) {
+		DeviceMemory<double> dev(i);
+		dev.ReadAsync(tmp);
+		// Second read to get "duplicate" data.
+		dev.ReadAsync(tmp);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(check_read_async_duplicates) {
+	// Check that read duplicates are being detected.
+	TestingFixture t;
+	std::vector<int> sizes;
+	int expected = 0;
+	for (int i = 0; i < 20; i++) {
+		int tmp = (int) (rand() % 4096) + 1024;
+		sizes.push_back(tmp);
+		// Double is the testing datatype size
+		expected += tmp * sizeof(double);
+	}
+	BOOST_REQUIRE(t.LaunchAndWait(boost::bind(CheckReadAsyncDuplicates, sizes)) == 0);
+	std::pair<int, int> ret = ParseCollisionCountAndSize();
+	BOOST_CHECK(ret.first == 20);
+	BOOST_CHECK(ret.second == expected);	
+}
+
+void CheckReadAsyncStreamDuplicates(std::vector<int> sizes) {
+	RedirectOutputToFile();
+	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
+	std::shared_ptr<CudaCtx> tmp2(new CudaCtx());
+	uint64_t expected_size = 0;
+	for (auto i : sizes) {
+		DeviceMemory<double> dev(i);
+		dev.ReadAsync(tmp);
+		// Second read to get "duplicate" data.
+		dev.ReadAsync(tmp2);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(check_read_async_streams_duplicates) {
+	// Check that read duplicates are being detected on different streams. 
+	TestingFixture t;
+	std::vector<int> sizes;
+	int expected = 0;
+	for (int i = 0; i < 20; i++) {
+		int tmp = (int) (rand() % 4096) + 1024;
+		sizes.push_back(tmp);
+		// Double is the testing datatype size
+		expected += tmp * sizeof(double);
+	}
+	BOOST_REQUIRE(t.LaunchAndWait(boost::bind(CheckReadAsyncStreamDuplicates, sizes)) == 0);
+	std::pair<int, int> ret = ParseCollisionCountAndSize();
+	BOOST_CHECK(ret.first == 20);
+	BOOST_CHECK(ret.second == expected);	
+}
+
+void CheckWriteDuplicates(std::vector<int> sizes) {
+	RedirectOutputToFile();
+	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
+	uint64_t expected_size = 0;
+	for (auto i : sizes) {
+		DeviceMemory<double> dev(i);
+		dev.WriteSync();
+		// Second write to get "duplicate" data.
+		dev.WriteSync();
+	}
+}
+
+BOOST_AUTO_TEST_CASE(check_write_duplicates) {
+	// Check that read duplicates are being detected on different streams. 
+	TestingFixture t;
+	std::vector<int> sizes;
+	int expected = 0;
+	for (int i = 0; i < 20; i++) {
+		int tmp = (int) (rand() % 4096) + 1024;
+		sizes.push_back(tmp);
+		// Double is the testing datatype size
+		expected += tmp * sizeof(double);
+	}
+	BOOST_REQUIRE(t.LaunchAndWait(boost::bind(CheckWriteDuplicates, sizes)) == 0);
+	std::pair<int, int> ret = ParseCollisionCountAndSize();
+	BOOST_CHECK(ret.first == 20);
+	BOOST_CHECK(ret.second == expected);	
+}
+
+void CheckWriteAsyncDuplicates(std::vector<int> sizes) {
+	RedirectOutputToFile();
+	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
+	uint64_t expected_size = 0;
+	for (auto i : sizes) {
+		DeviceMemory<double> dev(i);
+		dev.WriteAsync(tmp);
+		// Second write to get "duplicate" data.
+		dev.WriteAsync(tmp);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(check_write_async_duplicates) {
+	// Check that read duplicates are being detected on different streams. 
+	TestingFixture t;
+	std::vector<int> sizes;
+	int expected = 0;
+	for (int i = 0; i < 20; i++) {
+		int tmp = (int) (rand() % 4096) + 1024;
+		sizes.push_back(tmp);
+		// Double is the testing datatype size
+		expected += tmp * sizeof(double);
+	}
+	BOOST_REQUIRE(t.LaunchAndWait(boost::bind(CheckWriteAsyncDuplicates, sizes)) == 0);
+	std::pair<int, int> ret = ParseCollisionCountAndSize();
+	BOOST_CHECK(ret.first == 20);
+	BOOST_CHECK(ret.second == expected);	
+}
+
+
+void CheckWriteAsyncStreamDuplicates(std::vector<int> sizes) {
+	RedirectOutputToFile();
+	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
+	std::shared_ptr<CudaCtx> tmp2(new CudaCtx());
+	uint64_t expected_size = 0;
+	for (auto i : sizes) {
+		DeviceMemory<double> dev(i);
+		dev.WriteAsync(tmp);
+		// Second write to get "duplicate" data.
+		dev.WriteAsync(tmp2);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(check_write_async_streams_duplicates) {
+	// Check that read duplicates are being detected on different streams. 
+	TestingFixture t;
+	std::vector<int> sizes;
+	int expected = 0;
+	for (int i = 0; i < 20; i++) {
+		int tmp = (int) (rand() % 4096) + 1024;
+		sizes.push_back(tmp);
+		// Double is the testing datatype size
+		expected += tmp * sizeof(double);
+	}
+	BOOST_REQUIRE(t.LaunchAndWait(boost::bind(CheckWriteAsyncStreamDuplicates, sizes)) == 0);
+	std::pair<int, int> ret = ParseCollisionCountAndSize();
+	BOOST_CHECK(ret.first == 20);
+	BOOST_CHECK(ret.second == expected);	
+}
+
+void CheckReadWriteDuplicates(std::vector<int> sizes) {
+	RedirectOutputToFile();
+	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
+	uint64_t expected_size = 0;
+	for (auto i : sizes) {
+		DeviceMemory<double> dev(i);
+		dev.WriteSync();
+		// Second write to get "duplicate" data.
+		dev.ReadSync();
+	}
+}
+
+BOOST_AUTO_TEST_CASE(check_readwrite_duplicates) {
+	// Check that read duplicates are being detected on different streams. 
+	TestingFixture t;
+	std::vector<int> sizes;
+	int expected = 0;
+	for (int i = 0; i < 20; i++) {
+		int tmp = (int) (rand() % 4096) + 1024;
+		sizes.push_back(tmp);
+		// Double is the testing datatype size
+		expected += tmp * sizeof(double);
+	}
+	BOOST_REQUIRE(t.LaunchAndWait(boost::bind(CheckReadWriteDuplicates, sizes)) == 0);
+	std::pair<int, int> ret = ParseCollisionCountAndSize();
+	BOOST_CHECK(ret.first == 20);
+	BOOST_CHECK(ret.second == expected);	
+}
+
+void CheckReadWriteAsyncDuplicates(std::vector<int> sizes) {
+	RedirectOutputToFile();
+	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
+	uint64_t expected_size = 0;
+	for (auto i : sizes) {
+		DeviceMemory<double> dev(i);
+		dev.WriteAsync(tmp);
+		// Second write to get "duplicate" data.
+		dev.ReadAsync(tmp);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(check_readwrite_async_duplicates) {
+	// Check that read duplicates are being detected on different streams. 
+	TestingFixture t;
+	std::vector<int> sizes;
+	int expected = 0;
+	for (int i = 0; i < 20; i++) {
+		int tmp = (int) (rand() % 4096) + 1024;
+		sizes.push_back(tmp);
+		// Double is the testing datatype size
+		expected += tmp * sizeof(double);
+	}
+	BOOST_REQUIRE(t.LaunchAndWait(boost::bind(CheckReadWriteAsyncDuplicates, sizes)) == 0);
+	std::pair<int, int> ret = ParseCollisionCountAndSize();
+	BOOST_CHECK(ret.first == 20);
+	BOOST_CHECK(ret.second == expected);	
 }
 
 BOOST_AUTO_TEST_SUITE_END()

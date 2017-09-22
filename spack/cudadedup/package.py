@@ -18,7 +18,7 @@ class Cudadedup(Package):
     ## Variants 
     variant('stacktrace', default=False, description="Enable Stacktracing for found duplicates.")
     variant('timeline', default=False, description="Enable Transfer Timeline.")
-
+    variant('desthash', default=False, description="Enable Destination Hash Checking.")
     def install(self, spec, prefix):
         ## Find the location of libcuda.so.... 
         libcuda_path = ""
@@ -45,11 +45,15 @@ class Cudadedup(Package):
         libcuda_art = join_path(spec["cuda"].prefix, "lib64/libcudart.so")
         timeline = "no"
         strace = "no"
+        desthash = "no"
         if "+timeline" in spec:
             timeline = "yes"
 
         if "+stacktrace" in spec:
             strace = "yes"
+
+        if "+desthash" in spec:
+            desthash = "yes"
 
         with working_dir("spack-build", create=True):
             cmake("..", 
@@ -66,6 +70,7 @@ class Cudadedup(Package):
                 "-DLIBCUDART_SO=%s" % libcuda_art,
                 "-DENABLE_STRACE=%s" % strace,
                 "-DENABLE_TIMELINE=%s" % timeline,
+                "-DENABLE_DESTHASH=%s" % desthash,
                 "-DSPACK_INSTALL=yes", 
                 "-DSPACK_ROOT=%s" % spack_root,
                 "-DBoost_NO_SYSTEM_PATHS=TRUE",

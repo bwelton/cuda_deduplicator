@@ -119,38 +119,42 @@ struct DeviceMemory
 {
 	T * store;
 	size_t _size;
-	T * _cpuStore;
+	std::shared_ptr<T> _cpuStore;
 	DeviceMemory(size_t size) {
 		CheckGPUResult(cudaMalloc((void **)&store, size * sizeof(T)));
 		_size = size;
-		_cpuStore = (T*) GenRandom(size * sizeof(T));
+		_cpuStore.reset((T*) GenRandom(size * sizeof(T)), free);
+	}
+	DeviceMemory(std::shared_ptr<T> d, size_t size) {
+		CheckGPUResult(cudaMalloc((void **)&store, size * sizeof(T)));
+		_size = size;
+		_cpuStore = d;
 	}
 	~DeviceMemory() {
 		cudaFree(store);
-		free(_cpuStore);
 	}
 
 	void ReadAsync(std::shared_ptr<CudaCtx> ctx) {
-		CheckGPUResult(cudaMemcpyAsync(_cpuStore, store, _size * sizeof(T), cudaMemcpyDeviceToHost, ctx.get()->GetStream()));
+		CheckGPUResult(cudaMemcpyAsync(_cpuStore.get(), store, _size * sizeof(T), cudaMemcpyDeviceToHost, ctx.get()->GetStream()));
 	}
 
 	void WriteAsync(std::shared_ptr<CudaCtx> ctx) {
-		CheckGPUResult(cudaMemcpyAsync(store, _cpuStore, _size * sizeof(T), cudaMemcpyHostToDevice, ctx.get()->GetStream()));		
+		CheckGPUResult(cudaMemcpyAsync(store, _cpuStore.get(), _size * sizeof(T), cudaMemcpyHostToDevice, ctx.get()->GetStream()));		
 	}
 
 	void ReadSync() {
-		CheckGPUResult(cudaMemcpy(_cpuStore, store, _size * sizeof(T), cudaMemcpyDeviceToHost));	
+		CheckGPUResult(cudaMemcpy(_cpuStore.get(), store, _size * sizeof(T), cudaMemcpyDeviceToHost));	
 	}
 
 	void WriteSync() {
-		CheckGPUResult(cudaMemcpy(store, _cpuStore, _size * sizeof(T), cudaMemcpyHostToDevice));			
+		CheckGPUResult(cudaMemcpy(store, _cpuStore.get(), _size * sizeof(T), cudaMemcpyHostToDevice));			
 	}
 
 	bool CompareDevToCPU() {
 		T * local_cache = (T*) malloc(_size * sizeof(T));
-		memcpy(local_cache, _cpuStore, _size * sizeof(T));
+		memcpy(local_cache, _cpuStore.get(), _size * sizeof(T));
 		ReadSync();
-		int ret = memcmp(local_cache, _cpuStore, _size * sizeof(T));
+		int ret = memcmp(local_cache, _cpuStore.get(), _size * sizeof(T));
 		free(local_cache);
 		if (ret != 0)
 			return false;

@@ -8,14 +8,18 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/src/deduplicate/defs/Deduplicate.def.in"
 	"${CMAKE_INSTALL_PREFIX}/defs/Deduplicate.def"
 )
-add_library(dedup SHARED "deduplicator.cpp" "CudaDeviceWrappers.cpp" "TransferTimeline.cpp")
+
+add_library(dedup SHARED "CudaDeviceWrappers.cpp" "DestinationHash.cpp" "HashData.cpp" "InstrumentBase.cpp" "TransferBase.cpp" "TransferTimeline.cpp" "InstrumentFactory.cpp" "DuplicateTracker.cpp")
+
+
+#add_library(dedup SHARED "deduplicator.cpp" "CudaDeviceWrappers.cpp" "TransferTimeline.cpp")
 add_definitions("-DTRANSFER_TIMELINE")
-if (DEFINED ENABLE_STRACE AND "${ENABLE_STRACE}" MATCHES "yes")
-	target_sources(dedup PUBLIC "strace.cpp")
-	target_link_libraries(dedup ${DYNINST_LIBRARIES})
-	add_definitions("-DENABLE_STACKTRACING")
-	# add_library(dedup SHARED "deduplicator.cpp" "CudaDeviceWrappers.cpp")
-endif(DEFINED ENABLE_STRACE AND "${ENABLE_STRACE}" MATCHES "yes")
+# if (DEFINED ENABLE_STRACE AND "${ENABLE_STRACE}" MATCHES "yes")
+# 	target_sources(dedup PUBLIC "strace.cpp")
+# 	target_link_libraries(dedup ${DYNINST_LIBRARIES})
+# 	add_definitions("-DENABLE_STACKTRACING")
+# 	# add_library(dedup SHARED "deduplicator.cpp" "CudaDeviceWrappers.cpp")
+# endif(DEFINED ENABLE_STRACE AND "${ENABLE_STRACE}" MATCHES "yes")
 
 # if (DEFINED ENABLE_TIMELINE AND "${ENABLE_TIMELINE}" MATCHES "yes") 
 # 	target_sources(dedup PRIVATE "TransferTimeline.cpp")

@@ -4,12 +4,10 @@
 #include <boost/thread/recursive_mutex.hpp>
 
 // Lock to ensure single entry output
-extern boost::recursive_mutex _log_mtx;
 class LogInfo {
 private:
-	
-	FILE * _fd;
-	
+	boost::recursive_mutex _log_mtx;
+	FILE * _fd;	
 public:
 	LogInfo(FILE * fd = stderr) {
 		if (fd < 0){

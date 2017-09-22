@@ -32,6 +32,48 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS basic_checker_test
         RUNTIME DESTINATION tests)
 
+add_executable(timeline_checker "timeline_checker.cpp")
+target_link_libraries(timeline_checker ${Boost_LIBRARIES})
+target_link_libraries(timeline_checker "-lpthread")
+target_link_libraries(timeline_checker "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+INCLUDE_DIRECTORIES(timeline_checker ${CUDA_TOOLKIT_ROOT_DIR}/include)
+INCLUDE_DIRECTORIES(timeline_checker ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(timeline_checker "${CMAKE_SOURCE_DIR}/src/common")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
+install(TARGETS timeline_checker
+        RUNTIME DESTINATION tests)
+
+add_executable(desthash_check "DestHashCheck.cpp")
+target_link_libraries(desthash_check ${Boost_LIBRARIES})
+target_link_libraries(desthash_check "-lpthread")
+target_link_libraries(desthash_check "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+INCLUDE_DIRECTORIES(desthash_check ${CUDA_TOOLKIT_ROOT_DIR}/include)
+INCLUDE_DIRECTORIES(desthash_check ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(desthash_check "${CMAKE_SOURCE_DIR}/src/common")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
+install(TARGETS desthash_check
+        RUNTIME DESTINATION tests)
+
+
+add_executable(launch_check "launch_check.cpp")
+add_dependencies(launch_check dedup)
+target_link_libraries(launch_check dedup)
+target_link_libraries(launch_check ${Boost_LIBRARIES})
+target_link_libraries(launch_check "-lpthread")
+target_link_libraries(launch_check "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+target_link_libraries(launch_check "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+INCLUDE_DIRECTORIES(launch_check ${CUDA_TOOLKIT_ROOT_DIR}/include)
+INCLUDE_DIRECTORIES(launch_check ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(launch_check "${CMAKE_SOURCE_DIR}/src/deduplicate")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
+install(TARGETS launch_check
+        RUNTIME DESTINATION tests)
+
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/scripts)
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/tests/LoadSpackModules.py.in"

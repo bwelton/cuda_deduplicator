@@ -18,9 +18,12 @@ Functions by creating a temporary cache in GPU memory for data transfers. When a
 
 **Building and Installation**
 
-cd build && cmake .. && make install
+Due to the number of dependencies that this project has (Dyninst, Boost, Cuda, Libdwarf, Libelf, and others), it is highly recommended you build this package with the spack package manager (https://github.com/LLNL/spack). A premade spack repo package for this project is availible in spack/. Adding ./spack to ~/.spack/repos.yaml will allow you to build the deduplicator with the following commands:
 
-**Required build parameters**
+cd SPACK_DIR
+./bin/spack install cudadedup 
+
+**Required build parameters if building manually (unwise)**
 
 The following parameters are required at CMake configure time if not set by environment variables.
 

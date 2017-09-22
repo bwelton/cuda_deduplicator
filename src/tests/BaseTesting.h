@@ -25,6 +25,32 @@ void RedirectOutputToFile() {
 	dup2(fileno(stdout), fileno(stderr));
 }
 
+std::pair<int, int> ParseTotalTransferAndSize() {
+	// Parses the total transfer size and count from redirected output
+	std::ifstream t("test_output.txt");
+	std::string input((std::istreambuf_iterator<char>(t)),
+	                   std::istreambuf_iterator<char>());
+	size_t startPos = input.find("Total Transfer:");
+	startPos += strlen("Total Transfer:");
+	std::string intermediate = input.substr(startPos, input.size());
+	std::string numberOfTransfers = intermediate.substr(0, intermediate.find(","));
+	startPos =  intermediate.find("Total Size:") + strlen("Total Size:");
+	intermediate = intermediate.substr(startPos, intermediate.size());
+	std::string sizeOfTransfers = intermediate.substr(0, intermediate.find("\n"));
+
+	int sz = 0;
+	int nt = 0;
+	try {
+		nt = std::stoi(numberOfTransfers, nullptr, 10);
+		sz = std::stoi(sizeOfTransfers, nullptr, 10);
+	} catch(...) {
+		std::cout << "Parsed number of transfers: " << numberOfTransfers << " - Size of transfers: " << sizeOfTransfers << std::endl;
+		BOOST_FAIL("Could not read Transfer Size or Number of transfers from deduplicator output");
+	}
+	return std::make_pair(nt,sz);
+}
+
+
 // Create random data
 void * GenRandom(size_t bcount) {
 	void * d = (void *) malloc(bcount);

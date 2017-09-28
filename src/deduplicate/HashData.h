@@ -15,6 +15,7 @@ public:
 	HashData(TransferCall call, void * CPUPtr, void * GPUPtr, size_t size, 
 		CALL_TYPE sync, cudaMemcpyKind kind, cudaStream_t stream = 0);
 	uint32_t HashPtr(std::shared_ptr<void> ptr, size_t size);
+	uint32_t HashPtr(void * ptr, size_t size);
 	~HashData();
 };
 

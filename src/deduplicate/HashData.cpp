@@ -11,6 +11,10 @@ HashData::~HashData() {
 uint32_t HashData::HashPtr(std::shared_ptr<void> ptr, size_t size) {
 	return XXHash32::hash(ptr.get(), size, 0);
 }
+
+uint32_t HashData::HashPtr(void * ptr, size_t size) {
+	return XXHash32::hash(ptr, size, 0);
+}
 uint32_t HashData::Hash() {
 	if (_hash == 0)
 		_hash = XXHash32::hash(_CPUPtr, _size, 0);

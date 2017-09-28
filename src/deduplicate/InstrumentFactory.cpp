@@ -3,7 +3,8 @@ InstrumentFactory::InstrumentFactory() {
 	// Factories enabled by default
 	std::map<std::string, bool> Factories = {{std::string("EnableDestination"), true},
 											 {std::string("EnableTimeline"), true},
-											 {std::string("EnableChecker"), true}};
+											 {std::string("EnableChecker"), true},
+											 {std::string("EnableCUPTITiming"), true}};
 
 	std::ifstream f("dedup_settings.conf");
 	if (f.good() == true) {
@@ -36,6 +37,8 @@ InstrumentFactory::InstrumentFactory() {
 	}
 
 	_globalID = 1;
+	if (Factories[std::string("EnableCUPTITiming")] == true) 
+		_workers.push_back(std::shared_ptr<InstrumentBase>(new CUPTIEventHandler(true, fopen("timing_info.txt","w"))));	
 	if (Factories[std::string("EnableDestination")] == true) 
 		_workers.push_back(std::shared_ptr<InstrumentBase>(new DestinationHash(true, fopen("dedup_desthash.txt","w"))));
 	if (Factories[std::string("EnableChecker")] == true)

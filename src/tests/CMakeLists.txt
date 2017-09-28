@@ -58,12 +58,53 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS desthash_check
         RUNTIME DESTINATION tests)
 
+add_executable(cupti_test "cupti_test.cpp")
+target_link_libraries(cupti_test ${Boost_LIBRARIES})
+target_link_libraries(cupti_test "-lpthread")
+target_link_libraries(cupti_test "-L/opt/cray/nvidia/default/lib64 -lcuda")
+target_link_libraries(cupti_test "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+INCLUDE_DIRECTORIES(cupti_test ${CUDA_TOOLKIT_ROOT_DIR}/include)
+INCLUDE_DIRECTORIES(cupti_test ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(cupti_test "${CMAKE_SOURCE_DIR}/src/common")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
+install(TARGETS cupti_test
+        RUNTIME DESTINATION tests)
+
+add_executable(PerfEstimateCheck "PerfEstimateCheck.cpp")
+target_link_libraries(PerfEstimateCheck ${Boost_LIBRARIES})
+target_link_libraries(PerfEstimateCheck "-lpthread")
+target_link_libraries(PerfEstimateCheck "-L/opt/cray/nvidia/default/lib64 -lcuda")
+target_link_libraries(PerfEstimateCheck "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+INCLUDE_DIRECTORIES(PerfEstimateCheck ${CUDA_TOOLKIT_ROOT_DIR}/include)
+INCLUDE_DIRECTORIES(PerfEstimateCheck ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(PerfEstimateCheck "${CMAKE_SOURCE_DIR}/src/common")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
+install(TARGETS PerfEstimateCheck
+        RUNTIME DESTINATION tests)
+
+# add_executable(HostToDev "artifacts/HostToDevice.cpp")
+# target_link_libraries(HostToDev "-lpthread")
+# target_link_libraries(HostToDev "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+# INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+# INCLUDE_DIRECTORIES(HostToDev ${CUDA_TOOLKIT_ROOT_DIR}/include)
+# INCLUDE_DIRECTORIES(HostToDev ${Boost_INCLUDE_DIRS})
+# INCLUDE_DIRECTORIES(HostToDev "${CMAKE_SOURCE_DIR}/src/common")
+# ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
+# install(TARGETS HostToDev
+#         RUNTIME DESTINATION tests)
+
 
 add_executable(launch_check "launch_check.cpp")
 add_dependencies(launch_check dedup)
 target_link_libraries(launch_check dedup)
 target_link_libraries(launch_check ${Boost_LIBRARIES})
 target_link_libraries(launch_check "-lpthread")
+INCLUDE_DIRECTORIES(launch_check ${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/include)
 target_link_libraries(launch_check "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
 target_link_libraries(launch_check "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
 INCLUDE_DIRECTORIES(launch_check ${CUDA_TOOLKIT_ROOT_DIR}/include)
@@ -94,3 +135,5 @@ configure_file (
 install(FILES ${PROJECT_BINARY_DIR}/scripts/TitanTestScript.ksh ${PROJECT_BINARY_DIR}/scripts/RunTests.sh  ${PROJECT_BINARY_DIR}/scripts/LoadSpackModules.py
 		DESTINATION tests)
 
+install(FILES "dedup_test_configure.conf"
+        DESTINATION tests)

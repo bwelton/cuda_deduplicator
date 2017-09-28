@@ -5,7 +5,7 @@
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/array/elem.hpp>
 #include <boost/preprocessor/array/enum.hpp>
-thread_local std::shared_ptr<InstrumentFactory> InstFactory;
+std::shared_ptr<InstrumentFactory> InstFactory;
 
 // thread_local std::shared_ptr<CudaTimers> CudaTime;
 // extern boost::recursive_mutex _log_mtx;
@@ -116,7 +116,7 @@ UNSUPPORTED_CALL(cuMemcpyD2DAsync_detect, 4, int)
 WRAP_SUPPORTED_CALL_TIME(cuMemcpyD2H_detect, 3, int)
 
 	TransferCall t = boost::bind(cuMemcpyD2H_detect_CALL, _2, _1, _3);
-	fprintf(stderr, "%s\n", "We are here");
+//	fprintf(stderr, "%s\n", "We are here");
 	std::shared_ptr<TransferBase> transfer(new HashData(t, (void * )a, (void *) b, (size_t) c, SYNC, cudaMemcpyDeviceToHost));
 	int ret = STORAGE_PTR->PerformAction(transfer);
 	return transfer.get()->GetReturn();
@@ -126,7 +126,7 @@ WRAP_SUPPORTED_CALL_TIME(cuMemcpyD2H_detect, 3, int)
 WRAP_SUPPORTED_CALL_TIME(cuMemcpyD2HAsync_detect, 4, int) 
 	//uint32_t beforeTransfer = XXHash32::hash((void *) a, (size_t)c, 0);
 	TransferCall t = boost::bind(cuMemcpyD2HAsync_detect_CALL, _2, _1, _3, _5);
-	fprintf(stderr, "%s\n", "We are here");
+//	fprintf(stderr, "%s\n", "We are here");
 
 	std::shared_ptr<TransferBase> transfer(new HashData(t, (void * )a, (void *) b, (size_t) c, ASYNC, cudaMemcpyDeviceToHost, (cudaStream_t) d));
 	int ret = STORAGE_PTR->PerformAction(transfer);
@@ -145,7 +145,7 @@ UNSUPPORTED_CALL(cuMemcpyH2AAsync_detect, 5, int)
 
 WRAP_SUPPORTED_CALL_TIME(cuMemcpyH2D_detect, 3, int) 
 	TransferCall t = boost::bind(cuMemcpyH2D_detect_CALL, _1, _2, _3);
-	fprintf(stderr, "%s\n", "We are here");
+//	fprintf(stderr, "%s\n", "We are here");
 	std::shared_ptr<TransferBase> transfer(new HashData(t, (void * )b, (void *) a, (size_t) c, SYNC, cudaMemcpyHostToDevice));
 	int ret = STORAGE_PTR->PerformAction(transfer);
 	return transfer.get()->GetReturn();
@@ -153,7 +153,7 @@ WRAP_SUPPORTED_CALL_TIME(cuMemcpyH2D_detect, 3, int)
 
 WRAP_SUPPORTED_CALL_TIME(cuMemcpyH2DAsync_detect, 4, int)
 	TransferCall t = boost::bind(cuMemcpyH2DAsync_detect_CALL, _1, _2, _3, _5);
-	fprintf(stderr, "%s\n", "We are here");
+//	fprintf(stderr, "%s\n", "We are here");
 	std::shared_ptr<TransferBase> transfer(new HashData(t, (void * )b, (void *) a, (size_t) c, ASYNC, cudaMemcpyHostToDevice, (cudaStream_t) d));
 	int ret = STORAGE_PTR->PerformAction(transfer);
 	return transfer.get()->GetReturn();

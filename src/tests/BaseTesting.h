@@ -110,7 +110,16 @@ struct CudaCtx
 	}
 
 	void SynchronizeStream() {
+		fprintf(stderr, "%s\n", "Stream Synch");
 		CheckGPUResult(cudaStreamSynchronize(_stream));
+	}
+	void DeviceSynchronization() {
+		fprintf(stderr, "%s\n", "Device Synch");
+		CheckGPUResult(cudaDeviceSynchronize());
+	}
+	void CtxSynchronization() {
+		fprintf(stderr, "%s\n", "CTx Synch");
+		CheckGPUResult((cudaError_t)cuCtxSynchronize());
 	}
 };
 

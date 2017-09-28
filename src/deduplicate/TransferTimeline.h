@@ -21,6 +21,7 @@ private:
 public:
 	TransferTimeline(bool enabled = false, FILE * file = stderr);
 	int PerformAction(TransferPtr t);
+	int PostTransfer(TransferPtr t);
 	~TransferTimeline();
 };
 

@@ -1,4 +1,7 @@
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/defs)
+
+set(CUPTI_DRIVER_CIBHEADER "${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/include/cupti_driver_cbid.h")
+set(CUPTI_RUNTIME_CIBHEADER "${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/include/cupti_runtime_cbid.h")
 configure_file (
     "${PROJECT_SOURCE_DIR}/src/deduplicate/defs/DetectDuplicates.def.in"
 	"${CMAKE_INSTALL_PREFIX}/defs/DetectDuplicates.def"
@@ -9,32 +12,47 @@ configure_file (
 	"${CMAKE_INSTALL_PREFIX}/defs/Deduplicate.def"
 )
 
-add_library(dedup SHARED "CudaDeviceWrappers.cpp" "DestinationHash.cpp" "HashData.cpp" "InstrumentBase.cpp" "TransferBase.cpp" "TransferTimeline.cpp" "InstrumentFactory.cpp" "DuplicateTracker.cpp")
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenDriverCIBs.py.in"
+	"${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenDriverCIBs.py"
+)
 
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenDriverCIBs.py.in"
+	"${CMAKE_INSTALL_PREFIX}/defs/GenDriverCIBs.py"
+)
 
-#add_library(dedup SHARED "deduplicator.cpp" "CudaDeviceWrappers.cpp" "TransferTimeline.cpp")
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenRuntimeCIBs.py.in"
+	"${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenRuntimeCIBs.py"
+)
+
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenRuntimeCIBs.py.in"
+	"${CMAKE_INSTALL_PREFIX}/defs/GenRuntimeCIBs.py"
+)
+add_custom_target(GEN_CIB_DRIVER_TRANSLATORS
+		COMMAND python ${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenDriverCIBs.py)
+add_custom_target(GEN_CIB_RUNTIME_TRANSLATORS
+		COMMAND python ${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenRuntimeCIBs.py)
+
+add_library(dedup SHARED "CUPTIEventHandler.cpp" "CudaDeviceWrappers.cpp" "DestinationHash.cpp" "HashData.cpp" "InstrumentBase.cpp" "TransferBase.cpp" "TransferTimeline.cpp" "InstrumentFactory.cpp" "DuplicateTracker.cpp" "StacktraceGen.cpp")
 add_definitions("-DTRANSFER_TIMELINE")
-# if (DEFINED ENABLE_STRACE AND "${ENABLE_STRACE}" MATCHES "yes")
-# 	target_sources(dedup PUBLIC "strace.cpp")
-# 	target_link_libraries(dedup ${DYNINST_LIBRARIES})
-# 	add_definitions("-DENABLE_STACKTRACING")
-# 	# add_library(dedup SHARED "deduplicator.cpp" "CudaDeviceWrappers.cpp")
-# endif(DEFINED ENABLE_STRACE AND "${ENABLE_STRACE}" MATCHES "yes")
-
-# if (DEFINED ENABLE_TIMELINE AND "${ENABLE_TIMELINE}" MATCHES "yes") 
-# 	target_sources(dedup PRIVATE "TransferTimeline.cpp")
-# 	add_definitions("-DTRANSFER_TIMELINE")
-# endif (DEFINED ENABLE_TIMELINE AND "${ENABLE_TIMELINE}" MATCHES "yes")
-
 target_link_libraries(dedup ${Boost_LIBRARIES})
+target_link_libraries(dedup ${DYNINST_LIBRARIES})
 target_link_libraries(dedup "-lpthread")
 INCLUDE_DIRECTORIES(dedup ${CUDA_TOOLKIT_ROOT_DIR}/include)
+INCLUDE_DIRECTORIES(dedup ${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/include)
 INCLUDE_DIRECTORIES(dedup ${Boost_INCLUDE_DIRS})
-target_link_libraries(dedup "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+target_link_libraries(dedup "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
-
+add_dependencies(dedup GEN_CIB_DRIVER_TRANSLATORS)
+add_dependencies(dedup GEN_CIB_RUNTIME_TRANSLATORS)
 add_dependencies(dedup dyninst)
 install(TARGETS dedup
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib/static)
+
+install(FILES ${PROJECT_SOURCE_DIR}/src/deduplicate/support/FileClasses.py ${PROJECT_SOURCE_DIR}/src/deduplicate/support/CorrelationRun.py ${PROJECT_SOURCE_DIR}/src/deduplicate/support/Iterators.py 
+        DESTINATION tests)

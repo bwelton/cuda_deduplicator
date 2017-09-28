@@ -17,5 +17,6 @@ private:
 public:
 	DestinationHash(bool enabled = false, FILE * file = stderr);
 	int PerformAction(TransferPtr t);
+	int PostTransfer(TransferPtr t);
 	~DestinationHash();
 };

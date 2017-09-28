@@ -72,10 +72,12 @@ public:
 	int GetReturn();
 	void * GetCPUPtr();
 	uint64_t GetID();
+	cudaStream_t GetStream();
 	void SetID(uint64_t i);
 	std::shared_ptr<void> GetDestinationData();
 	virtual uint32_t Hash() = 0;
 	virtual uint32_t HashPtr(std::shared_ptr<void> ptr, size_t size) = 0;
+	virtual uint32_t HashPtr(void * ptr, size_t size) = 0;
 	virtual ~TransferBase() = 0;
 };
 

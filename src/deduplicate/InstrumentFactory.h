@@ -9,6 +9,8 @@
 #include "TransferTimeline.h"
 #include "DestinationHash.h"
 #include "HashData.h"
+#include "CUPTIEventHandler.h"
+#include "StacktraceGen.h"
 class InstrumentFactory : public InstrumentBase{
 private:
 	std::vector<std::shared_ptr<InstrumentBase> > _workers;
@@ -17,6 +19,7 @@ private:
 public:
 	InstrumentFactory();
 	int PerformAction(TransferPtr t);
+	int PostTransfer(TransferPtr t);
 	~InstrumentFactory();
 };
 

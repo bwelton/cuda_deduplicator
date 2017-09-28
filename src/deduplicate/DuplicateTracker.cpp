@@ -53,3 +53,7 @@ int DuplicateTracker::PerformAction(TransferPtr t) {
 	}
 	return 0;
 }
+
+int DuplicateTracker::PostTransfer(TransferPtr t) {
+	return 0;
+}

@@ -12,7 +12,6 @@
 #include "InstrumentBase.h"
 #include "TransferBase.h"
 
-
 class CUPTIEventHandler : public InstrumentBase {
 private: 
 	boost::recursive_mutex _mtx;

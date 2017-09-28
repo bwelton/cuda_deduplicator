@@ -1,3 +1,5 @@
+#include "CUPTIEventHandler.h"
+
 const char * CUPTIEventHandler::getMemcpyKindString(CUpti_ActivityMemcpyKind kind)
 {
   switch (kind) {
@@ -98,7 +100,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	_enabled = enabled
 	if (enabled == false)
 		return;
-	
+
 	_log.reset(new LogInfo(file));
 	// Initailize CUPTI to capture memory transfers
 	if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {

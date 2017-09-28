@@ -28,6 +28,10 @@ int DestinationHash::PerformAction(TransferPtr t) {
 	return 0;
 }
 
+int DestinationHash::PostTransfer(TransferPtr t){
+	return 0;
+}
+
 DestinationHash::~DestinationHash() {
 	std::stringstream ss;
 	ss << "Found " << _identCount << " Transfers replacing identical data at the destination" << std::endl;

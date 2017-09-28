@@ -27,6 +27,9 @@ void TransferTimeline::WriteLogEntry(std::string & type, uint32_t id, size_t siz
 	Write(s.str());
 }
 
+int TransferTimeline::PostTransfer(TransferPtr t){
+	return 0;
+}
 
 void TransferTimeline::Write(std::string a){
 	_timeline_log.get()->Write(a);

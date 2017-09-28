@@ -17,6 +17,7 @@ private:
 public:
 	InstrumentFactory();
 	int PerformAction(TransferPtr t);
+	int PostTransfer(TransferPtr t);
 	~InstrumentFactory();
 };
 

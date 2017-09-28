@@ -21,5 +21,6 @@ public:
 	DuplicateTracker(bool enabled = false, FILE * file = stderr);
 	bool DetectDuplicate(TransferPtr t);
 	int PerformAction(TransferPtr t);
+	int PostTransfer(TransferPtr t);
 	~DuplicateTracker();
 };

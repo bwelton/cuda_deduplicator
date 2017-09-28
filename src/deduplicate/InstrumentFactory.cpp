@@ -52,6 +52,13 @@ int InstrumentFactory::PerformAction(TransferPtr t) {
 	}
 	for (auto i : _workers)
 		i.get()->PerformAction(t);
+	t.get()->PerformTransfer();
+	return PostTransfer(t);
+}
+
+int InstrumentFactory::PostTransfer(TransferPtr t){
+	for (auto i : _workers)
+		i.get()->PostTransfer(t);	
 	return 0;
 }
 

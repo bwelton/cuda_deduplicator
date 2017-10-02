@@ -11,6 +11,13 @@ extern "C" {
 		CUPTIEventHandler::GetInstance()->bufferCompleted(ctx, streamId, buffer, size, validSize);
 	}
 
+	void bufRequestAfterDeletion(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
+		*size = 0;
+		*maxNumRecords = 0;
+	}
+	void bufCompletedAfterDeletion(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
+		free(buffer);
+	}
 }
 
 CUPTIEventHandler * CUPTIEventHandler::GetInstance()  {
@@ -113,6 +120,9 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 
 CUPTIEventHandler::~CUPTIEventHandler() {
 	//cuptiFinalize();
+	cudaDeviceSynchronize();
+	cuptiActivityFlushAll(0);
+	cuptiActivityRegisterCallbacks(bufRequestAfterDeletion, bufCompletedAfterDeletion);
 }
 
 CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {

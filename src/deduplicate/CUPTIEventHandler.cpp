@@ -1,17 +1,19 @@
 #include "CUPTIEventHandler.h"
 
+thread_local std::shared_ptr<CUPTIEventHandler> s_instance;
+
 extern "C" {
 	void bufRequest(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
-		CUPTIEventHandler::GetInstance()->bufferRequested(buffer, size, maxNumRecords);
+		CUPTIEventHandler::GetInstance().get()->bufferRequested(buffer, size, maxNumRecords);
 	}
 
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
-		CUPTIEventHandler::GetInstance()->bufferCompleted(ctx, streamId, buffer, size, validSize);
+		CUPTIEventHandler::GetInstance().get()->bufferCompleted(ctx, streamId, buffer, size, validSize);
 	}
 
 }
 
-CUPTIEventHandler * CUPTIEventHandler::GetInstance()  {
+std::shared_ptr<CUPTIEventHandler> CUPTIEventHandler::GetInstance()  {
 	if (s_instance == NULL)
 		assert(s_instance != NULL);
 	return s_instance;

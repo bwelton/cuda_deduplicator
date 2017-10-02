@@ -17,6 +17,7 @@ class CUPTIEventHandler : public InstrumentBase {
 private: 
 	boost::recursive_mutex _mtx;
 	std::shared_ptr<LogInfo> _log;
+	bool _enabled;
 public: 
 	const char * getMemcpyKindString(CUpti_ActivityMemcpyKind kind);
 	void bufferRequested(uint8_t **buffer, size_t *size, size_t *maxNumRecords);
@@ -26,4 +27,6 @@ public:
 	int PostTransfer(TransferPtr t);
 	~CUPTIEventHandler();
 	CUPTIEventHandler(bool enabled = false, FILE * file = NULL);
+	static thread_local CUPTIEventHandler * GetInstance();
+	static thread_local CUPTIEventHandler * s_instance;
 };

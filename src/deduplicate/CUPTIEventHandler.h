@@ -27,6 +27,6 @@ public:
 	int PostTransfer(TransferPtr t);
 	~CUPTIEventHandler();
 	CUPTIEventHandler(bool enabled = false, FILE * file = NULL);
-	static thread_local CUPTIEventHandler * GetInstance();
-	static thread_local CUPTIEventHandler * s_instance;
+	static CUPTIEventHandler * GetInstance();
+	static CUPTIEventHandler * s_instance;
 };

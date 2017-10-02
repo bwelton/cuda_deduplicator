@@ -11,6 +11,7 @@
 #include <boost/bind.hpp>
 #include "InstrumentBase.h"
 #include "TransferBase.h"
+#include "LogInfo.h"
 
 class CUPTIEventHandler : public InstrumentBase {
 private: 

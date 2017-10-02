@@ -2,16 +2,16 @@
 
 extern "C" {
 	void bufRequest(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
-		CUPTIEventHandler::GetInstance->bufferRequested(buffer, size, maxNumRecords);
+		CUPTIEventHandler::GetInstance()->bufferRequested(buffer, size, maxNumRecords);
 	}
 
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
-		CUPTIEventHandler::GetInstance->bufferCompleted(ctx, streamId, buffer, size, validSize);
+		CUPTIEventHandler::GetInstance()->bufferCompleted(ctx, streamId, buffer, size, validSize);
 	}
 
 }
 
-CUPTIEventHandler * GetInstance()  {
+CUPTIEventHandler * CUPTIEventHandler::GetInstance()  {
 	if (s_instance == NULL)
 		assert(s_instance != NULL);
 	return s_instance;
@@ -114,21 +114,21 @@ CUPTIEventHandler::~CUPTIEventHandler() {
 }
 
 CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
-	_enabled = enabled
+	_enabled = enabled;
 	if (enabled == false)
 		return;
 	s_instance = this;
 	_log.reset(new LogInfo(file));
 	// Initailize CUPTI to capture memory transfers
-	if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {
-		std::cerr << "Could not enable activity capturing for memcpy's with CUPTI" << std::endl;
-		_enabled = false;
-		return;
-	}
+	// if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {
+	// 	std::cerr << "Could not enable activity capturing for memcpy's with CUPTI" << std::endl;
+	// 	_enabled = false;
+	// 	return;
+	// }
 
-	if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
-		std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;
-		_enabled = false;
-		return;		
-	}
+	// if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
+	// 	std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;
+	// 	_enabled = false;
+	// 	return;		
+	// }
 }

@@ -13,7 +13,7 @@ extern "C" {
 
 }
 
-static std::shared_ptr<CUPTIEventHandler> CUPTIEventHandler::GetInstance()  {
+std::shared_ptr<CUPTIEventHandler> CUPTIEventHandler::GetInstance()  {
 	if (s_instance == NULL)
 		assert(s_instance != NULL);
 	return s_instance;

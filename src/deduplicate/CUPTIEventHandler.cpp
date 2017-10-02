@@ -122,7 +122,7 @@ CUPTIEventHandler::~CUPTIEventHandler() {
 	//cuptiFinalize();
 	cudaDeviceSynchronize();
 	cuptiActivityFlushAll(0);
-	cuptiActivityRegisterCallbacks(bufRequestAfterDeletion, bufCompletedAfterDeletion);
+	//cuptiActivityRegisterCallbacks(bufRequestAfterDeletion, bufCompletedAfterDeletion);
 }
 
 CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {

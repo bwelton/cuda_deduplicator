@@ -90,27 +90,27 @@ void CUPTIEventHandler::bufferCompleted(CUcontext ctx, uint32_t streamId, uint8_
 int CUPTIEventHandler::PerformAction(TransferPtr t) {
 	if (_enabled == false)
 		return 0;
-	if (cuptiActivityPushExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_CUSTOM0, t.get()->GetID()) != CUPTI_SUCCESS) {
-		std::cerr << "Could not push correlationId" << std::endl;
-		return -1;
-	}
+	// if (cuptiActivityPushExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_CUSTOM0, t.get()->GetID()) != CUPTI_SUCCESS) {
+	// 	std::cerr << "Could not push correlationId" << std::endl;
+	// 	return -1;
+	// }
 	return 0;
 }
 
 int CUPTIEventHandler::PostTransfer(TransferPtr t) { 
 	if (_enabled == false)
 		return 0;
-	uint64_t externalId = 0;
-	if (cuptiActivityPopExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_CUSTOM0,&externalId) != CUPTI_SUCCESS) {
-		std::cerr << "Could not pop correlationId" << std::endl;
-		return -1;
-	}
+	// uint64_t externalId = 0;
+	// if (cuptiActivityPopExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_CUSTOM0,&externalId) != CUPTI_SUCCESS) {
+	// 	std::cerr << "Could not pop correlationId" << std::endl;
+	// 	return -1;
+	// }
 	return 0;
 }
 
 
 CUPTIEventHandler::~CUPTIEventHandler() {
-	cuptiFinalize();
+	//cuptiFinalize();
 }
 
 CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
@@ -120,15 +120,15 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	s_instance = this;
 	_log.reset(new LogInfo(file));
 	// Initailize CUPTI to capture memory transfers
-	// if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {
-	// 	std::cerr << "Could not enable activity capturing for memcpy's with CUPTI" << std::endl;
-	// 	_enabled = false;
-	// 	return;
-	// }
+	if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {
+		std::cerr << "Could not enable activity capturing for memcpy's with CUPTI" << std::endl;
+		_enabled = false;
+		return;
+	}
 
-	// if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
-	// 	std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;
-	// 	_enabled = false;
-	// 	return;		
-	// }
+	if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
+		std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;
+		_enabled = false;
+		return;		
+	}
 }

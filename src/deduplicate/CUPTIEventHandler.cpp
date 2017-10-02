@@ -1,19 +1,19 @@
 #include "CUPTIEventHandler.h"
 
-thread_local std::shared_ptr<CUPTIEventHandler> s_instance;
+thread_local CUPTIEventHandler * s_instance;
 
 extern "C" {
 	void bufRequest(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
-		CUPTIEventHandler::GetInstance().get()->bufferRequested(buffer, size, maxNumRecords);
+		CUPTIEventHandler::GetInstance()->bufferRequested(buffer, size, maxNumRecords);
 	}
 
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
-		CUPTIEventHandler::GetInstance().get()->bufferCompleted(ctx, streamId, buffer, size, validSize);
+		CUPTIEventHandler::GetInstance()->bufferCompleted(ctx, streamId, buffer, size, validSize);
 	}
 
 }
 
-std::shared_ptr<CUPTIEventHandler> CUPTIEventHandler::GetInstance()  {
+CUPTIEventHandler * CUPTIEventHandler::GetInstance()  {
 	if (s_instance == NULL)
 		assert(s_instance != NULL);
 	return s_instance;
@@ -119,7 +119,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	_enabled = enabled;
 	if (enabled == false)
 		return;
-	s_instance.reset(this);
+	s_instance = this;
 	_log.reset(new LogInfo(file));
 	// Initailize CUPTI to capture memory transfers
 	if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {

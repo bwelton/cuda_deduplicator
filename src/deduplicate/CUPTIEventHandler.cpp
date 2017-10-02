@@ -13,7 +13,7 @@ extern "C" {
 
 }
 
-std::shared_ptr<CUPTIEventHandler> CUPTIEventHandler::GetInstance()  {
+static std::shared_ptr<CUPTIEventHandler> CUPTIEventHandler::GetInstance()  {
 	if (s_instance == NULL)
 		assert(s_instance != NULL);
 	return s_instance;
@@ -119,7 +119,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	_enabled = enabled;
 	if (enabled == false)
 		return;
-	s_instance = this;
+	s_instance.reset(this);
 	_log.reset(new LogInfo(file));
 	// Initailize CUPTI to capture memory transfers
 	if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {

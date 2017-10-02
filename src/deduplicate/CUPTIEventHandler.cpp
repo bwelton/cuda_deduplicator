@@ -1,5 +1,6 @@
 #include "CUPTIEventHandler.h"
 
+// This is super unsafe and may need to be refactored. 
 thread_local CUPTIEventHandler * s_instance;
 
 extern "C" {
@@ -8,6 +9,7 @@ extern "C" {
 	}
 
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
+		fprintf(stderr, "%s\n", "In buffer completed");
 		CUPTIEventHandler::GetInstance()->bufferCompleted(ctx, streamId, buffer, size, validSize);
 	}
 

@@ -23,6 +23,10 @@ public:
 		fflush(_fd);
 		fclose(_fd);
 	}
+
+	void Flush() {
+		fflush(_fd);
+	}
 	void Write(std::string & out) {
 		boost::recursive_mutex::scoped_lock lock(_log_mtx);
 		fprintf(_fd, "%s", out.c_str());

@@ -1,28 +1,28 @@
 #include "CUPTIEventHandler.h"
 
 // This is super unsafe and may need to be refactored. 
-thread_local CUPTIEventHandler * s_instance;
+std::shared_ptr<InstrumentBase> s_instance;
 
 extern "C" {
 	void bufRequest(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
-		CUPTIEventHandler::GetInstance()->bufferRequested(buffer, size, maxNumRecords);
+		((CUPTIEventHandler*)CUPTIEventHandler::GetInstance().get())->bufferRequested(buffer, size, maxNumRecords);
 	}
 
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
 		fprintf(stderr, "%s\n", "In buffer completed");
-		CUPTIEventHandler::GetInstance()->bufferCompleted(ctx, streamId, buffer, size, validSize);
+		((CUPTIEventHandler*)CUPTIEventHandler::GetInstance().get())->bufferCompleted(ctx, streamId, buffer, size, validSize);
 	}
 
-	void bufRequestAfterDeletion(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
-		*size = 0;
-		*maxNumRecords = 0;
-	}
-	void bufCompletedAfterDeletion(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
-		free(buffer);
-	}
+	// void bufRequestAfterDeletion(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
+	// 	*size = 0;
+	// 	*maxNumRecords = 0;
+	// }
+	// void bufCompletedAfterDeletion(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
+	// 	free(buffer);
+	// }
 }
 
-CUPTIEventHandler * CUPTIEventHandler::GetInstance()  {
+std::shared_ptr<InstrumentBase> CUPTIEventHandler::GetInstance()  {
 	if (s_instance == NULL)
 		assert(s_instance != NULL);
 	return s_instance;
@@ -116,6 +116,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 	// 	std::cerr << "Could not pop correlationId" << std::endl;
 	// 	return -1;
 	// }
+	_log.get()
 	return 0;
 }
 
@@ -127,12 +128,11 @@ CUPTIEventHandler::~CUPTIEventHandler() {
 	//cuptiActivityRegisterCallbacks(bufRequestAfterDeletion, bufCompletedAfterDeletion);
 }
 
-CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
-	_enabled = enabled;
-	if (enabled == false)
+void CUPTIEventHandler::SetSharedPTR(std::shared_ptr<InstrumentBase> myself) {
+	// Set an instance of ourself. 
+	s_instance = myself;
+	if (_enabled == false)
 		return;
-	s_instance = this;
-	_log.reset(new LogInfo(file));
 	// Initailize CUPTI to capture memory transfers
 	if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {
 		std::cerr << "Could not enable activity capturing for memcpy's with CUPTI" << std::endl;
@@ -145,4 +145,11 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 		_enabled = false;
 		return;		
 	}
+}
+
+CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
+	_enabled = enabled;
+	if (enabled == false)
+		return;
+	_log.reset(new LogInfo(file));
 }

@@ -27,5 +27,6 @@ public:
 	int PostTransfer(TransferPtr t);
 	~CUPTIEventHandler();
 	CUPTIEventHandler(bool enabled = false, FILE * file = NULL);
-	static CUPTIEventHandler * GetInstance();
+	void SetSharedPTR(std::shared_ptr<InstrumentBase> myself)
+	static std::shared_ptr<InstrumentBase> GetInstance();
 };

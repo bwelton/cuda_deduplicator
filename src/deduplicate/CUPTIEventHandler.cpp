@@ -116,7 +116,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 	// 	std::cerr << "Could not pop correlationId" << std::endl;
 	// 	return -1;
 	// }
-	_log.get()->Flush();
+	//_log.get()->Flush();
 	return 0;
 }
 

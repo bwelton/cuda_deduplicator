@@ -47,19 +47,19 @@ extern "C" {
 		if (record->kind == CUPTI_ACTIVITY_KIND_MEMCPY) {
 			CUpti_ActivityMemcpy * cpy = (CUpti_ActivityMemcpy *) record;
 			std::stringstream ss;
-			ss << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->bytes << "," << cpy->start << "," << cpy->end << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << "," << cpy->contextId << "," << cpy->deviceId << "," << cpy->streamId << std::endl;
+			ss << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->bytes << "," << cpy->start - startTimestamp << "," << cpy->end - startTimestamp << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << "," << cpy->contextId << "," << cpy->deviceId << "," << cpy->streamId << std::endl;
 			std::string out = ss.str();	
 			_cupti_output.get()->Write(out);
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_RUNTIME) {
 	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
 	    	std::stringstream ss;
-	    	ss << "RR" << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start << "," << api->end << std::endl;
+	    	ss << "RR" << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output.get()->Write(out);
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_DRIVER) {
 	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
 	    	std::stringstream ss;
-	    	ss << "DR" << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start << "," << api->end << std::endl;
+	    	ss << "DR" << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output.get()->Write(out);	    	
 	    }

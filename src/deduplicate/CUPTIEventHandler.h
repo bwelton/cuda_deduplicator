@@ -19,14 +19,8 @@ private:
 	std::shared_ptr<LogInfo> _log;
 	bool _enabled;
 public: 
-	const char * getMemcpyKindString(CUpti_ActivityMemcpyKind kind);
-	void bufferRequested(uint8_t **buffer, size_t *size, size_t *maxNumRecords);
-	void ProcessEvent(CUpti_Activity * record);
-	void bufferCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize);
 	int PerformAction(TransferPtr t);
 	int PostTransfer(TransferPtr t);
 	~CUPTIEventHandler();
 	CUPTIEventHandler(bool enabled = false, FILE * file = NULL);
-	void SetSharedPTR(std::shared_ptr<InstrumentBase> myself);
-	static std::shared_ptr<InstrumentBase> GetInstance();
 };

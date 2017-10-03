@@ -3,7 +3,7 @@
 // This is super unsafe and may need to be refactored. 
 std::shared_ptr<InstrumentBase> s_instance;
 std::shared_ptr<LogInfo> _cupti_output;
-
+static uint64_t startTimestamp;
 extern "C" {
 	const char * getMemcpyKindStringC(CUpti_ActivityMemcpyKind kind)
 	{
@@ -209,7 +209,7 @@ void CUPTIEventHandler::SetSharedPTR(std::shared_ptr<InstrumentBase> myself) {
 	}
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_DRIVER);
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_RUNTIME);
-
+	cuptiGetTimestamp(&startTimestamp);
 	if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
 		std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;
 		_enabled = false;

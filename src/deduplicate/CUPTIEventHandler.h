@@ -6,8 +6,8 @@
 #include <map>
 #include <cuda.h>
 #include <cupti.h>
-#include <cupti_runtime_cbid.h>
-#include <cupti_driver_cbid.h>
+// #include <cupti_runtime_cbid.h>
+// #include <cupti_driver_cbid.h>
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>

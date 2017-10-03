@@ -50,7 +50,20 @@ extern "C" {
 			ss << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->bytes << "," << cpy->start << "," << cpy->end << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << "," << cpy->contextId << "," << cpy->deviceId << "," << cpy->streamId << std::endl;
 			std::string out = ss.str();	
 			_cupti_output.get()->Write(out);
+	    } else if (record->kind == CUPTI_ACTIVITY_KIND_RUNTIME) {
+	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
+	    	std::stringstream ss;
+	    	ss << "RR" << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start << "," << api->end << std::endl;
+	 		std::string out = ss.str();	
+			_cupti_output.get()->Write(out);
+	    } else if (record->kind == CUPTI_ACTIVITY_KIND_DRIVER) {
+	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
+	    	std::stringstream ss;
+	    	ss << "DR" << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start << "," << api->end << std::endl;
+	 		std::string out = ss.str();	
+			_cupti_output.get()->Write(out);	    	
 	    }
+
 	}
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
 		fprintf(stderr, "%s\n", "In buffer completed");
@@ -194,6 +207,8 @@ void CUPTIEventHandler::SetSharedPTR(std::shared_ptr<InstrumentBase> myself) {
 		_enabled = false;
 		return;
 	}
+	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_DRIVER);
+	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_RUNTIME);
 
 	if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
 		std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;

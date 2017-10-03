@@ -10,7 +10,7 @@ extern "C" {
 
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
 		fprintf(stderr, "%s\n", "In buffer completed");
-		((CUPTIEventHandler*)CUPTIEventHandler::GetInstance().get())->bufferCompleted(ctx, streamId, buffer, size, validSize);
+		//((CUPTIEventHandler*)CUPTIEventHandler::GetInstance().get())->bufferCompleted(ctx, streamId, buffer, size, validSize);
 	}
 
 	// void bufRequestAfterDeletion(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {

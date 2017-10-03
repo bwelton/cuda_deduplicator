@@ -5,6 +5,7 @@ std::shared_ptr<InstrumentBase> s_instance;
 
 extern "C" {
 	void bufRequest(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
+		fprintf(stderr, "%s\n", "Allocating Buffer");
 		((CUPTIEventHandler*)CUPTIEventHandler::GetInstance().get())->bufferRequested(buffer, size, maxNumRecords);
 	}
 

@@ -32,17 +32,18 @@ extern "C" {
 
 	  return "<unknown>";
 	}
+
 	void bufRequest(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
-		fprintf(stderr, "%s\n", "Allocating Buffer");
 		uint8_t * buf = (uint8_t *) malloc(4096*32);
 		if (buf == NULL) {
 			fprintf(stderr, "%s\n", "CUPTIAPI OUT OF MEMORY, EXITING NOW");
-			exit(-1);
+			exit(-1);	
 		}
 		*size =  4096 * 32;
 		*buffer = buf;
 		*maxNumRecords = 0;
 	}
+
 	void ProcessEventC(CUpti_Activity * record) {
 		if (record->kind == CUPTI_ACTIVITY_KIND_MEMCPY) {
 			CUpti_ActivityMemcpy * cpy = (CUpti_ActivityMemcpy *) record;
@@ -53,20 +54,19 @@ extern "C" {
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_RUNTIME) {
 	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
 	    	std::stringstream ss;
-	    	ss << "RR" << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
+	    	ss << "RR" << "," << api->cbid << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output.get()->Write(out);
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_DRIVER) {
 	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
 	    	std::stringstream ss;
-	    	ss << "DR" << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
+	    	ss << "DR" << "," << api->cbid << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output.get()->Write(out);	    	
 	    }
 
 	}
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
-		fprintf(stderr, "%s\n", "In buffer completed");
 	  	CUptiResult status;
 	  	CUpti_Activity *record = NULL;
 		if (validSize > 0) {

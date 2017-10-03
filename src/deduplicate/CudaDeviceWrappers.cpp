@@ -5,7 +5,7 @@
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/array/elem.hpp>
 #include <boost/preprocessor/array/enum.hpp>
-thread_local std::shared_ptr<InstrumentFactory> InstFactory;
+std::shared_ptr<InstrumentFactory> InstFactory;
 
 // thread_local std::shared_ptr<CudaTimers> CudaTime;
 // extern boost::recursive_mutex _log_mtx;

@@ -2,15 +2,49 @@
 
 // This is super unsafe and may need to be refactored. 
 std::shared_ptr<InstrumentBase> s_instance;
+std::shared_ptr<LogInfo> _cupti_output;
 
 extern "C" {
 	void bufRequest(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
 		fprintf(stderr, "%s\n", "Allocating Buffer");
-		((CUPTIEventHandler*)CUPTIEventHandler::GetInstance().get())->bufferRequested(buffer, size, maxNumRecords);
+		uint8_t * buf = (uint8_t *) malloc(4096*32);
+		if (buf == NULL) {
+			fprintf(stderr, "%s\n", "CUPTIAPI OUT OF MEMORY, EXITING NOW");
+			exit(-1);
+		}
+		*size =  4096 * 32;
+		*buffer = buf;
+		*maxNumRecords = 0;
 	}
-
+	void ProcessEventC(CUpti_Activity * record) {
+		if (record->kind == CUPTI_ACTIVITY_KIND_MEMCPY) {
+			CUpti_ActivityMemcpy * cpy = (CUpti_ActivityMemcpy *) record;
+			std::stringstream ss;
+			ss << getMemcpyKindString((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->start << "," << cpy->end << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << std::endl;
+			std::string out = ss.str();	
+			_cupti_output.get()->Write(out);
+	    }
+	}
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
 		fprintf(stderr, "%s\n", "In buffer completed");
+	  	CUptiResult status;
+	  	CUpti_Activity *record = NULL;
+		if (validSize > 0) {
+	  		do {
+				status = cuptiActivityGetNextRecord(buffer, validSize, &record);
+				if (status == CUPTI_SUCCESS) {
+			 		ProcessEventC(record);
+				} else if (status == CUPTI_ERROR_MAX_LIMIT_REACHED) {
+				 	break;
+				} else {
+					const char * errorStr;
+					cuptiGetResultString(status, &errorStr); 
+					std::cerr << "Error in CUPTI " << status << " " << errorStr << std::endl;
+					break;
+				} 
+			} while (1);
+	  	}
+	  	free(buffer);
 		//((CUPTIEventHandler*)CUPTIEventHandler::GetInstance().get())->bufferCompleted(ctx, streamId, buffer, size, validSize);
 	}
 
@@ -58,45 +92,38 @@ const char * CUPTIEventHandler::getMemcpyKindString(CUpti_ActivityMemcpyKind kin
 }
 
 void CUPTIEventHandler::bufferRequested(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
-	uint8_t * buf = (uint8_t *) malloc(4096*32);
-	if (buf == NULL) {
-		fprintf(stderr, "%s\n", "CUPTIAPI OUT OF MEMORY, EXITING NOW");
-		exit(-1);
-	}
-	*size =  4096 * 32;
-	*buffer = buf;
-	*maxNumRecords = 0;
+
 }
 
 void CUPTIEventHandler::ProcessEvent(CUpti_Activity * record) {
-	if (record->kind == CUPTI_ACTIVITY_KIND_MEMCPY) {
-		CUpti_ActivityMemcpy * cpy = (CUpti_ActivityMemcpy *) record;
-		std::stringstream ss;
-		ss << getMemcpyKindString((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->start << "," << cpy->end << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << std::endl;
-		std::string out = ss.str();	
-		_log.get()->Write(out);
-  }
+	// if (record->kind == CUPTI_ACTIVITY_KIND_MEMCPY) {
+	// 	CUpti_ActivityMemcpy * cpy = (CUpti_ActivityMemcpy *) record;
+	// 	std::stringstream ss;
+	// 	ss << getMemcpyKindString((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->start << "," << cpy->end << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << std::endl;
+	// 	std::string out = ss.str();	
+	// 	_log.get()->Write(out);
+ //  }
 }
 
 void CUPTIEventHandler::bufferCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
-  	CUptiResult status;
-  	CUpti_Activity *record = NULL;
-	if (validSize > 0) {
-  		do {
-			status = cuptiActivityGetNextRecord(buffer, validSize, &record);
-			if (status == CUPTI_SUCCESS) {
-		 		ProcessEvent(record);
-			} else if (status == CUPTI_ERROR_MAX_LIMIT_REACHED) {
-			 	break;
-			} else {
-				const char * errorStr;
-				cuptiGetResultString(status, &errorStr); 
-				std::cerr << "Error in CUPTI " << status << " " << errorStr << std::endl;
-				break;
-			} 
-		} while (1);
-  	}
-  	free(buffer);
+ //  	CUptiResult status;
+ //  	CUpti_Activity *record = NULL;
+	// if (validSize > 0) {
+ //  		do {
+	// 		status = cuptiActivityGetNextRecord(buffer, validSize, &record);
+	// 		if (status == CUPTI_SUCCESS) {
+	// 	 		ProcessEvent(record);
+	// 		} else if (status == CUPTI_ERROR_MAX_LIMIT_REACHED) {
+	// 		 	break;
+	// 		} else {
+	// 			const char * errorStr;
+	// 			cuptiGetResultString(status, &errorStr); 
+	// 			std::cerr << "Error in CUPTI " << status << " " << errorStr << std::endl;
+	// 			break;
+	// 		} 
+	// 	} while (1);
+ //  	}
+ //  	free(buffer);
 }
 
 int CUPTIEventHandler::PerformAction(TransferPtr t) {
@@ -131,7 +158,7 @@ CUPTIEventHandler::~CUPTIEventHandler() {
 
 void CUPTIEventHandler::SetSharedPTR(std::shared_ptr<InstrumentBase> myself) {
 	// Set an instance of ourself. 
-	s_instance = myself;
+	//s_instance = myself;
 	if (_enabled == false)
 		return;
 	// Initailize CUPTI to capture memory transfers
@@ -152,5 +179,5 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	_enabled = enabled;
 	if (enabled == false)
 		return;
-	_log.reset(new LogInfo(file));
+	_cupti_output.reset(new LogInfo(file));
 }

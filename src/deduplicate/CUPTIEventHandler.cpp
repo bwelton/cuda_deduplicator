@@ -47,7 +47,7 @@ extern "C" {
 		if (record->kind == CUPTI_ACTIVITY_KIND_MEMCPY) {
 			CUpti_ActivityMemcpy * cpy = (CUpti_ActivityMemcpy *) record;
 			std::stringstream ss;
-			ss << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->bytes << "," << cpy->start << "," << cpy->end << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << std::endl;
+			ss << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->bytes << "," << cpy->start << "," << cpy->end << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << "," << cpy->contextId << "," << cpy->deviceId << "," << cpy->streamId << std::endl;
 			std::string out = ss.str();	
 			_cupti_output.get()->Write(out);
 	    }

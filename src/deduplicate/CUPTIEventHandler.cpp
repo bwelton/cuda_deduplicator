@@ -5,6 +5,33 @@ std::shared_ptr<InstrumentBase> s_instance;
 std::shared_ptr<LogInfo> _cupti_output;
 
 extern "C" {
+	const char * getMemcpyKindStringC(CUpti_ActivityMemcpyKind kind)
+	{
+	  switch (kind) {
+	  case CUPTI_ACTIVITY_MEMCPY_KIND_HTOD:
+	    return "HostToDevice";
+	  case CUPTI_ACTIVITY_MEMCPY_KIND_DTOH:
+	    return "DeviceToHost";
+	  case CUPTI_ACTIVITY_MEMCPY_KIND_HTOA:
+	    return "HtoA";
+	  case CUPTI_ACTIVITY_MEMCPY_KIND_ATOH:
+	    return "AtoH";
+	  case CUPTI_ACTIVITY_MEMCPY_KIND_ATOA:
+	    return "AtoA";
+	  case CUPTI_ACTIVITY_MEMCPY_KIND_ATOD:
+	    return "AtoD";
+	  case CUPTI_ACTIVITY_MEMCPY_KIND_DTOA:
+	    return "DtoA";
+	  case CUPTI_ACTIVITY_MEMCPY_KIND_DTOD:
+	    return "DeviceToDevice";
+	  case CUPTI_ACTIVITY_MEMCPY_KIND_HTOH:
+	    return "HostToHost";
+	  default:
+	    break;
+	  }
+
+	  return "<unknown>";
+	}
 	void bufRequest(uint8_t **buffer, size_t *size, size_t *maxNumRecords) {
 		fprintf(stderr, "%s\n", "Allocating Buffer");
 		uint8_t * buf = (uint8_t *) malloc(4096*32);
@@ -20,7 +47,7 @@ extern "C" {
 		if (record->kind == CUPTI_ACTIVITY_KIND_MEMCPY) {
 			CUpti_ActivityMemcpy * cpy = (CUpti_ActivityMemcpy *) record;
 			std::stringstream ss;
-			ss << getMemcpyKindString((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->start << "," << cpy->end << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << std::endl;
+			ss << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->start << "," << cpy->end << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << std::endl;
 			std::string out = ss.str();	
 			_cupti_output.get()->Write(out);
 	    }

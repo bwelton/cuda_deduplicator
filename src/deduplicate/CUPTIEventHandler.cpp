@@ -3,8 +3,13 @@
 // /opt/nvidia/cudatoolkit7.5/7.5.18-1.0502.10743.2.1/extras/CUPTI/include/cupti_runtime_cbid.h
 // This is super unsafe and may need to be refactored. 
 std::shared_ptr<InstrumentBase> s_instance;
-std::shared_ptr<LogInfo> _cupti_output;
+static std::shared_ptr<LogInfo> _cupti_output;
+static std::shared_ptr<LogInfo> _packetInfo;
+
+thread_local int my_thread_id = -1; 
+thread_local int my_process_id = -1;
 static uint64_t startTimestamp;
+
 extern "C" {
 	const char * getMemcpyKindStringC(CUpti_ActivityMemcpyKind kind)
 	{
@@ -160,7 +165,15 @@ extern "C" {
 	    	ss << "DR" << "," << translateDriverCallback(api->cbid) << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output.get()->Write(out);	    	
-	    }
+		}
+		// Doesn't exist in cuda 7.5......
+	  //   } else if (record->kind == CUPTI_ACTIVITY_KIND_SYNCHRONIZATION) {
+	  //   	CUpti_ActivitySynchronization *api = (CUpti_ActivitySynchronization *) record;
+	  //   	std::stringstream ss;
+	  //   	ss << "SYNC" << "," << api->contextId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << "," << api->streamId << std::endl;    		
+	 	// 	std::string out = ss.str();	
+			// _cupti_output.get()->Write(out);	
+	  //   }
 
 	}
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
@@ -190,6 +203,17 @@ int CUPTIEventHandler::PerformAction(TransferPtr t) {
 }
 
 int CUPTIEventHandler::PostTransfer(TransferPtr t) { 
+	if (_enabled == false)
+		return 0;
+
+	if (my_thread_id == -1) 
+		my_thread_id = (int) syscall( __NR_gettid );
+	if (my_process_id == -1)
+		my_process_id = (int) getpid();
+	std::stringstream ss;	
+	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << my_process_id << "," << my_thread_id << std::endl;
+	std::string out = ss.str();	
+	_packetInfo.get()->Write(out);	
 	return 0;
 }
 
@@ -204,6 +228,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	_enabled = enabled;
 	if (enabled == false)
 		return;
+	_packetInfo.reset(new LogInfo(fopen("timing_packet_corr.txt", "w")));
 	_cupti_output.reset(new LogInfo(file));
 	// Initailize CUPTI to capture memory transfers
 	if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {
@@ -213,6 +238,8 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	}
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_DRIVER);
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_RUNTIME);
+	// Doesn't exist in cuda 7.5...... 
+	//cuptiActivityEnable(CUPTI_ACTIVITY_KIND_SYNCHRONIZATION);
 	cuptiGetTimestamp(&startTimestamp);
 	if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
 		std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;

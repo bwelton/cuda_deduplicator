@@ -11,6 +11,8 @@
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <linux/unistd.h>
+#include <sys/syscall.h>
 #include "InstrumentBase.h"
 #include "TransferBase.h"
 #include "LogInfo.h"

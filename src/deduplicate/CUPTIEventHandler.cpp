@@ -3,7 +3,7 @@
 // /opt/nvidia/cudatoolkit7.5/7.5.18-1.0502.10743.2.1/extras/CUPTI/include/cupti_runtime_cbid.h
 // This is super unsafe and may need to be refactored. 
 std::shared_ptr<InstrumentBase> s_instance;
-static std::shared_ptr<LogInfo> _cupti_output;
+static LogInfo * _cupti_output;
 static std::shared_ptr<LogInfo> _packetInfo;
 
 thread_local int my_thread_id = -1; 
@@ -152,19 +152,19 @@ extern "C" {
 			std::stringstream ss;
 			ss << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->bytes << "," << cpy->start - startTimestamp << "," << cpy->end - startTimestamp << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << "," << cpy->contextId << "," << cpy->deviceId << "," << cpy->streamId << std::endl;
 			std::string out = ss.str();	
-			_cupti_output.get()->Write(out);
+			_cupti_output->Write(out);
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_RUNTIME) {
 	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
 	    	std::stringstream ss;
 	    	ss << "RR" << "," << translateRuntimeCallback(api->cbid) << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
 	 		std::string out = ss.str();	
-			_cupti_output.get()->Write(out);
+			_cupti_output->Write(out);
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_DRIVER) {
 	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
 	    	std::stringstream ss;
 	    	ss << "DR" << "," << translateDriverCallback(api->cbid) << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
 	 		std::string out = ss.str();	
-			_cupti_output.get()->Write(out);	    	
+			_cupti_output->Write(out);	    	
 		}
 		// Doesn't exist in cuda 7.5......
 	  //   } else if (record->kind == CUPTI_ACTIVITY_KIND_SYNCHRONIZATION) {
@@ -194,6 +194,7 @@ extern "C" {
 				} 
 			} while (1);
 	  	}
+	  	_cupti_output->Flush();
 	  	free(buffer);
 	}
 }
@@ -229,7 +230,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	if (enabled == false)
 		return;
 	_packetInfo.reset(new LogInfo(fopen("timing_packet_corr.txt", "w")));
-	_cupti_output.reset(new LogInfo(file));
+	_cupti_output = new LogInfo(file);
 	// Initailize CUPTI to capture memory transfers
 	if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {
 		std::cerr << "Could not enable activity capturing for memcpy's with CUPTI" << std::endl;

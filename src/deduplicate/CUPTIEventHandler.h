@@ -14,8 +14,6 @@
 #include "InstrumentBase.h"
 #include "TransferBase.h"
 #include "LogInfo.h"
-#include <linux/unistd.h>
-#include <sys/syscall.h>
 
 class CUPTIEventHandler : public InstrumentBase {
 private: 

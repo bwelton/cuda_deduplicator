@@ -6,7 +6,7 @@
 // Lock to ensure single entry output
 class LogInfo {
 private:
-	boost::recursive_mutex _log_mtx;
+	mutable boost::recursive_mutex _log_mtx;
 	FILE * _fd;	
 public:
 	LogInfo(FILE * fd = stderr) {

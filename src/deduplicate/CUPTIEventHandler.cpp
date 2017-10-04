@@ -160,6 +160,12 @@ extern "C" {
 	    	ss << "DR" << "," << translateDriverCallback(api->cbid) << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output.get()->Write(out);	    	
+	    } else if (record->kind == CUPTI_ACTIVITY_KIND_SYNCHRONIZATION) {
+	    	CUpti_ActivitySynchronization *api = (CUpti_ActivitySynchronization *) record;
+	    	std::stringstream ss;
+	    	ss << "SYNC" << "," << api->contextId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << "," << api->streamId << std::endl;    		
+	 		std::string out = ss.str();	
+			_cupti_output.get()->Write(out);	
 	    }
 
 	}
@@ -213,6 +219,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	}
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_DRIVER);
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_RUNTIME);
+	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_SYNCHRONIZATION);
 	cuptiGetTimestamp(&startTimestamp);
 	if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
 		std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;

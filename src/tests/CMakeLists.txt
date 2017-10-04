@@ -58,6 +58,19 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS desthash_check
         RUNTIME DESTINATION tests)
 
+add_executable(cupti_test "cupti_test.cpp")
+target_link_libraries(cupti_test ${Boost_LIBRARIES})
+target_link_libraries(cupti_test "-lpthread")
+target_link_libraries(cupti_test "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+INCLUDE_DIRECTORIES(cupti_test ${CUDA_TOOLKIT_ROOT_DIR}/include)
+INCLUDE_DIRECTORIES(cupti_test ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(cupti_test "${CMAKE_SOURCE_DIR}/src/common")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
+install(TARGETS cupti_test
+        RUNTIME DESTINATION tests)
+
 
 add_executable(launch_check "launch_check.cpp")
 add_dependencies(launch_check dedup)

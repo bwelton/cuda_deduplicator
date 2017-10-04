@@ -4,10 +4,10 @@
 // This is super unsafe and may need to be refactored. 
 std::shared_ptr<InstrumentBase> s_instance;
 std::shared_ptr<LogInfo> _cupti_output;
-std::shared_ptr<LogInfo> _packetInfo;
+// std::shared_ptr<LogInfo> _packetInfo;
 
-thread_local int my_thread_id = -1; 
-thread_local int my_process_id = -1;
+// thread_local int my_thread_id = -1; 
+// thread_local int my_process_id = -1;
 static uint64_t startTimestamp;
 extern "C" {
 	const char * getMemcpyKindStringC(CUpti_ActivityMemcpyKind kind)
@@ -202,14 +202,17 @@ int CUPTIEventHandler::PerformAction(TransferPtr t) {
 }
 
 int CUPTIEventHandler::PostTransfer(TransferPtr t) { 
-	if (my_thread_id == -1) 
-		my_thread_id = (int) syscall( __NR_gettid );
-	if (my_process_id == -1)
-		my_process_id = (int) getpid();
-	std::stringstream ss;	
-	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << my_process_id << "," << my_thread_id << std::endl;
-	std::string out = ss.str();	
-	_packetInfo.get()->Write(out);	
+	// if (_enabled == false)
+	// 	return 0;
+
+	// if (my_thread_id == -1) 
+	// 	my_thread_id = (int) syscall( __NR_gettid );
+	// if (my_process_id == -1)
+	// 	my_process_id = (int) getpid();
+	// std::stringstream ss;	
+	// ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << my_process_id << "," << my_thread_id << std::endl;
+	// std::string out = ss.str();	
+	// _packetInfo.get()->Write(out);	
 	return 0;
 }
 
@@ -224,7 +227,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	_enabled = enabled;
 	if (enabled == false)
 		return;
-	_packetInfo.reset(new LogInfo(fopen("timing_packet_corr.txt", "w")));
+	//_packetInfo.reset(new LogInfo(fopen("timing_packet_corr.txt", "w")));
 	_cupti_output.reset(new LogInfo(file));
 	// Initailize CUPTI to capture memory transfers
 	if (cuptiActivityEnable(CUPTI_ACTIVITY_KIND_MEMCPY) != CUPTI_SUCCESS) {

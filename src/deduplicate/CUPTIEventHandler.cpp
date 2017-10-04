@@ -200,14 +200,14 @@ int CUPTIEventHandler::PerformAction(TransferPtr t) {
 }
 
 int CUPTIEventHandler::PostTransfer(TransferPtr t) { 
-	if (my_thread_id == -1) 
-		my_thread_id = (int) syscall( __NR_gettid );
-	if (my_process_id == -1)
-		my_process_id = (int) getpid();
-	std::stringstream ss;	
-	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << my_process_id << "," << my_thread_id << std::endl;
-	std::string out = ss.str();	
-	_log.get()->Write(out);	
+	// if (my_thread_id == -1) 
+	// 	my_thread_id = (int) syscall( __NR_gettid );
+	// if (my_process_id == -1)
+	// 	my_process_id = (int) getpid();
+	// std::stringstream ss;	
+	// ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << my_process_id << "," << my_thread_id << std::endl;
+	// std::string out = ss.str();	
+	// _log.get()->Write(out);	
 	return 0;
 }
 

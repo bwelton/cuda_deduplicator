@@ -1,4 +1,6 @@
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/defs)
+
+set(CUPTI_DRIVER_CIBHEADER "${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/include/cupti_driver_cbid.h")
 configure_file (
     "${PROJECT_SOURCE_DIR}/src/deduplicate/defs/DetectDuplicates.def.in"
 	"${CMAKE_INSTALL_PREFIX}/defs/DetectDuplicates.def"
@@ -9,6 +11,15 @@ configure_file (
 	"${CMAKE_INSTALL_PREFIX}/defs/Deduplicate.def"
 )
 
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenDriverCIBs.py.in"
+	"${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenDriverCIBs.py"
+)
+
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenDriverCIBs.py.in"
+	"${CMAKE_INSTALL_PREFIX}/defs/GenDriverCIBs.py"
+)
 add_library(dedup SHARED "CUPTIEventHandler.cpp" "CudaDeviceWrappers.cpp" "DestinationHash.cpp" "HashData.cpp" "InstrumentBase.cpp" "TransferBase.cpp" "TransferTimeline.cpp" "InstrumentFactory.cpp" "DuplicateTracker.cpp")
 add_definitions("-DTRANSFER_TIMELINE")
 target_link_libraries(dedup ${Boost_LIBRARIES})

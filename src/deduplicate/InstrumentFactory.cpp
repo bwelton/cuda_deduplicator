@@ -37,9 +37,8 @@ InstrumentFactory::InstrumentFactory() {
 	}
 
 	_globalID = 1;
-	if (Factories[std::string("EnableCUPTITiming")] == true) { 
+	if (Factories[std::string("EnableCUPTITiming")] == true) 
 		_workers.push_back(std::shared_ptr<InstrumentBase>(new CUPTIEventHandler(true, fopen("timing_info.txt","w"))));	
-	}
 	if (Factories[std::string("EnableDestination")] == true) 
 		_workers.push_back(std::shared_ptr<InstrumentBase>(new DestinationHash(true, fopen("dedup_desthash.txt","w"))));
 	if (Factories[std::string("EnableChecker")] == true)

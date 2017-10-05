@@ -11,7 +11,7 @@ TransferBase::TransferBase(TransferCall call, void * CPUPtr, void * GPUPtr, size
 	_transferPerformed = false;
 	_syncnd = false;
 	_globalId = 0;
-	_synchronizationDelay = 0.0;
+	// _synchronizationDelay = 0.0;
 }
 
 uint64_t TransferBase::GetID() {
@@ -24,14 +24,14 @@ void TransferBase::SetID(uint64_t i) {
 
 void TransferBase::PerformTransfer() {
 	if(_transferPerformed == false){
-		if (_sync == SYNC){
-			boost::timer t;
+		// if (_sync == SYNC){
+		// 	boost::timer t;
+		// 	_ret = _call(_GPUPtr, _CPUPtr, (void *) _size, (void *) _kind, (void *) _stream);
+		// 	_synchronizationDelay = t.elapsed();
+		// } else {
 			_ret = _call(_GPUPtr, _CPUPtr, (void *) _size, (void *) _kind, (void *) _stream);
-			_synchronizationDelay = t.elapsed();
-		} else {
-			_ret = _call(_GPUPtr, _CPUPtr, (void *) _size, (void *) _kind, (void *) _stream);
-			_synchronizationDelay = 0.0;
-		}
+		// 	_synchronizationDelay = 0.0;
+		// }
 		_transferPerformed = true;
 	}
 }

@@ -1,6 +1,7 @@
 #include "CUPTIEventHandler.h"
+#include "CUPTIDriverCIBTranslate.h"
+#include "CUPTIRuntimeCIBTranslate.h"
 
-// /opt/nvidia/cudatoolkit7.5/7.5.18-1.0502.10743.2.1/extras/CUPTI/include/cupti_runtime_cbid.h
 // This is super unsafe and may need to be refactored. 
 std::shared_ptr<InstrumentBase> s_instance;
 

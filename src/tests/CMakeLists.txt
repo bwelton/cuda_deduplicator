@@ -71,17 +71,17 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS cupti_test
         RUNTIME DESTINATION tests)
 
-add_executable(HostToDev "artifacts/HostToDevice.cpp")
-target_link_libraries(HostToDev "-lpthread")
-target_link_libraries(HostToDev "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
-INCLUDE_DIRECTORIES(HostToDev ${CUDA_TOOLKIT_ROOT_DIR}/include)
-INCLUDE_DIRECTORIES(HostToDev ${Boost_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(HostToDev "${CMAKE_SOURCE_DIR}/src/common")
-ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+# add_executable(HostToDev "artifacts/HostToDevice.cpp")
+# target_link_libraries(HostToDev "-lpthread")
+# target_link_libraries(HostToDev "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+# INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+# INCLUDE_DIRECTORIES(HostToDev ${CUDA_TOOLKIT_ROOT_DIR}/include)
+# INCLUDE_DIRECTORIES(HostToDev ${Boost_INCLUDE_DIRS})
+# INCLUDE_DIRECTORIES(HostToDev "${CMAKE_SOURCE_DIR}/src/common")
+# ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 
-install(TARGETS HostToDev
-        RUNTIME DESTINATION tests)
+# install(TARGETS HostToDev
+#         RUNTIME DESTINATION tests)
 
 
 add_executable(launch_check "launch_check.cpp")

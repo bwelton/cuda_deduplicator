@@ -120,3 +120,5 @@ configure_file (
 install(FILES ${PROJECT_BINARY_DIR}/scripts/TitanTestScript.ksh ${PROJECT_BINARY_DIR}/scripts/RunTests.sh  ${PROJECT_BINARY_DIR}/scripts/LoadSpackModules.py
 		DESTINATION tests)
 
+install(FILE "dedup_test_configure.conf"
+        DESTINATION tests)

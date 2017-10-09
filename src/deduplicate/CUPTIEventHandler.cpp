@@ -78,6 +78,8 @@ extern "C" {
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_RUNTIME) {
 	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
 	    	std::stringstream ss;
+	    	if (strcmp(translateRuntimeCallback(api->cbid), "<unknown>") == 0)
+	    		return;
 	    	ss << "RR" << "," << translateRuntimeCallback(api->cbid) << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output->Write(out);
@@ -124,7 +126,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 		my_thread_id = (int) syscall( __NR_gettid );
 	if (my_process_id == -1)
 		my_process_id = (int) getpid();
-	std::stringstream ss;	
+	std::stringstream ss;
 	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << my_process_id << "," << my_thread_id << std::endl;
 	std::string out = ss.str();	
 	_packetInfo.get()->Write(out);	
@@ -135,6 +137,11 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 CUPTIEventHandler::~CUPTIEventHandler() {
 	cudaDeviceSynchronize();
 	cuptiActivityFlushAll(0);
+	std::stringstream ss;
+	ss << "TET," << _runtime.elapsed() << std::endl;
+	std::string out = ss.str();	
+	_cupti_output->Write(out);
+	_cupti_output->Flush();
 }
 
 
@@ -160,4 +167,5 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 		_enabled = false;
 		return;		
 	}
+	_runtime.restart();
 }

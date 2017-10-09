@@ -14,6 +14,8 @@ for x in data:
 		tmp[0] = tmp[0].lstrip()
 		tmp[0] = tmp[0].rstrip()
 		textName = tmp[0].replace("CUPTI_RUNTIME_TRACE_CBID_",'')
+		if "Memcpy" not in textName and "Synchron" not in textName and "Free" not in textName and "Malloc" not in textName:
+			continue
 		outStr += "{" + tmp[0] + ',"' + textName + '"},\n'
 outStr = outStr[:-2] + "};"
 f.write(outStr)

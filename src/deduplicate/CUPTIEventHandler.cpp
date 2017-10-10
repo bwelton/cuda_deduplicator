@@ -136,7 +136,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 		my_process_id = (int) getpid();
 	std::stringstream ss;
 	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << (size_t) t.get()->GetStream() << "," 
-	   << my_process_id << "," <<  syscall(__NR_gettid) << "," <<  pthread_self() << std::endl;
+	   << my_process_id << "," <<  syscall(__NR_gettid) << "," <<  pthread_self() << "," << std::this_thread::get_id() << std::endl;
 	std::string out = ss.str();	
 	_packetInfo.get()->Write(out);	
 	return 0;

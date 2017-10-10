@@ -135,7 +135,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 	if (my_process_id == -1)
 		my_process_id = (int) getpid();
 	std::stringstream ss;
-	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << (int) t.get()->GetStream() << "," 
+	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << (size_t) t.get()->GetStream() << "," 
 	   << my_process_id << "," << my_thread_id << std::endl;
 	std::string out = ss.str();	
 	_packetInfo.get()->Write(out);	
@@ -166,7 +166,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 		_enabled = false;
 		return;
 	}
-	cuptiSetThreadIdType(CUPTI_ACTIVITY_THREAD_ID_TYPE_SYSTEM);
+	//cuptiSetThreadIdType(CUPTI_ACTIVITY_THREAD_ID_TYPE_SYSTEM);
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_DRIVER);
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_RUNTIME);
 	// Doesn't exist in cuda 7.5...... 

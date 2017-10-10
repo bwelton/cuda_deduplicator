@@ -72,7 +72,10 @@ extern "C" {
 		if (record->kind == CUPTI_ACTIVITY_KIND_MEMCPY) {
 			CUpti_ActivityMemcpy * cpy = (CUpti_ActivityMemcpy *) record;
 			std::stringstream ss;
-			ss << "CPY," << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," << cpy->bytes << "," << cpy->start - startTimestamp << "," << cpy->end - startTimestamp << "," << cpy->correlationId << "," << cpy->runtimeCorrelationId << "," << cpy->contextId << "," << cpy->deviceId << "," << cpy->streamId << std::endl;
+			ss << "CPY," << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," 
+			   << cpy->correlationId << "," << cpy->start - startTimestamp << ","  << cpy->end - startTimestamp << ","  
+			   << cpy->bytes << "," << cpy->runtimeCorrelationId << "," << cpy->contextId << "," << cpy->deviceId 
+			   << "," << cpy->streamId << std::endl;
 			std::string out = ss.str();	
 			_cupti_output->Write(out);
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_RUNTIME) {
@@ -80,13 +83,17 @@ extern "C" {
 	    	std::stringstream ss;
 	    	if (strcmp(translateRuntimeCallback(api->cbid), "<unknown>") == 0)
 	    		return;
-	    	ss << "RR" << "," << translateRuntimeCallback(api->cbid) << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
+	    	ss << "RR" << "," << translateRuntimeCallback(api->cbid) << "," << api->correlationId << "," 
+	    	   << api->start - startTimestamp << "," << api->end - startTimestamp << "," 
+	    	   << api->processId << "," << api->threadId << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output->Write(out);
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_DRIVER) {
 	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
 	    	std::stringstream ss;
-	    	ss << "DR" << "," << translateDriverCallback(api->cbid) << "," << api->processId << "," << api->threadId << "," << api->correlationId << "," << api->start - startTimestamp << "," << api->end - startTimestamp << std::endl;
+	    	ss << "DR" << "," << translateDriverCallback(api->cbid) << "," << api->correlationId 
+	    	   << ","  << api->start - startTimestamp << "," << api->end - startTimestamp << "," 
+	    	   << api->processId << "," << api->threadId << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output->Write(out);	    	
 		}

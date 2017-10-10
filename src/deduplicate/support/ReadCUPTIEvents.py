@@ -2,110 +2,93 @@ import os
 from sets import Set
 import sys
 
-class TransferEvent:
-	def __init__(self, coorId):
-		self._corrId = coorId
-		self._events = []
-
-	def __lt__(self, other):
-		return self._corrId < other._corrId
-
-	def AddEvent(self, event):
-		self._events.append(event)
-
-	def ContainsTransfer(self):
-		for x in self._events:
-			if x.IsTransfer() == True:
-				return True
-		return False
-
-	def IsSynchronous(self):
-		for x in self._events:
-			if x.GetSynch() == True:
-				return True
-		return False
-		
-
-
-class ProcessEvents:
-	def __init__(self, processId, threadId):
-		self._processId = processId
-		self._threadId = threadId
-		self._events = []
-		self._correlationIds = Set()
-
-	def AddEvent(self, event):
-		self._events.append(event)
-		self._correlationIds.add(event.GetCoorelationID())
-
-	def GenTransfers(self):
-		retEvents = {}
-
-		for x in self._correlationIds:
-			retEvents[x] = TransferEvent(x)
-		for x in _events:
-			retEvents[x.GetCoorelationID()].AddEvent(x)
-
-		orderedEvents = []
-		for x in retEvents.keys():
-			orderedEvents.append(retEvents[x])
-		orderedEvents.sort()
-		self._orderedEvents = orderedEvents
-
-
-	def IsInProcess(self, event):
-		if event.GetCoorelationID() in self._correlationIds:
-			return 1
-
-		if self._processId == event.GetProcessID():
-			if self._threadId == event.GetThreadID():
-				return 1
-			elif event.GetThreadID() != -1:
-				return -1
-		elif event.GetProcessID() != -1:
-			return -1
-		return 0
-
 
 class CUPTIEvent:
-	def __init__(self, correlationId, eventType, textName, processId = -1, threadId = -1,
-					startTime = 0, endTime = 0, size = 0, synch = False, contextId = -1, 
-					streamId = -1, deviceId = -1, runtimeCorrelation = -1):
-		self._processId = processId
-		self._threadId = threadId
-		self._correlationId = correlationId
-		self._eventType = eventType
-		self._size = size
-		self._synch = synch
-		self._textName = textName
-		self._contextId = contextId
-		self._streamId = streamId
-		self._deviceId = deviceId
-		self._runtimeCorrelation = runtimeCorrelation
-		self.DetermineSync()
+	def __init__(self, line):
+		self._split =  line.split(",")
+		if "\n" in self._split[-1]:
+			self._split[-1] = self._split[-1][:-1]
+		if "TET" in line:
+			return
+		self._recType = self._split[0]
+		self._callName = self._split[1]
+		self._coorId = self._split[2]
+		self._startTime = int(self._split[3])
+		self._endTime = int(self._split[4])
+		self.InitTypeValues()
+		if "RR" in self._split[0] or "DR" in self._split[0]:
+			self.ParseRRandDR()
+		elif "CPY" in self._split[0]:
+			self.ParseCPY()
 
-	def DetermineSync():
-		if "async" not in self._textName.lower():
-			self._synch = True
-		self._synch = False
+	def GetCorrId(self):
+		return self._coorId
 
-	def GetSynch():
-		return self._synch
-
-	def GetProcessID():
+	def GetProcId(self):
 		return self._processId
 
-	def GetThreadID():
+	def GetThreadId(self):
 		return self._threadId
 
-	def GetCoorelationID(self):
-		return int(self._correlationId)
+	def InitTypeValues(self):
+		self._processId = None
+		self._threadId = None
+		self._bytes = None
+		self._runtimeID = None
+		self._contextId = None
+		self._deviceId = None
+		self._streamId = None
 
-	def IsTransfer(self):
-		if "cumem" in self._textName.lower() or "Memcpy" in self._textName.lower() or "CP" in self._eventType:
-			return True
-		else:
-			return False
+	def ParseRRandDR(self):
+		self._processId = str(self._split[5])
+		self._threadId = str(self._split[6])
+
+	def ParseCPY(self):
+		self._bytes = int(self._split[5])
+		self._runtimeID = int(self._split[6])
+		self._contextId = int(self._split[7])
+		self._deviceId = int(self._split[8])
+		self._streamId = int(self._split[9])
+
+class TransferEvent:
+	def __init__(self, correlationId):
+		self._coorId = correlationId
+		self._events = []
+		self._threadId = None
+		self._procId = None
+	def AddEvent(self, event):
+		if event.GetCorrId() != self._coorId:
+			print "ERROR ATTEMPTED TO ADD A TRANSFER WITH IMPROPER CORRELATION ID"
+			return
+		if event.GetProcId() != None:
+			if self._procId != None and event.GetProcId() != self._procId:
+				print "ERROR - Multiple process id's for the same transfer event, should not happen"
+				return
+			self._procId = event.GetProcId()
+		if event.GetThreadId() != None:
+			if self._threadId != None and event.GetThreadId() != self._threadId:
+				print "ERROR - Multiple thread id's for the same transfer event, should not happen"
+				return
+			self._threadId = event.GetThreadId()		
+
+		self._events.append(event)
+
+	def GetProcAndThreadId(self):
+		if self._procId == None or self._threadId == None:
+			print "Error getting thread/proc id for transfer"
+			return "ERROR"
+		return str(self._procId) + "&" + str(self._threadId)
+
+
+class CPUProcess:
+	def __init__(self, procId, threadId):
+		self._procId = procId
+		self._threadId = threadId
+		self._transferEvents = []
+
+	def AddEvent(self, event):
+		self._transferEvents.append(event)
+
 
 
 class ReadCUPTIEvents:
@@ -117,72 +100,35 @@ class ReadCUPTIEvents:
 		self._data = f.readlines()
 		f.close()
 
-	def ParseRuntime(self, line):
-		return CUPTIEvent(int(line[4]), "RR", str(line[1]), int(line[2]), int(line[3]), int(line[5]), int(line[6]))
-
-	def ParseDriver(self, line):
-		return CUPTIEvent(int(line[4]), "DR", str(line[1]), int(line[2]), int(line[3]), int(line[5]), int(line[6]))
-
-	def ParseCopy(self, line):
-		return CUPTIEvent(int(line[5]), "CP", line[1], startTime=int(line[3]), endTime=int(line[4]), 
-					size=int(line[2]), contextId=int(line[7]), streamId=int(line[9]),  deviceId=int(line[8]), 
-					runtimeCorrelation=int(line[6]))
-
-	def GenProcesses(self, events):
-		ProcessHandles = Set()
-		retProcess = []
-		##
-		# Find all possible processes
-		for x in events:
-			tmp = str(x.GetProcessID()) + "&" + str(x.GetThreadID())
-			ProcessHandles.add(tmp)
-
-		for x in ProcessHandles:
-			tmp = x.split("&")
-			retProcess.append(ProcessEvents(tmp[0],tmp[1]))
-
-		##
-		# Iterate through events assigning them to processes
-		couldNotId = []
-		for x in events:
-			found = False
-			for y in retProcess:
-				if y.IsInProcess(x) == 1:
-					y.AddEvent(x)
-					found = True
-					break
-			if found == False:
-				couldNotId.append(x)
-
-		##
-		# Second pass of the unfound id's. They may be identifiable now.
-		for x in couldNotId:
-			found = False
-			for y in retProcess:
-				if y.IsInProcess(x) == 1:
-					y.AddEvent(x)
-					found = True
-					break
-			if found == False:
-				print "Could not associate event with correlationId " + x.GetCoorelationID() + " to a process"
-		return retProcess
-
 	def Process():
 		events = []
 		TET = []
 		for x in self._data:
-			tmp = x.split(",")
-			if "\n" in tmp[-1]:
-				tmp[-1] = tmp[-1][:-1]
-			if "RR" in tmp[0]:
-				events.append(ParseRuntime(tmp))
-			elif "CP" in tmp[0]:
-				events.append(ParseCopy(tmp))
-			elif "DR" in tmp[0]:
-				events.append(ParseDriver(tmp))
+			if "CPY," in x or "DR," in x or "RR," in x:
+				events.append(CUPTIEvent(x))
 			elif "TET" in tmp[0]:
-				TET.append(float(tmp[1]))
+				TET.append(float(x.split(",")[1]))
 		del self._data
-		procs = GenProcesses()
+
+		## Merge the correlation ids into single transfer events
+		transfers = {}
+		for x in events:
+			if x.GetCorrId() not in transfers:
+				transfers[x.GetCorrId()] = TransferEvent(x.GetCorrId())
+			transfers[x.GetCorrId()].AddEvent(x)
+
+		ids = transfers.keys()
+		ids.sort()
+
+		procNames = {}
+		for x in ids:
+			procNames[transfers[x].GetProcAndThreadId()] = 1
+
+		processes = {}
+		for x in procNames.keys():
+			processes[x] = CPUProcess(x.split("&")[0], x.split("&")[1])
+
+		for x in ids:
+			processes[transfers[x].GetProcAndThreadId()].AddEvent(transfers[x])
 
 				

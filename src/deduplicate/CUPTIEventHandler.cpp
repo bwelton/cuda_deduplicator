@@ -130,7 +130,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 		return 0;
 
 	if (my_thread_id == -1) 
-		my_thread_id = (int) syscall( __NR_gettid );
+		my_thread_id = (int) pthread_self();
 	if (my_process_id == -1)
 		my_process_id = (int) getpid();
 	std::stringstream ss;

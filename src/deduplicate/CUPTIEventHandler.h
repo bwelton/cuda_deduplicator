@@ -17,6 +17,7 @@
 #include "InstrumentBase.h"
 #include "TransferBase.h"
 #include "LogInfo.h"
+#include <pthread.h>
 
 class CUPTIEventHandler : public InstrumentBase {
 private: 

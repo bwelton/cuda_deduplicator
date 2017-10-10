@@ -12,7 +12,7 @@ static LogInfo * _cupti_output;
 static std::shared_ptr<LogInfo> _packetInfo;
 
 
-thread_local pthread_t my_thread_id = -1; 
+thread_local pid_t my_thread_id = -1; 
 thread_local int my_process_id = -1;
 static uint64_t startTimestamp;
 
@@ -130,11 +130,12 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 		return 0;
 
 	if (my_thread_id == -1) 
-		my_thread_id = pthread_self();
+		my_thread_id = (pid_t) syscall(__NR_gettid);
+		//my_thread_id = pthread_self();
 	if (my_process_id == -1)
 		my_process_id = (int) getpid();
 	std::stringstream ss;
-	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << t.get()->GetStream() << "," 
+	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << (int) t.get()->GetStream() << "," 
 	   << my_process_id << "," << my_thread_id << std::endl;
 	std::string out = ss.str();	
 	_packetInfo.get()->Write(out);	
@@ -165,6 +166,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 		_enabled = false;
 		return;
 	}
+	cuptiSetThreadIdType(CUPTI_ACTIVITY_THREAD_ID_TYPE_SYSTEM);
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_DRIVER);
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_RUNTIME);
 	// Doesn't exist in cuda 7.5...... 

@@ -12,7 +12,7 @@ static LogInfo * _cupti_output;
 static std::shared_ptr<LogInfo> _packetInfo;
 
 
-thread_local int my_thread_id = -1; 
+thread_local pthread_t my_thread_id = -1; 
 thread_local int my_process_id = -1;
 static uint64_t startTimestamp;
 
@@ -130,7 +130,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 		return 0;
 
 	if (my_thread_id == -1) 
-		my_thread_id = (int) pthread_self();
+		my_thread_id = pthread_self();
 	if (my_process_id == -1)
 		my_process_id = (int) getpid();
 	std::stringstream ss;

@@ -2,7 +2,6 @@ import os
 from sets import Set
 import sys
 
-
 class CUPTIEvent:
 	def __init__(self, line):
 		self._split =  line.split(",")
@@ -56,6 +55,7 @@ class TransferEvent:
 		self._events = []
 		self._threadId = None
 		self._procId = None
+
 	def AddEvent(self, event):
 		if event.GetCorrId() != self._coorId:
 			print "ERROR ATTEMPTED TO ADD A TRANSFER WITH IMPROPER CORRELATION ID"
@@ -130,5 +130,7 @@ class ReadCUPTIEvents:
 
 		for x in ids:
 			processes[transfers[x].GetProcAndThreadId()].AddEvent(transfers[x])
-
+		
+		self._processes = processes
+		return processes
 				

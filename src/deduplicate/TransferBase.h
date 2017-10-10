@@ -72,6 +72,7 @@ public:
 	int GetReturn();
 	void * GetCPUPtr();
 	uint64_t GetID();
+	cudaStream_t GetStream();
 	void SetID(uint64_t i);
 	std::shared_ptr<void> GetDestinationData();
 	virtual uint32_t Hash() = 0;

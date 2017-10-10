@@ -22,6 +22,10 @@ void TransferBase::SetID(uint64_t i) {
 	_globalId = i;
 }
 
+cudaStream_t TransferBase::GetStream(){
+	return _stream;
+}
+
 void TransferBase::PerformTransfer() {
 	if(_transferPerformed == false){
 		// if (_sync == SYNC){

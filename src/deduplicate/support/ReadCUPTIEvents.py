@@ -20,6 +20,9 @@ class CUPTIEvent:
 		elif "CPY" in self._split[0]:
 			self.ParseCPY()
 
+	def __str__(self):
+		return str(self._recType) + "," + str(self._callName) + "\n"
+
 	def GetCorrId(self):
 		return self._coorId
 
@@ -29,6 +32,9 @@ class CUPTIEvent:
 	def GetThreadId(self):
 		return self._threadId
 
+	def ReturnType(self):
+		return self._recType
+
 	def InitTypeValues(self):
 		self._processId = None
 		self._threadId = None
@@ -37,6 +43,16 @@ class CUPTIEvent:
 		self._contextId = None
 		self._deviceId = None
 		self._streamId = None
+
+	def CompareStreamAndSize(self, streamId, size):
+		print self._streamId 
+		print self._bytes
+		if self._streamId == None or self._bytes == None:
+			return False
+		## Fix this later....
+		if int(self._bytes) == int(size):
+			return True
+		return False
 
 	def ParseRRandDR(self):
 		self._processId = str(self._split[5])
@@ -55,6 +71,12 @@ class TransferEvent:
 		self._events = []
 		self._threadId = None
 		self._procId = None
+
+	def IsTransfer(self):
+		for x in self._events:
+			if x.ReturnType() == "CPY":
+				return True
+		return False
 
 	def AddEvent(self, event):
 		if event.GetCorrId() != self._coorId:
@@ -79,16 +101,50 @@ class TransferEvent:
 			return "ERROR"
 		return str(self._procId) + "&" + str(self._threadId)
 
+	def Compare(self, streamId, size):
+		for x in self._events:
+			if x.CompareStreamAndSize(streamId, size) == True:
+				return True
+		return False
+
+	def __str__(self):
+		ret =  "TransferEvent: " + str(self._coorId) + " " + str(self._threadId) + " " + str(self._procId)
+		for x in self._events:
+			ret += str(x) 
+		return ret
 
 class CPUProcess:
 	def __init__(self, procId, threadId):
 		self._procId = procId
 		self._threadId = threadId
 		self._transferEvents = []
+		self._transferPos = 0
 
 	def AddEvent(self, event):
 		self._transferEvents.append(event)
 
+	def GetNextTransferEvent(self):
+		if self._transferPos >= len(self._transferEvents):
+			return None
+		ret = -1
+		for x in range(self._transferPos, len(self._transferEvents)):
+			if self._transferEvents[x].IsTransfer() == True:
+				ret = x
+				break
+		if ret == -1:
+			self._transferPos = len(self._transferEvents)
+			return None
+		self._transferPos = ret + 1
+		return self._transferEvents[ret]
+
+	def ResetPosition(self):
+		self._transferPos = 0
+
+	def __str__(self):
+		ret = "CPU Process: " + str(self._procId) + " " + str(self._threadId) + "\n"
+		for x in self._transferEvents:
+			ret += str(x) + "\n"
+		return ret
 
 
 class ReadCUPTIEvents:
@@ -98,15 +154,16 @@ class ReadCUPTIEvents:
 			print "Could not open CUPTI events file"
 			return
 		self._data = f.readlines()
+		self._processes = {}
 		f.close()
 
-	def Process():
+	def Process(self):
 		events = []
 		TET = []
 		for x in self._data:
 			if "CPY," in x or "DR," in x or "RR," in x:
 				events.append(CUPTIEvent(x))
-			elif "TET" in tmp[0]:
+			elif "TET" in x:
 				TET.append(float(x.split(",")[1]))
 		del self._data
 
@@ -118,8 +175,7 @@ class ReadCUPTIEvents:
 			transfers[x.GetCorrId()].AddEvent(x)
 
 		ids = transfers.keys()
-		ids.sort()
-
+		ids.sort(key=int)
 		procNames = {}
 		for x in ids:
 			procNames[transfers[x].GetProcAndThreadId()] = 1
@@ -133,4 +189,9 @@ class ReadCUPTIEvents:
 		
 		self._processes = processes
 		return processes
-				
+
+	def __str__(self):	
+		ret = "We have data for " + str(len(self._processes))
+		for x in self._processes.keys():
+			ret += str(self._processes[x]) + "\n"
+		return ret

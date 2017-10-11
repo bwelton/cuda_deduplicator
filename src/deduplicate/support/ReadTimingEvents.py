@@ -4,10 +4,19 @@ class TimingProcess:
 	def __init__(self, ident):
 		self._ident = ident
 		self._events = []
-
+		self._pos = 0
 	def AddEvent(self, ident, size, stream):
 		self._events.append([ident, size, stream])
 
+	def GetNextEvent(self):
+		if self._pos >= len(self._events):
+			return None
+		ret = self._events[self._pos]
+		self._pos += 1
+		return ret
+
+	def ResetPosition(self):
+		self._pos = 0
 
 class ReadTimingPacket:
 	def __init__(self, filename):
@@ -18,13 +27,14 @@ class ReadTimingPacket:
 		self._data = f.readlines()
 		f.close()
 
-	def Process():
+	def Process(self):
 		timingProcs = {}
 		for x in self._data:
 			tmp = x.split(",")
-			key = tmp[3] + "," + tmp[4] + "," + tmp[5]
+			key = tmp[3] + "&" + tmp[4]
 			if key not in timingProcs:
 				timingProcs[key] = TimingProcess(key)
 			timingProcs[key].AddEvent(int(tmp[0]), int(tmp[1]), int(tmp[2]))
+		self._timingProcs = timingProcs
 		return timingProcs
 

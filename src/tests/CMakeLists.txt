@@ -61,6 +61,7 @@ install(TARGETS desthash_check
 add_executable(cupti_test "cupti_test.cpp")
 target_link_libraries(cupti_test ${Boost_LIBRARIES})
 target_link_libraries(cupti_test "-lpthread")
+target_link_libraries(cupti_test "-L/opt/cray/nvidia/default/lib64 -lcuda")
 target_link_libraries(cupti_test "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
 INCLUDE_DIRECTORIES(cupti_test ${CUDA_TOOLKIT_ROOT_DIR}/include)

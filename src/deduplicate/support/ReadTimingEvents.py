@@ -5,7 +5,7 @@ class TimingProcess:
 		self._ident = ident
 		self._events = []
 		self._pos = 0
-	def AddEvent(self, ident, size, stream):
+	def AddEvent(self, ident, stream, size):
 		self._events.append([ident, size, stream])
 
 	def GetNextEvent(self):
@@ -14,6 +14,11 @@ class TimingProcess:
 		ret = self._events[self._pos]
 		self._pos += 1
 		return ret
+
+	def CountTransfers(self):
+		print self._events[-1]
+		print len(self._events)
+		return len(self._events)
 
 	def ResetPosition(self):
 		self._pos = 0

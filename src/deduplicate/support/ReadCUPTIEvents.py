@@ -21,7 +21,7 @@ class CUPTIEvent:
 			self.ParseCPY()
 
 	def __str__(self):
-		return str(self._recType) + "," + str(self._callName) + "\n"
+		return str(self._recType) + "," + str(self._callName) + "," + (str(self._bytes) if self._bytes != None else "0") + "\n"
 
 	def GetCorrId(self):
 		return self._coorId
@@ -45,11 +45,12 @@ class CUPTIEvent:
 		self._streamId = None
 
 	def CompareStreamAndSize(self, streamId, size):
-		print self._streamId 
-		print self._bytes
+		# print self._streamId 
+		# print self._bytes
 		if self._streamId == None or self._bytes == None:
 			return False
 		## Fix this later....
+		# print int(size)
 		if int(self._bytes) == int(size):
 			return True
 		return False
@@ -77,6 +78,9 @@ class TransferEvent:
 			if x.ReturnType() == "CPY":
 				return True
 		return False
+
+	def GetCorrId(self):
+		return self._coorId
 
 	def AddEvent(self, event):
 		if event.GetCorrId() != self._coorId:
@@ -119,12 +123,13 @@ class CPUProcess:
 		self._threadId = threadId
 		self._transferEvents = []
 		self._transferPos = 0
+		self._transferCount = -1
 
 	def AddEvent(self, event):
 		self._transferEvents.append(event)
 
 	def GetNextTransferEvent(self):
-		if self._transferPos >= len(self._transferEvents):
+		if self._transferPos > len(self._transferEvents):
 			return None
 		ret = -1
 		for x in range(self._transferPos, len(self._transferEvents)):
@@ -135,7 +140,23 @@ class CPUProcess:
 			self._transferPos = len(self._transferEvents)
 			return None
 		self._transferPos = ret + 1
+		# print str(self._transferEvents[ret])
 		return self._transferEvents[ret]
+
+	def CountTransfers(self):
+		if self._transferCount >= 0:
+			return self._transferCount
+		count = 0
+		prevTrans = self._transferPos
+		self.ResetPosition()
+		while (self.GetNextTransferEvent() != None):
+			count += 1
+
+		print "Process Count" + str(count)
+		self._transferCount = count
+		self._transferPos =  prevTrans
+
+		return count
 
 	def ResetPosition(self):
 		self._transferPos = 0
@@ -176,6 +197,8 @@ class ReadCUPTIEvents:
 
 		ids = transfers.keys()
 		ids.sort(key=int)
+		del transfers[ids[0]]
+		ids = ids[1:]
 		procNames = {}
 		for x in ids:
 			procNames[transfers[x].GetProcAndThreadId()] = 1

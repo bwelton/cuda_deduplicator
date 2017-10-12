@@ -33,7 +33,8 @@ BOOST_AUTO_TEST_SUITE( basic_copy_cupti )
 void SynchTiming(void) {
 	RedirectOutputToFile();
 	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
-	DeviceMemory<double> dev(2048*30);
+	DeviceMemory<double> dev(1);
+	dev.WriteAsync(tmp);
 	tmp.get()->SynchronizeStream();
 	tmp.get()->SynchronizeStream();
 	tmp.get()->SynchronizeStream();
@@ -46,7 +47,7 @@ void SynchTiming(void) {
 	tmp.get()->CtxSynchronization();
 	tmp.get()->CtxSynchronization();
 	tmp.get()->CtxSynchronization();
-	dev.WriteAsync(tmp);
+
 	dev.WriteAsync(tmp);
 	dev.WriteAsync(tmp);
 	dev.ReadAsync(tmp);

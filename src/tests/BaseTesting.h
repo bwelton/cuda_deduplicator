@@ -112,6 +112,12 @@ struct CudaCtx
 	void SynchronizeStream() {
 		CheckGPUResult(cudaStreamSynchronize(_stream));
 	}
+	void DeviceSynchronization() {
+		CheckGPUResult(cudaDeviceSynchronize());
+	}
+	void CtxSynchronization() {
+		CheckGPUResult((cudaError_t)cuCtxSynchronize());
+	}
 };
 
 template <typename T> 

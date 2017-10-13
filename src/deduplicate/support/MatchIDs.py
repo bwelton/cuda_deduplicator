@@ -48,7 +48,28 @@ class MatchIDs:
 			self._timingEvents[x].ResetPosition()
 		print correlation
 		self._correlation = correlation
-		self.BuildCorrelation()
+		self._correlationIndex = self.BuildCorrelation()
+
+	def GetCUPTIRecord(self, timingId, transId):
+		foundId = None
+		for x in self._correlation.keys():
+			if self._correlation[x] == timingId:
+				foundId = x
+				break
+		if foundId == None:
+			print "Could not find timing -> CUPTI correlation for : " + timingId
+			return None
+		corrId = self._correlationIndex.GetCorrelationTiming(transId)
+		ret = self._cuptiEvents[foundId].GetEventCorrId(corrId)
+		self._prevEvent = ret[1]
+		self._foundId = foundId
+		return ret[0]
+
+	def GetNextEvent(self):
+		self._prevEvent += 1
+		return self._cuptiEvents[self._foundId].GetEvent(self._prevEvent)
+
+
 	def BuildCorrelation(self):
 		ret = CorrelationClass()
 		for index in self._correlation:
@@ -67,7 +88,8 @@ class MatchIDs:
 					print str(tEvent)
 					return
 				ret.AddCorrelation(cEvent.GetCorrId(), tEvent[0])
-
+			procCupti.ResetPosition()
+			procTiming.ResetPosition()
 		print ret
 
 

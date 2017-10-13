@@ -23,6 +23,9 @@ class CUPTIEvent:
 	def __str__(self):
 		return str(self._recType) + "," + str(self._callName) + "," + (str(self._bytes) if self._bytes != None else "0") + "\n"
 
+	def GetTime(self):
+		return self._endTime - self._startTime
+
 	def GetCorrId(self):
 		return self._coorId
 
@@ -79,6 +82,7 @@ class TransferEvent:
 				return True
 		return False
 
+
 	def GetCorrId(self):
 		return self._coorId
 
@@ -111,6 +115,7 @@ class TransferEvent:
 				return True
 		return False
 
+
 	def __str__(self):
 		ret =  "TransferEvent: " + str(self._coorId) + " " + str(self._threadId) + " " + str(self._procId)
 		for x in self._events:
@@ -122,12 +127,13 @@ class CPUProcess:
 		self._procId = procId
 		self._threadId = threadId
 		self._transferEvents = []
+		self._transferLoc = {}
 		self._transferPos = 0
 		self._transferCount = -1
 
 	def AddEvent(self, event):
 		self._transferEvents.append(event)
-
+		self._transferLoc[event.GetCorrId()] = len(self._transferEvents) - 1
 	def GetNextTransferEvent(self):
 		if self._transferPos > len(self._transferEvents):
 			return None
@@ -157,6 +163,17 @@ class CPUProcess:
 		self._transferPos =  prevTrans
 
 		return count
+
+	def GetEvent(self, id):
+		if len(self._transferEvents) <= id:
+			return None
+		return self._transferEvents[id]
+
+
+	def GetEventCorrId(self, id):
+		if id not in self._transferLoc:
+			return None
+		return [self._transferEvents[self._transferLoc[id]],self._transferLoc[id]]
 
 	def ResetPosition(self):
 		self._transferPos = 0

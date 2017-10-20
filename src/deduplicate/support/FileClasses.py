@@ -1,5 +1,6 @@
 import os
-
+from Iterators import PacketCorrectionIterator, TimelineIterator, TimingInfoIterator
+from pprint import pprint
 class BaseRecord:
 	def __init__(self, *args):
 		if len(args) < len(self._parseParameters):
@@ -11,13 +12,45 @@ class BaseRecord:
 		for x in range(0, len(self._parseParameters)):
 			setattr(self, self._parseParameters[x][0], self._parseParameters[x][1](args[x]))
 
+	def GetAttr(self, attr):
+		return getattr(self, attr, None)
+
+	def GetGPUTime(self):
+		if self.GetAttr("type") != None:
+			if self.GetAttr("type") == "CPY":
+				return self.GetAttr("etime") - self.GetAttr("stime")
+		return 0.0
+
+	def GetCPUTime(self):
+		if self.GetAttr("type") != None:
+			if self.GetAttr("type") == "RR" or self.GetAttr("type") == "DR":
+				return self.GetAttr("etime") - self.GetAttr("stime")
+		return 0.0
+
+	def IsSynchronization(self):
+		name = self.GetAttr("cname")
+		t = self.GetAttr("type")
+
+		if name == None or t == None:
+			return False
+		if t != "DR" or t != "RR":
+			return False
+		if "Async" not in name:
+			return True
+		else:
+			return False
+
+	def __str__(self):
+		pprint(vars(self))
+		return ""
 class TimingInfoCall(BaseRecord):
 	_parseParameters =  [("type", str), ("cname", str),
 						 ("corrid", int), ("stime", int), 
 						 ("etime",int), ("procid",int), 
-						 ("tid",int)]
+						 ("threadid",int)]
 	def __init__(self, *args):
 		BaseRecord.__init__(self,*args)
+		self._parseParameters = []
 
 class TimingInfoCPY(BaseRecord):
 	_parseParameters =  [("type", str), ("cname", str),
@@ -27,6 +60,7 @@ class TimingInfoCPY(BaseRecord):
 						 ("dev",int), ("stream", int)]
 	def __init__(self, *args):
 		BaseRecord.__init__(self,*args)
+		self._parseParameters = []
 
 class DedupTimeline(BaseRecord):
 	_parseParameters =  [("timelineid", int), ("hash", int),
@@ -34,13 +68,14 @@ class DedupTimeline(BaseRecord):
 						 ("dupid",int)]
 	def __init__(self, *args):
 		BaseRecord.__init__(self,*args)
+		self._parseParameters = []
 
 class PacketCorrection(BaseRecord):
 	_parseParameters = [("timelineid", int), ("size", int), ("stream", int),
 						("procid", int), ("threadid", int)]
 	def __init__(self, *args):
 		BaseRecord.__init__(self,*args)	
-
+		self._parseParameters = []
 
 class ReadDatFiles:
 	def __init__(self, timeline, timingInfo, timingCorrection):
@@ -87,6 +122,5 @@ class ReadDatFiles:
 			tmp = tmp.split(",")
 			self._timingCorr.append(PacketCorrection(*tmp))		
 
-
-if __name__ == "__main__":
-	x = ReadDatFiles("dedup_timeline.txt", "timing_info.txt", "timing_packet_corr.txt")
+	def GetIterators(self):
+		return [TimelineIterator(self._timeline), TimingInfoIterator(self._timingInfo), PacketCorrectionIterator(self._timingCorr)]

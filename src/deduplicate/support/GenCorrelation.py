@@ -3,6 +3,24 @@ class CorrelatedRecord(BaseIterator):
 	def __init__(self, l):
 		BaseIterator.__init__(self, l)
 
+	def StrOneLine(self):
+		timeline_id = -1
+		corr_id = -1
+		
+		if self.GetTimelineId() != None:
+			timeline_id = self.GetTimelineId()
+
+		if self.GetCorrId() != None:
+			corr_id = self.GetCorrId()
+
+		return ("Transfer Corrlation ID: %d Timeline ID: %d is %s" % (corr_id, timeline_id, ("a duplicate" if self.IsTransDuplicate() else "not a duplicate")))
+
+	def GetTimelineId(self):
+		for x in self._data:
+			if x.GetAttr("timelineid") != None:
+				return x.GetAttr("timelineid")
+		return None	
+
 	def printme(self):
 		for x in self._data:
 			print x

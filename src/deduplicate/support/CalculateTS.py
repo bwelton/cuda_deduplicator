@@ -23,7 +23,6 @@ class CalculateTS:
 		corrId = transfer.GetCorrId()
 		GPUTime = transfer.GetGPUTime()
 		CPUTime =  transfer.GetCPUTime()
-
 		print "Synchronous transfer call "+ str(corrId) +  "," + str(GPUTime) + "," + str(CPUTime)
 		return GPUTime
 	def CalculateTimeSavings(self, timelines):
@@ -33,9 +32,12 @@ class CalculateTS:
 		for x in self._corrIds:
 			if x.IsTransDuplicate() == False:
 				continue
-			if x.IsSynch() == True:
-				ts += self.CalculateSynchTransSavings(x)
-				continue
+			print x.StrOneLine()
+
+
+			# if x.IsSynch() == True:
+			# 	ts += self.CalculateSynchTransSavings(x)
+			# 	continue
 			
 
 

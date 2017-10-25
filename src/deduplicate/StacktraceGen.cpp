@@ -51,8 +51,9 @@ void StackTraceGen::WriteStackMap() {
 	for (auto x : hashes) {
 		char tmp[4096];
 		snprintf(tmp, 4096, "Hash,%u,Count,%d\n",x.second, x.first);
-		_st_log.get()->Write(std::string(tmp));
-		_st_log.get()->Write(std::string(_stackMap[x.second].first));
+		std::string output = std::string(tmp);
+		_st_log.get()->Write(output);
+		_st_log.get()->Write(_stackMap[x.second].first);
 	}
 	boost::recursive_mutex::scoped_lock lock(_st_mtx);
 	_stackMap.clear();

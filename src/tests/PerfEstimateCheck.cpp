@@ -34,7 +34,7 @@ std::pair<double, double> ParseResults(void) {
 	if (t.good()) {
 		std::string input((std::istreambuf_iterator<char>(t)),
 	    	              std::istreambuf_iterator<char>());
-		sscanf(input.c_str(), "%f,%f", &exact, &worst);
+		sscanf(input.c_str(), "%lf,%lf", &exact, &worst);
 		return std::make_pair(exact, worst);
 	} else {
 		std::cerr << "Could not open parse result output file" << std::endl;
@@ -47,7 +47,7 @@ std::pair<double, double> ProcessResults(void) {
 	pid_t child_pid = fork();
 	if (child_pid == 0){
 		// Child process, perform action then exit
-		RedirectOutputToFile();
+		// RedirectOutputToFile();
 		execlp("python", "CorrelationRun.py", "first_timeline.txt", "timing_info.txt", "timing_packet_corr.txt", "test_results.txt");
 		exit(-1);
 	} else {
@@ -71,7 +71,8 @@ double GetTotalTime(void) {
 		std::string input((std::istreambuf_iterator<char>(t)),
 	    	              std::istreambuf_iterator<char>());
 	    size_t startPos = input.find("TET,");
-	 	sscanf(&(input.c_str()[startPos]), "TET,%f\n", &totalExec);
+	    std::string intermediate = input.substr(startPos, input.size());
+	 	sscanf(intermediate.c_str(), "TET,%lf\n", &totalExec);
 	} else {
 		std::cerr << "Could not open timing info output file" << std::endl;
 	}

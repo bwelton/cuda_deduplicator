@@ -19,7 +19,7 @@
 #include <stdlib.h>
 
 #include "InstrumentBase.h"
-#include "TranferBase.h"
+#include "TransferBase.h"
 #include "LogInfo.h"
 #include <boost/thread/recursive_mutex.hpp>
 

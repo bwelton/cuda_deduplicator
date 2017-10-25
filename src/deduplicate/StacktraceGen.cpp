@@ -2,7 +2,10 @@ StackTraceGen::StackTraceGen(bool enabled, FILE * file) {
 	_enabled = enabled;
 	if (enabled == false)
 		return;
-	_log.reset(new LogInfo(file));
+	_st_log.reset(new LogInfo(file));
+}
+StackTraceGen::~StackTraceGen() {
+	WriteStackMap();
 }
 
 std::string StackTraceGen::GenStackTrace() {
@@ -34,11 +37,25 @@ std::string StackTraceGen::GenStackTrace() {
 		}
 		ret << "\n";
 	}
+	ret << "\n";
 	return ret.str();
 }
 
 void StackTraceGen::WriteStackMap() {
-
+	std::vector<std::pair<int, uint32_t> > hashes;
+	for (auto x : _stackMap) {
+		hashes.push_back(std::make_pair(x.second.second, x.first));
+	}
+	std::sort(hashes.begin(), hashes.end());
+	for (auto x : hashes) {
+		char tmp[4096];
+		snprintf(tmp, 4096, "Hash,%u,Count,%d\n",x.second, x.first);
+		_st_log.get()->Write(std::string(tmp));
+		_st_log.get()->Write(std::string(_stackMap[x.second].first));
+	}
+	boost::recursive_mutex::scoped_lock lock(_st_mtx);
+	_stackMap.clear();
+	_transferHash.clear();
 }
 
 int StackTraceGen::PerformAction(TransferPtr t) {
@@ -46,11 +63,10 @@ int StackTraceGen::PerformAction(TransferPtr t) {
 		return 0;
 	
 	std::string stack = GenStackTrace();
-
 	uint32_t transferHash = t.get()->GetHash();
 	uint32_t hash = t.get()->HashPtr((void *)stack.c_str(), stack.size());
 	{
-		boost::recursive_mutex::scoped_lock lock(_mtx);
+		boost::recursive_mutex::scoped_lock lock(_st_mtx);
 		if (_transferHash.find(transferHash) != _transferHash.end()) {
 			if (_stackMap.find(hash) != _stackMap.end())
 				_stackMap[hash].second += 1;
@@ -63,8 +79,8 @@ int StackTraceGen::PerformAction(TransferPtr t) {
 }
 
 int StackTraceGen::PostTransfer(TransferPtr t) {
-	boost::recursive_mutex::scoped_lock lock(_mtx);
+	boost::recursive_mutex::scoped_lock lock(_st_mtx);
 	if (_stackMap.size() > 3000) {
-
+		WriteStackMap();
 	}
 }

@@ -48,8 +48,8 @@ std::pair<double, double> ProcessResults(void) {
 	if (child_pid == 0){
 		// Child process, perform action then exit
 		// RedirectOutputToFile();
-		execlp("python", "CorrelationRun.py", "first_timeline.txt", "timing_info.txt", "timing_packet_corr.txt", "test_results.txt");
-		std::cerr << "COULD NOT LAUNCH PYTHON!" << std::cerr;
+		system( "python CorrelationRun.py first_timeline.txt timing_info.txt timing_packet_corr.txt test_results.txt");
+		//std::cerr << "COULD NOT LAUNCH PYTHON!" << std::cerr;
 		exit(-1);
 	} else {
 		pid_t tpid = 0;

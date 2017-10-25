@@ -36,7 +36,7 @@ add_custom_target(GEN_CIB_DRIVER_TRANSLATORS
 add_custom_target(GEN_CIB_RUNTIME_TRANSLATORS
 		COMMAND python ${PROJECT_SOURCE_DIR}/src/deduplicate/support/GenRuntimeCIBs.py)
 
-add_library(dedup SHARED "CUPTIEventHandler.cpp" "CudaDeviceWrappers.cpp" "DestinationHash.cpp" "HashData.cpp" "InstrumentBase.cpp" "TransferBase.cpp" "TransferTimeline.cpp" "InstrumentFactory.cpp" "DuplicateTracker.cpp")
+add_library(dedup SHARED "CUPTIEventHandler.cpp" "CudaDeviceWrappers.cpp" "DestinationHash.cpp" "HashData.cpp" "InstrumentBase.cpp" "TransferBase.cpp" "TransferTimeline.cpp" "InstrumentFactory.cpp" "DuplicateTracker.cpp" "StacktraceGen.cpp")
 add_definitions("-DTRANSFER_TIMELINE")
 target_link_libraries(dedup ${Boost_LIBRARIES})
 target_link_libraries(dedup "-lpthread")

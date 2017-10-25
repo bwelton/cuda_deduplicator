@@ -40,8 +40,8 @@ using namespace SymtabAPI;
 
 class StackTraceGen : public InstrumentBase {
 private:
-	boost::recursive_mutex _mtx; 
-	std::shared_ptr<LogInfo> _log;
+	boost::recursive_mutex _st_mtx; 
+	std::shared_ptr<LogInfo> _st_log;
 	bool _enabled;
 	std::string GenStackTrace();
 	std::map<uint32_t, std::pair<std::string, int> > _stackMap;
@@ -50,5 +50,6 @@ public:
 	StackTraceGen(bool enabled = false, FILE * output = NULL);
 	int PerformAction(TransferPtr t);
 	int PostTransfer(TransferPtr t);
+	void WriteStackMap();
 	~StackTraceGen();
 };

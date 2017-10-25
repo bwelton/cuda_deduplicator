@@ -163,6 +163,8 @@ class ReadDatFiles:
 				print "Could not id record"
 				print x
 				exit(-1)
+		self._timingInfo = self._timingInfo[2:]
+		
 
 	def ReadTimingCorrection(self, timingCorrection):
 		f = open(timingCorrection,"r")

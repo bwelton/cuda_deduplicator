@@ -39,6 +39,7 @@ add_custom_target(GEN_CIB_RUNTIME_TRANSLATORS
 add_library(dedup SHARED "CUPTIEventHandler.cpp" "CudaDeviceWrappers.cpp" "DestinationHash.cpp" "HashData.cpp" "InstrumentBase.cpp" "TransferBase.cpp" "TransferTimeline.cpp" "InstrumentFactory.cpp" "DuplicateTracker.cpp" "StacktraceGen.cpp")
 add_definitions("-DTRANSFER_TIMELINE")
 target_link_libraries(dedup ${Boost_LIBRARIES})
+target_link_libraries(dedup ${DYNINST_LIBRARIES})
 target_link_libraries(dedup "-lpthread")
 INCLUDE_DIRECTORIES(dedup ${CUDA_TOOLKIT_ROOT_DIR}/include)
 INCLUDE_DIRECTORIES(dedup ${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/include)

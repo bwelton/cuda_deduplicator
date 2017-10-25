@@ -4,7 +4,8 @@ InstrumentFactory::InstrumentFactory() {
 	std::map<std::string, bool> Factories = {{std::string("EnableDestination"), true},
 											 {std::string("EnableTimeline"), true},
 											 {std::string("EnableChecker"), true},
-											 {std::string("EnableCUPTITiming"), true}};
+											 {std::string("EnableCUPTITiming"), true},
+											 {std::string("EnableStackTracing"), false}};
 
 	std::ifstream f("dedup_settings.conf");
 	if (f.good() == true) {
@@ -44,7 +45,9 @@ InstrumentFactory::InstrumentFactory() {
 	if (Factories[std::string("EnableChecker")] == true)
 		_workers.push_back(std::shared_ptr<InstrumentBase>(new DuplicateTracker(true, fopen("dedup_out.txt","w"))));
 	if (Factories[std::string("EnableTimeline")] == true)
-		_workers.push_back(std::shared_ptr<InstrumentBase>(new TransferTimeline(true, fopen("dedup_timeline.txt","w"))));	
+		_workers.push_back(std::shared_ptr<InstrumentBase>(new TransferTimeline(true, fopen("dedup_timeline.txt","w"))));
+	if (Factories[std::string("EnableStackTracing")] == true) 
+		_workers.push_back(std::shared_ptr<InstrumentBase>(new StackTraceGen(true, fopen("stack_tracing.txt","w"))));
 }
 
 int InstrumentFactory::PerformAction(TransferPtr t) {

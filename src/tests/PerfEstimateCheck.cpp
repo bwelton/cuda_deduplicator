@@ -9,11 +9,11 @@ void TestProgramWithDuplicateTransfers(int dupCount) {
 	std::shared_ptr<CudaCtx> tmp;
 	tmp.reset(new CudaCtx());
 	DeviceMemory<double> dev(4096);
+	sleep(3);
 	// dupCount synchrounous duplicate transfers to the GPU
 	for (int i = 0; i < dupCount + 1; i++) {
 		dev.WriteSync();
 	}
-	sleep(3);
 }
 
 void WriteTimelineConfigure(void) {
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(launch_test) {
 		remove("timing_info.txt");	
 		BOOST_REQUIRE(t3.LaunchAndWait(boost::bind(TestProgramWithDuplicateTransfers, 0)) == 0);
 		double tet_fixed = GetTotalTime();		
-		std::cerr << "Iter=" << i << "," << "Exact=" << ret.first * 1000000000 << ",Min=" << ret.second * 1000000000 << ",TETDup=" << tet << ",TET-Fixed=" << tet_fixed << std::endl;
+		std::cerr << "Iter=" << i << "," << "Exact=" << ret.first / 1000000000 << ",Min=" << ret.second / 1000000000 << ",TETDup=" << tet << ",TET-Fixed=" << tet_fixed << std::endl;
 	}
 }
 

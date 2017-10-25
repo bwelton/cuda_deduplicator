@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE peformance_estimation_test
 #define BOOST_TEST_MAIN
 #include "BaseTesting.h"
-
+#include <unistd.h>
 BOOST_AUTO_TEST_SUITE( peformance_eval )
 
 void TestProgramWithDuplicateTransfers(int dupCount) {
@@ -13,6 +13,7 @@ void TestProgramWithDuplicateTransfers(int dupCount) {
 	for (int i = 0; i < dupCount + 1; i++) {
 		dev.WriteSync();
 	}
+	sleep(3);
 }
 
 void WriteTimelineConfigure(void) {
@@ -35,6 +36,8 @@ std::pair<double, double> ParseResults(void) {
 	    	              std::istreambuf_iterator<char>());
 		sscanf(input.c_str(), "%f,%f", &exact, &worst);
 		return std::make_pair(exact, worst);
+	} else {
+		std::cerr << "Could not open output file" << std::endl;
 	}
 	return std::make_pair(-1,-1);
 }
@@ -69,6 +72,8 @@ double GetTotalTime(void) {
 	    	              std::istreambuf_iterator<char>());
 	    size_t startPos = input.find("TET,");
 	 	sscanf(&(input.c_str()[startPos]), "TET,%f\n", &totalExec);
+	} else {
+		std::cerr << "Could not open output file" << std::endl;
 	}
 	return totalExec;
 }

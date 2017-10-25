@@ -6,7 +6,7 @@
 #include <map>
 #include <cuda.h>
 #include <cupti.h>
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 // #include <cupti_runtime_cbid.h>
 // #include <cupti_driver_cbid.h>
 #include <boost/thread/recursive_mutex.hpp>
@@ -25,7 +25,7 @@ private:
 	boost::recursive_mutex _mtx;
 	std::shared_ptr<LogInfo> _log;
 	bool _enabled;
-	boost::timer _runtime;
+	boost::timer::cpu_timer  _runtime;
 public: 
 	int PerformAction(TransferPtr t);
 	int PostTransfer(TransferPtr t);

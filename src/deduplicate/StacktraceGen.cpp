@@ -1,3 +1,4 @@
+#include "StacktraceGen.h"
 StackTraceGen::StackTraceGen(bool enabled, FILE * file) {
 	_enabled = enabled;
 	if (enabled == false)

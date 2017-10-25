@@ -37,7 +37,7 @@ std::pair<double, double> ParseResults(void) {
 		sscanf(input.c_str(), "%f,%f", &exact, &worst);
 		return std::make_pair(exact, worst);
 	} else {
-		std::cerr << "Could not open output file" << std::endl;
+		std::cerr << "Could not open parse result output file" << std::endl;
 	}
 	return std::make_pair(-1,-1);
 }
@@ -73,7 +73,7 @@ double GetTotalTime(void) {
 	    size_t startPos = input.find("TET,");
 	 	sscanf(&(input.c_str()[startPos]), "TET,%f\n", &totalExec);
 	} else {
-		std::cerr << "Could not open output file" << std::endl;
+		std::cerr << "Could not open timing info output file" << std::endl;
 	}
 	return totalExec;
 }

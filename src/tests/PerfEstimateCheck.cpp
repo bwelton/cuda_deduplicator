@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(launch_test) {
 		remove("timing_info.txt");	
 		BOOST_REQUIRE(t3.LaunchAndWait(boost::bind(TestProgramWithDuplicateTransfers, 0)) == 0);
 		double tet_fixed = GetTotalTime();		
-		sstd::cerr << "Iter-" << i << "," << "Exact-" << ret.first << ",Min-" << ret.second << ",TETDup-" << tet << ",TET-Fixed-" << tet_fixed << std::endl;
+		std::cerr << "Iter-" << i << "," << "Exact-" << ret.first << ",Min-" << ret.second << ",TETDup-" << tet << ",TET-Fixed-" << tet_fixed << std::endl;
 	}
 }
 

@@ -147,7 +147,7 @@ CUPTIEventHandler::~CUPTIEventHandler() {
 	cudaDeviceSynchronize();
 	cuptiActivityFlushAll(0);
 	std::stringstream ss;
-	boost::timer::cpu_times elapsed = timer.elapsed();
+	boost::timer::cpu_times elapsed = _runtime.elapsed();
 	ss << "TET," << elapsed.wall << std::endl;
 	std::string out = ss.str();	
 	_cupti_output->Write(out);

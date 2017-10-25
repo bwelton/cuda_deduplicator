@@ -101,3 +101,4 @@ BOOST_AUTO_TEST_CASE(launch_test) {
 	}
 }
 
+BOOST_AUTO_TEST_SUITE_END()

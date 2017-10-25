@@ -285,6 +285,7 @@ class CorrelateTimlineWithTiming:
 
 		print "Maximum Time Savings (NanoSeconds): " + str(exact)
 		print "Minimum Timing Savings (NanoSeconds): " + str(m)
+		return (exact,m)
 
 
 

@@ -33,7 +33,7 @@ std::pair<double, double> ParseResults(void) {
 	if (t.good()) {
 		std::string input((std::istreambuf_iterator<char>(t)),
 	    	              std::istreambuf_iterator<char>());
-		sscanf(input.c_str(), "%d,%d", &exact, &worst);
+		sscanf(input.c_str(), "%f,%f", &exact, &worst);
 		return std::make_pair(exact, worst);
 	}
 	return std::make_pair(-1,-1);
@@ -68,7 +68,7 @@ double GetTotalTime(void) {
 		std::string input((std::istreambuf_iterator<char>(t)),
 	    	              std::istreambuf_iterator<char>());
 	    size_t startPos = input.find("TET,");
-	 	sscanf(&(input.c_str()[startPos]), "TET,%d\n", &totalExec);
+	 	sscanf(&(input.c_str()[startPos]), "TET,%f\n", &totalExec);
 	}
 	return totalExec;
 }

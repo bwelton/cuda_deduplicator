@@ -14,3 +14,6 @@ export LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/tests/runs:$LD_LIBRARY_PATH
 cp @CMAKE_INSTALL_PREFIX@/tests/dedup_test_configure.conf @CMAKE_INSTALL_PREFIX@/tests/runs/dedup_settings.conf
 @LAUNCHER@ @CMAKE_INSTALL_PREFIX@/tests/cupti_test
 rm @CMAKE_INSTALL_PREFIX@/tests/runs/dedup_settings.conf
+cp @CMAKE_INSTALL_PREFIX@/tests/*.py @CMAKE_INSTALL_PREFIX@/tests/runs/
+@LAUNCHER@ @CMAKE_INSTALL_PREFIX@/tests/PerfEstimateCheck
+

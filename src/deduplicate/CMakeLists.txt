@@ -52,3 +52,6 @@ install(TARGETS dedup
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib/static)
+
+install(FILES ${PROJECT_SOURCE_DIR}/src/deduplicate/support/FileClasses.py ${PROJECT_SOURCE_DIR}/src/deduplicate/support/CorrelationRun.py ${PROJECT_SOURCE_DIR}/src/deduplicate/support/Iterators.py 
+        DESTINATION tests)

@@ -91,7 +91,13 @@ BOOST_AUTO_TEST_CASE(launch_test) {
 		BOOST_REQUIRE(t2.LaunchAndWait(boost::bind(TestProgramWithDuplicateTransfers, i)) == 0);
 		std::pair<double, double> ret = ProcessResults();
 		double tet = GetTotalTime();
-		std::cerr << "Iter-" << i << "," << "Exact-" << ret.first << ",Min-" << ret.second << ",TET-" << tet << std::endl;
+		TestingFixture t3;
+		remove("dedup_timeline.txt");
+		remove("first_timeline.txt");
+		remove("timing_info.txt");	
+		BOOST_REQUIRE(t3.LaunchAndWait(boost::bind(TestProgramWithDuplicateTransfers, 0)) == 0);
+		double tet_fixed = GetTotalTime();		
+		sstd::cerr << "Iter-" << i << "," << "Exact-" << ret.first << ",Min-" << ret.second << ",TETDup-" << tet << ",TET-Fixed-" << tet_fixed << std::endl;
 	}
 }
 

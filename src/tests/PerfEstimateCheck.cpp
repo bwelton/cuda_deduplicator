@@ -47,7 +47,7 @@ std::pair<double, double> ProcessResults(void) {
 	pid_t child_pid = fork();
 	if (child_pid == 0){
 		// Child process, perform action then exit
-		// RedirectOutputToFile();
+		RedirectOutputToFile();
 		system( "python CorrelationRun.py first_timeline.txt timing_info.txt timing_packet_corr.txt test_results.txt");
 		//std::cerr << "COULD NOT LAUNCH PYTHON!" << std::cerr;
 		exit(-1);
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(launch_test) {
 		remove("timing_info.txt");	
 		BOOST_REQUIRE(t3.LaunchAndWait(boost::bind(TestProgramWithDuplicateTransfers, 0)) == 0);
 		double tet_fixed = GetTotalTime();		
-		std::cerr << "Iter-" << i << "," << "Exact-" << ret.first << ",Min-" << ret.second << ",TETDup-" << tet << ",TET-Fixed-" << tet_fixed << std::endl;
+		std::cerr << "Iter=" << i << "," << "Exact=" << ret.first * 1000000000 << ",Min=" << ret.second * 1000000000 << ",TETDup=" << tet << ",TET-Fixed=" << tet_fixed << std::endl;
 	}
 }
 

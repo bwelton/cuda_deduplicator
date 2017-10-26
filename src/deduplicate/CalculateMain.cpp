@@ -16,5 +16,5 @@ int main(int argc, char * argv[]) {
 	std::vector<CombinedRecord> combo;
 	x.CombineTimelineCorrelation(timeline, correction, combo);
 	std::pair<uint64_t, uint64_t> est = x.GenerateEstimate(timing, combo);
-	std::cour << est.first  << "," << est.second << "," << finalTime << std::endl;
+	std::cout << est.first  << "," << est.second << "," << finalTime << std::endl;
 }

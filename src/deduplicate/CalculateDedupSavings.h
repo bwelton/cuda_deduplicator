@@ -19,6 +19,11 @@ typedef std::tuple<uint64_t, size_t, uint64_t, uint64_t, uint64_t, uint64_t> Com
 //                 corr id, type_key, cname_key, start_time, end_time,   procid, threadid,     size, runcorr, ctx, dev, stream,   
 typedef std::tuple<uint64_t, uint32_t, uint32_t,   uint64_t, uint64_t, uint64_t, uint64_t, uint64_t,     int, int, int, uint64_t > TimingRec;
 
+//                 corr id, cname_key, transferCname,  GPU Time,  CPU time,   procid, threadid,     size,  runcorr, ctx, dev, stream,   
+typedef std::tuple<uint64_t, uint32_t,  uint64_t,  uint64_t, uint64_t, uint64_t, uint64_t, uint64_t,     int, int, int, uint64_t > CUPTIRecord;
+
+struct CPUProcess;
+struct CUDAProcess;
 
 class CalculateDedupSavings {
 private:
@@ -34,4 +39,10 @@ public:
 	void CombineTimelineCorrelation(std::vector<TimelineRec> & timeline, 
 									std::vector<CorrelationRec> & correlation,
 									std::vector<CombinedRecord> & output);
+	void NormalizeProcessIDs(std::vector<CombinedRecord> & correlation,
+							std::vector<CUDAProcess> & procs);
+	bool IsTransfer(CUPTIRecord & a);
+	std::pair<uint64_t, uint64_t> GenerateEstimate(std::vector<TimingRec> & timing, 
+								                   std::vector<CombinedRecord> & correlation);
+
 };

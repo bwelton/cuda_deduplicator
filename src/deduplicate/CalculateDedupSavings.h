@@ -5,7 +5,10 @@
 #include <iostream>
 #include <sstream> 
 #include <utility> 
-#include <map>
+#include <memory>
+#include <cstdint>
+#include <cstring>
+#include <cassert>
 
 //               Timline id,   size, duplicate id
 typedef std::tuple<uint64_t, size_t, uint64_t> TimelineRec;
@@ -44,5 +47,6 @@ public:
 	bool IsTransfer(CUPTIRecord & a);
 	std::pair<uint64_t, uint64_t> GenerateEstimate(std::vector<TimingRec> & timing, 
 								                   std::vector<CombinedRecord> & correlation);
+	std::pair<uint64_t, uint64_t> CalculateProcessSavings(CUDAProcess & proc);
 
 };

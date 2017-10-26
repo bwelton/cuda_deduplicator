@@ -15,11 +15,55 @@ struct {
 	uint64_t procid;
 	uint64_t threadid;
 	bool matched;
+	uint64_t pos;
 	std::vector<CUPTIRecord> records;
 	std::vector<CombinedRecord> transferRecords;
+	std::string ASYNC;
 	CUDAProcess::CUDAProcess() : matched(false){
-
+		pos = 0;
+		ASYNC = std::string("Async");
 	}
+
+	bool IsSynchronization(CUPTIRecord & a, std::map<uint32_t, std::string> & typeKeys) {
+		uint32_t key = std::get<1>(a);
+		if (typeKeys[key].find(ASYNC) != std::string::npos) {
+			return false;
+		} 
+		return true;
+	}
+	bool IsTransfer(CUPTIRecord & a) {
+		if (std::get<2>(a) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	bool GetNextCUPTITransferOrSynchronization(CUPTIRecord & rec, int & type, std::map<uint32_t, std::string> & typeKeys) {
+		for (int i = pos; i < records.size(); i++) {
+			if (IsTransfer(records[i]) && IsSynchronization(records[i])){
+				rec = records[i];
+				pos = i + 1;
+				type = 3;
+				return true;
+			}
+			else if (IsTransfer(records[i])) {
+				rec = records[i];
+				pos = i + 1;
+				type = 1;
+				return true;
+			}
+			else if (IsSynchronization(records[i], typeKeys)) {
+				rec = records[i];
+				pos = i + 1;
+				type = 2;
+				return true;				
+			}
+		}
+		pos = records.size();
+		return false;
+	}
+
+
 	bool operator==(const CombinedRecord & a) {
 		if (std::get<4>(a) == procid && std::get<5>(a) == threadid)
 			return true;
@@ -87,6 +131,10 @@ bool CalculateDedupSavings::IsTransfer(CUPTIRecord & a) {
 		return true;
 	}
 	return false;
+}
+
+std::pair<bool, bool> CalculateDedupSavings::CalculateProcessSavings(CUDAProcess & proc) {
+
 }
 
 void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & correlation,
@@ -157,7 +205,7 @@ void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & co
 		}
 	}
 }	
-
+//         Min      Max
 std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vector<TimingRec> & timing, 
 																	  std::vector<CombinedRecord> & correlation) {
 	// Sort the timing records to get them in order 
@@ -213,6 +261,14 @@ std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vecto
 			std::get<10>(rec) = dev;
 			std::get<11>(rec) = stream;
 		}
+	}
+	NormalizeProcessIDs(correlation, procs);
+
+
+	// This will need to change when we have a multi-process model that is more reliable....
+	std::vector<std::pair<uint64_t, uint64_t> > timeSavedPerProc;
+	for (auto i : procs) {
+		for (auto z : i.)
 	}
 	return std::make_pair(0,0);
 }

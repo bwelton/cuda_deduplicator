@@ -134,7 +134,53 @@ bool CalculateDedupSavings::IsTransfer(CUPTIRecord & a) {
 }
 
 std::pair<bool, bool> CalculateDedupSavings::CalculateProcessSavings(CUDAProcess & proc) {
+	uint64_t min = 0;
+	uint64_t max = 0;
+	uint64_t ctrans = 0;
+	uint64_t gtrans = 0;
 
+	CUPTIRecord rec;
+	int type;
+	for (auto i : proc.transferRecords) {
+		while (proc.GetNextCUPTITransferOrSynchronization(rec, type, _typeKeys)){
+		// Check if transfers match, continue otherwise
+			if (type == 1) {
+				// if the sizes don't match, continue to next transfer....
+				if (std::get<7>(rec) != std::get<1>(i)) {
+					std::cerr << "Skipping a record" << std::endl;
+					continue;
+				}
+				if (std::get<2>(i) > 0) {
+					ctrans += std::get<4>(rec);
+					gtrans += std::get<3>(rec);
+				}
+			} else if (type == 2) {
+				min += ctrans;
+				max += ctrans + gtrans;
+				ctrans = 0;
+				gtrans = 0;
+				continue;
+			} else if (type == 3) {
+				// If the sizes match, we have a record match
+				if (std::get<7>(rec) == std::get<1>(i)) {
+					if (std::get<2>(i) > 0) {
+						ctrans += std::get<4>(rec);
+						gtrans += std::get<3>(rec);
+					}
+				}
+				min += ctrans;
+				max += ctrans + gtrans;
+				ctrans = 0;
+				gtrans = 0;
+				if (std::get<7>(rec) != std::get<1>(i)){
+					std::cerr << "Skipping a record" << std::endl;
+					continue;
+				}
+			}
+			break;
+		}
+	}
+	return std::make_pair(min,max);
 }
 
 void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & correlation,
@@ -268,9 +314,20 @@ std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vecto
 	// This will need to change when we have a multi-process model that is more reliable....
 	std::vector<std::pair<uint64_t, uint64_t> > timeSavedPerProc;
 	for (auto i : procs) {
-		for (auto z : i.)
+		timeSavedPerProc.push_back(CalculateProcessSavings(i));
 	}
-	return std::make_pair(0,0);
+	uint64_t min = std::numeric_limits<uint64_t>::max();
+	uint64_t max = 0;
+	for (auto i : timeSavedPerProc){
+		if (i.first < min) {
+			min = i.first;
+		} 
+		if (i.second > max) 
+		{
+			max = i.second;
+		}
+	}
+	return std::make_pair(min,max);
 }
 
 void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double & finalTime) {

@@ -38,7 +38,7 @@ typedef std::tuple<uint64_t, uint32_t, uint32_t,   uint64_t, uint64_t, uint64_t,
 //                 corr id, cname_key, transferCname,  GPU Time,  CPU time,   procid, threadid,     size,  runcorr, ctx, dev, stream,   
 typedef std::tuple<uint64_t, uint32_t,  uint64_t,  uint64_t, uint64_t, uint64_t, uint64_t, uint64_t,     int, int, int, uint64_t > CUPTIRecord;
 
-struct {
+struct CPUProcess {
 	uint64_t procid;
 	uint64_t threadid;
 	std::vector<CombinedRecord> transferRecords;
@@ -47,9 +47,9 @@ struct {
 			return true;
 		return false;
 	}
-} CPUProcess;
+};
 
-struct {
+struct CUDAProcess {
 	uint64_t procid;
 	uint64_t threadid;
 	bool matched;
@@ -124,7 +124,7 @@ struct {
 		}
 		return -1;
 	}
-} CUDAProcess;
+};
 
 
 

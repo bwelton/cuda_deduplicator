@@ -54,5 +54,14 @@ install(TARGETS dedup
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib/static)
 
+add_executable(calculate_savings "CalculateMain.cpp" "CalculateDedupSavings.cpp")
+target_link_libraries(calculate_savings ${Boost_LIBRARIES})
+target_link_libraries(calculate_savings "-lpthread")
+INCLUDE_DIRECTORIES(calculate_savings ${Boost_INCLUDE_DIRS})
+install(TARGETS calculate_savings
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib/static)
+
 install(FILES ${PROJECT_SOURCE_DIR}/src/deduplicate/support/FileClasses.py ${PROJECT_SOURCE_DIR}/src/deduplicate/support/CorrelationRun.py ${PROJECT_SOURCE_DIR}/src/deduplicate/support/Iterators.py 
         DESTINATION tests)

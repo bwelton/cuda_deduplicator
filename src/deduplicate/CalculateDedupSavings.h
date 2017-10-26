@@ -9,6 +9,18 @@
 #include <cstdint>
 #include <cstring>
 #include <cassert>
+#include <sys/wait.h>
+#include <stdio.h>
+#include <memory>
+#include <cstdlib>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <fstream>
+#include <streambuf>
+#include <utility>
+#include <tuple>
+#include <iostream>
 
 //               Timline id,   size, duplicate id
 typedef std::tuple<uint64_t, size_t, uint64_t> TimelineRec;

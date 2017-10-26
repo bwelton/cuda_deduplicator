@@ -2,6 +2,7 @@
 #pragma once
 #include <map>
 #include <tuple>
+#include <vector>
 #include <iostream>
 #include <sstream> 
 #include <utility> 
@@ -37,8 +38,95 @@ typedef std::tuple<uint64_t, uint32_t, uint32_t,   uint64_t, uint64_t, uint64_t,
 //                 corr id, cname_key, transferCname,  GPU Time,  CPU time,   procid, threadid,     size,  runcorr, ctx, dev, stream,   
 typedef std::tuple<uint64_t, uint32_t,  uint64_t,  uint64_t, uint64_t, uint64_t, uint64_t, uint64_t,     int, int, int, uint64_t > CUPTIRecord;
 
-struct CPUProcess;
-struct CUDAProcess;
+struct {
+	uint64_t procid;
+	uint64_t threadid;
+	std::vector<CombinedRecord> transferRecords;
+	bool operator==(const CombinedRecord & a) {
+		if (std::get<4>(a) == procid && std::get<5>(a) == threadid)
+			return true;
+		return false;
+	}
+} CPUProcess;
+
+struct {
+	uint64_t procid;
+	uint64_t threadid;
+	bool matched;
+	uint64_t pos;
+	std::vector<CUPTIRecord> records;
+	std::vector<CombinedRecord> transferRecords;
+	std::string ASYNC;
+	CUDAProcess::CUDAProcess() : matched(false){
+		pos = 0;
+		ASYNC = std::string("Async");
+	}
+
+	bool IsSynchronization(CUPTIRecord & a, std::map<uint32_t, std::string> & typeKeys) {
+		uint32_t key = std::get<1>(a);
+		if (typeKeys[key].find(ASYNC) != std::string::npos) {
+			return false;
+		} 
+		return true;
+	}
+	bool IsTransfer(CUPTIRecord & a) {
+		if (std::get<2>(a) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	bool GetNextCUPTITransferOrSynchronization(CUPTIRecord & rec, int & type, std::map<uint32_t, std::string> & typeKeys) {
+		for (int i = pos; i < records.size(); i++) {
+			if (IsTransfer(records[i]) && IsSynchronization(records[i])){
+				rec = records[i];
+				pos = i + 1;
+				type = 3;
+				return true;
+			}
+			else if (IsTransfer(records[i])) {
+				rec = records[i];
+				pos = i + 1;
+				type = 1;
+				return true;
+			}
+			else if (IsSynchronization(records[i], typeKeys)) {
+				rec = records[i];
+				pos = i + 1;
+				type = 2;
+				return true;				
+			}
+		}
+		pos = records.size();
+		return false;
+	}
+
+
+	bool operator==(const CombinedRecord & a) {
+		if (std::get<4>(a) == procid && std::get<5>(a) == threadid)
+			return true;
+		return false;
+	}
+	bool operator==(const CPUProcess & a) {
+		if (a.procid == procid && a.threadid == threadid)
+			return true;
+		return false;
+	}
+	int MatchEntries(CPUProcess & proc) {
+		int pos = 0;
+		for (auto i : records) {
+			if (std::get<2>(i) == 0) 
+				continue;
+			if (std::get<7>(i) == std::get<1>(proc.transferRecords[0]))
+				return pos;
+			else
+				pos++;
+		}
+		return -1;
+	}
+} CUDAProcess;
+
+
 
 class CalculateDedupSavings {
 private:

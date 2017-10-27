@@ -17,7 +17,7 @@ void CalculateDedupSavings::ReadTimeline(std::vector<TimelineRec> & records) {
 	assert(sizeof(uint64_t) != sizeof(size_t));
 	while (std::getline(t, line)) {
 		if (line.size() > 2) {
-			sscanf(line.c_str(),"%llu,%*u,%llu,%*s,%llu", &id, &size, &dupid);			
+			sscanf(line.c_str(),"%llu,%*u,%llu,%*s,%llu\n", &id, &size, &dupid);			
 			records.push_back(std::make_tuple(id, size, dupid));
 		}
 	}

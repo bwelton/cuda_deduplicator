@@ -44,7 +44,7 @@ bool CalculateDedupSavings::IsTransfer(CUPTIRecord & a) {
 	return false;
 }
 
-std::pair<bool, bool> CalculateDedupSavings::CalculateProcessSavings(CUDAProcess & proc) {
+std::pair<uint64_t, uint64_t> CalculateDedupSavings::CalculateProcessSavings(CUDAProcess & proc) {
 	uint64_t min = 0;
 	uint64_t max = 0;
 	uint64_t ctrans = 0;

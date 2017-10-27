@@ -1,7 +1,7 @@
 #include "CalculateDedupSavings.h"
 
 int main(int argc, char * argv[]) {
-	if (argv < 4) {
+	if (argc < 4) {
 		std::cerr << "Expected parameters: Timeline_File Correlation_file Timing_file" << std::endl;
 		return -1;
 	}

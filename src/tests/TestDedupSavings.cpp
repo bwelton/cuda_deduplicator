@@ -33,8 +33,6 @@ BOOST_AUTO_TEST_CASE(TestReadTimeline) {
 	}
 }
 
-std::string CreateFakeCorrelation(size_t numProcs, size_t numThreads, size_t numStreams, std::vector<uint64_t> ids, 
-		std::vector<size_t> sizes, std::vector<uint64_t> & streams, std::vector<uint64_t> & procid, std::vector<uint64_t> & threadid) 
 
 BOOST_AUTO_TEST_CASE(TestReadCorrelationSimple) {
 	std::vector<uint64_t> ids;
@@ -57,7 +55,7 @@ BOOST_AUTO_TEST_CASE(TestReadCorrelationSimple) {
 	CalculateDedupSavings x("BLANK","ReadCorrelationTest.txt","BLANK");
 	std::vector<CorrelationRec> records;
 	x.ReadCorrelation(records);
-	
+
 	uint64_t id, stream, procid, threadid;
 	for (int i = 0;  i < records.size(); i++) {
 		std::tie(id, stream, procid, threadid) = records[i];

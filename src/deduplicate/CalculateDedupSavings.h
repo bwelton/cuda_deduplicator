@@ -59,7 +59,7 @@ struct CUDAProcess {
 	std::vector<CUPTIRecord> records;
 	std::vector<CombinedRecord> transferRecords;
 	std::string ASYNC;
-	CUDAProcess::CUDAProcess() : matched(false){
+	CUDAProcess() : matched(false){
 		pos = 0;
 		ASYNC = std::string("Async");
 	}
@@ -80,7 +80,7 @@ struct CUDAProcess {
 
 	bool GetNextCUPTITransferOrSynchronization(CUPTIRecord & rec, int & type, std::map<uint32_t, std::string> & typeKeys) {
 		for (int i = pos; i < records.size(); i++) {
-			if (IsTransfer(records[i]) && IsSynchronization(records[i])){
+			if (IsTransfer(records[i]) && IsSynchronization(records[i], typeKeys)){
 				rec = records[i];
 				pos = i + 1;
 				type = 3;

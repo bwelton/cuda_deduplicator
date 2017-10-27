@@ -202,7 +202,6 @@ std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vecto
 			currentRecord = corrid;
 		}
 		if (type_key == 1 || type_key == 2){
-			cname,  &corrid, &start_time, &end_time, &procid, &threadid
 			std::get<0>(rec) = corrid;
 			std::get<1>(rec) = cname_key;
 			std::get<4>(rec) = std::get<4>(rec) + (end_time - start_time);
@@ -277,7 +276,7 @@ void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double 
 		}
 		else if (line.find(TET) != std::string::npos) {
 			sscanf(line.c_str(), "%*s,%lf", &finalTime);
-			return
+			return;
 		} else {
 			assert("WE SHOULDN'T BE HERE" == 0);
 		}

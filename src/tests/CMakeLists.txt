@@ -115,6 +115,15 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS launch_check
         RUNTIME DESTINATION tests)
 
+add_executable(TestDedupSavings "TestDedupSavings.cpp")
+target_link_libraries(TestDedupSavings ${Boost_LIBRARIES})
+target_link_libraries(TestDedupSavings "-lpthread")
+INCLUDE_DIRECTORIES(TestDedupSavings ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(TestDedupSavings "${CMAKE_SOURCE_DIR}/src/deduplicate")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+install(TARGETS TestDedupSavings
+        RUNTIME DESTINATION tests)
+
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/scripts)
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/tests/LoadSpackModules.py.in"

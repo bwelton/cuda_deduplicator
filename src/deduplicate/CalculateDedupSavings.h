@@ -128,8 +128,6 @@ struct CUDAProcess {
 	}
 };
 
-
-
 class CalculateDedupSavings {
 private:
 	char * _timeline_file;

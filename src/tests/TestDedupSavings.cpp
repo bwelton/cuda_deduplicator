@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(TestReadCorrelationSimple) {
 	std::vector<uint64_t> streams;
 	std::vector<uint64_t> procids;
 	std::vector<uint64_t> threads;
-	std::string ret = CreateFakeCorrelation(1,1,1,ids, sizes, streams, procid, threadid);
+	std::string ret = CreateFakeCorrelation(1,1,1,ids, sizes, streams, procids, threads);
 	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
 	ofs << ret;
 	ofs.close();

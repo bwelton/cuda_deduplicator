@@ -148,5 +148,7 @@ public:
 	std::pair<uint64_t, uint64_t> GenerateEstimate(std::vector<TimingRec> & timing, 
 								                   std::vector<CombinedRecord> & correlation);
 	std::pair<uint64_t, uint64_t> CalculateProcessSavings(CUDAProcess & proc);
+	// For debug purposes
+	int NameToId(std::string name);
 
 };

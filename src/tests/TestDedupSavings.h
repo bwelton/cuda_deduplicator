@@ -54,3 +54,51 @@ std::string CreateFakeCorrelation(size_t numProcs, size_t numThreads, size_t num
 	}
 	return ss.str();
 }
+
+std::string CreateFakeCUPTIRand(size_t count, std::vector<TimingRec> & recs, std::vector<std::string> & cnames) {
+	std::vector<std::string> types = {std::string("NONO"), std::string("RR"), std::string("DR"), std::string("CPY")};
+	std::string randomChars = std::string("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+	std::stringstream ss;
+	TimingRec rec;
+	for (uint64_t i = 0; i < count; i++) {
+		rec = std::make_tuple(i+1, rand() % 3+1, rand() % 25 + 1, rand() % 26000 + 1, rand() % 26000 + 4, 
+			rand() % 20000 + 1, rand() % 2000000 + 1, rand() % 20000 + 1, rand() % 25, rand() % 30, rand() % 20, rand() % 50);
+		uint64_t type = std::get<1>(rec);
+		std::string name;
+		for(uint32_t q = 0; q < std::get<2>(rec); q++) {
+			name = name + std::string(randomChars[rand() % randomChars.size() - 1]);
+		}
+		cnames.push_back(name);
+		if (type == 1 || type == 2) {
+			ss << types[type] << "," << name << "," << std::get<0>(rec) << "," << std::get<3>(rec) << "," << std::get<4>(rec) << "," << std::get<5>(rec) << "," << std::get<6>(rec) << std::endl;
+			std::tie(std::get<2>(rec),std::get<7>(rec),std::get<8>(rec),std::get<9>(rec),std::get<10>(rec),std::get<11>(rec)) = std::make_tuple(0,0,0,0,0);
+		} else if (type == 3) {
+			ss << type[type] << "," << name << "," << std::get<0>(rec) << "," << std::get<3>(rec) << "," << std::get<4>(rec) << "," << std::get<7>(rec) << "," << std::get<8>(rec) << "," << std::get<9>(rec) << "," << std::get<10>(rec) << "," << std::get<11>(rec) << std::endl;
+			std::tie( std::get<2>(rec), std::get<6>(rec)) = std::make_tuple(0,0);
+		} else {
+			assert("WE SHOULD NOT BE HERE" == 0);
+		}
+		recs.push_back(rec);
+	}
+	ss << "TET,931\n";
+
+	return ss.str();
+	// std::map<uint64_t, uint64_t> cpuToGPUStreamMap;
+	// std::map<uint64_t, uint64_t> cpuToGPUProcMap;
+	// std::map<uint64_t, uint64_t> cpuToGPUThreadMap;
+	// 	    //         coorID,   id,        size,    stream,     proc,  thread
+	// typedef std::tuple<uint64_t, uint64_t, size_t, uint64_t, uint64_t, uint64_t> CUPTITransfer;
+
+	// std::vector<CUPTITransfer> cuTransfers;
+	// uint64_t currentCorrId = rand() % 10000 + 1;
+	// for (int i = 0; i < transIds.size(); i++) {
+	// 	if (cpuTo)
+	// }
+
+	// Begin making records.....
+	// Start by making 
+	
+}
+
+
+

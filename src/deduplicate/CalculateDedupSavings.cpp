@@ -242,7 +242,14 @@ std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vecto
 	}
 	return std::make_pair(min,max);
 }
-
+int CalculateDedupSavings::NameToId(std::string name){
+	for(auto i : _typeKeys) {
+		if (i.second == name) {
+			return i.first;
+		}
+	}
+	return -1;
+}
 void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double & finalTime) {
 	_typeKeys.clear();
 	std::map<std::string, uint32_t> keyToId;
@@ -265,20 +272,21 @@ void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double 
 	while (std::getline(t, line)) {
 		corrid = 0; start_time = 0; end_time = 0; procid = 0; threadid = 0; size = 0; stream = 0;
 		type_key = 0; cname_key = 0; runcorr = 0; ctx = 0; dev = 0;
+		std::replace( line.begin(), line.end(), ',', ' ');
 		if (line.find(RR) != std::string::npos || line.find(DR) != std::string::npos) {
-			sscanf(line.c_str(), "%*s,%s,%llu,%llu,%llu,%llu,%llu", cname,  &corrid, &start_time, &end_time, &procid, &threadid);
+			sscanf(line.c_str(), "%*s %s %llu %llu %llu %llu %llu", cname,  &corrid, &start_time, &end_time, &procid, &threadid);
 			if(line.find(RR) != std::string::npos)
 				type_key = 1;
 			else
 				type_key = 2;
 		}
 		else if (line.find(CPY) != std::string::npos) {
-			sscanf(line.c_str(), "%*s,%s,%llu,%llu,%llu,%llu,%d,%d,%d,%llu", cname,  &corrid, &start_time, &end_time, 
+			sscanf(line.c_str(), "%*s %s %llu %llu %llu %llu %d %d %d %llu", cname,  &corrid, &start_time, &end_time, 
 				&size, &runcorr, &ctx, &dev, &stream);
 			type_key = 3;
 		}
 		else if (line.find(TET) != std::string::npos) {
-			sscanf(line.c_str(), "%*s,%lf", &finalTime);
+			sscanf(line.c_str(), "%*s %lf", &finalTime);
 			break;
 		} else {
 			assert("WE SHOULDN'T BE HERE" == 0);

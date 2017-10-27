@@ -66,6 +66,27 @@ BOOST_AUTO_TEST_CASE(TestReadCorrelationSimple) {
 	}
 }
 
+BOOST_AUTO_TEST_CASE(TestReadTimingInfo) {
+	std::vector<TimingRec> recs;
+	std::vector<std::string> cnames;
+	std::string ret = CreateFakeCUPTIRand(10000, recs, cnames);
+	std::ofstream ofs ("ReadCUPTITest.txt", std::ofstream::out);
+	ofs << ret;
+	ofs.close();
+
+	CalculateDedupSavings x("BLANK","BLANK","ReadCUPTITest.txt");
+	std::vector<TimingRec> records;
+	double finalTime;
+	x.ReadTiming(records, finalTime);
+	BOOST_CHECK_EQUAL(records.size(), recs.size());
+
+	for(int i = 0; i < records.size(); i++) {
+		int nameid = x.NameToId(cnames[i]);
+		BOOST_CHECK(nameid != -1);
+		std::get<2>(recs[i]) = nameid;
+		BOOST_CHECK_EQUAL(recs[i], records[i]);
+	}
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()

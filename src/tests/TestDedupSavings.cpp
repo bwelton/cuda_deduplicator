@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(TestReadTimingInfo) {
 		BOOST_CHECK(nameid != -1);
 		std::get<2>(recs[i]) = nameid;
 		if (recs[i] != records[i]) {
-			BOOST_CHECK_EQUAL("Record not equal" , i);
+			std::cerr << "Record not equal "  << i << std::endl;
 		}
 
 	}

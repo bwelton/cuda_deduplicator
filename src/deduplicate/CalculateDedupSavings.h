@@ -22,6 +22,8 @@
 #include <utility>
 #include <tuple>
 #include <iostream>
+#include <algorithm>
+#include <functional>
 
 //               Timline id,   size, duplicate id
 typedef std::tuple<uint64_t, size_t, uint64_t> TimelineRec;

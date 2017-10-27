@@ -21,6 +21,7 @@ void CalculateDedupSavings::ReadTimeline(std::vector<TimelineRec> & records) {
 			records.push_back(std::make_tuple(id, size, dupid));
 		}
 	}
+	std::cerr << "We have read " << records.size() << " records from Timeline file" << std::endl;
 }
 void CalculateDedupSavings::ReadCorrelation(std::vector<CorrelationRec> & records) {
 	std::ifstream t(_correlation_file);
@@ -35,6 +36,7 @@ void CalculateDedupSavings::ReadCorrelation(std::vector<CorrelationRec> & record
 			records.push_back(std::make_tuple(id, stream, procid, threadid));
 		}
 	}	
+	std::cerr << "We have read " << records.size() << " records from Correlation file" << std::endl;
 }
 
 bool CalculateDedupSavings::IsTransfer(CUPTIRecord & a) {
@@ -292,6 +294,7 @@ void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double 
 		}
 		records.push_back((std::make_tuple(corrid,type_key,cname_key,start_time,end_time,procid,threadid,size_t(size),runcorr,ctx,dev,stream)));
 	}
+	std::cerr << "We have read " << records.size() << " records from ReadTiming file" << std::endl;
 }
 
 void CalculateDedupSavings::CombineTimelineCorrelation(std::vector<TimelineRec> & timeline, 

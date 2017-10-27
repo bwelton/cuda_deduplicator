@@ -115,7 +115,7 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS launch_check
         RUNTIME DESTINATION tests)
 
-add_executable(TestDedupSavings "TestDedupSavings.cpp")
+add_executable(TestDedupSavings "TestDedupSavings.cpp" "${CMAKE_SOURCE_DIR}/src/deduplicate/CalculateDedupSavings.cpp")
 target_link_libraries(TestDedupSavings ${Boost_LIBRARIES})
 target_link_libraries(TestDedupSavings "-lpthread")
 INCLUDE_DIRECTORIES(TestDedupSavings ${Boost_INCLUDE_DIRS})

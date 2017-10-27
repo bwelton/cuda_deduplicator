@@ -278,7 +278,7 @@ void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double 
 		}
 		else if (line.find(TET) != std::string::npos) {
 			sscanf(line.c_str(), "%*s,%lf", &finalTime);
-			return;
+			break;
 		} else {
 			assert("WE SHOULDN'T BE HERE" == 0);
 		}

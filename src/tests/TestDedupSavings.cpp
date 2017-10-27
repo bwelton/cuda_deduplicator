@@ -84,7 +84,10 @@ BOOST_AUTO_TEST_CASE(TestReadTimingInfo) {
 		int nameid = x.NameToId(cnames[i]);
 		BOOST_CHECK(nameid != -1);
 		std::get<2>(recs[i]) = nameid;
-		BOOST_CHECK_EQUAL(recs[i], records[i]);
+		if (recs[i] != records[i]) {
+			BOOST_CHECK_EQUAL("Record not equal" , i);
+		}
+
 	}
 }
 

@@ -12,7 +12,7 @@ BOOST_AUTO_TEST_CASE(TestReadTimeline) {
 	std::vector<std::string> types; 
 
 	// Generate the fake timeline
-	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, duplicates, types);
+	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
 	
 	// Write the timeline to a file
 	std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);

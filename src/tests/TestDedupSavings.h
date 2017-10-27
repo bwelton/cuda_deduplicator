@@ -19,10 +19,10 @@ std::string CreateFakeTimeline(size_t elements, std::vector<uint64_t> & ids,
 		hashes.push_back(rand()%10000000);
 		sizes.push_back(rand()%10000000);
 		types.push_back(((rand() % 2 == 0) ? std::string("DeviceToHost") : std::string("HostToDevice")));
-		if (rand() % 2 == 0){
+		if (rand() % 2 == 0 && i > 2){
 			duplicates.push_back(0);
 		} else {
-			duplicates.push_back((rand() % (i -1)) + 1);
+			duplicates.push_back((rand() % (i - 1)) + 1);
 		}
 		ss << ids[i] << "," << hashes[i] << "," << sizes[i] << "," << types[i] << "," << duplicates[i] << std::endl;
 	}

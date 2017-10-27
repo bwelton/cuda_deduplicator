@@ -66,15 +66,21 @@ std::string CreateFakeCUPTIRand(size_t count, std::vector<TimingRec> & recs, std
 		uint64_t type = std::get<1>(rec);
 		std::string name;
 		for(uint32_t q = 0; q < std::get<2>(rec); q++) {
-			name = name + std::string(randomChars[rand() % randomChars.size() - 1]);
+			name = name + randomChars[rand() % randomChars.size() - 1];
 		}
 		cnames.push_back(name);
 		if (type == 1 || type == 2) {
 			ss << types[type] << "," << name << "," << std::get<0>(rec) << "," << std::get<3>(rec) << "," << std::get<4>(rec) << "," << std::get<5>(rec) << "," << std::get<6>(rec) << std::endl;
-			std::tie(std::get<2>(rec),std::get<7>(rec),std::get<8>(rec),std::get<9>(rec),std::get<10>(rec),std::get<11>(rec)) = std::make_tuple(0,0,0,0,0);
+			std::get<2>(rec) = 0; 
+			std::get<7>(rec) = 0; 
+			std::get<8>(rec) = 0; 
+			std::get<9>(rec) = 0; 
+			std::get<10>(rec) = 0; 
+			std::get<11>(rec) = 0;
 		} else if (type == 3) {
 			ss << type[type] << "," << name << "," << std::get<0>(rec) << "," << std::get<3>(rec) << "," << std::get<4>(rec) << "," << std::get<7>(rec) << "," << std::get<8>(rec) << "," << std::get<9>(rec) << "," << std::get<10>(rec) << "," << std::get<11>(rec) << std::endl;
-			std::tie( std::get<2>(rec), std::get<6>(rec)) = std::make_tuple(0,0);
+			std::get<2>(rec) = 0;
+		    std::get<6>(rec) = 0;
 		} else {
 			assert("WE SHOULD NOT BE HERE" == 0);
 		}

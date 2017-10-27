@@ -26,10 +26,48 @@ BOOST_AUTO_TEST_CASE(TestReadTimeline) {
 	uint64_t id, dupid;
 	size_t size;
 	for (int i = 0; i < records.size(); i++) {
-		std::tie(id, dupid, size) = records[i];
+		std::tie(id, size, dupid) = records[i];
 		BOOST_CHECK_EQUAL(id, ids[i]);
 		BOOST_CHECK_EQUAL(dupid, duplicates[i]);
 		BOOST_CHECK_EQUAL(size, sizes[i]);
 	}
 }
+
+std::string CreateFakeCorrelation(size_t numProcs, size_t numThreads, size_t numStreams, std::vector<uint64_t> ids, 
+		std::vector<size_t> sizes, std::vector<uint64_t> & streams, std::vector<uint64_t> & procid, std::vector<uint64_t> & threadid) 
+
+BOOST_AUTO_TEST_CASE(TestReadCorrelationSimple) {
+	std::vector<uint64_t> ids;
+	std::vector<uint32_t> hashes; 
+	std::vector<size_t> sizes; 
+	std::vector<uint64_t> duplicates;
+	std::vector<std::string> types; 
+
+	// Generate the fake timeline
+	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
+
+	std::vector<uint64_t> streams;
+	std::vector<uint64_t> procids;
+	std::vector<uint64_t> threads;
+	std::string ret = CreateFakeCorrelation(1,1,1,ids, sizes, streams, procid, threadid);
+	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+	ofs << ret;
+	ofs.close();
+	
+	CalculateDedupSavings x("BLANK","ReadCorrelationTest.txt","BLANK");
+	std::vector<CorrelationRec> records;
+	x.ReadCorrelation(records);
+	
+	uint64_t id, stream, procid, threadid;
+	for (int i = 0;  i < records.size(); i++) {
+		std::tie(id, stream, procid, threadid) = records[i];
+		BOOST_CHECK_EQUAL(id, ids[i]);
+		BOOST_CHECK_EQUAL(stream, streams[i]);
+		BOOST_CHECK_EQUAL(threadid, threads[i]);		
+		BOOST_CHECK_EQUAL(procid, procids[i]);
+	}
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END()

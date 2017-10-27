@@ -78,7 +78,7 @@ std::string CreateFakeCUPTIRand(size_t count, std::vector<TimingRec> & recs, std
 			std::get<10>(rec) = 0; 
 			std::get<11>(rec) = 0;
 		} else if (type == 3) {
-			ss << type[type] << "," 
+			ss << types[type] << "," 
 			   << name << "," 
 			   << std::get<0>(rec) 
 			   << ","

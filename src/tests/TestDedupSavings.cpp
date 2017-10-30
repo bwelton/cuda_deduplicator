@@ -66,6 +66,105 @@ BOOST_AUTO_TEST_CASE(TestReadCorrelationSimple) {
 	}
 }
 
+
+BOOST_AUTO_TEST_CASE(TestReadCorrelationFourProcs) {
+	std::vector<uint64_t> ids;
+	std::vector<uint32_t> hashes; 
+	std::vector<size_t> sizes; 
+	std::vector<uint64_t> duplicates;
+	std::vector<std::string> types; 
+
+	// Generate the fake timeline
+	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
+
+	std::vector<uint64_t> streams;
+	std::vector<uint64_t> procids;
+	std::vector<uint64_t> threads;
+	std::string ret = CreateFakeCorrelation(4,1,1,ids, sizes, streams, procids, threads);
+	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+	ofs << ret;
+	ofs.close();
+	
+	CalculateDedupSavings x("BLANK","ReadCorrelationTest.txt","BLANK");
+	std::vector<CorrelationRec> records;
+	x.ReadCorrelation(records);
+
+	uint64_t id, stream, procid, threadid;
+	for (int i = 0;  i < records.size(); i++) {
+		std::tie(id, stream, procid, threadid) = records[i];
+		BOOST_CHECK_EQUAL(id, ids[i]);
+		BOOST_CHECK_EQUAL(stream, streams[i]);
+		BOOST_CHECK_EQUAL(threadid, threads[i]);		
+		BOOST_CHECK_EQUAL(procid, procids[i]);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(TestReadCorrelationFourProcsFourStreams) {
+	std::vector<uint64_t> ids;
+	std::vector<uint32_t> hashes; 
+	std::vector<size_t> sizes; 
+	std::vector<uint64_t> duplicates;
+	std::vector<std::string> types; 
+
+	// Generate the fake timeline
+	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
+
+	std::vector<uint64_t> streams;
+	std::vector<uint64_t> procids;
+	std::vector<uint64_t> threads;
+	std::string ret = CreateFakeCorrelation(4,1,4,ids, sizes, streams, procids, threads);
+	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+	ofs << ret;
+	ofs.close();
+	
+	CalculateDedupSavings x("BLANK","ReadCorrelationTest.txt","BLANK");
+	std::vector<CorrelationRec> records;
+	x.ReadCorrelation(records);
+
+	uint64_t id, stream, procid, threadid;
+	for (int i = 0;  i < records.size(); i++) {
+		std::tie(id, stream, procid, threadid) = records[i];
+		BOOST_CHECK_EQUAL(id, ids[i]);
+		BOOST_CHECK_EQUAL(stream, streams[i]);
+		BOOST_CHECK_EQUAL(threadid, threads[i]);		
+		BOOST_CHECK_EQUAL(procid, procids[i]);
+	}
+}
+
+
+BOOST_AUTO_TEST_CASE(TestReadCorrelationFourProcsFourThreadsFourStreams) {
+	std::vector<uint64_t> ids;
+	std::vector<uint32_t> hashes; 
+	std::vector<size_t> sizes; 
+	std::vector<uint64_t> duplicates;
+	std::vector<std::string> types; 
+
+	// Generate the fake timeline
+	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
+
+	std::vector<uint64_t> streams;
+	std::vector<uint64_t> procids;
+	std::vector<uint64_t> threads;
+	std::string ret = CreateFakeCorrelation(4,4,4,ids, sizes, streams, procids, threads);
+	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+	ofs << ret;
+	ofs.close();
+	
+	CalculateDedupSavings x("BLANK","ReadCorrelationTest.txt","BLANK");
+	std::vector<CorrelationRec> records;
+	x.ReadCorrelation(records);
+
+	uint64_t id, stream, procid, threadid;
+	for (int i = 0;  i < records.size(); i++) {
+		std::tie(id, stream, procid, threadid) = records[i];
+		BOOST_CHECK_EQUAL(id, ids[i]);
+		BOOST_CHECK_EQUAL(stream, streams[i]);
+		BOOST_CHECK_EQUAL(threadid, threads[i]);		
+		BOOST_CHECK_EQUAL(procid, procids[i]);
+	}
+}
+
+
 BOOST_AUTO_TEST_CASE(TestReadTimingInfo) {
 	std::vector<TimingRec> recs;
 	std::vector<std::string> cnames;
@@ -93,43 +192,87 @@ BOOST_AUTO_TEST_CASE(TestReadTimingInfo) {
 }
 
 
-// BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelation) {
-// 	std::vector<uint64_t> ids;
-// 	std::vector<uint32_t> hashes; 
-// 	std::vector<size_t> sizes; 
-// 	std::vector<uint64_t> duplicates;
-// 	std::vector<std::string> types; 
+BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelation) {
+	std::vector<uint64_t> ids;
+	std::vector<uint32_t> hashes; 
+	std::vector<size_t> sizes; 
+	std::vector<uint64_t> duplicates;
+	std::vector<std::string> types; 
 
-// 	// Generate the fake timeline
-// 	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
-// 	std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
-// 	ofs << out_timeline;
-// 	ofs.close();
+	// Generate the fake timeline
+	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
+	std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
+	ofs << out_timeline;
+	ofs.close();
 
-// 	std::vector<uint64_t> streams;
-// 	std::vector<uint64_t> procids;
-// 	std::vector<uint64_t> threads;
-// 	std::string ret = CreateFakeCorrelation(1,1,1,ids, sizes, streams, procids, threads);
-// 	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
-// 	ofs << ret;
-// 	ofs.close();
-// 	// Have dedup savings read it back to us. 
-// 	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","BLANK");
-// 	std::vector<TimelineRec> tlineRecords;
-// 	x.ReadTimeline(records);
-// 	std::vector<CorrelationRec> records;
-// 	x.ReadCorrelation(records);
-// 	std::vector<CombinedRecord> output;
-// 	x.CombineTimelineCorrelation(tlineRecords, records, output);
-// 	BOOST_CHECK_EQUAL(output.size(), tlineRecords.size());
-// 	BOOST_CHECK_EQUAL(output.size(), records.size());
-// 	for(int i = 0; i < output.size(); i++) {
-// 		CombinedRecord tmp = std::make_tuple(std::get<0>(tlineRecords[i]), std::get<1>(tlineRecords[i]), std::get<2>(tlineRecords[i]),
-// 								std::get<1>(records[i]), std::get<2>(records[i]), std::get<3>(records[i]));
-// 		if (tmp != output[i]){
-// 			std::cerr << "Record not equal "  << i << std::endl;			
-// 		}
-// 	}
-// }
+	std::vector<uint64_t> streams;
+	std::vector<uint64_t> procids;
+	std::vector<uint64_t> threads;
+	std::string ret = CreateFakeCorrelation(1,1,1,ids, sizes, streams, procids, threads);
+	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+	ofs << ret;
+	ofs.close();
+	// Have dedup savings read it back to us. 
+	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","BLANK");
+	std::vector<TimelineRec> tlineRecords;
+	x.ReadTimeline(records);
+	std::vector<CorrelationRec> records;
+	x.ReadCorrelation(records);
+	std::vector<CombinedRecord> output;
+	x.CombineTimelineCorrelation(tlineRecords, records, output);
+	BOOST_CHECK_EQUAL(output.size(), tlineRecords.size());
+	BOOST_CHECK_EQUAL(output.size(), records.size());
+	for(int i = 0; i < output.size(); i++) {
+		CombinedRecord tmp = std::make_tuple(std::get<0>(tlineRecords[i]), std::get<1>(tlineRecords[i]), std::get<2>(tlineRecords[i]),
+								std::get<1>(records[i]), std::get<2>(records[i]), std::get<3>(records[i]));
+		if (tmp != output[i]){
+			std::cerr << "Record not equal "  << i << std::endl;
+			std::cerr << "Expected: " << PrintCombinedRecord(tmp) << std::endl;
+			std::cerr << "Got: " << PrintCombinedRecord(output[i]) << std::endl;	
+		}
+	}
+}
+
+BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelationFourProcsFourStreams) {
+	std::vector<uint64_t> ids;
+	std::vector<uint32_t> hashes; 
+	std::vector<size_t> sizes; 
+	std::vector<uint64_t> duplicates;
+	std::vector<std::string> types; 
+
+	// Generate the fake timeline
+	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
+	std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
+	ofs << out_timeline;
+	ofs.close();
+
+	std::vector<uint64_t> streams;
+	std::vector<uint64_t> procids;
+	std::vector<uint64_t> threads;
+	std::string ret = CreateFakeCorrelation(4,1,4,ids, sizes, streams, procids, threads);
+	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+	ofs << ret;
+	ofs.close();
+	// Have dedup savings read it back to us. 
+	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","BLANK");
+	std::vector<TimelineRec> tlineRecords;
+	x.ReadTimeline(records);
+	std::vector<CorrelationRec> records;
+	x.ReadCorrelation(records);
+	std::vector<CombinedRecord> output;
+	x.CombineTimelineCorrelation(tlineRecords, records, output);
+	BOOST_CHECK_EQUAL(output.size(), tlineRecords.size());
+	BOOST_CHECK_EQUAL(output.size(), records.size());
+	for(int i = 0; i < output.size(); i++) {
+		CombinedRecord tmp = std::make_tuple(std::get<0>(tlineRecords[i]), std::get<1>(tlineRecords[i]), std::get<2>(tlineRecords[i]),
+								std::get<1>(records[i]), std::get<2>(records[i]), std::get<3>(records[i]));
+		if (tmp != output[i]){
+			std::cerr << "Record not equal "  << i << std::endl;
+			std::cerr << "Expected: " << PrintCombinedRecord(tmp) << std::endl;
+			std::cerr << "Got: " << PrintCombinedRecord(output[i]) << std::endl;	
+		}
+	}
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

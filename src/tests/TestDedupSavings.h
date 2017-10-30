@@ -18,6 +18,13 @@ std::string PrintTimelineRec(TimingRec & rec){
 	return ss.str();
 }
 
+std::string PrintCombinedRecord(CombinedRecord & rec) {
+	std::stringstream ss;	
+	ss << std::get<0>(rec) << "," << std::get<1>(rec) << "," << std::get<2>(rec) << ","
+	   << std::get<3>(rec) << "," << std::get<4>(rec) << "," << std::get<5>(rec);
+	return ss.str();
+}
+
 std::string CreateFakeTimeline(size_t elements, std::vector<uint64_t> & ids, 
 							   std::vector<uint32_t> & hashes, std::vector<size_t> & sizes, 
 							   std::vector<std::string> & types, std::vector<uint64_t> & duplicates) {

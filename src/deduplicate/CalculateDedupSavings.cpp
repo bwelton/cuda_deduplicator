@@ -1,5 +1,5 @@
 #include "CalculateDedupSavings.h"
-#define DEBUG 1
+//#define DEBUG 1
 CalculateDedupSavings::CalculateDedupSavings(char * timeline_file, char * correlation_file, char * timing_file) :
 	_timeline_file(strdup(timeline_file)), _correlation_file(strdup(correlation_file)), _timing_file(strdup(timing_file))
 {

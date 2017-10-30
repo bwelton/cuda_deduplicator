@@ -276,19 +276,19 @@ void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double 
 #ifdef DEBUG
 		std::cerr << line << std::endl;
 #endif
-		if (line.find(RR) != std::string::npos || line.find(DR) != std::string::npos) {
+		if (line.compare(0,3,RR) == 0 || line.compare(0,3,DR) == 0) {
 			sscanf(line.c_str(), "%*s %s %llu %llu %llu %llu %llu", cname,  &corrid, &start_time, &end_time, &procid, &threadid);
-			if(line.find(RR) != std::string::npos)
+			if(line.compare(0,3,RR) == 0)
 				type_key = 1;
 			else
 				type_key = 2;
 		}
-		else if (line.find(CPY) != std::string::npos) {
+		else if (line.compare(0,3,CPY) == 0) {
 			sscanf(line.c_str(), "%*s %s %llu %llu %llu %llu %d %d %d %llu", cname,  &corrid, &start_time, &end_time, 
 				&size, &runcorr, &ctx, &dev, &stream);
 			type_key = 3;
 		}
-		else if (line.find(TET) != std::string::npos) {
+		else if (line.compare(0,3,TET) == 0) {
 			sscanf(line.c_str(), "%*s %lf", &finalTime);
 			break;
 		} else {

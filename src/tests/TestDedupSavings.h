@@ -9,6 +9,15 @@
 #include <sstream>      
 #include <time.h>
 
+std::string PrintTimelineRec(TimingRec & rec){
+	std::stringstream ss;	
+	for(int i = 0; i < std::tuple_size<decltype(rec)>::value; i++){
+		ss << std::get<i>(rec) << ",";
+	}
+	ss << std::endl;
+	return ss.str();
+}
+
 std::string CreateFakeTimeline(size_t elements, std::vector<uint64_t> & ids, 
 							   std::vector<uint32_t> & hashes, std::vector<size_t> & sizes, 
 							   std::vector<std::string> & types, std::vector<uint64_t> & duplicates) {

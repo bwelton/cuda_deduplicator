@@ -86,10 +86,36 @@ BOOST_AUTO_TEST_CASE(TestReadTimingInfo) {
 		std::get<2>(recs[i]) = nameid;
 		if (recs[i] != records[i]) {
 			std::cerr << "Record not equal "  << i << std::endl;
+			std::cerr << PrintTimelineRec(recs[i]) << std::endl;
+			std::cerr << PrintTimelineRec(records[i]) << std::endl;
 		}
-
 	}
 }
 
+
+// BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelation) {
+// 	std::vector<uint64_t> ids;
+// 	std::vector<uint32_t> hashes; 
+// 	std::vector<size_t> sizes; 
+// 	std::vector<uint64_t> duplicates;
+// 	std::vector<std::string> types; 
+
+// 	// Generate the fake timeline
+// 	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
+// 	std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
+// 	ofs << out_timeline;
+// 	ofs.close();
+
+// 	std::vector<uint64_t> streams;
+// 	std::vector<uint64_t> procids;
+// 	std::vector<uint64_t> threads;
+// 	std::string ret = CreateFakeCorrelation(1,1,1,ids, sizes, streams, procids, threads);
+// 	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+// 	ofs << ret;
+// 	ofs.close();
+// 	// Have dedup savings read it back to us. 
+// 	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","BLANK");
+
+// }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -11,10 +11,10 @@
 
 std::string PrintTimelineRec(TimingRec & rec){
 	std::stringstream ss;	
-	for(int i = 0; i < std::tuple_size<decltype(rec)>::value; i++){
-		ss << std::get<i>(rec) << ",";
-	}
-	ss << std::endl;
+	ss << std::get<0>(rec) << "," << std::get<1>(rec) << "," << std::get<2>(rec) << ","
+	   << std::get<3>(rec) << "," << std::get<4>(rec) << "," << std::get<5>(rec) << ","
+	   << std::get<6>(rec) << "," << std::get<7>(rec) << "," << std::get<8>(rec) << ","
+	   << std::get<9>(rec) << "," << std::get<10>(rec) << "," << std::get<11>(rec);
 	return ss.str();
 }
 

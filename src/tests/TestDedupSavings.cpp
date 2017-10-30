@@ -218,7 +218,7 @@ BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelation) {
 	// Have dedup savings read it back to us. 
 	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","BLANK");
 	std::vector<TimelineRec> tlineRecords;
-	x.ReadTimeline(records);
+	x.ReadTimeline(tlineRecords);
 	std::vector<CorrelationRec> records;
 	x.ReadCorrelation(records);
 	std::vector<CombinedRecord> output;
@@ -262,7 +262,7 @@ BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelationFourProcsFourStreams) {
 	// Have dedup savings read it back to us. 
 	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","BLANK");
 	std::vector<TimelineRec> tlineRecords;
-	x.ReadTimeline(records);
+	x.ReadTimeline(tlineRecords);
 	std::vector<CorrelationRec> records;
 	x.ReadCorrelation(records);
 	std::vector<CombinedRecord> output;

@@ -1,5 +1,5 @@
 #include "CalculateDedupSavings.h"
-
+#define DEBUG 1
 CalculateDedupSavings::CalculateDedupSavings(char * timeline_file, char * correlation_file, char * timing_file) :
 	_timeline_file(strdup(timeline_file)), _correlation_file(strdup(correlation_file)), _timing_file(strdup(timing_file))
 {
@@ -273,6 +273,9 @@ void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double 
 		corrid = 0; start_time = 0; end_time = 0; procid = 0; threadid = 0; size = 0; stream = 0;
 		type_key = 0; cname_key = 0; runcorr = 0; ctx = 0; dev = 0;
 		std::replace( line.begin(), line.end(), ',', ' ');
+#ifdef DEBUG
+		std::cerr << line << std::endl;
+#endif
 		if (line.find(RR) != std::string::npos || line.find(DR) != std::string::npos) {
 			sscanf(line.c_str(), "%*s %s %llu %llu %llu %llu %llu", cname,  &corrid, &start_time, &end_time, &procid, &threadid);
 			if(line.find(RR) != std::string::npos)
@@ -301,6 +304,9 @@ void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double 
 			cname_key = curKey;
 			curKey++;
 		}
+#ifdef DEBUG
+		std::cerr << corrid << "," << type_key <<"," << cname_key <<"," << start_time <<"," << end_time <<"," << procid <<"," << threadid <<"," << size_t(size) <<"," << runcorr <<"," << ctx <<"," << dev <<"," << stream << std::endl;
+#endif
 		records.push_back((std::make_tuple(corrid,type_key,cname_key,start_time,end_time,procid,threadid,size_t(size),runcorr,ctx,dev,stream)));
 	}
 	std::cerr << "We have read " << records.size() << " records from ReadTiming file" << std::endl;

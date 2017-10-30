@@ -115,7 +115,21 @@ BOOST_AUTO_TEST_CASE(TestReadTimingInfo) {
 // 	ofs.close();
 // 	// Have dedup savings read it back to us. 
 // 	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","BLANK");
-
+// 	std::vector<TimelineRec> tlineRecords;
+// 	x.ReadTimeline(records);
+// 	std::vector<CorrelationRec> records;
+// 	x.ReadCorrelation(records);
+// 	std::vector<CombinedRecord> output;
+// 	x.CombineTimelineCorrelation(tlineRecords, records, output);
+// 	BOOST_CHECK_EQUAL(output.size(), tlineRecords.size());
+// 	BOOST_CHECK_EQUAL(output.size(), records.size());
+// 	for(int i = 0; i < output.size(); i++) {
+// 		CombinedRecord tmp = std::make_tuple(std::get<0>(tlineRecords[i]), std::get<1>(tlineRecords[i]), std::get<2>(tlineRecords[i]),
+// 								std::get<1>(records[i]), std::get<2>(records[i]), std::get<3>(records[i]));
+// 		if (tmp != output[i]){
+// 			std::cerr << "Record not equal "  << i << std::endl;			
+// 		}
+// 	}
 // }
 
 BOOST_AUTO_TEST_SUITE_END()

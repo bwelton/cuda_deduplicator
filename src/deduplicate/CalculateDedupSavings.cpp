@@ -253,10 +253,10 @@ int CalculateDedupSavings::NameToId(std::string name){
 void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double & finalTime) {
 	_typeKeys.clear();
 	std::map<std::string, uint32_t> keyToId;
-	std::string RR = std::string("RR "); // 1
-	std::string DR = std::string("DR "); // 2
-	std::string CPY = std::string("CPY "); // 3
-	std::string TET = std::string("TET "); // 4
+	std::string RR = std::string("RR"); // 1
+	std::string DR = std::string("DR"); // 2
+	std::string CPY = std::string("CPY"); // 3
+	std::string TET = std::string("TET"); // 4
 	uint32_t curKey = 1;
 
 	std::ifstream t(_timing_file);
@@ -276,9 +276,9 @@ void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double 
 #ifdef DEBUG
 		std::cerr << line << std::endl;
 #endif
-		if (line.compare(0,3,RR) == 0 || line.compare(0,3,DR) == 0) {
+		if (line.compare(0,2,RR) == 0 || line.compare(0,2,DR) == 0) {
 			sscanf(line.c_str(), "%*s %s %llu %llu %llu %llu %llu", cname,  &corrid, &start_time, &end_time, &procid, &threadid);
-			if(line.compare(0,3,RR) == 0)
+			if(line.compare(0,2,RR) == 0)
 				type_key = 1;
 			else
 				type_key = 2;

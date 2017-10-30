@@ -253,10 +253,10 @@ int CalculateDedupSavings::NameToId(std::string name){
 void CalculateDedupSavings::ReadTiming(std::vector<TimingRec> & records, double & finalTime) {
 	_typeKeys.clear();
 	std::map<std::string, uint32_t> keyToId;
-	std::string RR = std::string("RR,"); // 1
-	std::string DR = std::string("DR,"); // 2
-	std::string CPY = std::string("CPY,"); // 3
-	std::string TET = std::string("TET,"); // 4
+	std::string RR = std::string("RR "); // 1
+	std::string DR = std::string("DR "); // 2
+	std::string CPY = std::string("CPY "); // 3
+	std::string TET = std::string("TET "); // 4
 	uint32_t curKey = 1;
 
 	std::ifstream t(_timing_file);

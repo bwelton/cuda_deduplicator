@@ -150,5 +150,7 @@ public:
 	std::pair<uint64_t, uint64_t> CalculateProcessSavings(CUDAProcess & proc);
 	// For debug purposes
 	int NameToId(std::string name);
+	void GenerateCUDAProcesses(std::vector<TimingRec> & timing,
+		  					   std::vector<CUDAProcess> & procs);
 
 };

@@ -165,20 +165,12 @@ void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & co
 		}
 	}
 }	
-//         Min      Max
-std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vector<TimingRec> & timing, 
-																	  std::vector<CombinedRecord> & correlation) {
-	// Sort the timing records to get them in order 
-	std::sort(timing.begin(), timing.end(), 
-		[](const TimingRec & a, const TimingRec & b) -> bool {
-			return std::get<0>(a) < std::get<0>(b);
-		});
 
-
+void CalculateDedupSavings::GenerateCUDAProcesses(std::vector<TimingRec> & timing,
+												  std::vector<CUDAProcess> & procs) {
 	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
 	uint32_t type_key, cname_key;
 	int runcorr, ctx, dev;
-	std::vector<CUDAProcess> procs;
 	CUPTIRecord rec = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
 	int64_t currentRecord = -1;
 
@@ -220,7 +212,27 @@ std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vecto
 			std::get<10>(rec) = dev;
 			std::get<11>(rec) = stream;
 		}
-	}
+	}	
+}
+
+
+//         Min      Max
+std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vector<TimingRec> & timing, 
+																	  std::vector<CombinedRecord> & correlation) {
+	// Sort the timing records to get them in order 
+	std::sort(timing.begin(), timing.end(), 
+		[](const TimingRec & a, const TimingRec & b) -> bool {
+			return std::get<0>(a) < std::get<0>(b);
+		});
+
+
+	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
+	uint32_t type_key, cname_key;
+	int runcorr, ctx, dev;
+	std::vector<CUDAProcess> procs;
+	CUPTIRecord rec = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
+	int64_t currentRecord = -1;
+	GenerateCUDAProcesses(timing, procs)
 	NormalizeProcessIDs(correlation, procs);
 
 

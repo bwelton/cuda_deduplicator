@@ -201,17 +201,20 @@ BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelation) {
 
 	// Generate the fake timeline
 	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
-	std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
-	ofs << out_timeline;
-	ofs.close();
-
+	{
+		std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
+		ofs << out_timeline;
+		ofs.close();
+	}
 	std::vector<uint64_t> streams;
 	std::vector<uint64_t> procids;
 	std::vector<uint64_t> threads;
 	std::string ret = CreateFakeCorrelation(1,1,1,ids, sizes, streams, procids, threads);
-	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
-	ofs << ret;
-	ofs.close();
+	{
+		std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+		ofs << ret;
+		ofs.close();
+	}
 	// Have dedup savings read it back to us. 
 	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","BLANK");
 	std::vector<TimelineRec> tlineRecords;
@@ -242,17 +245,20 @@ BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelationFourProcsFourStreams) {
 
 	// Generate the fake timeline
 	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
-	std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
-	ofs << out_timeline;
-	ofs.close();
-
+	{
+		std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
+		ofs << out_timeline;
+		ofs.close();
+	}
 	std::vector<uint64_t> streams;
 	std::vector<uint64_t> procids;
 	std::vector<uint64_t> threads;
 	std::string ret = CreateFakeCorrelation(4,1,4,ids, sizes, streams, procids, threads);
-	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
-	ofs << ret;
-	ofs.close();
+	{
+		std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+		ofs << ret;
+		ofs.close();
+	}
 	// Have dedup savings read it back to us. 
 	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","BLANK");
 	std::vector<TimelineRec> tlineRecords;

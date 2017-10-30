@@ -66,7 +66,7 @@ std::string CreateFakeCorrelation(size_t numProcs, size_t numThreads, size_t num
 
 std::string CreateFakeCUPTIRand(size_t count, std::vector<TimingRec> & recs, std::vector<std::string> & cnames) {
 	std::vector<std::string> types = {std::string("NONO"), std::string("RR"), std::string("DR"), std::string("CPY")};
-	std::string randomChars = std::string("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+	std::string randomChars = std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 	std::stringstream ss;
 	TimingRec rec;
 	for (uint64_t i = 0; i < count; i++) {
@@ -75,7 +75,7 @@ std::string CreateFakeCUPTIRand(size_t count, std::vector<TimingRec> & recs, std
 		uint64_t type = std::get<1>(rec);
 		std::string name;
 		for(uint32_t q = 0; q < std::get<2>(rec); q++) {
-			name = name + randomChars[rand() % randomChars.size() - 1];
+			name = name + randomChars[rand() % (randomChars.size() - 1)];
 		}
 		cnames.push_back(name);
 		if (type == 1 || type == 2) {
@@ -99,6 +99,7 @@ std::string CreateFakeCUPTIRand(size_t count, std::vector<TimingRec> & recs, std
 			    << "," << std::get<11>(rec) 
 			    << std::endl;
 			std::get<2>(rec) = 0;
+		    std::get<5>(rec) = 0;
 		    std::get<6>(rec) = 0;
 		} else {
 			assert("WE SHOULD NOT BE HERE" == 0);

@@ -173,46 +173,48 @@ void CalculateDedupSavings::GenerateCUDAProcesses(std::vector<TimingRec> & timin
 	int runcorr, ctx, dev;
 	CUPTIRecord rec = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
 	int64_t currentRecord = -1;
+	std::map<uint64_t, CUPTIRecord> c_records;
+	for (auto i : timing) {
+		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
+		if (c_records.find(corrid) == c_records.end())
+			c_records[corrid] = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
+	}
 
 	for (auto i : timing) {
 		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
-		if (currentRecord != corrid && currentRecord != -1){
-			bool found = false;
-			for (auto z : procs) {
-				if (std::get<5>(rec) == z.procid && std::get<6>(rec) == z.threadid){
-					found = true;
-					z.records.push_back(rec);
-				}
-			}
-			if (found == false){
-				CUDAProcess tmp;
-				tmp.procid = std::get<5>(rec);
-				tmp.threadid = std::get<6>(rec);
-				tmp.records.push_back(rec);
-				procs.push_back(tmp);
-			}
-			currentRecord = corrid;
-			rec = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
-		} else {
-			currentRecord = corrid;
-		}
 		if (type_key == 1 || type_key == 2){
-			std::get<0>(rec) = corrid;
-			std::get<1>(rec) = cname_key;
-			std::get<4>(rec) = std::get<4>(rec) + (end_time - start_time);
-			std::get<5>(rec) = procid;
-			std::get<6>(rec) = threadid;
+			std::get<0>(c_records[corrid]) = corrid;
+			std::get<1>(c_records[corrid]) = cname_key;
+			std::get<4>(c_records[corrid]) = std::get<4>(c_records[corrid]) + (end_time - start_time);
+			std::get<5>(c_records[corrid]) = procid;
+			std::get<6>(c_records[corrid]) = threadid;
 		} else if (type_key == 3){
-			std::get<0>(rec) = corrid;
-			std::get<2>(rec) = cname_key;
-			std::get<3>(rec) = std::get<3>(rec) + (end_time - start_time);
-			std::get<7>(rec) = size;
-			std::get<8>(rec) = runcorr;
-			std::get<9>(rec) = ctx;
-			std::get<10>(rec) = dev;
-			std::get<11>(rec) = stream;
+			std::get<0>(c_records[corrid]) = corrid;
+			std::get<2>(c_records[corrid]) = cname_key;
+			std::get<3>(c_records[corrid]) = std::get<3>(c_records[corrid]) + (end_time - start_time);
+			std::get<7>(c_records[corrid]) = size;
+			std::get<8>(c_records[corrid]) = runcorr;
+			std::get<9>(c_records[corrid]) = ctx;
+			std::get<10>(c_records[corrid]) = dev;
+			std::get<11>(c_records[corrid]) = stream;
 		}
-	}	
+	}
+	for(std::map<uint64_t, CUPTIRecord>::iterator i = c_records.begin(); i != c_records.end(); i++)	{
+		bool found = false;
+		for(auto z : procs){
+			if (std::get<5>(i->second) == z.procid && std::get<6>(i->second) == z.threadid){
+				found = true;
+				z.records.push_back(rec);
+			}
+		}
+		if (found == false) {
+			CUDAProcess tmp;
+			tmp.procid = std::get<5>(i->second);
+			tmp.threadid = std::get<6>(i->second);
+			tmp.records.push_back(i->second);
+			procs.push_back(tmp);
+		}
+	}
 }
 
 

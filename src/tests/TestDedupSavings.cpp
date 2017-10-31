@@ -319,6 +319,10 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&i](const CUPTIRecord & r) -> bool 
 			{ return std::get<0>(r) == std::get<0>(i);});
 		if (m == fp->records.end()) {
+			std::cerr << "Timing Record i: " << PrintTimelineRec(i) << std::endl;
+			std::cerr << "CUPTI Records" << std::endl;
+			for (auto p : fp->records)
+				std::cerr << "\t" << PrintCUPTIRecord(p) << std::endl;
 			BOOST_FAIL("COULD NOT FIND RECORD");
 		}
 	}

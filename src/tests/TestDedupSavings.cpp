@@ -299,6 +299,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	std::vector<CUDAProcess> procs;
 	x.GenerateCUDAProcesses(records, procs);
 	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
+	uint64_t cputime, gputime;
 	uint32_t type_key, cname_key;
 	int runcorr, ctx, dev;
 	// std::map<uint64_t, uint64_t> costs;
@@ -311,7 +312,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	// }
 	std::map<uint64_t, CUPTIRecord> c_records;
 	for(auto i : records) {
-		uint64_t cputime, gputime;
+		
 		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
 		if (c_records.find(corrid) == c_records.end())
 			c_records[corrid] = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);

@@ -255,7 +255,7 @@ BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelationFourProcsFourStreams) {
 	std::vector<uint64_t> streams;
 	std::vector<uint64_t> procids;
 	std::vector<uint64_t> threads;
-	std::string ret = CreateFakeCorrelation(4,1,4,ids, sizes, streams, procids, threads);
+	std::string ret = CreateFakeCorrelation(4,4,1,ids, sizes, streams, procids, threads);
 	{
 		std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
 		ofs << ret;
@@ -326,6 +326,41 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 			BOOST_FAIL("COULD NOT FIND RECORD");
 		}
 	}
+}
+
+BOOST_AUTO_TEST_CASE(TestNormalizeProcessIDs) {
+	std::vector<uint64_t> ids;
+	std::vector<uint32_t> hashes; 
+	std::vector<size_t> sizes; 
+	std::vector<uint64_t> duplicates;
+	std::vector<std::string> types; 
+
+	// Generate the fake timeline
+	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
+	{
+		std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
+		ofs << out_timeline;
+		ofs.close();
+	}
+	std::vector<uint64_t> streams;
+	std::vector<uint64_t> procids;
+	std::vector<uint64_t> threads;
+	std::string ret = CreateFakeCorrelation(4,4,1,ids, sizes, streams, procids, threads);
+	{
+		std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+		ofs << ret;
+		ofs.close();
+	}
+	std::vector<TimingRec> crecords;
+	std::string cuptiRecords = CreateFakeCUPTI(10000, crecords, ids, procids, threads, sizes);
+	{
+		std::ofstream ofs ("ReadCUPTITest.txt", std::ofstream::out);
+		ofs << cuptiRecords;
+		ofs.close();
+	}	
+
+	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","ReadCUPTITest.txt");
+	
 }
 
 BOOST_AUTO_TEST_SUITE_END()

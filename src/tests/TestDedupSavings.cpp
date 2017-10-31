@@ -346,19 +346,19 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 		BOOST_CHECK_EQUAL(found, true);
 		if (fp == NULL) 
 			continue;		
-		CUPTIRecord tmp_cupti = i->second;
+		CUPTIRecord tmp_cupti = i.second;
 		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&tmp_cupti](const CUPTIRecord & r) -> bool 
 			{ return std::get<0>(r) == std::get<0>(i);});	
 		if (m == fp->records.end()) {
-			std::cerr << "CUPTI Record i: " << PrintCUPTIRecord(i->second) << std::endl;
+			std::cerr << "CUPTI Record i: " << PrintCUPTIRecord(i.second) << std::endl;
 			std::cerr << "CUPTI Records" << std::endl;
 			for (auto p : fp->records)
 				std::cerr << "\t" << PrintCUPTIRecord(p) << std::endl;
 			BOOST_FAIL("COULD NOT FIND RECORD");
 		}
-		if (*m != i->second) {
+		if (*m != i.second) {
 			std::cerr << "CUPTI RECORDS NOT EQUAL" << std::endl;
-			std::cerr << "\t" << PrintCUPTIRecord(i->second) << std::endl;
+			std::cerr << "\t" << PrintCUPTIRecord(i.second) << std::endl;
 			std::cerr << "\t" << PrintCUPTIRecord(*m) << std::endl;
 		}	
 	}

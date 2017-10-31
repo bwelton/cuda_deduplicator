@@ -103,6 +103,11 @@ struct CUDAProcess {
 		return false;
 	}
 
+	bool operator==(const TimingRec & a) {
+		if (std::get<5>(a) == procid && std::get<6>(a) == threadid)
+			return true;
+		return false;		
+	}
 
 	bool operator==(const CombinedRecord & a) {
 		if (std::get<4>(a) == procid && std::get<5>(a) == threadid)

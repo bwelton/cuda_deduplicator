@@ -232,7 +232,7 @@ std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vecto
 	std::vector<CUDAProcess> procs;
 	CUPTIRecord rec = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
 	int64_t currentRecord = -1;
-	GenerateCUDAProcesses(timing, procs)
+	GenerateCUDAProcesses(timing, procs);
 	NormalizeProcessIDs(correlation, procs);
 
 

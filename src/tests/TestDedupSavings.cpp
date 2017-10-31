@@ -187,6 +187,7 @@ BOOST_AUTO_TEST_CASE(TestReadTimingInfo) {
 			std::cerr << "Record not equal "  << i << std::endl;
 			std::cerr << PrintTimelineRec(recs[i]) << std::endl;
 			std::cerr << PrintTimelineRec(records[i]) << std::endl;
+			BOOST_FAIL("TestReadTimingInfo");
 		}
 	}
 }
@@ -232,6 +233,7 @@ BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelation) {
 			std::cerr << "Record not equal "  << i << std::endl;
 			std::cerr << "Expected: " << PrintCombinedRecord(tmp) << std::endl;
 			std::cerr << "Got: " << PrintCombinedRecord(output[i]) << std::endl;	
+			BOOST_FAIL("TestCombineTimelineCorrelation");
 		}
 	}
 }
@@ -275,10 +277,51 @@ BOOST_AUTO_TEST_CASE(TestCombineTimelineCorrelationFourProcsFourStreams) {
 		if (tmp != output[i]){
 			std::cerr << "Record not equal "  << i << std::endl;
 			std::cerr << "Expected: " << PrintCombinedRecord(tmp) << std::endl;
-			std::cerr << "Got: " << PrintCombinedRecord(output[i]) << std::endl;	
+			std::cerr << "Got: " << PrintCombinedRecord(output[i]) << std::endl;
+			BOOST_FAIL("TestCombineTimelineCorrelationFourProcsFourStreams");
 		}
 	}
 }
 
+BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
+	std::vector<TimingRec> recs;
+	std::vector<std::string> cnames;
+	std::string ret = CreateFakeCUPTIRand(10000, recs, cnames);
+	std::ofstream ofs ("ReadCUPTITest.txt", std::ofstream::out);
+	ofs << ret;
+	ofs.close();
+
+	CalculateDedupSavings x("BLANK","BLANK","ReadCUPTITest.txt");
+	std::vector<TimingRec> records;
+	double finalTime;
+	x.ReadTiming(records, finalTime);
+	BOOST_CHECK_EQUAL(records.size(), recs.size());	
+	std::vector<CUDAProcess> procs;
+	x.GenerateCUDAProcesses(records, procs);
+	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
+	uint32_t type_key, cname_key;
+	int runcorr, ctx, dev;
+	for (auto i : records) {
+		CUDAProcess * fp = NULL;
+		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
+		bool found = false;
+		for (auto p : procs){ 
+			if (p == i) {
+				found = true;
+				fp = &p;
+				break;
+			}
+		}
+		BOOST_CHECK_EQUAL(found, true);
+		if (fp == NULL) 
+			continue;
+
+		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&i](const CUPTIRecord & r) -> bool 
+			{ return std::get<0>(r) == std::get<0>(i);});
+		if (m == fp->records.end()) {
+			BOOST_FAIL("COULD NOT FIND RECORD");
+		}
+	}
+}
 
 BOOST_AUTO_TEST_SUITE_END()

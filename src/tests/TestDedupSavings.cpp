@@ -301,9 +301,21 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
 	uint32_t type_key, cname_key;
 	int runcorr, ctx, dev;
+	std::map<uint64_t, uint64_t> costs;
+	for (auto i : records) {
+		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
+		if (costs.find(corrid) != costs.end())
+			costs[corrid] =  end_time - start_time;
+		else 
+			costs[corrid] += (end_time - start_time);
+	}
+
+
 	for (auto i : records) {
 		CUDAProcess * fp = NULL;
 		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
+		if (procid == 0  && threadid == 0) 
+			continue;
 		bool found = false;
 		for (auto p : procs){ 
 			if (p == i) {
@@ -352,7 +364,8 @@ BOOST_AUTO_TEST_CASE(TestNormalizeProcessIDs) {
 		ofs.close();
 	}
 	std::vector<TimingRec> crecords;
-	std::string cuptiRecords = CreateFakeCUPTI(10000, crecords, ids, procids, threads, sizes);
+	std::vector<std::string> cnames;
+	std::string cuptiRecords = CreateFakeCUPTI(10000, crecords, ids, procids, threads, sizes, cnames);
 	{
 		std::ofstream ofs ("ReadCUPTITest.txt", std::ofstream::out);
 		ofs << cuptiRecords;
@@ -360,7 +373,7 @@ BOOST_AUTO_TEST_CASE(TestNormalizeProcessIDs) {
 	}	
 
 	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","ReadCUPTITest.txt");
-	
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

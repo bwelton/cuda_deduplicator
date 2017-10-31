@@ -79,7 +79,7 @@ std::string CreateFakeCorrelation(size_t numProcs, size_t numThreads, size_t num
 	return ss.str();
 }
 
-std::string CreateFakeCUPTI(size_t count, std::vector<TimingRec> & recs, std::vector<uint64_t> ids, std::vector<uint64_t> & procid, std::vector<uint64_t> & threadid, std::vector<size_t> & sizes) {
+std::string CreateFakeCUPTI(size_t count, std::vector<TimingRec> & recs, std::vector<uint64_t> ids, std::vector<uint64_t> & procid, std::vector<uint64_t> & threadid, std::vector<size_t> & sizes, std::vector<std::string> & cnames) {
 	std::vector<std::string> types = {std::string("NONO"), std::string("RR"), std::string("DR"), std::string("CPY")};
 	std::string randomChars = std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 	std::stringstream ss;

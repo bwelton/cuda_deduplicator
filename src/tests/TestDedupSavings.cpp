@@ -356,7 +356,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 		}
 		if (*m != i) {
 			std::cerr << "CUPTI RECORDS NOT EQUAL" << std::endl;
-			std::cerr << "\t" << PrintCUPTIRecord(p) << std::endl;
+			std::cerr << "\t" << PrintCUPTIRecord(i) << std::endl;
 			std::cerr << "\t" << PrintCUPTIRecord(*m) << std::endl;
 		}	
 	}

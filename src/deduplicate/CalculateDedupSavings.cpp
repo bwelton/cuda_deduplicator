@@ -204,7 +204,7 @@ void CalculateDedupSavings::GenerateCUDAProcesses(std::vector<TimingRec> & timin
 		for(auto z : procs){
 			if (std::get<5>(i->second) == z.procid && std::get<6>(i->second) == z.threadid){
 				found = true;
-				z.records.push_back(t->second);
+				z.records.push_back(i->second);
 			}
 		}
 		if (found == false) {

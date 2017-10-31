@@ -346,7 +346,8 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 		BOOST_CHECK_EQUAL(found, true);
 		if (fp == NULL) 
 			continue;		
-		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&(i->second)](const CUPTIRecord & r) -> bool 
+		CUPTIRecord tmp_cupti = i->second;
+		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&tmp_cupti](const CUPTIRecord & r) -> bool 
 			{ return std::get<0>(r) == std::get<0>(i);});	
 		if (m == fp->records.end()) {
 			std::cerr << "CUPTI Record i: " << PrintCUPTIRecord(i->second) << std::endl;

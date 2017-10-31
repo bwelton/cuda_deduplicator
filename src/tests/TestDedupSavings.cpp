@@ -312,7 +312,6 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	// }
 	std::map<uint64_t, CUPTIRecord> c_records;
 	for(auto i : records) {
-		
 		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
 		if (c_records.find(corrid) == c_records.end())
 			c_records[corrid] = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
@@ -341,14 +340,15 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 			if (p.procid == procid && p.threadid == threadid){
 				found = true;
 				fp = &p;
+				break;
 			}
 		}
 		BOOST_CHECK_EQUAL(found, true);
 		if (fp == NULL) 
 			continue;		
 		CUPTIRecord tmp_cupti = i.second;
-		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&tmp_cupti](const CUPTIRecord & r) -> bool 
-			{ return std::get<0>(r) == std::get<0>(tmp_cupti);});	
+		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&corrid](const CUPTIRecord & r) -> bool 
+			{ return std::get<0>(r) == corrid;});	
 		if (m == fp->records.end()) {
 			std::cerr << "CUPTI Record i: " << PrintCUPTIRecord(i.second) << std::endl;
 			std::cerr << "CUPTI Records" << std::endl;

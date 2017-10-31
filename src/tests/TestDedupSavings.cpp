@@ -309,26 +309,43 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	// 	else 
 	// 		costs[corrid] += (end_time - start_time);
 	// }
-
-	for (auto i : records) {
-		CUDAProcess * fp = NULL;
+	std::map<uint64_t, CUPTIRecord> c_records;
+	for(auto i : records) {
 		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
-		// if (procid == 0  && threadid == 0) 
-		// 	continue;
+		if (c_records.find(corrid) == c_records.end())
+			c_records[corrid] = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
+		if (type_key == 1 || type_key == 2){
+			std::get<0>(c_records[corrid]) = corrid;
+			std::get<1>(c_records[corrid]) = cname_key;
+			std::get<4>(c_records[corrid]) = std::get<4>(c_records[corrid]) + (end_time - start_time);
+			std::get<5>(c_records[corrid]) = procid;
+			std::get<6>(c_records[corrid]) = threadid;
+		} else if (type_key == 3){
+			std::get<0>(c_records[corrid]) = corrid;
+			std::get<2>(c_records[corrid]) = cname_key;
+			std::get<3>(c_records[corrid]) = std::get<3>(c_records[corrid]) + (end_time - start_time);
+			std::get<7>(c_records[corrid]) = size;
+			std::get<8>(c_records[corrid]) = runcorr;
+			std::get<9>(c_records[corrid]) = ctx;
+			std::get<10>(c_records[corrid]) = dev;
+			std::get<11>(c_records[corrid]) = stream;
+		}
+	}
+	for (auto i : c_records) {
+		CUDAProcess * fp = NULL;
+		std::tie(corrid, type_key, std::ignore, gputime, cputime, procid, threadid, size, std::ignore, std::ignore, std::ignore, std::ignore) = i.second;
 		bool found = false;
-		for (auto p : procs){ 
-			if (p == i) {
+		for (auto p : procs) {
+			if (p.procid == procid && p.threadid == threadid){
 				found = true;
 				fp = &p;
-				break;
 			}
 		}
 		BOOST_CHECK_EQUAL(found, true);
 		if (fp == NULL) 
-			continue;
-
+			continue;		
 		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&i](const CUPTIRecord & r) -> bool 
-			{ return std::get<0>(r) == std::get<0>(i);});
+			{ return std::get<0>(r) == std::get<0>(i);});	
 		if (m == fp->records.end()) {
 			std::cerr << "Timing Record i: " << PrintTimelineRec(i) << std::endl;
 			std::cerr << "CUPTI Records" << std::endl;
@@ -336,7 +353,41 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 				std::cerr << "\t" << PrintCUPTIRecord(p) << std::endl;
 			BOOST_FAIL("COULD NOT FIND RECORD");
 		}
+		if (*m != i) {
+			std::cerr << "CUPTI RECORDS NOT EQUAL" << std::endl;
+			std::cerr << "\t" << PrintCUPTIRecord(p) << std::endl;
+			std::cerr << "\t" << PrintCUPTIRecord(*m) << std::endl;
+		}	
 	}
+
+
+	// for (auto i : c_records) {
+	// 	CUDAProcess * fp = NULL;
+	// 	std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
+	// 	if (procid == 0  && threadid == 0) 
+	// 		continue;
+	// 	bool found = false;
+	// 	for (auto p : procs){ 
+	// 		if (p == i) {
+	// 			found = true;
+	// 			fp = &p;
+	// 			break;
+	// 		}
+	// 	}
+	// 	BOOST_CHECK_EQUAL(found, true);
+	// 	if (fp == NULL) 
+	// 		continue;
+
+	// 	auto m = std::find_if(fp->records.begin(), fp->records.end(), [&i](const CUPTIRecord & r) -> bool 
+	// 		{ return std::get<0>(r) == std::get<0>(i);});
+	// 	if (m == fp->records.end()) {
+	// 		std::cerr << "Timing Record i: " << PrintTimelineRec(i) << std::endl;
+	// 		std::cerr << "CUPTI Records" << std::endl;
+	// 		for (auto p : fp->records)
+	// 			std::cerr << "\t" << PrintCUPTIRecord(p) << std::endl;
+	// 		BOOST_FAIL("COULD NOT FIND RECORD");
+	// 	}
+	// }
 }
 
 BOOST_AUTO_TEST_CASE(TestNormalizeProcessIDs) {

@@ -352,7 +352,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	}
 
 	for (auto p : procs) {
-		std::cerr << "CUPTI Process Element"  << std::endl;
+		std::cerr << "CUPTI Process Element "  << p.procid << " " << p.threadid << std::endl;
 		for(auto i : p.records)
 			std::cerr << PrintCUPTIRecord(i) << std::endl;
 	}
@@ -367,7 +367,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 				matchingProcs.push_back(p);
 			}
 		}
-		std::cerr << PrintCUPTIRecord(i.second) << std::endl;
+		std::cerr <<  record_proc << " " << record_thread << " " << PrintCUPTIRecord(i.second) << std::endl;
 		// BOOST_CHECK_EQUAL(matchingProcs.size(), 1);
 		// if (matchingProcs.size() > 1) {
 		// 	for (auto p : matchingProcs)

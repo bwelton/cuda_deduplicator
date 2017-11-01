@@ -203,12 +203,14 @@ void CalculateDedupSavings::GenerateCUDAProcesses(std::vector<TimingRec> & timin
 	for(std::map<uint64_t, CUPTIRecord>::iterator i = c_records.begin(); i != c_records.end(); i++)	{
 		bool found = false;
 
-		for(auto z : procs){
-			if (std::get<5>(i->second) == z.procid && std::get<6>(i->second) == z.threadid){
+		for(int z = 0; z < procs.size(); z++)
+			if (std::get<5>(i->second) == procs[z].procid && std::get<6>(i->second) == procs[z].threadid){
 				found = true;
 				if (i->first == 5)
-					std::cerr << "Placing 5 into " << z.procid << "," << z.threadid << std::endl;
-				z.records.push_back(i->second);
+					std::cerr << "Placing 5 into " << procs[z].procid << "," << procs[z].threadid << std::endl;
+				uint64_t beforeLength = procs[z].records.size();
+				procs[z].records.push_back(i->second);
+				assert(beforeLength + 1 == procs[z].records.size());
 				break;
 			}
 		}

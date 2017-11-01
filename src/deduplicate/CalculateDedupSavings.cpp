@@ -172,7 +172,7 @@ void CalculateDedupSavings::GenerateCUDAProcesses(std::vector<TimingRec> & timin
 	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
 	uint32_t type_key, cname_key;
 	int runcorr, ctx, dev;
-	CUPTIRecord rec = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
+	//CUPTIRecord rec = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
 	int64_t currentRecord = -1;
 	//std::map<uint64_t, CUPTIRecord> c_records;
 

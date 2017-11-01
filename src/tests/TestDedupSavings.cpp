@@ -475,7 +475,7 @@ BOOST_AUTO_TEST_CASE(TestNormalizeProcessIDs) {
 	for (auto i : output) {
 		recordMap[std::get<0>(i)] = i;
 	}
-	x.NormalizeProcessIDs(records, procs);
+	x.NormalizeProcessIDs(output, procs);
 	for(auto i : procs) {
 		BOOST_CHECK_EQUAL(i.matched, true);
 		for (auto t : i.transferRecords) {

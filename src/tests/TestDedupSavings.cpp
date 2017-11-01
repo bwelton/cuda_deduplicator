@@ -351,7 +351,11 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 		}
 	}
 
-
+	for (auto p : procs) {
+		std::cerr << "CUPTI Process Element"  << std::endl;
+		for(auto i : p.records)
+			std::cerr << PrintCUPTIRecord(i) << std::endl;
+	}
 
 	for (auto i : c_records) {
 		bool found = false;

@@ -203,7 +203,7 @@ void CalculateDedupSavings::GenerateCUDAProcesses(std::vector<TimingRec> & timin
 	for(std::map<uint64_t, CUPTIRecord>::iterator i = c_records.begin(); i != c_records.end(); i++)	{
 		bool found = false;
 
-		for(int z = 0; z < procs.size(); z++)
+		for(int z = 0; z < procs.size(); z++){
 			if (std::get<5>(i->second) == procs[z].procid && std::get<6>(i->second) == procs[z].threadid){
 				found = true;
 				if (i->first == 5)

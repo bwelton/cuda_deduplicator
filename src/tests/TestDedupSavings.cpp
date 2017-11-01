@@ -377,10 +377,8 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 		if (found == false) {
 			for (auto p : matchingProcs) {
 				for(auto z : p.records) {
-					if (std::get<0>(z) == std::get<0>(i.second) ){
 						std::cerr << PrintCUPTIRecord(z) << std::endl;
 						std::cerr << PrintCUPTIRecord(i.second) << std::endl;
-					}
 				}
 			}
 		}

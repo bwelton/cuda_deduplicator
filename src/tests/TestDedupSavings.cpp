@@ -341,11 +341,11 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 
 		BOOST_CHECK_EQUAL(found, true);
 		if (found != true) {
-			std::cerr << "Could not find entry: " << i.first << "," << PrintCUPTIRecord(i.second) << std::endl;
+			std::cerr << "Could not find entry: " << i.first << " " << PrintCUPTIRecord(i.second) << std::endl;
 			std::cerr << "Closest Matches: " << std::endl;
 			for(auto t : rc_records) {
 				if (i.second == t.second || i.first ==  t.first) {
-					std::cerr << "REC: " << t.first << "," << PrintCUPTIRecord(t.second) << std::endl;
+					std::cerr << "REC: " << t.first << " " << PrintCUPTIRecord(t.second) << std::endl;
 				} 
 			}
 		}

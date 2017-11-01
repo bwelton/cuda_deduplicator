@@ -338,7 +338,17 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 				break;
 			}
 		}
+
 		BOOST_CHECK_EQUAL(found, true);
+		if (found != true) {
+			std::cerr << "Could not find entry: " << i.first << "," << PrintCUPTIRecord(i.second) << std::endl;
+			std::cerr << "Closest Matches: " << std::endl;
+			for(auto t : rc_records) {
+				if (i.second == t.second || i.first ==  t.first) {
+					std::cerr << "REC: " << t.first << "," << PrintCUPTIRecord(t.second) << std::endl;
+				} 
+			}
+		}
 	}
 	// std::map<uint64_t, uint64_t> costs;
 	// for (auto i : records) {
@@ -414,54 +424,60 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 }
 
 BOOST_AUTO_TEST_CASE(TestNormalizeProcessIDs) {
-	// std::vector<uint64_t> ids;
-	// std::vector<uint32_t> hashes; 
-	// std::vector<size_t> sizes; 
-	// std::vector<uint64_t> duplicates;
-	// std::vector<std::string> types; 
+	std::vector<uint64_t> ids;
+	std::vector<uint32_t> hashes; 
+	std::vector<size_t> sizes; 
+	std::vector<uint64_t> duplicates;
+	std::vector<std::string> types; 
 
-	// // Generate the fake timeline
-	// std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
-	// {
-	// 	std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
-	// 	ofs << out_timeline;
-	// 	ofs.close();
-	// }
-	// std::vector<uint64_t> streams;
-	// std::vector<uint64_t> procids;
-	// std::vector<uint64_t> threads;
-	// std::string ret = CreateFakeCorrelation(4,4,1,ids, sizes, streams, procids, threads);
-	// {
-	// 	std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
-	// 	ofs << ret;
-	// 	ofs.close();
-	// }
-	// std::vector<TimingRec> crecords;
-	// std::vector<std::string> cnames;
-	// std::string cuptiRecords = CreateFakeCUPTI(10000, crecords, ids, procids, threads, sizes, cnames);
-	// {
-	// 	std::ofstream ofs ("ReadCUPTITest.txt", std::ofstream::out);
-	// 	ofs << cuptiRecords;
-	// 	ofs.close();
-	// }	
+	// Generate the fake timeline
+	std::string out_timeline = CreateFakeTimeline(10000, ids, hashes, sizes, types, duplicates);
+	{
+		std::ofstream ofs ("ReadTimelineTest.txt", std::ofstream::out);
+		ofs << out_timeline;
+		ofs.close();
+	}
+	std::vector<uint64_t> streams;
+	std::vector<uint64_t> procids;
+	std::vector<uint64_t> threads;
+	std::string ret = CreateFakeCorrelation(4,4,1,ids, sizes, streams, procids, threads);
+	{
+		std::ofstream ofs ("ReadCorrelationTest.txt", std::ofstream::out);
+		ofs << ret;
+		ofs.close();
+	}
+	std::vector<TimingRec> crecords;
+	std::vector<std::string> cnames;
+	std::string cuptiRecords = CreateFakeCUPTI(10000, crecords, ids, procids, threads, sizes, cnames);
+	{
+		std::ofstream ofs ("ReadCUPTITest.txt", std::ofstream::out);
+		ofs << cuptiRecords;
+		ofs.close();
+	}	
 
-	// CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","ReadCUPTITest.txt");
-	// std::vector<CUDAProcess> procs;
-	// std::vector<TimelineRec> tlineRecords;
-	// std::vector<CorrelationRec> records;
-	// std::vector<CombinedRecord> output;
-	// std::vector<TimingRec> timingRec;
-	// double finalTime = 0.0;
+	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","ReadCUPTITest.txt");
+	std::vector<CUDAProcess> procs;
+	std::vector<TimelineRec> tlineRecords;
+	std::vector<CorrelationRec> records;
+	std::vector<CombinedRecord> output;
+	std::vector<TimingRec> timingRec;
+	double finalTime = 0.0;
 
-	// x.ReadTimeline(tlineRecords);
-	// x.ReadCorrelation(records);
-	// x.CombineTimelineCorrelation(tlineRecords, records, output);
-	// x.ReadTiming(timingRec, finalTime);	
-	// x.GenerateCUDAProcesses(timingRec, procs);
+	x.ReadTimeline(tlineRecords);
+	x.ReadCorrelation(records);
+	x.CombineTimelineCorrelation(tlineRecords, records, output);
+	x.ReadTiming(timingRec, finalTime);	
+	x.GenerateCUDAProcesses(timingRec, procs);
 
-	// x.NormalizeProcessIDs(records, procs);
+	std::map<uint64_t : CombinedRecord> recordMap;
+	for (auto i : output) {
+		recordMap[std::get<0>(i)] = i;
+	}
+	x.NormalizeProcessIDs(records, procs);
 	// for(auto i : procs) {
 	// 	BOOST_CHECK_EQUAL(i.matched, true);
+	// 	for (auto t : i.transferRecords) {
+	// 	}
 	// }
 }
 

@@ -213,8 +213,8 @@ void CalculateDedupSavings::GenerateCUDAProcesses(std::vector<TimingRec> & timin
 			CUDAProcess tmp;
 			tmp.procid = std::get<5>(i->second);
 			tmp.threadid = std::get<6>(i->second);
-			tmp.records.push_back(i->second);
 			procs.push_back(tmp);
+			procs[procs.size() - 1].records.push_back(i->second);
 		}
 	}
 }

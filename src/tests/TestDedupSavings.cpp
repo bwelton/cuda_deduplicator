@@ -391,7 +391,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 			std::cerr << "\t" << PrintCUPTIRecord(i.second) << std::endl;
 			std::cerr << "\t" << PrintCUPTIRecord(*m) << std::endl;
 		}	
-	}
+	}	
 
 
 	// for (auto i : c_records) {
@@ -461,24 +461,29 @@ BOOST_AUTO_TEST_CASE(TestNormalizeProcessIDs) {
 	std::vector<CorrelationRec> records;
 	std::vector<CombinedRecord> output;
 	std::vector<TimingRec> timingRec;
+	std::map<uint64_t, CUPTIRecord> rc_records;
+
 	double finalTime = 0.0;
 
 	x.ReadTimeline(tlineRecords);
 	x.ReadCorrelation(records);
 	x.CombineTimelineCorrelation(tlineRecords, records, output);
 	x.ReadTiming(timingRec, finalTime);	
-	x.GenerateCUDAProcesses(timingRec, procs);
+	x.GenerateCUDAProcesses(timingRec, procs, rc_records);
 
-	std::map<uint64_t : CombinedRecord> recordMap;
+	std::map<uint64_t, CombinedRecord> recordMap;
 	for (auto i : output) {
 		recordMap[std::get<0>(i)] = i;
 	}
 	x.NormalizeProcessIDs(records, procs);
-	// for(auto i : procs) {
-	// 	BOOST_CHECK_EQUAL(i.matched, true);
-	// 	for (auto t : i.transferRecords) {
-	// 	}
-	// }
+	for(auto i : procs) {
+		BOOST_CHECK_EQUAL(i.matched, true);
+		for (auto t : i.transferRecords) {
+			if (recordMap.find(std::get<0>(t)) != recordMap.end())
+				recordMap.erase(std::get<0>(t));
+		}
+	}
+	BOOST_CHECK_EQUAL(recordMap.size(),0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

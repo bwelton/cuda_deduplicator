@@ -297,19 +297,6 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	x.ReadTiming(records, finalTime);
 	BOOST_CHECK_EQUAL(records.size(), recs.size());	
 	std::vector<CUDAProcess> procs;
-	x.GenerateCUDAProcesses(records, procs);
-	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
-	uint64_t cputime, gputime;
-	uint32_t type_key, cname_key;
-	int runcorr, ctx, dev;
-	// std::map<uint64_t, uint64_t> costs;
-	// for (auto i : records) {
-	// 	std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
-	// 	if (costs.find(corrid) != costs.end())
-	// 		costs[corrid] =  end_time - start_time;
-	// 	else 
-	// 		costs[corrid] += (end_time - start_time);
-	// }
 	std::map<uint64_t, CUPTIRecord> c_records;
 	for(auto i : records) {
 		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
@@ -332,6 +319,20 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 			std::get<11>(c_records[corrid]) = stream;
 		}
 	}
+	x.GenerateCUDAProcesses(records, procs);
+	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
+	uint64_t cputime, gputime;
+	uint32_t type_key, cname_key;
+	int runcorr, ctx, dev;
+	// std::map<uint64_t, uint64_t> costs;
+	// for (auto i : records) {
+	// 	std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
+	// 	if (costs.find(corrid) != costs.end())
+	// 		costs[corrid] =  end_time - start_time;
+	// 	else 
+	// 		costs[corrid] += (end_time - start_time);
+	// }
+
 	for (auto i : c_records) {
 		CUDAProcess * fp = NULL;
 		std::tie(corrid, type_key, std::ignore, gputime, cputime, procid, threadid, size, std::ignore, std::ignore, std::ignore, std::ignore) = i.second;
@@ -426,7 +427,23 @@ BOOST_AUTO_TEST_CASE(TestNormalizeProcessIDs) {
 	}	
 
 	CalculateDedupSavings x("ReadTimelineTest.txt","ReadCorrelationTest.txt","ReadCUPTITest.txt");
+	std::vector<CUDAProcess> procs;
+	std::vector<TimelineRec> tlineRecords;
+	std::vector<CorrelationRec> records;
+	std::vector<CombinedRecord> output;
+	std::vector<TimingRec> timingRec;
+	double finalTime = 0.0;
 
+	x.ReadTimeline(tlineRecords);
+	x.ReadCorrelation(records);
+	x.CombineTimelineCorrelation(tlineRecords, records, output);
+	x.ReadTiming(timingRec, finalTime);	
+	x.GenerateCUDAProcesses(timingRec, procs);
+
+	x.NormalizeProcessIDs(records, procs);
+	for(auto i : procs) {
+		BOOST_CHECK_EQUAL(i.matched, true);
+	}
 }
 
 BOOST_AUTO_TEST_SUITE_END()

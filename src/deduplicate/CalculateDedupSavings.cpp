@@ -57,7 +57,7 @@ std::pair<uint64_t, uint64_t> CalculateDedupSavings::CalculateProcessSavings(CUD
 	int type;
 	for (auto i : proc.transferRecords) {
 		while (proc.GetNextCUPTITransferOrSynchronization(rec, type, _typeKeys)){
-		// Check if transfers match, continue otherwise
+			// Check if transfers match, continue otherwise
 			if (type == 1) {
 				// if the sizes don't match, continue to next transfer....
 				if (std::get<7>(rec) != std::get<1>(i)) {
@@ -145,7 +145,7 @@ void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & co
 				counts.push_back(z.MatchEntries(i));
 			}
 		}
-		if (found != false) {
+		if (found == false) {
 			int lowestPos = 100000000;
 			int lowestProc = -1;
 			for(int z = 0; z < counts.size(); z++) {
@@ -183,13 +183,13 @@ void CalculateDedupSavings::GenerateCUDAProcesses(std::vector<TimingRec> & timin
 		if (type_key == 1 || type_key == 2){
 			std::get<0>(c_records[corrid]) = corrid;
 			std::get<1>(c_records[corrid]) = cname_key;
-			std::get<4>(c_records[corrid]) = std::get<4>(c_records[corrid]) + (end_time - start_time);
+			std::get<4>(c_records[corrid]) = std::get<4>(c_records[corrid]) + std::max(int(end_time) - int(start_time), 0);
 			std::get<5>(c_records[corrid]) = procid;
 			std::get<6>(c_records[corrid]) = threadid;
 		} else if (type_key == 3){
 			std::get<0>(c_records[corrid]) = corrid;
 			std::get<2>(c_records[corrid]) = cname_key;
-			std::get<3>(c_records[corrid]) = std::get<3>(c_records[corrid]) + (end_time - start_time);
+			std::get<3>(c_records[corrid]) = std::get<3>(c_records[corrid]) + std::max(int(end_time) - int(start_time), 0);
 			std::get<7>(c_records[corrid]) = size;
 			std::get<8>(c_records[corrid]) = runcorr;
 			std::get<9>(c_records[corrid]) = ctx;

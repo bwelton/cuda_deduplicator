@@ -313,13 +313,13 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 		if (type_key == 1 || type_key == 2){
 			std::get<0>(c_records[corrid]) = corrid;
 			std::get<1>(c_records[corrid]) = cname_key;
-			std::get<4>(c_records[corrid]) = std::get<4>(c_records[corrid]) + (end_time - start_time);
+			std::get<4>(c_records[corrid]) = std::get<4>(c_records[corrid]) +  std::max(int(end_time) - int(start_time), 0);
 			std::get<5>(c_records[corrid]) = procid;
 			std::get<6>(c_records[corrid]) = threadid;
 		} else if (type_key == 3){
 			std::get<0>(c_records[corrid]) = corrid;
 			std::get<2>(c_records[corrid]) = cname_key;
-			std::get<3>(c_records[corrid]) = std::get<3>(c_records[corrid]) + (end_time - start_time);
+			std::get<3>(c_records[corrid]) = std::get<3>(c_records[corrid]) +  std::max(int(end_time) - int(start_time), 0);
 			std::get<7>(c_records[corrid]) = size;
 			std::get<8>(c_records[corrid]) = runcorr;
 			std::get<9>(c_records[corrid]) = ctx;

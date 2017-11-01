@@ -115,7 +115,7 @@ void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & co
 	std::vector<CPUProcess> cpuProcs;
 	for (auto i : correlation) {
 		bool found = false;
-		for (auto z : cpuProcs) {
+		for (auto & z : cpuProcs) {
 			if (z == i){
 				z.transferRecords.push_back(i);
 				found = true;

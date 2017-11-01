@@ -333,7 +333,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	for(auto i : c_records) {
 		bool found = false;
 		for (auto t : rc_records) {
-			if (i.first == t.first) {
+			if (i.first == t.first && i.second == t.second ) {
 				found = true;
 				break;
 			}

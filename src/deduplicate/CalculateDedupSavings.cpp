@@ -134,7 +134,7 @@ void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & co
 	for (auto i : cpuProcs) {
 		std::vector<int> counts;
 		bool found = false;
-		for (auto z : procs) {
+		for (auto & z : procs) {
 			// One to one match of procid's and threadid's.
 			if (z == i) {
 				found = true;

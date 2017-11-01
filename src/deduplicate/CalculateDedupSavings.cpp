@@ -167,13 +167,14 @@ void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & co
 }	
 
 void CalculateDedupSavings::GenerateCUDAProcesses(std::vector<TimingRec> & timing,
-												  std::vector<CUDAProcess> & procs) {
+												  std::vector<CUDAProcess> & procs, 
+												  std::map<uint64_t, CUPTIRecord> & c_records) {
 	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
 	uint32_t type_key, cname_key;
 	int runcorr, ctx, dev;
 	CUPTIRecord rec = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
 	int64_t currentRecord = -1;
-	std::map<uint64_t, CUPTIRecord> c_records;
+	//std::map<uint64_t, CUPTIRecord> c_records;
 
 	for (auto i : timing) {
 		std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
@@ -233,7 +234,8 @@ std::pair<uint64_t, uint64_t> CalculateDedupSavings::GenerateEstimate(std::vecto
 	std::vector<CUDAProcess> procs;
 	CUPTIRecord rec = std::make_tuple(0,0,0,0,0,0,0,0,0,0,0,0);
 	int64_t currentRecord = -1;
-	GenerateCUDAProcesses(timing, procs);
+	std::map<uint64_t, CUPTIRecord> c_records;
+	GenerateCUDAProcesses(timing, procs, c_records);
 	NormalizeProcessIDs(correlation, procs);
 
 

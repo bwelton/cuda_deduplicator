@@ -288,6 +288,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	std::vector<std::string> cnames;
 	std::vector<CUDAProcess> procs;
 	std::map<uint64_t, CUPTIRecord> c_records;
+	std::map<uint64_t, CUPTIRecord> rc_records;
 	std::vector<TimingRec> records;
 	double finalTime;
 	uint64_t corrid, start_time, end_time, procid, threadid, size, stream;
@@ -326,8 +327,19 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 			std::get<11>(c_records[corrid]) = stream;
 		}
 	}
-	x.GenerateCUDAProcesses(records, procs);
 
+	x.GenerateCUDAProcesses(records, procs, rc_records);
+	BOOST_CHECK_EQUAL(rc_records.size(), c_records.size());
+	for(auto i : c_records) {
+		bool found = false;
+		for (auto t : rc_records) {
+			if (i.second == t.second && i.first == t.first) {
+				found == true;
+				break;
+			}
+		}
+		BOOST_CHECK_EQUAL(found, true);
+	}
 	// std::map<uint64_t, uint64_t> costs;
 	// for (auto i : records) {
 	// 	std::tie(corrid, type_key, cname_key, start_time, end_time, procid, threadid, size, runcorr, ctx, dev, stream) = i;
@@ -339,10 +351,12 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 
 	for (auto i : c_records) {
 		CUDAProcess * fp = NULL;
-		std::tie(corrid, type_key, std::ignore, gputime, cputime, procid, threadid, size, std::ignore, std::ignore, std::ignore, std::ignore) = i.second;
+		CUPTIRecord tmp_cupti = i.second;
+		
+		// std::tie(corrid, type_key, std::ignore, gputime, cputime, procid, threadid, size, std::ignore, std::ignore, std::ignore, std::ignore) = i.second;
 		bool found = false;
 		for (auto p : procs) {
-			if (p.procid == procid && p.threadid == threadid){
+			if (p.procid == std::get<5>(tmp_cupti) && p.threadid == std::vector<6>(tmp_cupti)){
 				found = true;
 				fp = &p;
 				break;
@@ -350,8 +364,9 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 		}
 		BOOST_CHECK_EQUAL(found, true);
 		if (fp == NULL) 
-			continue;		
-		CUPTIRecord tmp_cupti = i.second;
+			BOOST_FAIL("WE SHOULD NOT HAVE ANY NULL PTRS");
+		corrid = std::get<0>(tmp_cupti);
+
 		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&corrid](const CUPTIRecord & r) -> bool 
 			{ return std::get<0>(r) == corrid;});	
 		if (m == fp->records.end()) {

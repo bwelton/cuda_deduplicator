@@ -156,6 +156,6 @@ public:
 	// For debug purposes
 	int NameToId(std::string name);
 	void GenerateCUDAProcesses(std::vector<TimingRec> & timing,
-		  					   std::vector<CUDAProcess> & procs);
+		  					   std::vector<CUDAProcess> & procs, std::map<uint64_t, CUPTIRecord> & c_records);
 
 };

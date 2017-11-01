@@ -360,6 +360,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	// }
 
 	for (auto i : c_records) {
+		bool found = false;
 		uint64_t record_proc = std::get<5>(i.second);
 		uint64_t record_thread = std::get<6>(i.second);
 		std::vector<CUDAProcess> matchingProcs;
@@ -369,6 +370,17 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 			}
 		}
 		BOOST_CHECK_EQUAL(matchingProcs.size(), 1);
+		if (matchingProcs.size() > 1) {
+			for (auto p : matchingProcs)
+				std::cerr << "Proc Matches - " << p.procid << " " << p.threadid << std::endl;
+		}
+		for (auto p : matchingProcs) {
+			for(auto z : p.records) {
+				if (z == i.second) 
+					found = true;
+			}
+		}
+		BOOST_CHECK_EQUAL(found, true);
 	}
 
 	// for (auto i : c_records) {

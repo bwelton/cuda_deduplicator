@@ -96,7 +96,7 @@ std::string CreateFakeCUPTI(size_t count, std::vector<TimingRec> & recs, std::ve
 		current++;
 	}
 	for (uint64_t i = 0; i < count; i++) {
-		rec = std::make_tuple(i+1, rand() % 3+1, rand() % 25 + 1, rand() % 26000 + 1, rand() % 26000 + 4, 
+		rec = std::make_tuple(i+1, 1, rand() % 25 + 1, rand() % 26000 + 1, rand() % 26000 + 4, 
 			_procToGPUId[procid[i]], _threadToGPUId[threadid[i]], sizes[i], rand() % 25, rand() % 30, rand() % 20, rand() % 50);
 		uint64_t type = std::get<1>(rec);
 		std::string name;

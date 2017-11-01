@@ -130,7 +130,7 @@ void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & co
 		}
 	}
 	std::cout << "Created " << cpuProcs.size() << " CPU processes from correlation data" << std::endl;
-	std::cout << "Looking for " <<< procs.size() << " CUPTI Processes" << std::endl;
+	std::cout << "Looking for " << procs.size() << " CUPTI Processes" << std::endl;
 	for (auto i : cpuProcs) {
 		std::vector<int> counts;
 		bool found = false;

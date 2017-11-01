@@ -356,7 +356,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 		// std::tie(corrid, type_key, std::ignore, gputime, cputime, procid, threadid, size, std::ignore, std::ignore, std::ignore, std::ignore) = i.second;
 		bool found = false;
 		for (auto p : procs) {
-			if (p.procid == std::get<5>(tmp_cupti) && p.threadid == std::vector<6>(tmp_cupti)){
+			if (p.procid == std::get<5>(tmp_cupti) && p.threadid == std::get<6>(tmp_cupti)){
 				found = true;
 				fp = &p;
 				break;

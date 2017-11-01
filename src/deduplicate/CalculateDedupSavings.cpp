@@ -129,11 +129,13 @@ void CalculateDedupSavings::NormalizeProcessIDs(std::vector<CombinedRecord> & co
 			cpuProcs.push_back(newProc);
 		}
 	}
-	
+	std::cout << "Created " << cpuProcs.size() << " CPU processes from correlation data" << std::endl;
+	std::cout << "Looking for " <<< procs.size() << " CUPTI Processes" << std::endl;
 	for (auto i : cpuProcs) {
 		std::vector<int> counts;
 		bool found = false;
 		for (auto z : procs) {
+			// One to one match of procid's and threadid's.
 			if (z == i) {
 				found = true;
 				z.transferRecords = i.transferRecords;

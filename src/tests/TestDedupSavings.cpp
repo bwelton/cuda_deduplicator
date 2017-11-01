@@ -333,7 +333,7 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	for(auto i : c_records) {
 		bool found = false;
 		for (auto t : rc_records) {
-			if (i.first == t.first && i.second == t.second ) {
+			if (i.first == t.first && i.second == t.second) {
 				found = true;
 				break;
 			}
@@ -360,38 +360,50 @@ BOOST_AUTO_TEST_CASE(TestGenerateCUDAProcesses) {
 	// }
 
 	for (auto i : c_records) {
-		CUDAProcess * fp = NULL;
-		CUPTIRecord tmp_cupti = i.second;
-		
-		// std::tie(corrid, type_key, std::ignore, gputime, cputime, procid, threadid, size, std::ignore, std::ignore, std::ignore, std::ignore) = i.second;
-		bool found = false;
+		uint64_t record_proc = std::get<5>(i.second);
+		uint64_t record_thread = std::get<6>(i.second);
+		std::vector<CUDAProcess> matchingProcs;
 		for (auto p : procs) {
-			if (p.procid == std::get<5>(tmp_cupti) && p.threadid == std::get<6>(tmp_cupti)){
-				found = true;
-				fp = &p;
-				break;
+			if (record_proc == p.procid && record_thread == p.threadid) {
+				matchingProcs.push_back(p);
 			}
 		}
-		BOOST_CHECK_EQUAL(found, true);
-		if (fp == NULL) 
-			BOOST_FAIL("WE SHOULD NOT HAVE ANY NULL PTRS");
-		corrid = std::get<0>(tmp_cupti);
+		BOOST_CHECK_EQUAL(matchingProcs.size(), 1);
+	}
 
-		auto m = std::find_if(fp->records.begin(), fp->records.end(), [&corrid](const CUPTIRecord & r) -> bool 
-			{ return std::get<0>(r) == corrid;});	
-		if (m == fp->records.end()) {
-			std::cerr << "CUPTI Record i: " << PrintCUPTIRecord(i.second) << std::endl;
-			std::cerr << "CUPTI Records" << std::endl;
-			for (auto p : fp->records)
-				std::cerr << "\t" << PrintCUPTIRecord(p) << std::endl;
-			BOOST_FAIL("COULD NOT FIND RECORD");
-		}
-		if (*m != i.second) {
-			std::cerr << "CUPTI RECORDS NOT EQUAL" << std::endl;
-			std::cerr << "\t" << PrintCUPTIRecord(i.second) << std::endl;
-			std::cerr << "\t" << PrintCUPTIRecord(*m) << std::endl;
-		}	
-	}	
+	// for (auto i : c_records) {
+	// 	CUDAProcess * fp = NULL;
+	// 	CUPTIRecord tmp_cupti = i.second;
+		
+	// 	// std::tie(corrid, type_key, std::ignore, gputime, cputime, procid, threadid, size, std::ignore, std::ignore, std::ignore, std::ignore) = i.second;
+	// 	bool found = false;
+	// 	for (auto p : procs) {
+	// 		if (p.procid == std::get<5>(tmp_cupti) && p.threadid == std::get<6>(tmp_cupti)){
+	// 			found = true;
+	// 			fp = &p;
+	// 			break;
+	// 		}
+	// 	}
+	// 	BOOST_CHECK_EQUAL(found, true);
+	// 	if (fp == NULL) 
+	// 		BOOST_FAIL("WE SHOULD NOT HAVE ANY NULL PTRS");
+	// 	corrid = std::get<0>(tmp_cupti);
+
+	// 	auto m = std::find_if(fp->records.begin(), fp->records.end(), [&corrid](const CUPTIRecord & r) -> bool 
+	// 		{ return std::get<0>(r) == corrid;});	
+	// 	if (m == fp->records.end()) {
+	// 		std::cerr << "CUPTI Record i: " << PrintCUPTIRecord(i.second) << std::endl;
+	// 		std::cerr << "CUPTI Records" << std::endl;
+	// 		for (auto p : fp->records)
+	// 			std::cerr << "\t" << PrintCUPTIRecord(p) << std::endl;
+	// 		BOOST_FAIL("COULD NOT FIND RECORD");
+	// 	}
+	// 	if (*m != i.second) {
+	// 		std::cerr << "CUPTI RECORDS NOT EQUAL" << std::endl;
+	// 		std::cerr << "\t" << PrintCUPTIRecord(i.second) << std::endl;
+	// 		std::cerr << "\t" << PrintCUPTIRecord(*m) << std::endl;
+	// 	}	
+	// }	
 
 
 	// for (auto i : c_records) {

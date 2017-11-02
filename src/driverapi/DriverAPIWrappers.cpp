@@ -1,5 +1,5 @@
 #include "DriverWrapperBase.h"
-#include "DriverWrapperFactory"
+#include "DriverWrapperFactory.h"
 std::shared_ptr<DriverWrapperFactory> DriverFactory;
 extern "C" {// typedef boost::function<int(void)> DriverAPICall;
 // std::shared_ptr<InstrumentFactory> InstFactory;

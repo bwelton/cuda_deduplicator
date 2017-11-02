@@ -12,7 +12,7 @@ f.close()
 
 ## Build Header for Wrappers
 
-outStr = '#include "DriverWrapperBase.h"\n#include "DriverWrapperFactory"\nstd::shared_ptr<DriverWrapperFactory> DriverFactory;\nextern "C" {'
+outStr = '#include "DriverWrapperBase.h"\n#include "DriverWrapperFactory.h"\nstd::shared_ptr<DriverWrapperFactory> DriverFactory;\nextern "C" {'
 for x in protos:
 	variables = {"RETURN_TYPE" : None, "CALL_NAME" : None, "PARAMETERS_NAMES" : None,
 				"PARAMETERS_FULL" : None}

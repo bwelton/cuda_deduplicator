@@ -13,7 +13,7 @@ int INTER_cuGetErrorString( CUresult error, const char * * pStr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGetErrorString, error,pStr);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGetErrorString ,error,pStr);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -28,7 +28,7 @@ int INTER_cuGetErrorName( CUresult error, const char * * pStr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGetErrorName, error,pStr);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGetErrorName ,error,pStr);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -43,7 +43,7 @@ int INTER_cuInit( unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuInit, Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuInit ,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -58,7 +58,7 @@ int INTER_cuDriverGetVersion( int * driverVersion ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDriverGetVersion, driverVersion);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDriverGetVersion ,driverVersion);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -73,7 +73,7 @@ int INTER_cuDeviceGet( CUdevice * device, int ordinal ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGet, device,ordinal);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGet ,device,ordinal);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -88,7 +88,7 @@ int INTER_cuDeviceGetCount( int * count ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetCount, count);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetCount ,count);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -103,7 +103,7 @@ int INTER_cuDeviceGetName( char * name, int len, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetName, name,len,dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetName ,name,len,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -118,7 +118,7 @@ int INTER_cuDeviceTotalMem( size_t * bytes, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceTotalMem, bytes,dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceTotalMem ,bytes,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -133,7 +133,7 @@ int INTER_cuDeviceGetAttribute( int * pi, CUdevice_attribute attrib, CUdevice de
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetAttribute, pi,attrib,dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetAttribute ,pi,attrib,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -148,7 +148,7 @@ int INTER_cuDeviceGetProperties( CUdevprop * prop, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetProperties, prop,dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetProperties ,prop,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -163,7 +163,7 @@ int INTER_cuDeviceComputeCapability( int * major, int * minor, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceComputeCapability, major,minor,dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceComputeCapability ,major,minor,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -178,7 +178,7 @@ int INTER_cuDevicePrimaryCtxRetain( CUcontext * pctx, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxRetain, pctx,dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxRetain ,pctx,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -193,7 +193,7 @@ int INTER_cuDevicePrimaryCtxRelease( CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxRelease, dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxRelease ,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -208,7 +208,7 @@ int INTER_cuDevicePrimaryCtxSetFlags( CUdevice dev, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxSetFlags, dev,flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxSetFlags ,dev,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -223,7 +223,7 @@ int INTER_cuDevicePrimaryCtxGetState( CUdevice dev, unsigned int * flags, int * 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxGetState, dev,flags,active);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxGetState ,dev,flags,active);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -238,7 +238,7 @@ int INTER_cuDevicePrimaryCtxReset( CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxReset, dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDevicePrimaryCtxReset ,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -253,7 +253,7 @@ int INTER_cuCtxCreate( CUcontext * pctx, unsigned int flags, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxCreate, pctx,flags,dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxCreate ,pctx,flags,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -268,7 +268,7 @@ int INTER_cuCtxDestroy( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxDestroy, ctx);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxDestroy ,ctx);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -283,7 +283,7 @@ int INTER_cuCtxPushCurrent( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxPushCurrent, ctx);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxPushCurrent ,ctx);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -298,7 +298,7 @@ int INTER_cuCtxPopCurrent( CUcontext * pctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxPopCurrent, pctx);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxPopCurrent ,pctx);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -313,7 +313,7 @@ int INTER_cuCtxSetCurrent( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSetCurrent, ctx);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSetCurrent ,ctx);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -328,7 +328,7 @@ int INTER_cuCtxGetCurrent( CUcontext * pctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetCurrent, pctx);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetCurrent ,pctx);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -343,7 +343,7 @@ int INTER_cuCtxGetDevice( CUdevice * device ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetDevice, device);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetDevice ,device);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -358,7 +358,7 @@ int INTER_cuCtxGetFlags( unsigned int * flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetFlags, flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetFlags ,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -373,7 +373,7 @@ int INTER_cuCtxSynchronize( void  ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSynchronize, void);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSynchronize );
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -388,7 +388,7 @@ int INTER_cuCtxSetLimit( CUlimit limit, size_t value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSetLimit, limit,value);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSetLimit ,limit,value);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -403,7 +403,7 @@ int INTER_cuCtxGetLimit( size_t * pvalue, CUlimit limit ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetLimit, pvalue,limit);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetLimit ,pvalue,limit);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -418,7 +418,7 @@ int INTER_cuCtxGetCacheConfig( CUfunc_cache * pconfig ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetCacheConfig, pconfig);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetCacheConfig ,pconfig);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -433,7 +433,7 @@ int INTER_cuCtxSetCacheConfig( CUfunc_cache config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSetCacheConfig, config);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSetCacheConfig ,config);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -448,7 +448,7 @@ int INTER_cuCtxGetSharedMemConfig( CUsharedconfig * pConfig ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetSharedMemConfig, pConfig);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetSharedMemConfig ,pConfig);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -463,7 +463,7 @@ int INTER_cuCtxSetSharedMemConfig( CUsharedconfig config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSetSharedMemConfig, config);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSetSharedMemConfig ,config);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -478,7 +478,7 @@ int INTER_cuCtxGetApiVersion( CUcontext ctx, unsigned int * version ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetApiVersion, ctx,version);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetApiVersion ,ctx,version);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -493,7 +493,7 @@ int INTER_cuCtxGetStreamPriorityRange( int * leastPriority, int * greatestPriori
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetStreamPriorityRange, leastPriority,greatestPriority);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxGetStreamPriorityRange ,leastPriority,greatestPriority);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -508,7 +508,7 @@ int INTER_cuCtxAttach( CUcontext * pctx, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxAttach, pctx,flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxAttach ,pctx,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -523,7 +523,7 @@ int INTER_cuCtxDetach( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxDetach, ctx);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxDetach ,ctx);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -538,7 +538,7 @@ int INTER_cuModuleLoad( CUmodule * module, const char * fname ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuModuleLoad, module,fname);
+	DriverAPICall call = boost::bind(ORIGINAL_cuModuleLoad ,module,fname);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -553,7 +553,7 @@ int INTER_cuModuleLoadData( CUmodule * module, const void * image ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuModuleLoadData, module,image);
+	DriverAPICall call = boost::bind(ORIGINAL_cuModuleLoadData ,module,image);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -568,7 +568,7 @@ int INTER_cuModuleLoadDataEx( CUmodule * module, const void * image, unsigned in
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuModuleLoadDataEx, module,image,numOptions,options,optionValues);
+	DriverAPICall call = boost::bind(ORIGINAL_cuModuleLoadDataEx ,module,image,numOptions,options,optionValues);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -583,7 +583,7 @@ int INTER_cuModuleLoadFatBinary( CUmodule * module, const void * fatCubin ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuModuleLoadFatBinary, module,fatCubin);
+	DriverAPICall call = boost::bind(ORIGINAL_cuModuleLoadFatBinary ,module,fatCubin);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -598,7 +598,7 @@ int INTER_cuModuleUnload( CUmodule hmod ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuModuleUnload, hmod);
+	DriverAPICall call = boost::bind(ORIGINAL_cuModuleUnload ,hmod);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -613,7 +613,7 @@ int INTER_cuModuleGetFunction( CUfunction * hfunc, CUmodule hmod, const char * n
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuModuleGetFunction, hfunc,hmod,name);
+	DriverAPICall call = boost::bind(ORIGINAL_cuModuleGetFunction ,hfunc,hmod,name);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -628,7 +628,7 @@ int INTER_cuModuleGetGlobal( CUdeviceptr * dptr, size_t * bytes, CUmodule hmod, 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuModuleGetGlobal, dptr,bytes,hmod,name);
+	DriverAPICall call = boost::bind(ORIGINAL_cuModuleGetGlobal ,dptr,bytes,hmod,name);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -643,7 +643,7 @@ int INTER_cuModuleGetTexRef( CUtexref * pTexRef, CUmodule hmod, const char * nam
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuModuleGetTexRef, pTexRef,hmod,name);
+	DriverAPICall call = boost::bind(ORIGINAL_cuModuleGetTexRef ,pTexRef,hmod,name);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -658,7 +658,7 @@ int INTER_cuModuleGetSurfRef( CUsurfref * pSurfRef, CUmodule hmod, const char * 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuModuleGetSurfRef, pSurfRef,hmod,name);
+	DriverAPICall call = boost::bind(ORIGINAL_cuModuleGetSurfRef ,pSurfRef,hmod,name);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -673,7 +673,7 @@ int INTER_cuLinkCreate( unsigned int numOptions, CUjit_option * options, void * 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuLinkCreate, numOptions,options,optionValues,stateOut);
+	DriverAPICall call = boost::bind(ORIGINAL_cuLinkCreate ,numOptions,options,optionValues,stateOut);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -688,7 +688,7 @@ int INTER_cuLinkAddData( CUlinkState state, CUjitInputType type, void * data, si
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuLinkAddData, state,type,data,size,name,numOptions,options,optionValues);
+	DriverAPICall call = boost::bind(ORIGINAL_cuLinkAddData ,state,type,data,size,name,numOptions,options,optionValues);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -703,7 +703,7 @@ int INTER_cuLinkAddFile( CUlinkState state, CUjitInputType type, const char * pa
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuLinkAddFile, state,type,path,numOptions,options,optionValues);
+	DriverAPICall call = boost::bind(ORIGINAL_cuLinkAddFile ,state,type,path,numOptions,options,optionValues);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -718,7 +718,7 @@ int INTER_cuLinkComplete( CUlinkState state, void * * cubinOut, size_t * sizeOut
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuLinkComplete, state,cubinOut,sizeOut);
+	DriverAPICall call = boost::bind(ORIGINAL_cuLinkComplete ,state,cubinOut,sizeOut);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -733,7 +733,7 @@ int INTER_cuLinkDestroy( CUlinkState state ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuLinkDestroy, state);
+	DriverAPICall call = boost::bind(ORIGINAL_cuLinkDestroy ,state);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -748,7 +748,7 @@ int INTER_cuMemGetInfo( size_t * free, size_t * total ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemGetInfo, free,total);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemGetInfo ,free,total);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -763,7 +763,7 @@ int INTER_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemAlloc, dptr,bytesize);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemAlloc ,dptr,bytesize);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -778,7 +778,7 @@ int INTER_cuMemAllocPitch( CUdeviceptr * dptr, size_t * pPitch, size_t WidthInBy
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemAllocPitch, dptr,pPitch,WidthInBytes,Height,ElementSizeBytes);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemAllocPitch ,dptr,pPitch,WidthInBytes,Height,ElementSizeBytes);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -793,7 +793,7 @@ int INTER_cuMemFree( CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemFree, dptr);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemFree ,dptr);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -808,7 +808,7 @@ int INTER_cuMemGetAddressRange( CUdeviceptr * pbase, size_t * psize, CUdeviceptr
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemGetAddressRange, pbase,psize,dptr);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemGetAddressRange ,pbase,psize,dptr);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -823,7 +823,7 @@ int INTER_cuMemAllocHost( void * * pp, size_t bytesize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemAllocHost, pp,bytesize);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemAllocHost ,pp,bytesize);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -838,7 +838,7 @@ int INTER_cuMemFreeHost( void * p ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemFreeHost, p);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemFreeHost ,p);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -853,7 +853,7 @@ int INTER_cuMemHostAlloc( void * * pp, size_t bytesize, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostAlloc, pp,bytesize,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostAlloc ,pp,bytesize,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -868,7 +868,7 @@ int INTER_cuMemHostGetDevicePointer( CUdeviceptr * pdptr, void * p, unsigned int
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostGetDevicePointer, pdptr,p,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostGetDevicePointer ,pdptr,p,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -883,7 +883,7 @@ int INTER_cuMemHostGetFlags( unsigned int * pFlags, void * p ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostGetFlags, pFlags,p);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostGetFlags ,pFlags,p);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -898,7 +898,7 @@ int INTER_cuMemAllocManaged( CUdeviceptr * dptr, size_t bytesize, unsigned int f
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemAllocManaged, dptr,bytesize,flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemAllocManaged ,dptr,bytesize,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -913,7 +913,7 @@ int INTER_cuDeviceGetByPCIBusId( CUdevice * dev, const char * pciBusId ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetByPCIBusId, dev,pciBusId);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetByPCIBusId ,dev,pciBusId);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -928,7 +928,7 @@ int INTER_cuDeviceGetPCIBusId( char * pciBusId, int len, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetPCIBusId, pciBusId,len,dev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceGetPCIBusId ,pciBusId,len,dev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -943,7 +943,7 @@ int INTER_cuIpcGetEventHandle( CUipcEventHandle * pHandle, CUevent event ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuIpcGetEventHandle, pHandle,event);
+	DriverAPICall call = boost::bind(ORIGINAL_cuIpcGetEventHandle ,pHandle,event);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -958,7 +958,7 @@ int INTER_cuIpcOpenEventHandle( CUevent * phEvent, CUipcEventHandle handle ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuIpcOpenEventHandle, phEvent,handle);
+	DriverAPICall call = boost::bind(ORIGINAL_cuIpcOpenEventHandle ,phEvent,handle);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -973,7 +973,7 @@ int INTER_cuIpcGetMemHandle( CUipcMemHandle * pHandle, CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuIpcGetMemHandle, pHandle,dptr);
+	DriverAPICall call = boost::bind(ORIGINAL_cuIpcGetMemHandle ,pHandle,dptr);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -988,7 +988,7 @@ int INTER_cuIpcOpenMemHandle( CUdeviceptr * pdptr, CUipcMemHandle handle, unsign
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuIpcOpenMemHandle, pdptr,handle,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuIpcOpenMemHandle ,pdptr,handle,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1003,7 +1003,7 @@ int INTER_cuIpcCloseMemHandle( CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuIpcCloseMemHandle, dptr);
+	DriverAPICall call = boost::bind(ORIGINAL_cuIpcCloseMemHandle ,dptr);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1018,7 +1018,7 @@ int INTER_cuMemHostRegister( void * p, size_t bytesize, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostRegister, p,bytesize,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostRegister ,p,bytesize,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1033,7 +1033,7 @@ int INTER_cuMemHostUnregister( void * p ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostUnregister, p);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemHostUnregister ,p);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1048,7 +1048,7 @@ int INTER_cuMemcpy( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy, dst,src,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy ,dst,src,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1063,7 +1063,7 @@ int INTER_cuMemcpyPeer( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyPeer, dstDevice,dstContext,srcDevice,srcContext,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyPeer ,dstDevice,dstContext,srcDevice,srcContext,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1078,7 +1078,7 @@ int INTER_cuMemcpyHtoD( CUdeviceptr dstDevice, const void * srcHost, size_t Byte
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoD, dstDevice,srcHost,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoD ,dstDevice,srcHost,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1093,7 +1093,7 @@ int INTER_cuMemcpyDtoH( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoH, dstHost,srcDevice,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoH ,dstHost,srcDevice,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1108,7 +1108,7 @@ int INTER_cuMemcpyDtoD( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t Byt
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoD, dstDevice,srcDevice,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoD ,dstDevice,srcDevice,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1123,7 +1123,7 @@ int INTER_cuMemcpyDtoA( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevic
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoA, dstArray,dstOffset,srcDevice,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoA ,dstArray,dstOffset,srcDevice,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1138,7 +1138,7 @@ int INTER_cuMemcpyAtoD( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffse
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoD, dstDevice,srcArray,srcOffset,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoD ,dstDevice,srcArray,srcOffset,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1153,7 +1153,7 @@ int INTER_cuMemcpyHtoA( CUarray dstArray, size_t dstOffset, const void * srcHost
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoA, dstArray,dstOffset,srcHost,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoA ,dstArray,dstOffset,srcHost,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1168,7 +1168,7 @@ int INTER_cuMemcpyAtoH( void * dstHost, CUarray srcArray, size_t srcOffset, size
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoH, dstHost,srcArray,srcOffset,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoH ,dstHost,srcArray,srcOffset,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1183,7 +1183,7 @@ int INTER_cuMemcpyAtoA( CUarray dstArray, size_t dstOffset, CUarray srcArray, si
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoA, dstArray,dstOffset,srcArray,srcOffset,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoA ,dstArray,dstOffset,srcArray,srcOffset,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1198,7 +1198,7 @@ int INTER_cuMemcpy2D( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2D, pCopy);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2D ,pCopy);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1213,7 +1213,7 @@ int INTER_cuMemcpy2DUnaligned( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2DUnaligned, pCopy);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2DUnaligned ,pCopy);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1228,7 +1228,7 @@ int INTER_cuMemcpy3D( const CUDA_MEMCPY3D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3D, pCopy);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3D ,pCopy);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1243,7 +1243,7 @@ int INTER_cuMemcpy3DPeer( const CUDA_MEMCPY3D_PEER * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3DPeer, pCopy);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3DPeer ,pCopy);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1258,7 +1258,7 @@ int INTER_cuMemcpyAsync( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUs
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAsync, dst,src,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAsync ,dst,src,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1273,7 +1273,7 @@ int INTER_cuMemcpyPeerAsync( CUdeviceptr dstDevice, CUcontext dstContext, CUdevi
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyPeerAsync, dstDevice,dstContext,srcDevice,srcContext,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyPeerAsync ,dstDevice,dstContext,srcDevice,srcContext,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1288,7 +1288,7 @@ int INTER_cuMemcpyHtoDAsync( CUdeviceptr dstDevice, const void * srcHost, size_t
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoDAsync, dstDevice,srcHost,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoDAsync ,dstDevice,srcHost,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1303,7 +1303,7 @@ int INTER_cuMemcpyDtoHAsync( void * dstHost, CUdeviceptr srcDevice, size_t ByteC
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoHAsync, dstHost,srcDevice,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoHAsync ,dstHost,srcDevice,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1318,7 +1318,7 @@ int INTER_cuMemcpyDtoDAsync( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoDAsync, dstDevice,srcDevice,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoDAsync ,dstDevice,srcDevice,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1333,7 +1333,7 @@ int INTER_cuMemcpyHtoAAsync( CUarray dstArray, size_t dstOffset, const void * sr
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoAAsync, dstArray,dstOffset,srcHost,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoAAsync ,dstArray,dstOffset,srcHost,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1348,7 +1348,7 @@ int INTER_cuMemcpyAtoHAsync( void * dstHost, CUarray srcArray, size_t srcOffset,
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoHAsync, dstHost,srcArray,srcOffset,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoHAsync ,dstHost,srcArray,srcOffset,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1363,7 +1363,7 @@ int INTER_cuMemcpy2DAsync( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2DAsync, pCopy,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2DAsync ,pCopy,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1378,7 +1378,7 @@ int INTER_cuMemcpy3DAsync( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3DAsync, pCopy,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3DAsync ,pCopy,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1393,7 +1393,7 @@ int INTER_cuMemcpy3DPeerAsync( const CUDA_MEMCPY3D_PEER * pCopy, CUstream hStrea
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3DPeerAsync, pCopy,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3DPeerAsync ,pCopy,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1408,7 +1408,7 @@ int INTER_cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD8, dstDevice,uc,N);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD8 ,dstDevice,uc,N);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1423,7 +1423,7 @@ int INTER_cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD16, dstDevice,us,N);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD16 ,dstDevice,us,N);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1438,7 +1438,7 @@ int INTER_cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD32, dstDevice,ui,N);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD32 ,dstDevice,ui,N);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1453,7 +1453,7 @@ int INTER_cuMemsetD2D8( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D8, dstDevice,dstPitch,uc,Width,Height);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D8 ,dstDevice,dstPitch,uc,Width,Height);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1468,7 +1468,7 @@ int INTER_cuMemsetD2D16( CUdeviceptr dstDevice, size_t dstPitch, unsigned short 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D16, dstDevice,dstPitch,us,Width,Height);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D16 ,dstDevice,dstPitch,us,Width,Height);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1483,7 +1483,7 @@ int INTER_cuMemsetD2D32( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D32, dstDevice,dstPitch,ui,Width,Height);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D32 ,dstDevice,dstPitch,ui,Width,Height);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1498,7 +1498,7 @@ int INTER_cuMemsetD8Async( CUdeviceptr dstDevice, unsigned char uc, size_t N, CU
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD8Async, dstDevice,uc,N,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD8Async ,dstDevice,uc,N,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1513,7 +1513,7 @@ int INTER_cuMemsetD16Async( CUdeviceptr dstDevice, unsigned short us, size_t N, 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD16Async, dstDevice,us,N,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD16Async ,dstDevice,us,N,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1528,7 +1528,7 @@ int INTER_cuMemsetD32Async( CUdeviceptr dstDevice, unsigned int ui, size_t N, CU
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD32Async, dstDevice,ui,N,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD32Async ,dstDevice,ui,N,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1543,7 +1543,7 @@ int INTER_cuMemsetD2D8Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned ch
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D8Async, dstDevice,dstPitch,uc,Width,Height,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D8Async ,dstDevice,dstPitch,uc,Width,Height,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1558,7 +1558,7 @@ int INTER_cuMemsetD2D16Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned s
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D16Async, dstDevice,dstPitch,us,Width,Height,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D16Async ,dstDevice,dstPitch,us,Width,Height,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1573,7 +1573,7 @@ int INTER_cuMemsetD2D32Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned i
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D32Async, dstDevice,dstPitch,ui,Width,Height,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D32Async ,dstDevice,dstPitch,ui,Width,Height,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1588,7 +1588,7 @@ int INTER_cuArrayCreate( CUarray * pHandle, const CUDA_ARRAY_DESCRIPTOR * pAlloc
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuArrayCreate, pHandle,pAllocateArray);
+	DriverAPICall call = boost::bind(ORIGINAL_cuArrayCreate ,pHandle,pAllocateArray);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1603,7 +1603,7 @@ int INTER_cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR * pArrayDescriptor, CUarra
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuArrayGetDescriptor, pArrayDescriptor,hArray);
+	DriverAPICall call = boost::bind(ORIGINAL_cuArrayGetDescriptor ,pArrayDescriptor,hArray);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1618,7 +1618,7 @@ int INTER_cuArrayDestroy( CUarray hArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuArrayDestroy, hArray);
+	DriverAPICall call = boost::bind(ORIGINAL_cuArrayDestroy ,hArray);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1633,7 +1633,7 @@ int INTER_cuArray3DCreate( CUarray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pA
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuArray3DCreate, pHandle,pAllocateArray);
+	DriverAPICall call = boost::bind(ORIGINAL_cuArray3DCreate ,pHandle,pAllocateArray);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1648,7 +1648,7 @@ int INTER_cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR * pArrayDescriptor, CU
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuArray3DGetDescriptor, pArrayDescriptor,hArray);
+	DriverAPICall call = boost::bind(ORIGINAL_cuArray3DGetDescriptor ,pArrayDescriptor,hArray);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1663,7 +1663,7 @@ int INTER_cuMipmappedArrayCreate( CUmipmappedArray * pHandle, const CUDA_ARRAY3D
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMipmappedArrayCreate, pHandle,pMipmappedArrayDesc,numMipmapLevels);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMipmappedArrayCreate ,pHandle,pMipmappedArrayDesc,numMipmapLevels);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1678,7 +1678,7 @@ int INTER_cuMipmappedArrayGetLevel( CUarray * pLevelArray, CUmipmappedArray hMip
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMipmappedArrayGetLevel, pLevelArray,hMipmappedArray,level);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMipmappedArrayGetLevel ,pLevelArray,hMipmappedArray,level);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1693,7 +1693,7 @@ int INTER_cuMipmappedArrayDestroy( CUmipmappedArray hMipmappedArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMipmappedArrayDestroy, hMipmappedArray);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMipmappedArrayDestroy ,hMipmappedArray);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1708,7 +1708,7 @@ int INTER_cuPointerGetAttribute( void * data, CUpointer_attribute attribute, CUd
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuPointerGetAttribute, data,attribute,ptr);
+	DriverAPICall call = boost::bind(ORIGINAL_cuPointerGetAttribute ,data,attribute,ptr);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1723,7 +1723,7 @@ int INTER_cuPointerSetAttribute( const void * value, CUpointer_attribute attribu
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuPointerSetAttribute, value,attribute,ptr);
+	DriverAPICall call = boost::bind(ORIGINAL_cuPointerSetAttribute ,value,attribute,ptr);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1738,7 +1738,7 @@ int INTER_cuPointerGetAttributes( unsigned int numAttributes, CUpointer_attribut
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuPointerGetAttributes, numAttributes,attributes,data,ptr);
+	DriverAPICall call = boost::bind(ORIGINAL_cuPointerGetAttributes ,numAttributes,attributes,data,ptr);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1753,7 +1753,7 @@ int INTER_cuStreamCreate( CUstream * phStream, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamCreate, phStream,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamCreate ,phStream,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1768,7 +1768,7 @@ int INTER_cuStreamCreateWithPriority( CUstream * phStream, unsigned int flags, i
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamCreateWithPriority, phStream,flags,priority);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamCreateWithPriority ,phStream,flags,priority);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1783,7 +1783,7 @@ int INTER_cuStreamGetPriority( CUstream hStream, int * priority ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamGetPriority, hStream,priority);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamGetPriority ,hStream,priority);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1798,7 +1798,7 @@ int INTER_cuStreamGetFlags( CUstream hStream, unsigned int * flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamGetFlags, hStream,flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamGetFlags ,hStream,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1813,7 +1813,7 @@ int INTER_cuStreamWaitEvent( CUstream hStream, CUevent hEvent, unsigned int Flag
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamWaitEvent, hStream,hEvent,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamWaitEvent ,hStream,hEvent,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1828,7 +1828,7 @@ int INTER_cuStreamAddCallback( CUstream hStream, CUstreamCallback callback, void
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamAddCallback, hStream,callback,userData,flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamAddCallback ,hStream,callback,userData,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1843,7 +1843,7 @@ int INTER_cuStreamAttachMemAsync( CUstream hStream, CUdeviceptr dptr, size_t len
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamAttachMemAsync, hStream,dptr,length,flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamAttachMemAsync ,hStream,dptr,length,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1858,7 +1858,7 @@ int INTER_cuStreamQuery( CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamQuery, hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamQuery ,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1873,7 +1873,7 @@ int INTER_cuStreamSynchronize( CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamSynchronize, hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamSynchronize ,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1888,7 +1888,7 @@ int INTER_cuStreamDestroy( CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuStreamDestroy, hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuStreamDestroy ,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1903,7 +1903,7 @@ int INTER_cuEventCreate( CUevent * phEvent, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuEventCreate, phEvent,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuEventCreate ,phEvent,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1918,7 +1918,7 @@ int INTER_cuEventRecord( CUevent hEvent, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuEventRecord, hEvent,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuEventRecord ,hEvent,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1933,7 +1933,7 @@ int INTER_cuEventQuery( CUevent hEvent ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuEventQuery, hEvent);
+	DriverAPICall call = boost::bind(ORIGINAL_cuEventQuery ,hEvent);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1948,7 +1948,7 @@ int INTER_cuEventSynchronize( CUevent hEvent ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuEventSynchronize, hEvent);
+	DriverAPICall call = boost::bind(ORIGINAL_cuEventSynchronize ,hEvent);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1963,7 +1963,7 @@ int INTER_cuEventDestroy( CUevent hEvent ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuEventDestroy, hEvent);
+	DriverAPICall call = boost::bind(ORIGINAL_cuEventDestroy ,hEvent);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1978,7 +1978,7 @@ int INTER_cuEventElapsedTime( float * pMilliseconds, CUevent hStart, CUevent hEn
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuEventElapsedTime, pMilliseconds,hStart,hEnd);
+	DriverAPICall call = boost::bind(ORIGINAL_cuEventElapsedTime ,pMilliseconds,hStart,hEnd);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -1993,7 +1993,7 @@ int INTER_cuFuncGetAttribute( int * pi, CUfunction_attribute attrib, CUfunction 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuFuncGetAttribute, pi,attrib,hfunc);
+	DriverAPICall call = boost::bind(ORIGINAL_cuFuncGetAttribute ,pi,attrib,hfunc);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2008,7 +2008,7 @@ int INTER_cuFuncSetCacheConfig( CUfunction hfunc, CUfunc_cache config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuFuncSetCacheConfig, hfunc,config);
+	DriverAPICall call = boost::bind(ORIGINAL_cuFuncSetCacheConfig ,hfunc,config);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2023,7 +2023,7 @@ int INTER_cuFuncSetSharedMemConfig( CUfunction hfunc, CUsharedconfig config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuFuncSetSharedMemConfig, hfunc,config);
+	DriverAPICall call = boost::bind(ORIGINAL_cuFuncSetSharedMemConfig ,hfunc,config);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2038,7 +2038,7 @@ int INTER_cuLaunchKernel( CUfunction f, unsigned int gridDimX, unsigned int grid
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuLaunchKernel, f,gridDimX,gridDimY,gridDimZ,blockDimX,blockDimY,blockDimZ,sharedMemBytes,hStream,kernelParams,extra);
+	DriverAPICall call = boost::bind(ORIGINAL_cuLaunchKernel ,f,gridDimX,gridDimY,gridDimZ,blockDimX,blockDimY,blockDimZ,sharedMemBytes,hStream,kernelParams,extra);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2053,7 +2053,7 @@ int INTER_cuFuncSetBlockShape( CUfunction hfunc, int x, int y, int z ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuFuncSetBlockShape, hfunc,x,y,z);
+	DriverAPICall call = boost::bind(ORIGINAL_cuFuncSetBlockShape ,hfunc,x,y,z);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2068,7 +2068,7 @@ int INTER_cuFuncSetSharedSize( CUfunction hfunc, unsigned int bytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuFuncSetSharedSize, hfunc,bytes);
+	DriverAPICall call = boost::bind(ORIGINAL_cuFuncSetSharedSize ,hfunc,bytes);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2083,7 +2083,7 @@ int INTER_cuParamSetSize( CUfunction hfunc, unsigned int numbytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuParamSetSize, hfunc,numbytes);
+	DriverAPICall call = boost::bind(ORIGINAL_cuParamSetSize ,hfunc,numbytes);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2098,7 +2098,7 @@ int INTER_cuParamSeti( CUfunction hfunc, int offset, unsigned int value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuParamSeti, hfunc,offset,value);
+	DriverAPICall call = boost::bind(ORIGINAL_cuParamSeti ,hfunc,offset,value);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2113,7 +2113,7 @@ int INTER_cuParamSetf( CUfunction hfunc, int offset, float value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuParamSetf, hfunc,offset,value);
+	DriverAPICall call = boost::bind(ORIGINAL_cuParamSetf ,hfunc,offset,value);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2128,7 +2128,7 @@ int INTER_cuParamSetv( CUfunction hfunc, int offset, void * ptr, unsigned int nu
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuParamSetv, hfunc,offset,ptr,numbytes);
+	DriverAPICall call = boost::bind(ORIGINAL_cuParamSetv ,hfunc,offset,ptr,numbytes);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2143,7 +2143,7 @@ int INTER_cuLaunch( CUfunction f ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuLaunch, f);
+	DriverAPICall call = boost::bind(ORIGINAL_cuLaunch ,f);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2158,7 +2158,7 @@ int INTER_cuLaunchGrid( CUfunction f, int grid_width, int grid_height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuLaunchGrid, f,grid_width,grid_height);
+	DriverAPICall call = boost::bind(ORIGINAL_cuLaunchGrid ,f,grid_width,grid_height);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2173,7 +2173,7 @@ int INTER_cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUst
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuLaunchGridAsync, f,grid_width,grid_height,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuLaunchGridAsync ,f,grid_width,grid_height,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2188,7 +2188,7 @@ int INTER_cuParamSetTexRef( CUfunction hfunc, int texunit, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuParamSetTexRef, hfunc,texunit,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuParamSetTexRef ,hfunc,texunit,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2203,7 +2203,7 @@ int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessor( int * numBlocks, CUfuncti
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor, numBlocks,func,blockSize,dynamicSMemSize);
+	DriverAPICall call = boost::bind(ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor ,numBlocks,func,blockSize,dynamicSMemSize);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2218,7 +2218,7 @@ int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags( int * numBlocks,
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags, numBlocks,func,blockSize,dynamicSMemSize,flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags ,numBlocks,func,blockSize,dynamicSMemSize,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2233,7 +2233,7 @@ int INTER_cuOccupancyMaxPotentialBlockSize( int * minGridSize, int * blockSize, 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuOccupancyMaxPotentialBlockSize, minGridSize,blockSize,func,blockSizeToDynamicSMemSize,dynamicSMemSize,blockSizeLimit);
+	DriverAPICall call = boost::bind(ORIGINAL_cuOccupancyMaxPotentialBlockSize ,minGridSize,blockSize,func,blockSizeToDynamicSMemSize,dynamicSMemSize,blockSizeLimit);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2248,7 +2248,7 @@ int INTER_cuOccupancyMaxPotentialBlockSizeWithFlags( int * minGridSize, int * bl
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags, minGridSize,blockSize,func,blockSizeToDynamicSMemSize,dynamicSMemSize,blockSizeLimit,flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags ,minGridSize,blockSize,func,blockSizeToDynamicSMemSize,dynamicSMemSize,blockSizeLimit,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2263,7 +2263,7 @@ int INTER_cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetArray, hTexRef,hArray,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetArray ,hTexRef,hArray,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2278,7 +2278,7 @@ int INTER_cuTexRefSetMipmappedArray( CUtexref hTexRef, CUmipmappedArray hMipmapp
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMipmappedArray, hTexRef,hMipmappedArray,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMipmappedArray ,hTexRef,hMipmappedArray,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2293,7 +2293,7 @@ int INTER_cuTexRefSetAddress( size_t * ByteOffset, CUtexref hTexRef, CUdeviceptr
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetAddress, ByteOffset,hTexRef,dptr,bytes);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetAddress ,ByteOffset,hTexRef,dptr,bytes);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2308,7 +2308,7 @@ int INTER_cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetAddress2D, hTexRef,desc,dptr,Pitch);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetAddress2D ,hTexRef,desc,dptr,Pitch);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2323,7 +2323,7 @@ int INTER_cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPacked
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetFormat, hTexRef,fmt,NumPackedComponents);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetFormat ,hTexRef,fmt,NumPackedComponents);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2338,7 +2338,7 @@ int INTER_cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am )
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetAddressMode, hTexRef,dim,am);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetAddressMode ,hTexRef,dim,am);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2353,7 +2353,7 @@ int INTER_cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetFilterMode, hTexRef,fm);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetFilterMode ,hTexRef,fm);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2368,7 +2368,7 @@ int INTER_cuTexRefSetMipmapFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMipmapFilterMode, hTexRef,fm);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMipmapFilterMode ,hTexRef,fm);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2383,7 +2383,7 @@ int INTER_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMipmapLevelBias, hTexRef,bias);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMipmapLevelBias ,hTexRef,bias);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2398,7 +2398,7 @@ int INTER_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelCla
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMipmapLevelClamp, hTexRef,minMipmapLevelClamp,maxMipmapLevelClamp);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMipmapLevelClamp ,hTexRef,minMipmapLevelClamp,maxMipmapLevelClamp);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2413,7 +2413,7 @@ int INTER_cuTexRefSetMaxAnisotropy( CUtexref hTexRef, unsigned int maxAniso ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMaxAnisotropy, hTexRef,maxAniso);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetMaxAnisotropy ,hTexRef,maxAniso);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2428,7 +2428,7 @@ int INTER_cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetFlags, hTexRef,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetFlags ,hTexRef,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2443,7 +2443,7 @@ int INTER_cuTexRefGetAddress( CUdeviceptr * pdptr, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetAddress, pdptr,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetAddress ,pdptr,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2458,7 +2458,7 @@ int INTER_cuTexRefGetArray( CUarray * phArray, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetArray, phArray,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetArray ,phArray,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2473,7 +2473,7 @@ int INTER_cuTexRefGetMipmappedArray( CUmipmappedArray * phMipmappedArray, CUtexr
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMipmappedArray, phMipmappedArray,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMipmappedArray ,phMipmappedArray,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2488,7 +2488,7 @@ int INTER_cuTexRefGetAddressMode( CUaddress_mode * pam, CUtexref hTexRef, int di
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetAddressMode, pam,hTexRef,dim);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetAddressMode ,pam,hTexRef,dim);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2503,7 +2503,7 @@ int INTER_cuTexRefGetFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetFilterMode, pfm,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetFilterMode ,pfm,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2518,7 +2518,7 @@ int INTER_cuTexRefGetFormat( CUarray_format * pFormat, int * pNumChannels, CUtex
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetFormat, pFormat,pNumChannels,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetFormat ,pFormat,pNumChannels,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2533,7 +2533,7 @@ int INTER_cuTexRefGetMipmapFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMipmapFilterMode, pfm,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMipmapFilterMode ,pfm,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2548,7 +2548,7 @@ int INTER_cuTexRefGetMipmapLevelBias( float * pbias, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMipmapLevelBias, pbias,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMipmapLevelBias ,pbias,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2563,7 +2563,7 @@ int INTER_cuTexRefGetMipmapLevelClamp( float * pminMipmapLevelClamp, float * pma
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMipmapLevelClamp, pminMipmapLevelClamp,pmaxMipmapLevelClamp,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMipmapLevelClamp ,pminMipmapLevelClamp,pmaxMipmapLevelClamp,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2578,7 +2578,7 @@ int INTER_cuTexRefGetMaxAnisotropy( int * pmaxAniso, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMaxAnisotropy, pmaxAniso,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetMaxAnisotropy ,pmaxAniso,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2593,7 +2593,7 @@ int INTER_cuTexRefGetFlags( unsigned int * pFlags, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetFlags, pFlags,hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefGetFlags ,pFlags,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2608,7 +2608,7 @@ int INTER_cuTexRefCreate( CUtexref * pTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefCreate, pTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefCreate ,pTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2623,7 +2623,7 @@ int INTER_cuTexRefDestroy( CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefDestroy, hTexRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefDestroy ,hTexRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2638,7 +2638,7 @@ int INTER_cuSurfRefSetArray( CUsurfref hSurfRef, CUarray hArray, unsigned int Fl
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuSurfRefSetArray, hSurfRef,hArray,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuSurfRefSetArray ,hSurfRef,hArray,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2653,7 +2653,7 @@ int INTER_cuSurfRefGetArray( CUarray * phArray, CUsurfref hSurfRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuSurfRefGetArray, phArray,hSurfRef);
+	DriverAPICall call = boost::bind(ORIGINAL_cuSurfRefGetArray ,phArray,hSurfRef);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2668,7 +2668,7 @@ int INTER_cuTexObjectCreate( CUtexObject * pTexObject, const CUDA_RESOURCE_DESC 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectCreate, pTexObject,pResDesc,pTexDesc,pResViewDesc);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectCreate ,pTexObject,pResDesc,pTexDesc,pResViewDesc);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2683,7 +2683,7 @@ int INTER_cuTexObjectDestroy( CUtexObject texObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectDestroy, texObject);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectDestroy ,texObject);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2698,7 +2698,7 @@ int INTER_cuTexObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUtexObject
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectGetResourceDesc, pResDesc,texObject);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectGetResourceDesc ,pResDesc,texObject);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2713,7 +2713,7 @@ int INTER_cuTexObjectGetTextureDesc( CUDA_TEXTURE_DESC * pTexDesc, CUtexObject t
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectGetTextureDesc, pTexDesc,texObject);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectGetTextureDesc ,pTexDesc,texObject);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2728,7 +2728,7 @@ int INTER_cuTexObjectGetResourceViewDesc( CUDA_RESOURCE_VIEW_DESC * pResViewDesc
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectGetResourceViewDesc, pResViewDesc,texObject);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexObjectGetResourceViewDesc ,pResViewDesc,texObject);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2743,7 +2743,7 @@ int INTER_cuSurfObjectCreate( CUsurfObject * pSurfObject, const CUDA_RESOURCE_DE
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuSurfObjectCreate, pSurfObject,pResDesc);
+	DriverAPICall call = boost::bind(ORIGINAL_cuSurfObjectCreate ,pSurfObject,pResDesc);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2758,7 +2758,7 @@ int INTER_cuSurfObjectDestroy( CUsurfObject surfObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuSurfObjectDestroy, surfObject);
+	DriverAPICall call = boost::bind(ORIGINAL_cuSurfObjectDestroy ,surfObject);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2773,7 +2773,7 @@ int INTER_cuSurfObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUsurfObje
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuSurfObjectGetResourceDesc, pResDesc,surfObject);
+	DriverAPICall call = boost::bind(ORIGINAL_cuSurfObjectGetResourceDesc ,pResDesc,surfObject);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2788,7 +2788,7 @@ int INTER_cuDeviceCanAccessPeer( int * canAccessPeer, CUdevice dev, CUdevice pee
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceCanAccessPeer, canAccessPeer,dev,peerDev);
+	DriverAPICall call = boost::bind(ORIGINAL_cuDeviceCanAccessPeer ,canAccessPeer,dev,peerDev);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2803,7 +2803,7 @@ int INTER_cuCtxEnablePeerAccess( CUcontext peerContext, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxEnablePeerAccess, peerContext,Flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxEnablePeerAccess ,peerContext,Flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2818,7 +2818,7 @@ int INTER_cuCtxDisablePeerAccess( CUcontext peerContext ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxDisablePeerAccess, peerContext);
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxDisablePeerAccess ,peerContext);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2833,7 +2833,7 @@ int INTER_cuGraphicsUnregisterResource( CUgraphicsResource resource ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsUnregisterResource, resource);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsUnregisterResource ,resource);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2848,7 +2848,7 @@ int INTER_cuGraphicsSubResourceGetMappedArray( CUarray * pArray, CUgraphicsResou
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsSubResourceGetMappedArray, pArray,resource,arrayIndex,mipLevel);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsSubResourceGetMappedArray ,pArray,resource,arrayIndex,mipLevel);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2863,7 +2863,7 @@ int INTER_cuGraphicsResourceGetMappedMipmappedArray( CUmipmappedArray * pMipmapp
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray, pMipmappedArray,resource);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray ,pMipmappedArray,resource);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2878,7 +2878,7 @@ int INTER_cuGraphicsResourceGetMappedPointer( CUdeviceptr * pDevPtr, size_t * pS
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsResourceGetMappedPointer, pDevPtr,pSize,resource);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsResourceGetMappedPointer ,pDevPtr,pSize,resource);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2893,7 +2893,7 @@ int INTER_cuGraphicsResourceSetMapFlags( CUgraphicsResource resource, unsigned i
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsResourceSetMapFlags, resource,flags);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsResourceSetMapFlags ,resource,flags);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2908,7 +2908,7 @@ int INTER_cuGraphicsMapResources( unsigned int count, CUgraphicsResource * resou
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsMapResources, count,resources,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsMapResources ,count,resources,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2923,7 +2923,7 @@ int INTER_cuGraphicsUnmapResources( unsigned int count, CUgraphicsResource * res
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsUnmapResources, count,resources,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGraphicsUnmapResources ,count,resources,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2938,7 +2938,7 @@ int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExport
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuGetExportTable, ppExportTable,pExportTableId);
+	DriverAPICall call = boost::bind(ORIGINAL_cuGetExportTable ,ppExportTable,pExportTableId);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2953,7 +2953,7 @@ int INTER_cuTexRefSetAddress2D_v2( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetAddress2D_v2, hTexRef,desc,dptr,Pitch);
+	DriverAPICall call = boost::bind(ORIGINAL_cuTexRefSetAddress2D_v2 ,hTexRef,desc,dptr,Pitch);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2968,7 +2968,7 @@ int INTER_cuMemcpyHtoD_v2( CUdeviceptr dstDevice, const void * srcHost, size_t B
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoD_v2, dstDevice,srcHost,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoD_v2 ,dstDevice,srcHost,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2983,7 +2983,7 @@ int INTER_cuMemcpyDtoH_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCou
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoH_v2, dstHost,srcDevice,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoH_v2 ,dstHost,srcDevice,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -2998,7 +2998,7 @@ int INTER_cuMemcpyDtoD_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t 
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoD_v2, dstDevice,srcDevice,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoD_v2 ,dstDevice,srcDevice,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3013,7 +3013,7 @@ int INTER_cuMemcpyDtoA_v2( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDe
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoA_v2, dstArray,dstOffset,srcDevice,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoA_v2 ,dstArray,dstOffset,srcDevice,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3028,7 +3028,7 @@ int INTER_cuMemcpyAtoD_v2( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOf
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoD_v2, dstDevice,srcArray,srcOffset,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoD_v2 ,dstDevice,srcArray,srcOffset,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3043,7 +3043,7 @@ int INTER_cuMemcpyHtoA_v2( CUarray dstArray, size_t dstOffset, const void * srcH
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoA_v2, dstArray,dstOffset,srcHost,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoA_v2 ,dstArray,dstOffset,srcHost,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3058,7 +3058,7 @@ int INTER_cuMemcpyAtoH_v2( void * dstHost, CUarray srcArray, size_t srcOffset, s
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoH_v2, dstHost,srcArray,srcOffset,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoH_v2 ,dstHost,srcArray,srcOffset,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3073,7 +3073,7 @@ int INTER_cuMemcpyAtoA_v2( CUarray dstArray, size_t dstOffset, CUarray srcArray,
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoA_v2, dstArray,dstOffset,srcArray,srcOffset,ByteCount);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoA_v2 ,dstArray,dstOffset,srcArray,srcOffset,ByteCount);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3088,7 +3088,7 @@ int INTER_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void *
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoAAsync_v2, dstArray,dstOffset,srcHost,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoAAsync_v2 ,dstArray,dstOffset,srcHost,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3103,7 +3103,7 @@ int INTER_cuMemcpyAtoHAsync_v2( void * dstHost, CUarray srcArray, size_t srcOffs
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoHAsync_v2, dstHost,srcArray,srcOffset,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyAtoHAsync_v2 ,dstHost,srcArray,srcOffset,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3118,7 +3118,7 @@ int INTER_cuMemcpy2D_v2( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2D_v2, pCopy);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2D_v2 ,pCopy);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3133,7 +3133,7 @@ int INTER_cuMemcpy2DUnaligned_v2( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2DUnaligned_v2, pCopy);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2DUnaligned_v2 ,pCopy);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3148,7 +3148,7 @@ int INTER_cuMemcpy3D_v2( const CUDA_MEMCPY3D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3D_v2, pCopy);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3D_v2 ,pCopy);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3163,7 +3163,7 @@ int INTER_cuMemcpyHtoDAsync_v2( CUdeviceptr dstDevice, const void * srcHost, siz
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoDAsync_v2, dstDevice,srcHost,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyHtoDAsync_v2 ,dstDevice,srcHost,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3178,7 +3178,7 @@ int INTER_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t By
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoHAsync_v2, dstHost,srcDevice,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoHAsync_v2 ,dstHost,srcDevice,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3193,7 +3193,7 @@ int INTER_cuMemcpyDtoDAsync_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, si
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoDAsync_v2, dstDevice,srcDevice,ByteCount,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpyDtoDAsync_v2 ,dstDevice,srcDevice,ByteCount,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3208,7 +3208,7 @@ int INTER_cuMemcpy2DAsync_v2( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2DAsync_v2, pCopy,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy2DAsync_v2 ,pCopy,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3223,7 +3223,7 @@ int INTER_cuMemcpy3DAsync_v2( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3DAsync_v2, pCopy,hStream);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemcpy3DAsync_v2 ,pCopy,hStream);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3238,7 +3238,7 @@ int INTER_cuMemsetD8_v2( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD8_v2, dstDevice,uc,N);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD8_v2 ,dstDevice,uc,N);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3253,7 +3253,7 @@ int INTER_cuMemsetD16_v2( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD16_v2, dstDevice,us,N);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD16_v2 ,dstDevice,us,N);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3268,7 +3268,7 @@ int INTER_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD32_v2, dstDevice,ui,N);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD32_v2 ,dstDevice,ui,N);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3283,7 +3283,7 @@ int INTER_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D8_v2, dstDevice,dstPitch,uc,Width,Height);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D8_v2 ,dstDevice,dstPitch,uc,Width,Height);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3298,7 +3298,7 @@ int INTER_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned sho
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D16_v2, dstDevice,dstPitch,us,Width,Height);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D16_v2 ,dstDevice,dstPitch,us,Width,Height);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }
@@ -3313,7 +3313,7 @@ int INTER_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D32_v2, dstDevice,dstPitch,ui,Width,Height);
+	DriverAPICall call = boost::bind(ORIGINAL_cuMemsetD2D32_v2 ,dstDevice,dstPitch,ui,Width,Height);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }

@@ -9,7 +9,7 @@ ${RETURN_TYPE} INTER_${CALL_NAME}( ${PARAMETERS_FULL} ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_${CALL_NAME}, ${PARAMETERS_NAMES});
+	DriverAPICall call = boost::bind(ORIGINAL_${CALL_NAME} ${PARAMETERS_NAMES});
 	${RETURN_TYPE} ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }

@@ -32,10 +32,12 @@ for x in protos:
 		pnames = y.split("$")
 		variables["PARAMETERS_FULL"] += pnames[0] + " " + pnames[1] + ", "
 		variables["PARAMETERS_NAMES"] += pnames[1] + ","
-	variables["PARAMETERS_FULL"] = variables["PARAMETERS_FULL"][:-2]
+	variables["PARAMETERS_FULL"] = variables["PARAMETERS_FULL"][:-2]	
 	variables["PARAMETERS_NAMES"] = variables["PARAMETERS_NAMES"][:-1]
 	if len(variables["PARAMETERS_NAMES"]) == 0:
-		variables["PARAMETERS_NAMES"] = "void"
+		variables["PARAMETERS_NAMES"] = ""
+	else:
+		variables["PARAMETERS_NAMES"] = "," + variables["PARAMETERS_NAMES"]
 	outStr += Template(funcTemplate).substitute(variables)
 
 outStr += "\n}"

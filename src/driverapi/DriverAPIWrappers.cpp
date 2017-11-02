@@ -399,9 +399,9 @@ int INTER_cuCtxSynchronize( void  ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	std::tuple<int,void> params = std::make_tuple(24 );
+	std::tuple<int> params = std::make_tuple(24 );
 	DriverAPICall call = std::bind(ORIGINAL_cuCtxSynchronize );
-	int ret = FACTORY_PTR->PerformAction<std::tuple<int,void> >(call, params);
+	int ret = FACTORY_PTR->PerformAction<std::tuple<int> >(call, params);
 	return ret;
 }
 // typedef boost::function<int(void)> DriverAPICall;

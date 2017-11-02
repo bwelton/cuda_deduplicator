@@ -1,4 +1,4 @@
-#include "../DriverAPIHeader.h"
+#include "DriverAPIHeader.h"
 #include "DriverWrapperBase.h"
 #include "DriverWrapperFactory.h"
 #include "cuda.h"

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <tuple>
 typedef std::function<int(void)> DriverAPICall;
 
 class DriverWrapperBase {

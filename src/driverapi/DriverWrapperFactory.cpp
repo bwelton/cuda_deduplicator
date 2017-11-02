@@ -1,6 +1,7 @@
 #include "DriverWrapperFactory.h"
 DriverWrapperFactory::DriverWrapperFactory() { }
 DriverWrapperFactory::~DriverWrapperFactory() { }
-int DriverWrapperFactory::PerformAction(DriverAPICall t) {
+template <typename T> 
+int DriverWrapperFactory::PerformAction(DriverAPICall t, T params) {
 	return t();
 }		

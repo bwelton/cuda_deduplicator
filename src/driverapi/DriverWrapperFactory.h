@@ -13,7 +13,8 @@ private:
 	// boost::recursive_mutex _mtx;
 public:
 	DriverWrapperFactory();
-	int PerformAction(DriverAPICall t);
+	template<typename T>
+	int PerformAction(DriverAPICall t, T params);
 	~DriverWrapperFactory();
 };
 

@@ -1,7 +1,11 @@
 #pragma once
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
-typedef boost::function<int(void)> DriverAPICall;
+#include <functional>
+#include <iostream>
+#include <string>
+#include <vector>
+typedef std::function<int(void)> DriverAPICall;
 
 class DriverWrapperBase {
 public: 

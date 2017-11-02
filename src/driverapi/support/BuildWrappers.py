@@ -34,6 +34,8 @@ for x in protos:
 		variables["PARAMETERS_NAMES"] += pnames[1] + ","
 	variables["PARAMETERS_FULL"] = variables["PARAMETERS_FULL"][:-2]
 	variables["PARAMETERS_NAMES"] = variables["PARAMETERS_NAMES"][:-1]
+	if len(variables["PARAMETERS_NAMES"]) == 0:
+		variables["PARAMETERS_NAMES"] = "void"
 	outStr += Template(funcTemplate).substitute(variables)
 
 outStr += "\n}"

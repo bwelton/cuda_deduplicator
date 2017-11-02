@@ -373,7 +373,7 @@ int INTER_cuCtxSynchronize( void  ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
-	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSynchronize, );
+	DriverAPICall call = boost::bind(ORIGINAL_cuCtxSynchronize, void);
 	int ret = FACTORY_PTR->PerformAction(call);
 	return ret;
 }

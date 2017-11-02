@@ -5,6 +5,7 @@
 #include <map>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <memory>
 #include "DriverWrapperBase.h"
 
 class DriverWrapperFactory : public DriverWrapperBase{

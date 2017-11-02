@@ -1,4 +1,5 @@
-import os 
+import os
+import sys 
 from string import Template
 
 f = open("cudaFunctionProtos.txt", "r")
@@ -9,7 +10,9 @@ f = open("WrapperTemplate.txt","r")
 funcTemplate = f.read()
 f.close()
 
-outStr = ""
+## Build Header for Wrappers
+
+outStr = '#include "DriverWrapperBase.h"\n#include "DriverWrapperFactory"\nstd::shared_ptr<DriverWrapperFactory> DriverFactory;\nextern "C" {'
 for x in protos:
 	variables = {"RETURN_TYPE" : None, "CALL_NAME" : None, "PARAMETERS_NAMES" : None,
 				"PARAMETERS_FULL" : None}
@@ -26,8 +29,11 @@ for x in protos:
 		pnames = y.split("$")
 		variables["PARAMETERS_FULL"] += pnames[0] + " " + pnames[1] + ", "
 		variables["PARAMETERS_NAMES"] += pnames[1] + ","
-	variables["PARAMETERS_FULL"] = variables["PARAMETERS_FULL"][:-1]
+	variables["PARAMETERS_FULL"] = variables["PARAMETERS_FULL"][:-2]
 	variables["PARAMETERS_NAMES"] = variables["PARAMETERS_NAMES"][:-1]
 	outStr += Template(funcTemplate).substitute(variables)
+outStr += "\n}"
 
-print outStr
+f = open(sys.argv[1],"w")
+f.write(outStr)
+f.close()

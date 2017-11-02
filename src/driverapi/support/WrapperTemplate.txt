@@ -1,0 +1,15 @@
+// typedef boost::function<int(void)> DriverAPICall;
+// std::shared_ptr<InstrumentFactory> InstFactory;
+
+// This is the prototype of the file
+${RETURN_TYPE} ORIGINAL_${CALL_NAME}( ${PARAMETERS_FULL} ) { }
+
+// This is the call that will take the place of the original
+${RETURN_TYPE} INTER_${CALL_NAME}( ${PARAMETERS_FULL} ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+
+	DriverAPICall call = boost::bind(ORIGINAL_${CALL_NAME}, ${PARAMETERS_NAMES});
+	${RETURN_TYPE} ret = FACTORY_PTR->PerformAction(call);
+	return ret;
+}

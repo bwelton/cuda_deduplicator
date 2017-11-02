@@ -1,4 +1,7 @@
 #include "StacktraceGen.h"
+#include <execinfo.h>
+#define BT_BUF_SIZE 100
+
 StackTraceGen::StackTraceGen(bool enabled, FILE * file) {
 	_enabled = enabled;
 	if (enabled == false)
@@ -10,35 +13,55 @@ StackTraceGen::~StackTraceGen() {
 }
 
 std::string StackTraceGen::GenStackTrace() {
-	std::stringstream ret; 	
-	std::vector<Frame> stackwalk;
-	std::string s;
-	void * sym; 
-	Walker * walker = Walker::newWalker();
-	walker->walkStack(stackwalk);
-	Dyninst::Offset offset;
-	for (int i = 0; i < stackwalk.size(); i++) {
-		stackwalk[i].getName(s);
-		ret << s << " - ";
-		if(stackwalk[i].getLibOffset(s, offset, sym) == false){
-		 	continue;
-		}
-		Symtab * curSym = static_cast<Symtab *>(sym);
-		if (sym == NULL) {
-			ret << "\n";
-			continue;
-		}
-		std::vector<Statement *> lines;
-		if((curSym)->getSourceLines(lines,offset) == false) {
-			ret << "\n";
-			continue;
-		}
-		for (int q = 0; q < lines.size(); q++) {
-			ret << lines[q]->getFile() << ":" << std::to_string(lines[q]->getLine()) << " ";
-		}
-		ret << "\n";
-	}
-	ret << "\n";
+   std::stringstream ret; 
+   int j, nptrs;
+   void *buffer[BT_BUF_SIZE];
+   char **strings;
+
+   nptrs = backtrace(buffer, BT_BUF_SIZE);
+   printf("backtrace() returned %d addresses\n", nptrs);
+
+   /* The call backtrace_symbols_fd(buffer, nptrs, STDOUT_FILENO)
+      would produce similar output to the following: */
+
+   strings = backtrace_symbols(buffer, nptrs);
+   if (strings == NULL) {
+       perror("backtrace_symbols");
+       exit(EXIT_FAILURE);
+   }
+
+   for (j = 0; j < nptrs; j++)
+       ret << strings[j] << std::endl;	
+
+	// std::stringstream ret; 	
+	// std::vector<Frame> stackwalk;
+	// std::string s;
+	// void * sym; 
+	// Walker * walker = Walker::newWalker();
+	// walker->walkStack(stackwalk);
+	// Dyninst::Offset offset;
+	// for (int i = 0; i < stackwalk.size(); i++) {
+	// 	stackwalk[i].getName(s);
+	// 	ret << s << " - ";
+	// 	if(stackwalk[i].getLibOffset(s, offset, sym) == false){
+	// 	 	continue;
+	// 	}
+	// 	Symtab * curSym = static_cast<Symtab *>(sym);
+	// 	if (sym == NULL) {
+	// 		ret << "\n";
+	// 		continue;
+	// 	}
+	// 	std::vector<Statement *> lines;
+	// 	if((curSym)->getSourceLines(lines,offset) == false) {
+	// 		ret << "\n";
+	// 		continue;
+	// 	}
+	// 	for (int q = 0; q < lines.size(); q++) {
+	// 		ret << lines[q]->getFile() << ":" << std::to_string(lines[q]->getLine()) << " ";
+	// 	}
+	// 	ret << "\n";
+	// }
+	// ret << "\n";
 	return ret.str();
 }
 

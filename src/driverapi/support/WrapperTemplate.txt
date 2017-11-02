@@ -9,7 +9,8 @@ ${RETURN_TYPE} INTER_${CALL_NAME}( ${PARAMETERS_FULL} ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 
+	std::tuple<${PARAMETER_TYPES}> params = std::make_tuple(${CALL_ID} ${PARAMETERS_NAMES});
 	DriverAPICall call = std::bind(ORIGINAL_${CALL_NAME} ${PARAMETERS_NAMES});
-	${RETURN_TYPE} ret = FACTORY_PTR->PerformAction(call);
+	${RETURN_TYPE} ret = FACTORY_PTR->PerformAction<std::tuple<${PARAMETER_TYPES}> >(call, params);
 	return ret;
 }

@@ -51,15 +51,23 @@ InstrumentFactory::InstrumentFactory() {
 }
 
 int InstrumentFactory::PerformAction(TransferPtr t) {
+	bool bail = false;
 	{
 		boost::recursive_mutex::scoped_lock lock(_mtx);
 		t.get()->SetID(_globalID);
+		if (_globalID == 1)
+			bail = true;
 		_globalID++;
 	}
-	for (auto i : _workers)
-		i.get()->PerformAction(t);
-	t.get()->PerformTransfer();
-	return PostTransfer(t);
+	if (bail == false) {
+		for (auto i : _workers)
+			i.get()->PerformAction(t);
+		t.get()->PerformTransfer();
+		return PostTransfer(t);
+	} else{
+		t.get()->PerformTransfer();
+		return 0;
+	}
 }
 
 int InstrumentFactory::PostTransfer(TransferPtr t){

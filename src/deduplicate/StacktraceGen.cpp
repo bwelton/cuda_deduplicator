@@ -34,18 +34,18 @@ std::string StackTraceGen::GenStackTrace() {
        ret << strings[j] << std::endl;	
 
 //	std::stringstream ret; 	
-	// std::vector<Frame> stackwalk;
-	// std::string s;
-	// void * sym; 
-	// Walker * walker = Walker::newWalker();
-	// Frame currentFrame;
-	// Frame outFrame;
-	// walker->getInitialFrame(currentFrame);
-	// int count = 1;
-	// while (walker->walkSingleFrame(currentFrame, outFrame)) {
-	// 	currentFrame = outFrame;
-	// 	count++;
-	// }
+	std::vector<Frame> stackwalk;
+	std::string s;
+	void * sym; 
+	Walker * walker = Walker::newWalker();
+	Frame currentFrame;
+	Frame outFrame;
+	walker->getInitialFrame(currentFrame);
+	int count = 1;
+	while (walker->walkSingleFrame(currentFrame, outFrame)) {
+		currentFrame = outFrame;
+		count++;
+	}
 	// printf("Walked %d frames\n", count);
 	// walker->walkStack(stackwalk);
 	// Dyninst::Offset offset;

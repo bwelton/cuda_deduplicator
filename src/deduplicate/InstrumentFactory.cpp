@@ -66,7 +66,7 @@ int InstrumentFactory::PerformAction(TransferPtr t) {
 		t.get()->PerformTransfer();
 		return PostTransfer(t);
 	} else{
-		cuInit(0);
+		cudaSetDevice(0);
 		t.get()->PerformTransfer();
 		return 0;
 	}

@@ -1,4 +1,5 @@
 #include "InstrumentFactory.h"
+#include "cuda.h"
 InstrumentFactory::InstrumentFactory() {
 	// Factories enabled by default
 	std::map<std::string, bool> Factories = {{std::string("EnableDestination"), true},
@@ -65,6 +66,7 @@ int InstrumentFactory::PerformAction(TransferPtr t) {
 		t.get()->PerformTransfer();
 		return PostTransfer(t);
 	} else{
+		cuInit();
 		t.get()->PerformTransfer();
 		return 0;
 	}

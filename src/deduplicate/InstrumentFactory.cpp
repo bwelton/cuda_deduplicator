@@ -66,7 +66,9 @@ int InstrumentFactory::PerformAction(TransferPtr t) {
 		t.get()->PerformTransfer();
 		return PostTransfer(t);
 	} else{
-		cudaSetDevice(0);
+		// CUcontext pctx;
+		// cuCtxCreate(&pctx,0,0);
+		//cudaSetDevice(0);
 		t.get()->PerformTransfer();
 		return 0;
 	}

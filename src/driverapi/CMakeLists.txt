@@ -12,3 +12,8 @@ install(TARGETS DriverAPIWrapper
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib/static)
+
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/driverapi/defs/DriverAPIWrapper.def.in"
+	"${CMAKE_INSTALL_PREFIX}/defs/DriverAPIWrapper.def"
+)

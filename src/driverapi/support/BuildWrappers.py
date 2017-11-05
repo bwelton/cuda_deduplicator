@@ -13,9 +13,14 @@ f.close()
 f = open("HeaderTemplate.txt", "r")
 headerTemplate =  f.read()
 f.close()
+
+f = open("DefinitionHeader.txt","r")
+defTemplate = f.read()
+f.close()
 count = 0
 ## Build Header for Wrappers
 alreadyWritten = {}
+charVector = "static const std::vector<const char *> CallVector = {"
 outStr = '#include "'+ "DriverAPIHeader.h" +'"\n#include <tuple>\n#include "DriverWrapperBase.h"\n#include "DriverWrapperFactory.h"\n#include "cuda.h"\nstd::shared_ptr<DriverWrapperFactory> DriverFactory;\nextern "C" {'
 for x in protos:
 	variables = {"RETURN_TYPE" : None, "CALL_NAME" : None, "PARAMETERS_NAMES" : None,
@@ -48,14 +53,18 @@ for x in protos:
 		variables["PARAMETERS_NAMES"] = "," + variables["PARAMETERS_NAMES"]
 	variables["CALL_ID"] = str(count)
 	count+= 1
+	charVector += '"' + tmp[1] + '",'
 	outStr += Template(funcTemplate).substitute(variables)
 
 outStr += "\n}"
+charVector = charVector[:-1] + "};\n"
+outStr += charVector + "\n"
 
 ## Create The Header File
 hdr = '#pragma once\n#include "cuda.h"\n#include "DriverWrapperBase.h"\n#include <vector>\nextern "C"{\n'
-charVector = "static const std::vector<const char *> CallVector = {"
+charVector = "extern static const std::vector<const char *> CallVector;"
 alreadyWritten = {}
+defFile = ""
 count = 0
 for x in protos:
 	variables = {"RETURN_TYPE" : None, "CALL_NAME" : None, "PARAMETERS_NAMES" : None,
@@ -88,11 +97,13 @@ for x in protos:
 	variables["CALL_ID"] = str(count)
 	count += 1
 
-	charVector += '"' + tmp[1] + '",'
 	hdr += Template(headerTemplate).substitute(variables)
+	defFile += Template(defTemplate).substitute(variables) + "\n"
 
-charVector = charVector[:-1] + "};\n"
 hdr += "\n}\n" + charVector
+f = open(sys.argv[3], "w")
+f.write(defFile)
+f.close()
 
 f = open(sys.argv[2], "w")
 f.write(hdr)
@@ -101,3 +112,4 @@ f.close()
 f = open(sys.argv[1],"w")
 f.write(outStr)
 f.close()
+

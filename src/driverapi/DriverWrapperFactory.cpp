@@ -7,7 +7,7 @@ int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<Paramet
 	if (params.get()->GetID() == 20) {
 		CUcontext * ctx = (CUcontext *)params.get()->GetParameter(0);
 		if (*ctx == NULL)
-			std::cerr << "Unsetting the context" << std::endl:
+			std::cerr << "Unsetting the context" << std::endl;
 		else
 			std::cerr << "Setting the context" << std::endl;
 	}

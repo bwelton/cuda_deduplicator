@@ -11,7 +11,5 @@ typedef std::function<int(void)> DriverAPICall;
 
 class DriverWrapperBase {
 public: 
-	template <typename T> 
-	int PerformAction(DriverAPICall t, T params);
 	virtual ~DriverWrapperBase() = 0;
 };

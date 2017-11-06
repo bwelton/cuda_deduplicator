@@ -10,6 +10,15 @@ int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<Paramet
 			std::cerr << "Unsetting the context" << std::endl;
 		else
 			std::cerr << "Setting the context" << std::endl;
+	}	
+	if (50 == params.get()->GetID()){
+		int ret = t();
+		if (ret != CUDA_SUCCESS){
+			int tmp = ORIGINAL_cuInit(0);
+			std::cerr << "Re-CudaInit: " << tmp << std::endl;
+		} else {
+			return ret;
+		}
 	}
 	return t();
 }		

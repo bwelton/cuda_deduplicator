@@ -7,6 +7,9 @@ std::shared_ptr<DriverWrapperFactory> DriverFactory;
 extern "C" {// typedef boost::function<int(void)> DriverAPICall;
 // std::shared_ptr<InstrumentFactory> InstFactory;
 
+void CheckInit_DriverAPI() {
+	
+}
 // This is the prototype of the file
 int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr ) { }
 

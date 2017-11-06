@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <tuple>
+#include <memory>
 
 typedef std::function<int(void)> DriverAPICall;
 

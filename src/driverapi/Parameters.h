@@ -19,4 +19,4 @@ public:
 	ParameterImpl(T params);
 	void * GetParameter(int pos);
 	~ParameterImpl();
-}
+};

@@ -3,8 +3,9 @@
 #include "cuda.h"
 #include "DriverWrapperBase.h"
 #include <vector>
+#include <memory>
 extern "C"{
-	
+void CheckInit_DriverAPI();
 int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr );
 int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr );
 int ORIGINAL_cuInit( unsigned int Flags );

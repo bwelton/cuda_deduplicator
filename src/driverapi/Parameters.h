@@ -7,6 +7,7 @@ private:
 	int _callId;
 public:
 	const char * GetName();
+	int GetID();
 	ParameterBase(int callid);
 	virtual void * GetParameter(int pos) = 0;
 	virtual size_t GetLen() = 0;

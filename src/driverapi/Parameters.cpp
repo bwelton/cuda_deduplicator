@@ -7,6 +7,9 @@ ParameterImpl::ParameterImpl(int callid, std::vector<void *> * params) : Paramet
 	_params = params;
 }
 
+int ParameterImpl::GetID() {
+	return _callId;
+}
 void * ParameterImpl::GetParameter(int pos) {
 	return (*_params)[pos];
 }

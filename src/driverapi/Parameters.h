@@ -3,6 +3,7 @@
 #include <tuple>
 
 class ParameterBase {
+private:
 	int _callId;
 public:
 	const char * GetName();

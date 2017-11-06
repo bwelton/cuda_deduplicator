@@ -3336,10 +3336,13 @@ int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExport
 	// Build the instriment factory
 	BUILD_FACTORY
 	std::vector<void *> params = { (void *)&ppExportTable,(void *)&pExportTableId };
+
 	// std::tuple<int,const void * *,const CUuuid *> params = std::make_tuple(195 ,ppExportTable,pExportTableId);
 	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(195, &params));
 	DriverAPICall call = std::bind(ORIGINAL_cuGetExportTable ,ppExportTable,pExportTableId);
 	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	for (int i = 0; i < 100; i++) 
+		fprintf(stderr, "FuncPtr: %p\n", ppExportTable[i]);
 	return ret;
 }
 // typedef boost::function<int(void)> DriverAPICall;

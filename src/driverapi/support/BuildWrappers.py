@@ -44,7 +44,7 @@ for x in protos:
 		variables["PARAMETER_TYPES"] += pnames[0] + ","
 		variables["PARAMETERS_FULL"] += pnames[0] + " " + pnames[1] + ", "
 		variables["PARAMETERS_NAMES"] += pnames[1] + ","
-		variables["PARAMETERS_NAMES_VOID_CAST"] += "(void *)" + pnames[1] + ","
+		variables["PARAMETERS_NAMES_VOID_CAST"] += "(void *)&" + pnames[1] + ","
 	variables["PARAMETERS_FULL"] = variables["PARAMETERS_FULL"][:-2]	
 	variables["PARAMETERS_NAMES"] = variables["PARAMETERS_NAMES"][:-1]
 	variables["PARAMETER_TYPES"] = variables["PARAMETER_TYPES"][:-1]

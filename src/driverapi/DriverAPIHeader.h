@@ -4,7 +4,6 @@
 #include "DriverWrapperBase.h"
 #include <vector>
 extern "C"{
-void CheckInit_DriverAPI();
 int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr );
 int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr );
 int ORIGINAL_cuInit( unsigned int Flags );
@@ -226,5 +225,5 @@ int ORIGINAL_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N );
 int ORIGINAL_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height );
 int ORIGINAL_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height );
 int ORIGINAL_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height );
-
+void CheckInit_DriverAPI();
 }

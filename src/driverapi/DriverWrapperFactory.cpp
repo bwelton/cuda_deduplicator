@@ -1,5 +1,5 @@
 #include "DriverWrapperFactory.h"
-
+#include "cuda.h"
 DriverWrapperFactory::DriverWrapperFactory() { }
 DriverWrapperFactory::~DriverWrapperFactory() { }
 int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params) {

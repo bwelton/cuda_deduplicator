@@ -101,7 +101,9 @@ install(TARGETS PerfEstimateCheck
 
 add_executable(launch_check "launch_check.cpp")
 add_dependencies(launch_check dedup)
+add_dependencies(launch_check DriverAPIWrapper)
 target_link_libraries(launch_check dedup)
+target_link_libraries(launch_check DriverAPIWrapper)
 target_link_libraries(launch_check ${Boost_LIBRARIES})
 target_link_libraries(launch_check "-lpthread")
 INCLUDE_DIRECTORIES(launch_check ${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/include)
@@ -110,6 +112,7 @@ target_link_libraries(launch_check "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
 INCLUDE_DIRECTORIES(launch_check ${CUDA_TOOLKIT_ROOT_DIR}/include)
 INCLUDE_DIRECTORIES(launch_check ${Boost_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(launch_check "${CMAKE_SOURCE_DIR}/src/deduplicate")
+INCLUDE_DIRECTORIES(launch_check "${CMAKE_SOURCE_DIR}/src/driverapi")
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 
 install(TARGETS launch_check

@@ -13,6 +13,7 @@ int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<Paramet
 	}	
 	if (50 == params.get()->GetID()){
 		int ret = t();
+		std::cerr << "We returned " << ret << std::endl;
 		if (ret != CUDA_SUCCESS){
 			int tmp = ORIGINAL_cuInit(0);
 			std::cerr << "Re-CudaInit: " << tmp << std::endl;

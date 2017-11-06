@@ -4,6 +4,7 @@
 #include "DriverWrapperBase.h"
 #include <vector>
 extern "C"{
+	
 int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr );
 int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr );
 int ORIGINAL_cuInit( unsigned int Flags );
@@ -227,4 +228,4 @@ int ORIGINAL_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned 
 int ORIGINAL_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height );
 
 }
-extern static const std::vector<const char *> CallVector;
+// extern static const std::vector<const char *> CallVector;

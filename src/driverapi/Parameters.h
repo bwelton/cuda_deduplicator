@@ -16,7 +16,7 @@ class ParameterImpl : public ParameterBase {
 private:
 	T _params;
 public:
-	ParameterImpl(T params);
+	ParameterImpl(int callid, T params);
 	void * GetParameter(int pos);
 	~ParameterImpl();
 };

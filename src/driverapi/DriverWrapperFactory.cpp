@@ -10,7 +10,21 @@ int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<Paramet
 			std::cerr << "Unsetting the context" << std::endl;
 		else
 			std::cerr << "Setting the context" << std::endl;
-	}	
+	}
+	if (195 == params.get()->GetID()) {
+		t()
+		const void ** functions = *((const void ***)params.get()->GetParameter(0));
+		fprintf(stderr, "cuMemAlloc: %p\n", &ORIGINAL_cuMemAlloc);
+
+		std::cerr << "Function PTRS in exporttable: " << std::endl;
+		int pos = 0;
+		while(0){
+			if (functions[pos] == NULL)
+				break;
+			fprintf(stderr, "Function %d: %p\n", pos, functions[pos]);
+			pos++;
+		}
+	}
 	if (40 == params.get()->GetID()) {
 		// cuModuleGetFunction
 		const char * name = *((const char **)params.get()->GetParameter(2));

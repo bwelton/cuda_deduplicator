@@ -61,7 +61,7 @@ charVector = charVector[:-1] + "};\n"
 outStr += charVector + "\n"
 
 ## Create The Header File
-hdr = '#pragma once\n#include "cuda.h"\n#include "DriverWrapperBase.h"\n#include <vector>\nextern "C"{\n'
+hdr = '#pragma once\n#include "Parameters.h"\n#include "cuda.h"\n#include "DriverWrapperBase.h"\n#include <vector>\nextern "C"{\n'
 charVector = "extern static const std::vector<const char *> CallVector;"
 alreadyWritten = {}
 defFile = ""

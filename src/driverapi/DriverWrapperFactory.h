@@ -8,14 +8,13 @@
 #include <memory>
 #include "DriverAPIHeader.h"
 #include "DriverWrapperBase.h"
-
+#include "Parameters.h"
 class DriverWrapperFactory : public DriverWrapperBase{
 private:
 	// boost::recursive_mutex _mtx;
 public:
 	DriverWrapperFactory();
-	template<typename T>
-	int PerformAction(DriverAPICall t, T params);
+	int PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params);
 	~DriverWrapperFactory();
 };
 

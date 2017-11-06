@@ -11,6 +11,11 @@ int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<Paramet
 		else
 			std::cerr << "Setting the context" << std::endl;
 	}	
+	if (40 == params.get()->GetID()) {
+		// cuModuleGetFunction
+		const char * name = *((const char **)params.get()->GetParameter(2));
+		std::cerr << "Getting Module function: " << name << std::endl;
+	}
 	if (50 == params.get()->GetID()){
 		int ret = t();
 		std::cerr << "We returned " << ret << std::endl;

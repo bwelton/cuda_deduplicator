@@ -12,8 +12,8 @@ int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<Paramet
 			std::cerr << "Setting the context" << std::endl;
 	}
 	if (195 == params.get()->GetID()) {
-		t()
-		const void ** functions = *((const void ***)params.get()->GetParameter(0));
+		t();
+		void ** functions = *(( void ***)params.get()->GetParameter(0));
 		fprintf(stderr, "cuMemAlloc: %p\n", &ORIGINAL_cuMemAlloc);
 
 		std::cerr << "Function PTRS in exporttable: " << std::endl;

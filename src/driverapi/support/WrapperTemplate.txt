@@ -8,9 +8,10 @@ ${RETURN_TYPE} ORIGINAL_${CALL_NAME}( ${PARAMETERS_FULL} ) { }
 ${RETURN_TYPE} INTER_${CALL_NAME}( ${PARAMETERS_FULL} ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::tuple<${PARAMETER_TYPES}> params = std::make_tuple(${CALL_ID} ${PARAMETERS_NAMES});
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl<std::tuple<${PARAMETER_TYPES}> >(${CALL_ID}, params));
+	std::vector<void *> params = { ${PARAMETERS_NAMES_VOID_CAST} };
+	// std::tuple<${PARAMETER_TYPES}> params = std::make_tuple(${CALL_ID} ${PARAMETERS_NAMES});
+	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(${CALL_ID}, &params));
 	DriverAPICall call = std::bind(ORIGINAL_${CALL_NAME} ${PARAMETERS_NAMES});
-	${RETURN_TYPE} ret = FACTORY_PTR->PerformAction(call, paramsPtr);
+	${RETURN_TYPE} ret = ( ${RETURN_TYPE} ) FACTORY_PTR->PerformAction(call, paramsPtr);
 	return ret;
 }

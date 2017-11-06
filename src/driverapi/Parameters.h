@@ -9,16 +9,16 @@ public:
 	const char * GetName();
 	ParameterBase(int callid);
 	virtual void * GetParameter(int pos) = 0;
-
+	virtual size_t GetLen() = 0;
 	virtual ~ParameterBase() = 0;
 };
 
-template<typename T>
 class ParameterImpl : public ParameterBase {
 private:
-	T _params;
+	std::vector<void *> * _params;
 public:
-	ParameterImpl(int callid, T params);
+	ParameterImpl(int callid, std::vector<void *> * params);
+	size_t GetLen();
 	void * GetParameter(int pos);
 	~ParameterImpl();
 };

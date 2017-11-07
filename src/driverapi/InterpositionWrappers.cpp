@@ -9,7 +9,8 @@ CUresult CUDAAPI cuGetErrorString( CUresult error, const char * * pStr ) {
 	BUILD_FACTORY
 	std::vector<void *> params = { (void *)&error,(void *)&pStr };
 	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(0, &params));
-	CUresult CUDAAPI (*REAL_cuGetErrorString) = (CUresult CUDAAPI*)dlsym(RTLD_NEXT, "cuGetErrorString");
+	CUresult CUDAAPI (*REAL_cuGetErrorString)(CUresult, const char **);
+	*(void **)(&REAL_cuGetErrorString) = dlsym(RTLD_NEXT, "cuGetErrorString");
 	DriverAPICall call = std::bind(REAL_cuGetErrorString ,error,pStr);
 	CUresult CUDAAPI ret = ( CUresult CUDAAPI ) FACTORY_PTR->PerformAction(call, paramsPtr);
 	return ret;

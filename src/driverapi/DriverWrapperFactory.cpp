@@ -1,6 +1,6 @@
 #include "DriverWrapperFactory.h"
 
-DriverWrapperFactory::DriverWrapperFactory() { int tmp = ORIGINAL_cuInit(0);  std::cerr << "Re-CudaInit: " << tmp << std::endl; }
+DriverWrapperFactory::DriverWrapperFactory() {  }
 DriverWrapperFactory::~DriverWrapperFactory() { }
 int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
 	std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;

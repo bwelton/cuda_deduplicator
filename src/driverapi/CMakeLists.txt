@@ -17,3 +17,17 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/src/driverapi/defs/DriverAPIWrapper.def.in"
 	"${CMAKE_INSTALL_PREFIX}/defs/DriverAPIWrapper.def"
 )
+
+
+add_library(InterpositionDriverAPI SHARED "Parameters.cpp" "InterpositionWrapper.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp")
+target_compile_definitions(InterpositionDriverAPI PRIVATE INTERPOSITION_BUILD=1)
+target_link_libraries(InterpositionDriverAPI ${Boost_LIBRARIES})
+target_link_libraries(InterpositionDriverAPI ${DYNINST_LIBRARIES})
+target_link_libraries(InterpositionDriverAPI "-lpthread")
+INCLUDE_DIRECTORIES(InterpositionDriverAPI ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+add_dependencies(InterpositionDriverAPI dyninst)
+install(TARGETS InterpositionDriverAPI
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib/static)

@@ -6,9 +6,17 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <memory>
-#include "DriverAPIHeader.h"
+
 #include "DriverWrapperBase.h"
 #include "Parameters.h"
+
+#ifndef INTERPOSITION_BUILD
+#include "DriverAPIHeader.h"
+#include "cuda.h"
+#else
+#include "InterpositionHeader.h"
+#endif
+
 class DriverWrapperFactory : public DriverWrapperBase{
 private:
 	// boost::recursive_mutex _mtx;

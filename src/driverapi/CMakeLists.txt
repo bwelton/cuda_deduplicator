@@ -18,8 +18,7 @@ configure_file (
 	"${CMAKE_INSTALL_PREFIX}/defs/DriverAPIWrapper.def"
 )
 
-
-add_library(InterpositionDriverAPI SHARED "Parameters.cpp" "InterpositionWrapper.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp")
+add_library(InterpositionDriverAPI SHARED "Parameters.cpp" "InterpositionWrappers.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp")
 target_compile_definitions(InterpositionDriverAPI PRIVATE INTERPOSITION_BUILD=1)
 target_link_libraries(InterpositionDriverAPI ${Boost_LIBRARIES})
 target_link_libraries(InterpositionDriverAPI ${DYNINST_LIBRARIES})

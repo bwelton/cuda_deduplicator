@@ -7,7 +7,7 @@ void * __libc_dlopen(const char *filename, int flags);
 void *dlopen(const char *filename, int flags) {
 	if (filename != NULL) {
 		void * ret;
-		std::string tmp = std::string((char *)filename);
+		//std::string tmp = std::string((char *)filename);
 		ret =  __libc_dlopen(filename, flags);
 		fprintf(stderr, "DLOPEN: %s HANDLE: %p\n", filename, ret);
 		return ret;

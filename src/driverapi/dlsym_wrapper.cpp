@@ -3,7 +3,7 @@
 #include <dlfcn.h>
 #include <stdio.h>
 extern "C" {
-void * __libc_dlopen(const char *filename, int flags);
+extern void * __libc_dlopen(const char *filename, int flags);
 void *dlopen(const char *filename, int flags) {
 	if (filename != NULL) {
 		void * ret;
@@ -15,7 +15,7 @@ void *dlopen(const char *filename, int flags) {
 		return __libc_dlopen(filename, flags);
 	}
 }
-void * __libc_dlsym(void * handle, const char * symbol);
+extern void * __libc_dlsym(void * handle, const char * symbol);
 void * dlsym(void * handle, const char * symbol) {
 	if (symbol != NULL) {
 		fprintf(stderr, "DLSYMBOL: %s, HANDLE: %p\n", symbol, handle);

@@ -37,7 +37,7 @@ target_link_libraries(dlsymwrap ${Boost_LIBRARIES})
 target_link_libraries(dlsymwrap ${DYNINST_LIBRARIES})
 target_link_libraries(dlsymwrap "-lpthread")
 INCLUDE_DIRECTORIES(dlsymwrap ${Boost_INCLUDE_DIRS})
-SET_TARGET_PROPERTIES(dlsymwrap PROPERTIES COMPILE_FLAGS "-Wl,-wrap,dlsym -Wl,-wrap,dlopen")
+SET_TARGET_PROPERTIES(dlsymwrap PROPERTIES LINK_FLAGS "--wrap=dlsym --wrap=dlopen")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
 install(TARGETS dlsymwrap
         RUNTIME DESTINATION bin

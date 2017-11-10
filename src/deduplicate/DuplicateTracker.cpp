@@ -48,6 +48,7 @@ int DuplicateTracker::PerformAction(TransferPtr t) {
 		bool ret = DetectDuplicate(t);
 		std::stringstream ss;
 		std::cerr << "[DUPLICATE DETECTION] - Transfer " << t.get()->GetStringTransferKind() << " is " << (ret ? "a": "NOT a") << " duplicate" << std::endl;
+		std::cerr << "My Size: " << t.get()->GetSize() << std::endl;		
 		ss << "[DUPLICATE DETECTION] - Transfer " << t.get()->GetStringTransferKind() << " is " << (ret ? "a": "NOT a") << " duplicate" << std::endl;
 		if (ret == true)
 			std::cerr << "[DUPLICATE DETECTION] - Transfer " << t.get()->GetStringTransferKind() << " is " << (ret ? "a": "NOT a") << " duplicate" << std::endl;

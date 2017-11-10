@@ -20,9 +20,9 @@
 typedef boost::function<void(void)> ActionCall;
 
 void RedirectOutputToFile() {
-	// remove("test_output.txt");
-	// freopen("test_output.txt","w",stdout);
-	// dup2(fileno(stdout), fileno(stderr));
+	remove("test_output.txt");
+	freopen("test_output.txt","w",stdout);
+	dup2(fileno(stdout), fileno(stderr));
 }
 
 std::pair<int, int> ParseTotalTransferAndSize() {

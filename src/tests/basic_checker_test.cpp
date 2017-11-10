@@ -68,6 +68,7 @@ BOOST_AUTO_TEST_CASE(check_write_size_sync) {
 	std::cerr << "Expected first value: " << 20 << " expected second value: " << expected << std::endl;
 	BOOST_CHECK(ret.first == 20);
 	BOOST_CHECK(ret.second == expected);
+	exit(-1);
 }
 
 void CheckWriteASyncSize(std::vector<int> sizes) {

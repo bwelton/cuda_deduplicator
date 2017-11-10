@@ -44,7 +44,7 @@ void CheckWriteSyncSize(std::vector<int> sizes) {
 	for (auto i : sizes) {
 		DeviceMemory<double> dev(i);
 		dev.WriteSync();
-		std::cerr << "SENDING: " << count+1 << " SIZE: " << i << std::endl;
+		std::cerr << "SENDING: " << count+1 << " SIZE: " << i * sizeof(double)<< std::endl;
 		count++;
 	}
 }

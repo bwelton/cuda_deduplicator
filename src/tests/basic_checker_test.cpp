@@ -40,9 +40,12 @@ void CheckWriteSyncSize(std::vector<int> sizes) {
 	RedirectOutputToFile();
 	std::shared_ptr<CudaCtx> tmp(new CudaCtx());
 	uint64_t expected_size = 0;
+	int count = 0;
 	for (auto i : sizes) {
 		DeviceMemory<double> dev(i);
 		dev.WriteSync();
+		std::cerr << "SENDING: " << count+1 << std::endl;
+		count++;
 	}
 }
 

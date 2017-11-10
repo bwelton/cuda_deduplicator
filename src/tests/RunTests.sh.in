@@ -18,5 +18,5 @@ cp @CMAKE_INSTALL_PREFIX@/tests/dedup_test_configure.conf @CMAKE_INSTALL_PREFIX@
 @LAUNCHER@ @CMAKE_INSTALL_PREFIX@/tests/cupti_test
 rm @CMAKE_INSTALL_PREFIX@/tests/runs/dedup_settings.conf
 cp @CMAKE_INSTALL_PREFIX@/tests/*.py @CMAKE_INSTALL_PREFIX@/tests/runs/
-@LAUNCHER@ @CMAKE_INSTALL_PREFIX@/tests/PerfEstimateCheck
-
+//@LAUNCHER@ @CMAKE_INSTALL_PREFIX@/tests/PerfEstimateCheck
+@LAUNCHER@ @CMAKE_INSTALL_PREFIX@/tests/TestDedupSavings

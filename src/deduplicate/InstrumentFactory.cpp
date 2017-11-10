@@ -56,22 +56,13 @@ int InstrumentFactory::PerformAction(TransferPtr t) {
 	{
 		boost::recursive_mutex::scoped_lock lock(_mtx);
 		t.get()->SetID(_globalID);
-		if (_globalID == 1)
-			bail = true;
 		_globalID++;
 	}
-	if (bail == false) {
-		for (auto i : _workers)
-			i.get()->PerformAction(t);
-		t.get()->PerformTransfer();
-		return PostTransfer(t);
-	} else{
-		// CUcontext pctx;
-		// cuCtxCreate(&pctx,0,0);
-		//cudaSetDevice(0);
-		t.get()->PerformTransfer();
-		return 0;
-	}
+
+	for (auto i : _workers)
+		i.get()->PerformAction(t);
+	t.get()->PerformTransfer();
+	return PostTransfer(t);
 }
 
 int InstrumentFactory::PostTransfer(TransferPtr t){

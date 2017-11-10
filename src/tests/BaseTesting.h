@@ -30,6 +30,7 @@ std::pair<int, int> ParseTotalTransferAndSize() {
 	std::ifstream t("test_output.txt");
 	std::string input((std::istreambuf_iterator<char>(t)),
 	                   std::istreambuf_iterator<char>());
+	std::cerr << "Output File:\n" << input << std::endl;
 	size_t startPos = input.find("Total Transfer:");
 	startPos += strlen("Total Transfer:");
 	std::string intermediate = input.substr(startPos, input.size());

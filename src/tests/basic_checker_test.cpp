@@ -61,6 +61,7 @@ BOOST_AUTO_TEST_CASE(check_write_size_sync) {
 	}
 	BOOST_REQUIRE(t.LaunchAndWait(boost::bind(CheckWriteSyncSize, sizes)) == 0);
 	std::pair<int, int> ret = ParseTotalTransferAndSize();
+	std::cerr << "Returned first value: " << ret.first << " returned second value: " << ret.second << std::endl;
 	BOOST_CHECK(ret.first == 20);
 	BOOST_CHECK(ret.second == expected);
 }

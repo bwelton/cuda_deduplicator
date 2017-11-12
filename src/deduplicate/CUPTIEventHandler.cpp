@@ -122,13 +122,19 @@ extern "C" {
 }
 
 int CUPTIEventHandler::PerformAction(TransferPtr t) {
+	// 
+	if (_enabled == false)
+		return 0;
+	cuptiActivityPushExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN,uint64_t(t.get()->GetID()))
 	return 0;
+
 }
 
 int CUPTIEventHandler::PostTransfer(TransferPtr t) { 
 	if (_enabled == false)
 		return 0;
-
+	uint64_t popId = 0;
+	cuptiActivityPopExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN, &popId)
 	if (my_thread_id == -1) 
 		my_thread_id = (pid_t) syscall(__NR_gettid);
 		//my_thread_id = pthread_self();
@@ -136,7 +142,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 		my_process_id = (int) getpid();
 	std::stringstream ss;
 	ss << t.get()->GetID() << "," << t.get()->GetSize() << "," << (size_t) t.get()->GetStream() << "," 
-	   << my_process_id << "," << my_thread_id << std::endl;
+	   << my_process_id << "," << my_thread_id << "," << popId << std::endl;
 	std::string out = ss.str();	
 	_packetInfo.get()->Write(out);	
 	return 0;
@@ -171,7 +177,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_DRIVER);
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_RUNTIME);
 	// Doesn't exist in cuda 7.5...... 
-	//cuptiActivityEnable(CUPTI_ACTIVITY_KIND_SYNCHRONIZATION);
+	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_SYNCHRONIZATION);
 	cuptiGetTimestamp(&startTimestamp);
 	if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
 		std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;

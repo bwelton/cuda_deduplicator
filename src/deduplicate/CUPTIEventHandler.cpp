@@ -211,6 +211,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_RUNTIME);
 	// Doesn't exist in cuda 7.5...... 
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_SYNCHRONIZATION);
+	cuptiSetThreadIdType(CUPTI_ACTIVITY_THREAD_ID_TYPE_SYSTEM);
 	if(cuptiActivityEnable(CUPTI_ACTIVITY_KIND_EXTERNAL_CORRELATION) != CUPTI_SUCCESS)
 		std::cerr << "could not enable external correlation" << std::endl;
 	cuptiGetTimestamp(&startTimestamp);

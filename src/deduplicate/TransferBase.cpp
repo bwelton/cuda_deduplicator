@@ -29,6 +29,7 @@ cudaStream_t TransferBase::GetStream(){
 void TransferBase::PerformTransfer() {
 	if(_transferPerformed == false){
 		_ret = _call(_GPUPtr, _CPUPtr, (void *) _size, (void *) _kind, (void *) _stream);
+		std::cerr << "Performed Transfer"<<std::endl;
 		_transferPerformed = true;
 	}
 }

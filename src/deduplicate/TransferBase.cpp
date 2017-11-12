@@ -28,14 +28,7 @@ cudaStream_t TransferBase::GetStream(){
 
 void TransferBase::PerformTransfer() {
 	if(_transferPerformed == false){
-		// if (_sync == SYNC){
-		// 	boost::timer t;
-		// 	_ret = _call(_GPUPtr, _CPUPtr, (void *) _size, (void *) _kind, (void *) _stream);
-		// 	_synchronizationDelay = t.elapsed();
-		// } else {
-			_ret = _call(_GPUPtr, _CPUPtr, (void *) _size, (void *) _kind, (void *) _stream);
-		// 	_synchronizationDelay = 0.0;
-		// }
+		_ret = _call(_GPUPtr, _CPUPtr, (void *) _size, (void *) _kind, (void *) _stream);
 		_transferPerformed = true;
 	}
 }

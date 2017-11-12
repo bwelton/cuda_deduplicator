@@ -166,6 +166,8 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 	uint64_t popId = 0;
 	if (cuptiActivityPopExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN, &popId) != CUPTI_SUCCESS)
 		std::cerr << "Could not pop correlation id " << t.get()->GetID() << std::endl;
+	else 
+		std::cerr << "Popped correlation id " << popId << std::endl;
 	if (my_thread_id == -1) 
 		my_thread_id = (pid_t) syscall(__NR_gettid);
 		//my_thread_id = pthread_self();

@@ -149,7 +149,6 @@ extern "C" {
 }
 
 int CUPTIEventHandler::PerformAction(TransferPtr t) {
-	// 
 	if (_enabled == false)
 		return 0;
 	if(cuptiActivityPushExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN, uint64_t(t.get()->GetID())) != CUPTI_SUCCESS)
@@ -185,6 +184,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 CUPTIEventHandler::~CUPTIEventHandler() {
 	cudaDeviceSynchronize();
 	cuptiActivityFlushAll(0);
+	cuptiFinalize();
 	std::stringstream ss;
 	boost::timer::cpu_times elapsed = _runtime.elapsed();
 	ss << "TET," << elapsed.wall << std::endl;

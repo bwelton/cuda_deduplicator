@@ -125,7 +125,7 @@ int CUPTIEventHandler::PerformAction(TransferPtr t) {
 	// 
 	if (_enabled == false)
 		return 0;
-	cuptiActivityPushExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN,uint64_t(t.get()->GetID()))
+	cuptiActivityPushExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN,uint64_t(t.get()->GetID()));
 	return 0;
 
 }
@@ -134,7 +134,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 	if (_enabled == false)
 		return 0;
 	uint64_t popId = 0;
-	cuptiActivityPopExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN, &popId)
+	cuptiActivityPopExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN, &popId);
 	if (my_thread_id == -1) 
 		my_thread_id = (pid_t) syscall(__NR_gettid);
 		//my_thread_id = pthread_self();

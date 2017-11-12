@@ -66,8 +66,6 @@ int InstrumentFactory::PerformAction(TransferPtr t) {
 }
 
 int InstrumentFactory::PostTransfer(TransferPtr t){
-	if (t.get()->GetID() == 1) 
-		return 0;
 	for (auto i : _workers)
 		i.get()->PostTransfer(t);	
 	return 0;

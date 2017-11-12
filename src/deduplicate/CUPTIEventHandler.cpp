@@ -96,7 +96,34 @@ extern "C" {
 	    	   << api->processId << "," << api->threadId << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output->Write(out);	    	
+		} else if (record->kind == CUPTI_ACTIVITY_KIND_EXTERNAL_CORRELATION) {
+			CUpti_ActivityExternalCorrelation *api = (CUpti_ActivityExternalCorrelation *) record;
+			const char * kindNames[] = {"UNKNOWN", "DriverAPI", "RuntimeAPI", "MemoryCPY", "Synch"};
+			int kindNamePos = 0;
+	    	std::stringstream ss;
+	    	int id = 0;
+	    	if (api->externalKind == CUPTI_ACTIVITY_KIND_DRIVER)
+	    		kindNamePos = 1;
+	    	else if (api->externalKind == CUPTI_ACTIVITY_KIND_RUNTIME)
+	    		kindNamePos = 2;
+	    	else if (api->externalKind == CUPTI_ACTIVITY_KIND_MEMCPY)
+	    		kindNamePos = 3;
+	    	else if (api->externalKind == CUPTI_ACTIVITY_KIND_SYNCHRONIZATION)
+	    		kindNamePos = 4;
+	    	ss << "ExtCorr," << api->correlationId << "," << api->externalId << "," 
+	    	   << kindNames[kindNamePos] << std::endl;
+	 		std::string out = ss.str();	
+			_cupti_output->Write(out);
+		} else if (record->kind == CUPTI_ACTIVITY_KIND_SYNCHRONIZATION) {
+			CUpti_ActivitySynchronization *api = (CUpti_ActivitySynchronization *) record;
+			std::stringstream ss;
+			ss << "SYNC," << api->correlationId << "," << api->start - startTimestamp << "," 
+			   << api->end - startTimestamp << "," << api->cudaEventId << "," << api->contextId << "," 
+			   << api->streamId << std::endl;
+	 		std::string out = ss.str();	
+			_cupti_output->Write(out);
 		}
+
 	}
 	void bufCompleted(CUcontext ctx, uint32_t streamId, uint8_t *buffer, size_t size, size_t validSize) {
 	  	CUptiResult status;
@@ -178,6 +205,7 @@ CUPTIEventHandler::CUPTIEventHandler(bool enabled, FILE * file) {
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_RUNTIME);
 	// Doesn't exist in cuda 7.5...... 
 	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_SYNCHRONIZATION);
+	cuptiActivityEnable(CUPTI_ACTIVITY_KIND_EXTERNAL_CORRELATION);
 	cuptiGetTimestamp(&startTimestamp);
 	if (cuptiActivityRegisterCallbacks(bufRequest, bufCompleted) != CUPTI_SUCCESS) {
 		std::cerr << "Could not bind CUPTI functions, disabling CUPTI" << std::endl;

@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <cstring>
 #include <cassert>
+#include <iostream>
 //#include "CudaWrapper.h"
 
 extern "C" {

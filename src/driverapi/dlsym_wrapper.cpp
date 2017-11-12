@@ -3,7 +3,7 @@
 #include <stdio.h>
 extern "C" {
 void * __real_dlopen(const char *filename, int flags);
-void *__wrap_dlopen (const char *filename, int flags) {
+void *__wrap_dlopen(const char *filename, int flags) {
 	if (filename != NULL) {
 		void * ret;
 		//std::string tmp = std::string((char *)filename);

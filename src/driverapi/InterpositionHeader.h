@@ -1,7 +1,7 @@
 #pragma once
+#include <dlfcn.h>
 #include "Parameters.h"
 #include "DriverWrapperBase.h"
-#include <dlfcn.h>
 extern "C"{
 #define CUDAAPI
 

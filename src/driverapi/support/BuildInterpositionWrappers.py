@@ -17,7 +17,7 @@ f.close()
 
 ## Build Header for Wrappers
 alreadyWritten = {}
-header = '#pragma once\n#include "Parameters.h"\n#include "DriverWrapperBase.h"\nextern "C"{\n#define CUDAAPI\n\n'
+header = '#pragma once\n#include <dlfcn.h>\n#include "Parameters.h"\n#include "DriverWrapperBase.h"\nextern "C"{\n#define CUDAAPI\n\n'
 backFill = ""
 wrapperTemp = '#include "'+ "InterpositionHeader.h" +'"\n#include <tuple>\n#include "DriverWrapperBase.h"\n#include "DriverWrapperFactory.h"\nstd::shared_ptr<DriverWrapperFactory> DriverFactory;\nextern "C" {'
 typeDef = {}
@@ -40,13 +40,14 @@ for x in protos:
 	variables["PARAMETERS_NAMES"] = ""
 	variables["PARAMETER_TYPES"] = "int,"
 	variables["PARAMETERS_NAMES_VOID_CAST"] = ""
-
+	variables["PARAMETERS_TYPES"] = ""
 
 	## Parameters
 	tmp[-1] = tmp[-1][:-1]
 	for y in tmp[2:]:
 		pnames = y.split("$")
 		variables["PARAMETER_TYPES"] += pnames[0] + ","
+		variables["PARAMETERS_TYPES"] += pnames[0] + ","
 		variables["PARAMETERS_FULL"] += pnames[0] + " " + pnames[1] + ", "
 		variables["PARAMETERS_NAMES"] += pnames[1] + ","
 		variables["PARAMETERS_NAMES_VOID_CAST"] += "(void *)&" + pnames[1] + ","
@@ -58,7 +59,7 @@ for x in protos:
 				if "CU" in z:
 					typeDef[z] = "void *"
 
-
+	variables["PARAMETERS_TYPES"] = variables["PARAMETERS_TYPES"][:-1]
 	variables["PARAMETERS_FULL"] = variables["PARAMETERS_FULL"][:-2]	
 	variables["PARAMETERS_NAMES"] = variables["PARAMETERS_NAMES"][:-1]
 	variables["PARAMETER_TYPES"] = variables["PARAMETER_TYPES"][:-1]
@@ -67,6 +68,7 @@ for x in protos:
 		variables["PARAMETERS_NAMES"] = ""
 		variables["PARAMETER_TYPES"] = "int"
 		variables["PARAMETERS_NAMES_VOID_CAST"] = ""
+		variables["PARAMETERS_TYPES"] = "void"
 	else:
 		variables["PARAMETERS_NAMES"] = "," + variables["PARAMETERS_NAMES"]
 	variables["CALL_ID"] = str(count)

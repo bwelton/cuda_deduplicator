@@ -122,6 +122,8 @@ extern "C" {
 			   << api->streamId << std::endl;
 	 		std::string out = ss.str();	
 			_cupti_output->Write(out);
+		} else {
+			std::cerr << "unknown record: " << record->kind << std::endl;
 		}
 
 	}
@@ -151,7 +153,7 @@ extern "C" {
 int CUPTIEventHandler::PerformAction(TransferPtr t) {
 	if (_enabled == false)
 		return 0;
-	if(cuptiActivityPushExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_OPENACC, uint64_t(t.get()->GetID())) != CUPTI_SUCCESS)
+	if(cuptiActivityPushExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN, uint64_t(t.get()->GetID())) != CUPTI_SUCCESS)
 		std::cerr << "Could not push correlation id " << t.get()->GetID() << std::endl;
 	else
 		std::cerr << "Pushed ID " << t.get()->GetID() << std::endl;
@@ -163,7 +165,7 @@ int CUPTIEventHandler::PostTransfer(TransferPtr t) {
 	if (_enabled == false)
 		return 0;
 	uint64_t popId = 0;
-	if (cuptiActivityPopExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_OPENACC, &popId) != CUPTI_SUCCESS)
+	if (cuptiActivityPopExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN, &popId) != CUPTI_SUCCESS)
 		std::cerr << "Could not pop correlation id " << t.get()->GetID() << std::endl;
 	else 
 		std::cerr << "Popped correlation id " << popId << std::endl;

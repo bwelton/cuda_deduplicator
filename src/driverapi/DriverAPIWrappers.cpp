@@ -3342,7 +3342,7 @@ int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExport
 	DriverAPICall call = std::bind(ORIGINAL_cuGetExportTable ,ppExportTable,pExportTableId);
 	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
 	volatile void * expTable = (void *)*ppExportTable;
-	volatile CUuuid * expTableId = (CUuuid *)ppExportTableId;
+	volatile CUuuid * expTableId = (CUuuid *)pExportTableId;
 	for (int i = 0; i < 100; i++) {
 		fprintf(stderr, "FuncPtr: %p\n", ppExportTable[i]);
 		fprintf(stderr, "UUID: %d\n", pExportTableId[i]);

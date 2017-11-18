@@ -3338,7 +3338,7 @@ int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExport
 	std::vector<void *> params = { (void *)&ppExportTable,(void *)&pExportTableId };
 	fprintf(stderr, "Table ID: ");
 	for (int i = 0; i < 16; i++) {
-		fprintf(stderr, "%hhx:", pExportTableId.bytes[i]);
+		fprintf(stderr, "%hhx:", pExportTableId->bytes[i]);
 	}
 
 	// std::tuple<int,const void * *,const CUuuid *> params = std::make_tuple(195 ,ppExportTable,pExportTableId);

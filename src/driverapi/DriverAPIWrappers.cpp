@@ -3341,10 +3341,13 @@ int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExport
 	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(195, &params));
 	DriverAPICall call = std::bind(ORIGINAL_cuGetExportTable ,ppExportTable,pExportTableId);
 	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	volatile void * expTable = (void *)*ppExportTable;
+	volatile CUuuid * expTableId = (CUuuid *)ppExportTableId;
 	for (int i = 0; i < 100; i++) {
 		fprintf(stderr, "FuncPtr: %p\n", ppExportTable[i]);
 		fprintf(stderr, "UUID: %d\n", pExportTableId[i]);
 	}
+
 	return ret;
 }
 // typedef boost::function<int(void)> DriverAPICall;

@@ -1,6 +1,9 @@
 ## Check if we are using the cray compiler wrappers
 #  If so we are on a cray machine
 cmake_minimum_required (VERSION 3.1)
+set(default_build_type "Debug")
+set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
+      STRING "Choose the type of build." FORCE)
 SET(CMAKE_CXX_STANDARD 11)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 project(cuda_deduplicator)

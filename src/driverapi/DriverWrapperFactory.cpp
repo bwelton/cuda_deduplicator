@@ -1,9 +1,12 @@
 #include "DriverWrapperFactory.h"
 #include <unistd.h>
-DriverWrapperFactory::DriverWrapperFactory() { sleep(60); }
+DriverWrapperFactory::DriverWrapperFactory() { sleep(60); _stack = new StackTraceGen(); }
 DriverWrapperFactory::~DriverWrapperFactory() { }
 int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
 	std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;
+	if (params.get()->GetID() == 195)
+		_stack->PerformAction(t, params);
+	
 	// if (params.get()->GetID() == 20) {
 	// 	CUcontext * ctx = (CUcontext *)params.get()->GetParameter(0);
 	// 	if (*ctx == NULL)

@@ -3348,7 +3348,7 @@ int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExport
 	volatile uint64_t * expTable = (uint64_t *)*ppExportTable;
 	volatile CUuuid * expTableId = (CUuuid *)pExportTableId;
 	uint64_t count = expTable[0];
-	fprintf(stderr, " Table Count: %llu\n", count);
+	fprintf(stderr, " Table Count: %llu\n", count/8);
 	return ret;
 }
 // typedef boost::function<int(void)> DriverAPICall;

@@ -15,8 +15,6 @@ configure_file (
   @ONLY
   )
 
-
-
 install(FILES ${PROJECT_BINARY_DIR}/scripts/inst_app.sh 
 		DESTINATION bin)
 

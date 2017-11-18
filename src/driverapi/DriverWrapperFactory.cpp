@@ -1,6 +1,6 @@
 #include "DriverWrapperFactory.h"
 #include <unistd.h>
-DriverWrapperFactory::DriverWrapperFactory() { sleep(60); _stack = new StackTraceGen(); }
+DriverWrapperFactory::DriverWrapperFactory() {  _stack = new StackTraceGen(); }
 DriverWrapperFactory::~DriverWrapperFactory() { }
 int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
 	//std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;

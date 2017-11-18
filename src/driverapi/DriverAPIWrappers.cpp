@@ -3343,8 +3343,8 @@ int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExport
 	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
 	volatile void * expTable = (void *)*ppExportTable;
 	volatile CUuuid * expTableId = (CUuuid *)pExportTableId;
-	for (int i = 0; i < 100; i++) {
-		fprintf(stderr, "FuncPtr: %p\n", ppExportTable[i]);
+	for (int i = 0; i < 6; i++) {
+		fprintf(stderr, "FuncPtr: %p\n", (void*) (((char *)ppExportTable)[i*8]));
 		fprintf(stderr, "UUID: %d\n", pExportTableId[i]);
 	}
 

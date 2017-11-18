@@ -9,6 +9,7 @@
 
 // Dyninst includes
 #include "DriverWrapperBase.h"
+#include "ParameterBase.h"
 #include "framestepper.h"
 #include "walker.h"
 #include "procstate.h"

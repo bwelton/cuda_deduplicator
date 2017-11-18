@@ -1,4 +1,4 @@
-add_library(DriverAPIWrapper SHARED "Parameters.cpp" "DriverWrapperBase.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp" "StackTraceGen.cpp")
+add_library(DriverAPIWrapper SHARED "Parameters.cpp" "DriverWrapperBase.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp" "StacktraceGen.cpp")
 target_link_libraries(DriverAPIWrapper ${Boost_LIBRARIES})
 target_link_libraries(DriverAPIWrapper ${DYNINST_LIBRARIES})
 target_link_libraries(DriverAPIWrapper "-lpthread")
@@ -18,7 +18,7 @@ configure_file (
 	"${CMAKE_INSTALL_PREFIX}/defs/DriverAPIWrapper.def"
 )
 
-add_library(InterpositionDriverAPI SHARED "Parameters.cpp" "InterpositionWrappers.cpp" "DriverWrapperFactory.cpp" "DriverWrapperBase.cpp" "StackTraceGen.cpp")
+add_library(InterpositionDriverAPI SHARED "Parameters.cpp" "InterpositionWrappers.cpp" "DriverWrapperFactory.cpp" "DriverWrapperBase.cpp" "StacktraceGen.cpp")
 target_compile_definitions(InterpositionDriverAPI PRIVATE INTERPOSITION_BUILD=1)
 target_link_libraries(InterpositionDriverAPI ${Boost_LIBRARIES})
 target_link_libraries(InterpositionDriverAPI ${DYNINST_LIBRARIES})

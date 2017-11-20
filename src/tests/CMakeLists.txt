@@ -127,6 +127,14 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS TestDedupSavings
         RUNTIME DESTINATION tests)
 
+add_executable(GetExportTableTest "GetExportTableTest.cpp")
+target_link_libraries(GetExportTableTest ${Boost_LIBRARIES})
+target_link_libraries(GetExportTableTest "-lpthread")
+INCLUDE_DIRECTORIES(GetExportTableTest ${Boost_INCLUDE_DIRS})
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+install(TARGETS GetExportTableTest
+        RUNTIME DESTINATION tests)
+
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/scripts)
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/tests/LoadSpackModules.py.in"

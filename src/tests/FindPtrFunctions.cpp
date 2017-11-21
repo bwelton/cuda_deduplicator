@@ -89,9 +89,10 @@ int main(int argc, char * argv[]){
 	std::vector<BPatch_module *> * modules;
 	BPatch_image * image = handle->getImage();
 	modules = image->getModules();
+	char * nameTmp = (char*)malloc(300*sizeof(char));
 	for(auto i : *modules) {
-		char tmp[300];
-		tmp = i->getFullName(tmp, 299);
-		std::cout << "Module loaded: " << tmp << std::endl;
+		
+		nameTmp = i->getFullName(nameTmp, 299);
+		std::cout << "Module loaded: " << nameTmp << std::endl;
 	}
 }

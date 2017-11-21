@@ -12,6 +12,7 @@ int main(int argc, char * argv[]) {
 	std::ifstream t;
 	t.open(argv[1],std::ifstream::in);
 	std::string line;
+	cuInit(0);
 	while (std::getline(t, line)) {
 		void * ppExportTable;
 		int pos = 0;

@@ -90,6 +90,8 @@ int main(int argc, char * argv[]){
 	BPatch_image * image = handle->getImage();
 	modules = image->getModules();
 	char * nameTmp = (char*)malloc(300*sizeof(char));
+	std::ofstream outfile;
+	outfile.open("function_addrs.txt", std::ios::binary | std::ios::out);
 	for(auto i : *modules) {
 		
 		nameTmp = i->getFullName(nameTmp, 299);
@@ -102,11 +104,18 @@ int main(int argc, char * argv[]){
 				BPatch_Vector<BPatch_function *> * functors;
 				BPatch_Vector<BPatch_function *> f1;
 				functors= i->findFunctionByAddress((void*)q.second, f1);
+				int validFunction = 0;
 				if (f1.size() == 0) 
 					std::cout << "COULD NOT FIND FUNCTION " << std::hex << q.second << std::dec << "," << q.first << std::endl;
-				else
+				else{
 					std::cout << "FOUND FUNCTION " << std::hex << q.second << std::dec << "," << q.first << std::endl;
+					validFunction = 1;
+				}
+				uint64_t addr = q.second - (uint64_t)i->getBaseAddr();
+				outfile << validFunction << "," << q.first << "," << std::hex << addr << std::dec << std::endl;
+
 			}
+			outfile.close();
 			exit(0);
 		}
 		std::cout << "Module loaded: " << nameTmp << std::endl;

@@ -63,8 +63,13 @@ int main(int argc, char * argv[]) {
 	// fprintf(stderr, "%s %ld\n", "Wrote output file, attach dyninst now to pid:", getpid());
 	// while(1)
 	// 	sleep(10);
+	int mnret;
+    CUdevice cuDevice = 0;
+    cuDeviceGet(&cuDevice, 0);
+    CUcontext cuContext;
+    cuCtxCreate(&cuContext, 0, cuDevice);
 	CUdeviceptr ptr;
-	int mnret = (int)cuMemAlloc(&ptr, sizeof(int)*1024);
+	mnret = (int)cuMemAlloc(&ptr, sizeof(int)*1024);
 	if (CUDA_SUCCESS != mnret)
 		std::cerr << "Alloc Failed" << std::endl;
 }

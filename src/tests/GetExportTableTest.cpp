@@ -2,6 +2,8 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <string>
+#include <fstream>
 #include "cuda.h"
 int main(int argc, char * argv[]) {
 	std::stringstream ss; 
@@ -22,7 +24,7 @@ int main(int argc, char * argv[]) {
 			line.erase(0, line.find(std::string(",")) + 1);
 			token = line.substr(0, line.find(std::string(",")));
 		}
-		int ret = (int) cuGetExportTable(&ppExportTable, &pExportTableId);
+		int ret = (int) cuGetExportTable((const void **)&ppExportTable, &pExportTableId);
 		printf(" - ret: %d\n",ret);
 	}
 }

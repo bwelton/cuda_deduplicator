@@ -1,15 +1,16 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <iostream>
 #include <iomanip>
 #include <string>
+#include <fstream>
 #include "cuda.h"
 int main(int argc, char * argv[]) {
 	std::stringstream ss; 
 	unsigned int value = 0;
 	CUuuid pExportTableId; 
-	std::ifstream t(std::string(argv[1]));
+	std::ifstream t;
+	t.open(argv[1],std::ifstream::in);
 	std::string line;
 	while (std::getline(t, line)) {
 		void * ppExportTable;

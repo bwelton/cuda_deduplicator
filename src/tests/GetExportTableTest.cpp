@@ -8,8 +8,11 @@
 int main(int argc, char * argv[]) {
 	std::stringstream ss; 
 	unsigned int value = 0;
+	uint64_t tableId = 0;
 	CUuuid pExportTableId; 
 	std::ifstream t;
+	std::ofstream outfile;
+	outfile.open("function_pts.txt", std::ios::binary | std::ios::out);
 	t.open(argv[1],std::ifstream::in);
 	std::string line;
 	cuInit(0);
@@ -42,11 +45,16 @@ int main(int argc, char * argv[]) {
 				count = expTable[0] / 8;
 			}
 			std::cout << "Valid Table: " << backup << " Ret = " << ret << " count: " << count << std::endl;
-			// if (count < 500){
-			// 	volatile uint64_t * expTable = (uint64_t *)ppExportTable;
-			// 	for(int i = 1; i < count; i++)
-			// 		printf("\t\tFunction Ptr: %p\n", expTable[i]);
-			// }
+			if (count < 500){
+				volatile uint64_t * expTable = (uint64_t *)ppExportTable;
+				for(int i = 1; i < count; i++){
+					if (expTable[i] != NULL)
+						outfile << tableId << "," << std::hex << expTable[i] << std::dec << std::endl;
+					printf("\t\tFunction Ptr: %p\n", expTable[i]);
+				}
+			}
 		}
+		tableId++;
 	}
+	outfile.close();
 }

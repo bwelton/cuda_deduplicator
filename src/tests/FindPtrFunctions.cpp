@@ -97,6 +97,7 @@ int main(int argc, char * argv[]){
 		if (libName.find(std::string("libcuda")) != std::string::npos) {
 			std::cout << "We have found libcuda" << std::endl;
 			std::cout << "Function Hunting Begins.... " << std::endl;
+			printf("Base Address for libcuda: %p\n", i->getBaseAddr());
 			for (auto q : IdsAndPtrs) {
 				BPatch_Vector<BPatch_function *> * functors;
 				BPatch_Vector<BPatch_function *> f1;

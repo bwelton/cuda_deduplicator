@@ -4,7 +4,6 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <fstream>
 #include "cuda.h"
 int main(int argc, char * argv[]) {
 	std::stringstream ss; 

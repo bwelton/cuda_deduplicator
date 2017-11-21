@@ -22,9 +22,14 @@ int main(int argc, char * argv[]) {
 			ss >> std::hex >> value;
 			pExportTableId.bytes[pos] = (char)uint8_t(value);
 			printf("%hhx:", pExportTableId.bytes[pos]);
-			line.erase(0, line.find(std::string(",")) + 1);
+			if (line.find(std::string(",")) == std::string::npos)
+				break;
+			line = line.substr(line.find(std::string(",")) + 1, line.size());
+			// line.erase(0, line.find(std::string(",")) + 1);
 			token = line.substr(0, line.find(std::string(",")));
+			ss.clear();
 		}
+		ss.clear();
 		int ret = (int) cuGetExportTable((const void **)&ppExportTable, &pExportTableId);
 		printf(" - ret: %d\n",ret);
 	}

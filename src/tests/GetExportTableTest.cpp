@@ -34,8 +34,8 @@ int main(int argc, char * argv[]) {
 		ss.clear();
 		int ret = (int) cuGetExportTable((const void **)&ppExportTable, &pExportTableId);
 		if (ret == 0) {
-			uint64_t count = (*((uint64_t **)ppExportTable))[0] / 8;
-			std::cout << "Valid Table: " << backup << " Ret = " << ret << " Function Count: " << count << std::endl;
+			uint64_t count = 0;
+			std::cout << "Valid Table: " << backup << " Ret = " << ret << " Ptr: " << *ppExportTable << std::endl;
 		}
 	}
 }

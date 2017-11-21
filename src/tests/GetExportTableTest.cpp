@@ -15,7 +15,7 @@ int main(int argc, char * argv[]) {
 	cuInit(0);
 	while (std::getline(t, line)) {
 		std::string backup = line;
-		void * ppExportTable;
+		void * ppExportTable = NULL;
 		int pos = 0;
 		std::string token = line.substr(0, line.find(std::string(",")));
 		while (token.size() > 0) {

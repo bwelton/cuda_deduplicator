@@ -14,15 +14,15 @@ int main(int argc, char * argv[]) {
 	std::string line;
 	cuInit(0);
 	while (std::getline(t, line)) {
+		std::string backup = line;
 		void * ppExportTable;
 		int pos = 0;
-		printf("\nTable ID: ");
 		std::string token = line.substr(0, line.find(std::string(",")));
 		while (token.size() > 0) {
 			ss << token;
 			ss >> std::hex >> value;
 			pExportTableId.bytes[pos] = (char)uint8_t(value);
-			printf("%hhx:", pExportTableId.bytes[pos]);
+			
 			if (line.find(std::string(",")) == std::string::npos)
 				break;
 			line = line.substr(line.find(std::string(",")) + 1, line.size());
@@ -33,6 +33,8 @@ int main(int argc, char * argv[]) {
 		}
 		ss.clear();
 		int ret = (int) cuGetExportTable((const void **)&ppExportTable, &pExportTableId);
-		printf(" - ret: %d\n",ret);
+		if (ret == 0) 
+			std::cout << "Valid Table: " << backup << " Ret = " << ret << std::endl;
+		
 	}
 }

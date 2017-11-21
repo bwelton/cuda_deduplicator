@@ -3,6 +3,9 @@
 #include <sstream>
 #include <iomanip>
 #include <string>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include <fstream>
 #include "cuda.h"
 int main(int argc, char * argv[]) {
@@ -57,4 +60,7 @@ int main(int argc, char * argv[]) {
 		tableId++;
 	}
 	outfile.close();
+	fprintf(stderr, "%s %ld\n", "Wrote output file, attach dyninst now to pid:", getpid());
+	while(1)
+		sleep(10);
 }

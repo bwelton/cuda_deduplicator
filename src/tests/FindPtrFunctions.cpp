@@ -99,7 +99,8 @@ int main(int argc, char * argv[]){
 			std::cout << "Function Hunting Begins.... " << std::endl;
 			for (auto q : IdsAndPtrs) {
 				BPatch_Vector<BPatch_function *> * functors;
-				functors= i->findFunctionByAddress((void*)q.second, functors);
+				BPatch_Vector<BPatch_function *> f1;
+				functors= i->findFunctionByAddress((void*)q.second, f1);
 				if (functors.size() == 0) 
 					std::cout << "COULD NOT FIND FUNCTION " << q.second << "," << q.first << std::endl;
 				else

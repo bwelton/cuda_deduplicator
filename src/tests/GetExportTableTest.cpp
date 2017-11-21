@@ -7,7 +7,7 @@ int main(int argc, char * argv[]) {
 	std::stringstream ss; 
 	unsigned int value = 0;
 	CUuuid pExportTableId; 
-	std::ifstream t(argv[1]);
+	std::ifstream t(std::string(argv[1]));
 	std::string line;
 	while (std::getline(t, line)) {
 		void * ppExportTable;

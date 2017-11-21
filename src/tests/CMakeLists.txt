@@ -129,6 +129,7 @@ install(TARGETS TestDedupSavings
 
 add_executable(GetExportTableTest "GetExportTableTest.cpp")
 target_link_libraries(GetExportTableTest ${Boost_LIBRARIES})
+target_link_libraries(GetExportTableTest "-L/usr/lib/x86_64-linux-gnu/libcuda.so -lcuda")
 target_link_libraries(GetExportTableTest "-lpthread")
 INCLUDE_DIRECTORIES(GetExportTableTest ${Boost_INCLUDE_DIRS})
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)

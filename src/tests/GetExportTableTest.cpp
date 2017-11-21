@@ -47,7 +47,7 @@ int main(int argc, char * argv[]) {
 				volatile uint64_t * expTable = (uint64_t *)ppExportTable;
 				count = expTable[0] / 8;
 			}
-			std::cout << "Valid Table: " << backup << " Ret = " << ret << " count: " << count << std::endl;
+			std::cout << tableId << " Valid Table: " << backup << " Ret = " << ret << " count: " << count << std::endl;
 			if (count < 500){
 				volatile uint64_t * expTable = (uint64_t *)ppExportTable;
 				for(int i = 1; i < count; i++){

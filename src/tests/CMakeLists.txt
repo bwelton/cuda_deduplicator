@@ -136,6 +136,15 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS GetExportTableTest
         RUNTIME DESTINATION tests)
 
+add_executable(FindPtrFunctions "FindPtrFunctions.cpp")
+target_link_libraries(FindPtrFunctions ${Boost_LIBRARIES})
+target_link_libraries(FindPtrFunctions "-lpthread")
+target_link_libraries(FindPtrFunctions ${DYNINST_LIBRARIES})
+INCLUDE_DIRECTORIES(FindPtrFunctions ${Boost_INCLUDE_DIRS})
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+install(TARGETS FindPtrFunctions
+        RUNTIME DESTINATION tests)
+
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/scripts)
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/tests/LoadSpackModules.py.in"

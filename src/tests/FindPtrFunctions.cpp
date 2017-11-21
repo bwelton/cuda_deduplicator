@@ -112,7 +112,7 @@ int main(int argc, char * argv[]){
 					validFunction = 1;
 				}
 				uint64_t addr = q.second - (uint64_t)i->getBaseAddr();
-				outfile << validFunction << "," << q.first << "," << std::hex << addr << std::dec << std::endl;
+				outfile << validFunction << "," << q.first << "," << std::hex << addr << std::dec << "," << std::hex << q.second << std::dec << std::endl;
 
 			}
 			outfile.close();

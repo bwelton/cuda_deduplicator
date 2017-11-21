@@ -103,7 +103,7 @@ int main(int argc, char * argv[]){
 			for (auto q : IdsAndPtrs) {
 				BPatch_Vector<BPatch_function *> * functors;
 				BPatch_Vector<BPatch_function *> f1;
-				functors= i->findFunctionByAddress((void*)q.second, f1);
+				functors= i->findFunctionByAddress((void*)q.second, f1, true, true);
 				int validFunction = 0;
 				if (f1.size() == 0) 
 					std::cout << "COULD NOT FIND FUNCTION " << std::hex << q.second << std::dec << "," << q.first << std::endl;

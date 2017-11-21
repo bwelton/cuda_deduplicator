@@ -102,9 +102,9 @@ int main(int argc, char * argv[]){
 				BPatch_Vector<BPatch_function *> f1;
 				functors= i->findFunctionByAddress((void*)q.second, f1);
 				if (functors == NULL) 
-					std::cout << "COULD NOT FIND FUNCTION " << q.second << "," << q.first << std::endl;
+					std::cout << "COULD NOT FIND FUNCTION " << std::hex << q.second << std::dec << "," << q.first << std::endl;
 				else
-					std::cout << "FOUND FUNCTION " << q.second << "," << q.first << std::endl;
+					std::cout << "FOUND FUNCTION " << std::hex << q.second << std::dec << "," << q.first << std::endl;
 			}
 			exit(0);
 		}

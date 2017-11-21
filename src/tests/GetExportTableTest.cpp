@@ -39,7 +39,7 @@ int main(int argc, char * argv[]) {
 				count = 0;
 			else {
 				volatile uint64_t * expTable = (uint64_t *)*ppExportTable;
-				count = ppExportTable[0] / 8;
+				count = expTable[0] / 8;
 			}
 			std::cout << "Valid Table: " << backup << " Ret = " << ret << " count: " << count << std::endl;
 		}

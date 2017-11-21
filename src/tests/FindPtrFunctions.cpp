@@ -93,6 +93,20 @@ int main(int argc, char * argv[]){
 	for(auto i : *modules) {
 		
 		nameTmp = i->getFullName(nameTmp, 299);
+		std::string libName = std::string(nameTmp);
+		if (libName.find(std::string("libcuda")) != std::string::npos) {
+			std::cout << "We have found libcuda" << std::endl;
+			std::cout << "Function Hunting Begins.... " << std::endl;
+			for (auto q : IdsAndPtrs) {
+				BPatch_Vector<BPatch_function *> * functors;
+				functors= i->findFunctionByAddress((void*)q.second, functors);
+				if (functors.size() == 0) 
+					std::cout << "COULD NOT FIND FUNCTION " << q.second << "," << q.first << std::endl;
+				else
+					std::cout << "FOUND FUNCTION " << q.second << "," << q.first << std::endl;
+			}
+			exit(0);
+		}
 		std::cout << "Module loaded: " << nameTmp << std::endl;
 	}
 }

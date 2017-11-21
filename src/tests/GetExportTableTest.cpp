@@ -33,7 +33,7 @@ int main(int argc, char * argv[]) {
 		}
 		ss.clear();
 		int ret = (int) cuGetExportTable((const void **)&ppExportTable, &pExportTableId);
-		if (ret == 0) {
+		if (ret == CUDA_SUCCESS) {
 			uint64_t count = 0;	
 			if (ppExportTable == NULL)
 				count = 0;
@@ -42,11 +42,11 @@ int main(int argc, char * argv[]) {
 				count = expTable[0] / 8;
 			}
 			std::cout << "Valid Table: " << backup << " Ret = " << ret << " count: " << count << std::endl;
-			if (count < 500){
-				volatile uint64_t * expTable = (uint64_t *)ppExportTable;
-				for(int i = 1; i < count; i++)
-					printf("\t\tFunction Ptr: %p\n", expTable[i]);
-			}
+			// if (count < 500){
+			// 	volatile uint64_t * expTable = (uint64_t *)ppExportTable;
+			// 	for(int i = 1; i < count; i++)
+			// 		printf("\t\tFunction Ptr: %p\n", expTable[i]);
+			// }
 		}
 	}
 }

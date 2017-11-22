@@ -57,6 +57,8 @@ int main(int argc, char * argv[]) {
 				for(int i = 1; i < count; i++){
 					if (expTable[i] != NULL)
 						outfile << tableId << "," << std::hex << expTable[i] << std::dec << std::endl;
+					else
+						outfile << tableId << "," << std::hex << NULL << std::dec << std::endl;
 					printf("\t\tFunction Ptr: %p\n", expTable[i]);
 					if (i == 4 && tableId == 31)
 						getDeviceCount = (SingleParam)expTable[i];

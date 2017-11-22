@@ -104,7 +104,7 @@ int main(int argc, char * argv[]){
 					std::string ActualFunction = std::string("NONAME");
 					BPatch_Vector<BPatch_function *> * functors;
 					BPatch_Vector<BPatch_function *> f1;
-					if (q.second != 0){
+				if (q.second != 0){
 						functors= i->findFunctionByAddress((void*)q.second, f1, true, true);
 					int validFunction = 0;
 					if (f1.size() == 0) 
@@ -114,12 +114,12 @@ int main(int argc, char * argv[]){
 						std::vector<BPatch_point*> callers;
 						f1[0]->getCallerPoints(callers);
 						for(auto i : callers)
-							std::cout << i->getFunction()->getName() << std::endl;
+							ActualFunction = std::string(i->getFunction()->getName());
 
 						validFunction = 1;
 					}
 					uint64_t addr = q.second - (uint64_t)i->getBaseAddr();
-					outfile << validFunction << "," << q.first << "," << std::hex << addr << std::dec << "," << std::hex << q.second << std::dec << std::endl;
+					outfile << validFunction << "," << q.first << "," << std::hex << addr << std::dec << "," << std::hex << q.second << std::dec << "," << ActualFunction << std::endl;
 				} else {
 					outfile << "0," << q.first << ",NULL,SKIP" << std::endl;
 				}

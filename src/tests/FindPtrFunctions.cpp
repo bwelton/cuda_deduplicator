@@ -111,7 +111,7 @@ int main(int argc, char * argv[]){
 				else{
 					std::cout << "FOUND FUNCTION " << std::hex << q.second << std::dec << "," << q.first << std::endl;
 					std::vector<BPatch_point*> callers;
-					fi[0]->getCallerPoints(callers);
+					f1[0]->getCallerPoints(callers);
 					for(auto i : callers)
 						std::cout << i->getFunction()->getName() << std::endl;
 

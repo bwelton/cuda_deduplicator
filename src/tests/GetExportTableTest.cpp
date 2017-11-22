@@ -8,6 +8,9 @@
 
 #include <fstream>
 #include "cuda.h"
+
+typedef int (*SingleParam)(int *); 
+
 int main(int argc, char * argv[]) {
 	std::stringstream ss; 
 	unsigned int value = 0;
@@ -19,6 +22,7 @@ int main(int argc, char * argv[]) {
 	t.open(argv[1],std::ifstream::in);
 	std::string line;
 	cuInit(0);
+	SingleParam getDeviceCount;
 	while (std::getline(t, line)) {
 		std::string backup = line;
 		void * ppExportTable = NULL;
@@ -54,22 +58,24 @@ int main(int argc, char * argv[]) {
 					if (expTable[i] != NULL)
 						outfile << tableId << "," << std::hex << expTable[i] << std::dec << std::endl;
 					printf("\t\tFunction Ptr: %p\n", expTable[i]);
+					if (i == 4 && tableId == 31)
+						getDeviceCount = (*SingleParam)expTable[i];
 				}
 			}
 		}
 		tableId++;
 	}
 	outfile.close();
-	// fprintf(stderr, "%s %ld\n", "Wrote output file, attach dyninst now to pid:", getpid());
-	// while(1)
-	// 	sleep(10);
-	int mnret;
-    CUdevice cuDevice = 0;
-    cuDeviceGet(&cuDevice, 0);
-    CUcontext cuContext;
-    cuCtxCreate(&cuContext, 0, cuDevice);
-	CUdeviceptr ptr;
-	mnret = (int)cuMemAlloc(&ptr, sizeof(int)*1024);
-	if (CUDA_SUCCESS != mnret)
-		std::cerr << "Alloc Failed" << std::endl;
+	fprintf(stderr, "%s %ld\n", "Wrote output file, attach dyninst now to pid:", getpid());
+	while(1)
+		sleep(10);
+	// int mnret;
+ //    CUdevice cuDevice = 0;
+ //    cuDeviceGet(&cuDevice, 0);
+ //    CUcontext cuContext;
+ //    cuCtxCreate(&cuContext, 0, cuDevice);
+	// CUdeviceptr ptr;
+	// mnret = (int)cuMemAlloc(&ptr, sizeof(int)*1024);
+	// if (CUDA_SUCCESS != mnret)
+	// 	std::cerr << "Alloc Failed" << std::endl;
 }

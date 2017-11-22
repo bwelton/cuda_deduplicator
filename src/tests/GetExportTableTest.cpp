@@ -65,6 +65,8 @@ int main(int argc, char * argv[]) {
 		}
 		tableId++;
 	}
+	int myret = 0;
+	int welp = getDeviceCount(&myret)
 	outfile.close();
 	fprintf(stderr, "%s %ld\n", "Wrote output file, attach dyninst now to pid:", getpid());
 	while(1)

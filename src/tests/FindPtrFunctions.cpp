@@ -101,6 +101,7 @@ int main(int argc, char * argv[]){
 			std::cout << "Function Hunting Begins.... " << std::endl;
 			printf("Base Address for libcuda: %p\n", i->getBaseAddr());
 			for (auto q : IdsAndPtrs) {
+				std::string ActualFunction = std::string("NONAME");
 				BPatch_Vector<BPatch_function *> * functors;
 				BPatch_Vector<BPatch_function *> f1;
 				functors= i->findFunctionByAddress((void*)q.second, f1, true, true);
@@ -109,6 +110,11 @@ int main(int argc, char * argv[]){
 					std::cout << "COULD NOT FIND FUNCTION " << std::hex << q.second << std::dec << "," << q.first << std::endl;
 				else{
 					std::cout << "FOUND FUNCTION " << std::hex << q.second << std::dec << "," << q.first << std::endl;
+					std::vector<BPatch_point*> callers;
+					fi[0]->getCallerPoints(callers);
+					for(auto i : callers)
+						std::cout << i->getFunction()->getName() << std::endl;
+
 					validFunction = 1;
 				}
 				uint64_t addr = q.second - (uint64_t)i->getBaseAddr();
@@ -116,7 +122,7 @@ int main(int argc, char * argv[]){
 
 			}
 			outfile.close();
-			exit(0);
+			break;
 		}
 		std::cout << "Module loaded: " << nameTmp << std::endl;
 	}

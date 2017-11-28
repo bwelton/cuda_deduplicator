@@ -44,9 +44,14 @@ using namespace SymtabAPI;
 struct InstStorage {
 	BPatch bpatch;
 	BPatch_binaryEdit * app;
+	std::string binaryName;
+	uint64_t unnamedCount;
 	std::map<char *, std::pair<char *, char *>> replaceFuncs;
 	std::map<char *, std::tuple<char *, char *, char *>> wrapFunctions;
 	std::map<char *, std::tuple<char *, char *>> wrapAllFunctions;
+	std::map<char *, std::tuple<char *, char *>> InsertAtEntry;
+	std::map<uint64_t, std::string> SymbolsToWrite;
+
 };
 
 

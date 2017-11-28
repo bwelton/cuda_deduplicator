@@ -4,9 +4,11 @@ InstStorage * OpenBinary(char * app_binary) {
 	InstStorage * ret = new InstStorage[1];
 	ret->bpatch.setInstrStackFrames(true);
 	BPatch_binaryEdit *app = ret->bpatch.openBinary(app_binary, true);
+	ret->unnamedCount = 1;
 	if (!app)
 		fprintf(stderr, "COULD NOT OPEN BINARY: %s\n", app_binary);
 	ret->app = app;
+	ret->binaryName = std::string(strdup(app_binary));
 	return ret;
 }
 
@@ -43,6 +45,32 @@ int WrapFunction(InstStorage * storage, char * binary_function, char * wrapper_f
 	storage->wrapFunctions[strdup(binary_function)] = std::make_tuple(strdup(wrapper_function), strdup(wrapper_library), strdup(wrapper_hookName));
 	return 1;
 }
+
+int InsertAtFunctionEntry(InstStorage * storage, char * binary_function, char * wrapper_function, 
+				 char * wrapper_library) {
+	assert(storage != NULL);
+	if (storage->InsertAtEntry.find(binary_function) != storage->InsertAtEntry.end()){
+		fprintf(stderr, "%s: %s\n", "Replacment function already exists", binary_function);
+		return -1;
+	}
+	storage->InsertAtEntry[strdup(binary_function)] = std::make_tuple(strdup(wrapper_function), strdup(wrapper_library));
+}
+
+
+int InsertAtFunctionEntryOffset(InstStorage * storage, uint64_t offset, char * wrapper_function, 
+				 char * wrapper_library, char * preferredName) {
+	assert(storage != NULL);
+
+	// Create the sumbol to write to the file 
+	if (storage->SymbolsToWrite.find(offset) != storage->SymbolsToWrite.end()){
+		fprintf(stderr, "%s: %llu\n", "Symbol(s) already exists at point", offset);
+		return -1;
+	}
+
+	storage->SymbolsToWrite[offset] = std::string(strdup(preferredName));
+	return 0;
+}
+
 
 PyObject * FindAllSymbolsWithPrefix(InstStorage * storage, char * prefix) {
 	BPatch_Vector<BPatch_module *> modules = *(storage->app->getImage()->getModules());
@@ -128,13 +156,44 @@ std::vector<BPatch_function *> findFuncByNameRegEx(BPatch_image * appImage, cons
 
 }
 
+void InsertSymbols(InstStorage * storage, char * outputName) {
+	// Close the existing open file....
+	delete storage->app;
+	Symtab * obj = NULL;
+	bool err = Symtab::openFile(obj, storage->binaryName);
+	assert(err == false);
+
+	for(auto i : storage->SymbolsToWrite){
+		if(obj->createFunction(i.second, i.first, 0) == NULL){
+			fprintf(stderr, "Could not write symbol: %s,%llu\n",i.second.c_str(),i.first);
+		}
+	}
+	std::string outfile = std::string(outputName) + std::string(".symboled");
+	obj->emit(outfile);
+	storage->app = ret->bpatch.openBinary(outfile.c_str(), true);
+	if (storage->app == NULL){
+		fprintf(stderr, "%s\n", "COULD NOT REOPEN BINARY,EXITING NOW");
+		exit(-1);
+	}
+}
+
 int PerformRewrite(InstStorage * storage, char * outputName) {
 	fprintf(stderr, "%s %s\n", "Performing rewrite, saving to file", outputName);
 	// Gather all libraries needed and all functions we are either going to
 	// wrap or replace.
+
+	// Insert any symbols we needm
+	InsertSymbols(storage, outputName);
+
 	std::set<char *> libnames;
 	std::set<char *> functions;
 	BPatch_binaryEdit * app = storage->app;
+
+
+
+
+
+
 	assert(app != NULL);
 	for(auto const & entry : storage->replaceFuncs) {
 		functions.insert(entry.first);
@@ -237,7 +296,6 @@ int PerformRewrite(InstStorage * storage, char * outputName) {
 			}
 		}
 	}
-
 
 	fprintf(stderr, "Writing output binary to %s\n", outputName);
 	if(!app->writeFile(outputName)) {

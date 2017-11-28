@@ -158,8 +158,9 @@ std::vector<BPatch_function *> findFuncByNameRegEx(BPatch_image * appImage, cons
 
 void InsertSymbols(InstStorage * storage, char * outputName) {
 	// Close the existing open file....
-	delete storage->app;
+	//delete storage->app;
 	Symtab * obj = NULL;
+	fprintf(stderr, "Opening %s\n", storage->binaryName.c_str());
 	bool err = Symtab::openFile(obj, storage->binaryName);
 	assert(err == false);
 

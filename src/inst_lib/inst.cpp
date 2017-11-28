@@ -68,8 +68,24 @@ int InsertAtFunctionEntryOffset(InstStorage * storage, uint64_t offset, char * w
 	}
 
 	storage->SymbolsToWrite[offset] = std::string(strdup(preferredName));
+	InsertAtFunctionEntry(storage, preferredName, wrapper_function, wrapper_library);
 	return 0;
 }
+
+int AddSymbolAtOffset(InstStorage * storage, uint64_t offset, char * preferredName) {
+	assert(storage != NULL);
+
+	// Create the sumbol to write to the file 
+	if (storage->SymbolsToWrite.find(offset) != storage->SymbolsToWrite.end()){
+		fprintf(stderr, "%s: %llu\n", "Symbol(s) already exists at point", offset);
+		return -1;
+	}
+
+	storage->SymbolsToWrite[offset] = std::string(strdup(preferredName));
+	//InsertAtFunctionEntry(storage, preferredName, wrapper_function, wrapper_library);
+	return 0;
+}
+
 
 
 PyObject * FindAllSymbolsWithPrefix(InstStorage * storage, char * prefix) {

@@ -70,7 +70,13 @@ for x in data:
             exit(-1)
         print "Inserting " + tmp[2] + " before function call " + tmp[1]
         print tmp
-        inst.InsertBeforeCall(tmp[1],tmp[2],tmp[3])        
+        inst.InsertBeforeCall(tmp[1],tmp[2],tmp[3])
+    else tmp[0].lower() == "insertsymbol":
+        if len(tmp) != 3:
+            print "Incorrect format for insert symbol, require exactly 3 params"
+            exit(-1)
+        inst.AddSymbolAtOffset(int(tmp[1]), tmp[2])
+                
 
 inst.PerformRewrite(sys.argv[3])
 

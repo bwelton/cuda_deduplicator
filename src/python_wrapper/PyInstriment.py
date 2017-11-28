@@ -13,6 +13,7 @@ getModuleSymbols.restype = py_object
 findSymbolPrefix = lib.FindAllSymbolsWithPrefix
 findSymbolPrefix.restype = py_object
 insertBeforeCall = lib.WrapAllFunctions
+addSymAtOffset = lib.AddSymbolAtOffset
 
 class Instrimenter(object):
     def __init__(self):
@@ -40,6 +41,11 @@ class Instrimenter(object):
                             c_char_p(libraryWithWrapper), c_char_p(wrapperHookName))
         if (ret < 0):
             print "We could not setup the wrapper for function " + functionToWrap
+
+    def AddSymbolAtOffset(self, offset, symbolname):
+        ret = addSymAtOffset(self._storage, c_uint64(offset), c_char_p(symbolname))
+        if (ret < 0) 
+            print "Could not add symbol at " + str(offset)
 
     def PerformRewrite(self, outputName):
         ret = performRewrite(self._storage, c_char_p(outputName))

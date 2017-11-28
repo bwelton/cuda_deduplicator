@@ -68,4 +68,5 @@ extern "C" {
 	PyObject * GetBinarySymbolsForModule(InstStorage * storage, char * module_name);
 	PyObject * GetModuleNames(InstStorage * storage);
 	PyObject * FindAllSymbolsWithPrefix(InstStorage * storage, char * prefix);
+	int AddSymbolAtOffset(InstStorage * storage, uint64_t offset, char * preferredName);
 }

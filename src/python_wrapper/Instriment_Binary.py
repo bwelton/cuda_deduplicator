@@ -75,8 +75,8 @@ for x in data:
         if len(tmp) != 3:
             print "Incorrect format for insert symbol, require exactly 3 params"
             exit(-1)
-        inst.AddSymbolAtOffset(int(tmp[1]), tmp[2])
-                
+        inst.AddSymbolAtOffset(int(tmp[1],0), tmp[2])
+
 
 inst.PerformRewrite(sys.argv[3])
 

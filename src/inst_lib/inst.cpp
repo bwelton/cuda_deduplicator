@@ -170,7 +170,7 @@ void InsertSymbols(InstStorage * storage, char * outputName) {
 	}
 	std::string outfile = std::string(outputName) + std::string(".symboled");
 	obj->emit(outfile);
-	storage->app = ret->bpatch.openBinary(outfile.c_str(), true);
+	storage->app = storage->bpatch.openBinary(outfile.c_str(), true);
 	if (storage->app == NULL){
 		fprintf(stderr, "%s\n", "COULD NOT REOPEN BINARY,EXITING NOW");
 		exit(-1);

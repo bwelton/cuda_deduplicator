@@ -44,7 +44,7 @@ class Instrimenter(object):
 
     def AddSymbolAtOffset(self, offset, symbolname):
         ret = addSymAtOffset(self._storage, c_uint64(offset), c_char_p(symbolname))
-        if (ret < 0) 
+        if (ret < 0):
             print "Could not add symbol at " + str(offset)
 
     def PerformRewrite(self, outputName):

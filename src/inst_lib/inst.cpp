@@ -162,7 +162,7 @@ void InsertSymbols(InstStorage * storage, char * outputName) {
 	Symtab * obj = NULL;
 	fprintf(stderr, "Opening %s\n", storage->binaryName.c_str());
 	bool err = Symtab::openFile(obj, storage->binaryName);
-	assert(err == false);
+	assert(err == true);
 
 	for(auto i : storage->SymbolsToWrite){
 		if(obj->createFunction(i.second, i.first, 0) == NULL){

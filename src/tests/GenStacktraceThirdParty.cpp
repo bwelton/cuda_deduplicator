@@ -90,6 +90,7 @@ void InsertBreakpoints(BPatch_module * mod){
 // }
 
 void LibLoadedCallBack(BPatch_thread * thread, BPatch_module * mod, bool loaded) {
+	std::cerr << "in loaded library callback" << std::endl;
 	char * name = (char *) malloc(500 * sizeof(char));
 	name = mod->getName(name, 500);
 	std::string tmp = std::string(name);

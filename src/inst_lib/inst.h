@@ -52,6 +52,7 @@ struct InstStorage {
 	std::map<char *, std::tuple<char *, char *>> wrapAllFunctions;
 	std::map<char *, std::tuple<char *, char *>> InsertAtEntry;
 	std::map<uint64_t, std::string> SymbolsToWrite;
+	std::map<std::string, uint64_t> SymbolToAddr;
 
 };
 

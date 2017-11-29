@@ -203,6 +203,7 @@ void InsertSymbols(InstStorage * storage, char * outputName) {
 		if(symtab->createFunction(i.second, i.first, 0) == NULL){
 			fprintf(stderr, "Could not write symbol: %s,%llu\n",i.second.c_str(),i.first);
 		} else {
+			SymbolToAddr[i.second] = i.first;
 			fprintf(stderr, "%s: %s\n", "Wrote symbol to file", i.second.c_str());
 		}
 	}
@@ -257,7 +258,12 @@ int PerformRewrite(InstStorage * storage, char * outputName) {
 
 	BPatch_image * appImage = app->getImage();
 	for (char * fname : functions) {
-		std::vector<BPatch_function *> orig_funcs = findFuncByName(appImage, fname);
+		std::string tmpName = std::string(fname);
+		std::vector<BPatch_function *> orig_funcs;
+		if (storage->SymbolToAddr.find(tmpName) != storage->SymbolToAddr.end())
+			orig_funcs.push_back(appImage->findFunction((unsigned long)SymbolToAddr[tmpName]));
+		else
+		    orig_funcs = findFuncByName(appImage, fname);
 		fprintf(stderr, "Replacing %lu occurances of %s\n", orig_funcs.size(), fname);
 		for(BPatch_function * fun : orig_funcs) {
 			if (storage->replaceFuncs.find(fname) != storage->replaceFuncs.end()) {

@@ -116,8 +116,8 @@ int main(const int argc, const char * argv[]){
 	addrs = LaunchProcess(argv[2], &(argv[2]));
 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&LibLoadedCallBack);
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
-	BPatch_binaryEdit* appBin = dynamic_cast<BPatch_binaryEdit*>(addrs);
-	BPatch_image *image = appBin->getImage();
+	// BPatch_binaryEdit* appBin = dynamic_cast<BPatch_binaryEdit*>(addrs);
+	BPatch_image *image = addrs->getImage();
 	BPatch_Vector<BPatch_module*> mods;
 	image->getModules(mods);
 	for (auto mod : mods){

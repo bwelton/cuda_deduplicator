@@ -26,6 +26,7 @@
 #include "BPatch_binaryEdit.h"
 #include "BPatch_image.h"
 #include "BPatch_function.h"
+#include "BPatch_object.h"
 #include "BPatch_Vector.h"
 #include "BPatch_point.h"
 #include "BPatch_addressSpace.h"

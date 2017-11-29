@@ -105,8 +105,8 @@ std::vector<std::string> GetFunctionNames(const char * file) {
 
 int main(const int argc, const char * argv[]){
 	funcNames = GetFunctionNames(argv[1]);
-	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&LibLoadedCallBack);
 	addrs = LaunchProcess(argv[2], &(argv[2]));
+	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&LibLoadedCallBack);
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
 	if (!appProc->continueExecution()) {
 	    fprintf(stderr, "continueExecution failed\n");

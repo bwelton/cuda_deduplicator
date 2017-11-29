@@ -53,6 +53,7 @@ using namespace SymtabAPI;
 std::vector<std::string> funcNames;
 BPatch_addressSpace * addrs;
 BPatch bpatch;
+bool loaded;
 
 BPatch_addressSpace * LaunchProcess(const char * name, const char * argv[]) {
 	BPatch_addressSpace * handle = NULL;
@@ -81,6 +82,11 @@ void InsertBreakpoints(BPatch_module * mod){
 	}
 }
 
+// bool InsertBreakpointsBeforeLaunch() {
+// 	bool ret = false;
+
+// }
+
 void LibLoadedCallBack(BPatch_thread * thread, BPatch_module * mod, bool loaded) {
 	char * name = (char *) malloc(500 * sizeof(char));
 	name = mod->getName(name, 500);
@@ -90,6 +96,7 @@ void LibLoadedCallBack(BPatch_thread * thread, BPatch_module * mod, bool loaded)
 		// We have found libcuda, trigger instrimentation
 		InsertBreakpoints(mod);
 	}
+	loaded = true;
 }
 
 std::vector<std::string> GetFunctionNames(const char * file) {
@@ -104,6 +111,7 @@ std::vector<std::string> GetFunctionNames(const char * file) {
 }
 
 int main(const int argc, const char * argv[]){
+	loaded = false;
 	funcNames = GetFunctionNames(argv[1]);
 	addrs = LaunchProcess(argv[2], &(argv[2]));
 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&LibLoadedCallBack);
@@ -115,4 +123,5 @@ int main(const int argc, const char * argv[]){
 		bpatch.waitForStatusChange();
 		std::cerr << "Status Changed...." << std::endl;
 	}
+	std::cerr << "loaded: " << loaded << std::endl;
 }

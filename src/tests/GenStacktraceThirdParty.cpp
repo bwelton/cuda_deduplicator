@@ -152,7 +152,7 @@ int main(const int argc, const char * argv[]){
 	    fprintf(stderr, "continueExecution failed\n");
 	}
 	while (!appProc->isTerminated()) {
-		bpatch.waitUntilStopped();
+		bpatch.waitForStatusChange();
 		std::cerr << "Status Changed...." << std::endl;
 		// We have stopped
 		if(appProc->isStopped() == true) {

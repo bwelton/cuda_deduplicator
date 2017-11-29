@@ -3,7 +3,7 @@
 DriverWrapperFactory::DriverWrapperFactory() {  _stack = new StackTraceGen(); }
 DriverWrapperFactory::~DriverWrapperFactory() { }
 void DriverWrapperFactory::PrintStack() {
-	_stack->GenStackTrace();
+	//_stack->GenStackTrace();
 }
 int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
 	//std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;

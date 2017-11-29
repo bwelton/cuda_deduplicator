@@ -25,6 +25,7 @@ public:
 	DriverWrapperFactory();
 	int PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params);
 	~DriverWrapperFactory();
+	void PrintStack();
 };
 
 #define BUILD_FACTORY \

@@ -8,6 +8,11 @@ std::shared_ptr<DriverWrapperFactory> DriverFactory;
 extern "C" {// typedef boost::function<int(void)> DriverAPICall;
 // std::shared_ptr<InstrumentFactory> InstFactory;
 
+void JustGenStackTrace() {
+	BUILD_FACTORY
+	FACTORY_PTR->PrintStack();
+	return;
+}
 
 void CheckInit_DriverAPI() {
 	

@@ -42,6 +42,7 @@ f.close()
 #   OrignalCallname = A name to a function call in the wrapper which should be replaced to point to the
 #                     original function. 
 ##
+symbolAdded = False
 for x in data:
     tmp = x.replace("\n", "")
     tmp = tmp.split(",")
@@ -76,9 +77,18 @@ for x in data:
             print "Incorrect format for insert symbol, require exactly 3 params"
             exit(-1)
         inst.AddSymbolAtOffset(int(tmp[1],0), tmp[2])
+        symbolAdded = True
+    elif tmp[0].lower() == "insertatentry":
+        if len(tmp) != 4:
+            print "Incorrect format for insert at entry, require exactly 4 params"
+            exit(-1)
+        inst.InsertAtFunctionEntry(tmp[1],tmp[2],tmp[3])
 
 
-inst.PerformRewrite(sys.argv[3])
+if symbolAdded == True:
+    inst.WriteSymbolsToFile(sys.argv[3])
+else:
+    inst.PerformRewrite(sys.argv[3])
 
 
 

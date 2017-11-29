@@ -69,4 +69,7 @@ extern "C" {
 	PyObject * GetModuleNames(InstStorage * storage);
 	PyObject * FindAllSymbolsWithPrefix(InstStorage * storage, char * prefix);
 	int AddSymbolAtOffset(InstStorage * storage, uint64_t offset, char * preferredName);
+	int InsertAtFunctionEntry(InstStorage * storage, char * binary_function, char * wrapper_function, 
+				 char * wrapper_library);
+	void InsertSymbols(InstStorage * storage, char * outputName);
 }

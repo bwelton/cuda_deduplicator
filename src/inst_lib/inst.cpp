@@ -200,16 +200,10 @@ int PerformRewrite(InstStorage * storage, char * outputName) {
 	// wrap or replace.
 
 	// Insert any symbols we needm
-	InsertSymbols(storage, outputName);
-
+//	InsertSymbols(storage, outputName);
 	std::set<char *> libnames;
 	std::set<char *> functions;
 	BPatch_binaryEdit * app = storage->app;
-
-
-
-
-
 
 	assert(app != NULL);
 	for(auto const & entry : storage->replaceFuncs) {
@@ -222,9 +216,15 @@ int PerformRewrite(InstStorage * storage, char * outputName) {
 		libnames.insert(std::get<1>(entry.second));
 	}
 
+	for(auto const & entry : storage->InsertAtEntry) {
+		functions.insert(entry.first);
+		libnames.insert(std::get<1>(entry.second));
+	}
+
 	for(auto const & entry : storage->wrapAllFunctions) {
 		libnames.insert(std::get<1>(entry.second));
 	}
+
 
 
 	for (const char * lname : libnames) {
@@ -281,6 +281,19 @@ int PerformRewrite(InstStorage * storage, char * outputName) {
 				if (found == false) {
 					fprintf(stderr, "%s: %s\n", "Could not find the wrapper function symbol for" , wrapName.c_str());
 				}
+			} else if (storage->InsertAtEntry.find(fname) != storage->InsertAtEntry.end()){
+				// Insert a function at entry
+				std::vector<BPatch_function *> rep_funcs = findFuncByName(appImage, std::get<0>(storage->InsertAtEntry[fname]));
+				if (rep_funcs.size() == 0) {
+					fprintf(stderr, "%s: %s\n", "Could not find the function", fname);
+					break;
+				}
+				BPatch_funcCallExpr beforeExec(*(rep_funcs[0]),  std::vector<BPatch_snippet*>());
+				BPatch_Vector<BPatch_point *> entry_points;
+				fun->getEntryPoints(entry_points);		
+				if (!app->insertSnippet(beforeExec, entry_points)){
+					fprintf(stderr, "%s %s %s %s\n", "Could not insert ", std::get<0>(storage->InsertAtEntry[fname]) , " before call ", fname);
+				}					
 			} 
 		}
 	}

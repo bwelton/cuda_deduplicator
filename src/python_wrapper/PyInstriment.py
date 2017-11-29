@@ -14,6 +14,8 @@ findSymbolPrefix = lib.FindAllSymbolsWithPrefix
 findSymbolPrefix.restype = py_object
 insertBeforeCall = lib.WrapAllFunctions
 addSymAtOffset = lib.AddSymbolAtOffset
+insertAtEntry = lib.InsertAtFunctionEntry
+writeSymbols = lib.InsertSymbols
 
 class Instrimenter(object):
     def __init__(self):
@@ -35,6 +37,11 @@ class Instrimenter(object):
         if (ret < 0):
             print "We could not setup the replacement for function " + functionToReplace
         return ret
+
+    def InsertAtFunctionEntry(self, funName, funToCall, wrapLibrary):
+        ret = insertAtEntry(self._storage, c_char_p(funName), c_char_p(funToCall), c_char_p(wrapLibrary))
+        if (ret < 0):
+            print "We could not insert a point at entry of " + str(funName)
 
     def WrapFunction(self, functionToWrap, wrapperFunction, libraryWithWrapper, wrapperHookName):
         ret = wrapFunction(self._storage, c_char_p(functionToWrap), c_char_p(wrapperFunction),
@@ -60,6 +67,11 @@ class Instrimenter(object):
         ret = getModuleSymbols(self._storage, c_char_p(modname))
         return ret
 
+    def WriteSymbolsToFile(self, outputName):
+        ret = writeSymbols(self._storage, c_char_p(outputName))
+        if (ret < 0):
+            print "Symbol rewrite has failed"    
+                
     def FindSymbolPrefix(self, prefix):
         ret = findSymbolPrefix(self._storage, c_char_p(prefix))
         return ret

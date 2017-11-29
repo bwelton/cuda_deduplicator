@@ -120,7 +120,7 @@ int main(const int argc, const char * argv[]){
 	BPatch_image *image = appBin->getImage();
 	BPatch_Vector<BPatch_module*> mods;
 	image->getModules(mods);
-	for (auto i : mods){
+	for (auto mod : mods){
 		char * name = (char *) malloc(500 * sizeof(char));
 		name = mod->getName(name, 500);
 		std::string tmp = std::string(name);

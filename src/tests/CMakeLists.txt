@@ -145,6 +145,15 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS FindPtrFunctions
         RUNTIME DESTINATION tests)
 
+add_executable(GenStacktraceThirdParty "GenStacktraceThirdParty.cpp")
+target_link_libraries(GenStacktraceThirdParty ${Boost_LIBRARIES})
+target_link_libraries(GenStacktraceThirdParty "-lpthread")
+target_link_libraries(GenStacktraceThirdParty ${DYNINST_LIBRARIES})
+INCLUDE_DIRECTORIES(GenStacktraceThirdParty ${Boost_INCLUDE_DIRS})
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+install(TARGETS GenStacktraceThirdParty
+        RUNTIME DESTINATION tests)
+
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/scripts)
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/tests/LoadSpackModules.py.in"

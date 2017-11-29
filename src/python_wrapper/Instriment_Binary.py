@@ -85,10 +85,8 @@ for x in data:
         inst.InsertAtFunctionEntry(tmp[1],tmp[2],tmp[3])
 
 
-if symbolAdded == True:
-    inst.WriteSymbolsToFile(sys.argv[3])
-else:
-    inst.PerformRewrite(sys.argv[3])
+
+inst.PerformRewrite(sys.argv[3])
 
 
 

@@ -182,7 +182,7 @@ void InsertSymbols(InstStorage * storage, char * outputName) {
 	// Make this non-specific to cuda
 	BPatch_module * cudaMod = NULL;
 	std::string search = std::string("libcuda.so");
-	char modname = (char*) malloc(500*sizeof(char));
+	char * modname = (char*) malloc(500*sizeof(char));
 	std::transform(search.begin(), search.end(), search.begin(), ::tolower);
 	for (auto i : mods) {
 		modname = i->getName(modname, 500);

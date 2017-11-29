@@ -203,7 +203,7 @@ void InsertSymbols(InstStorage * storage, char * outputName) {
 		if(symtab->createFunction(i.second, i.first, 0) == NULL){
 			fprintf(stderr, "Could not write symbol: %s,%llu\n",i.second.c_str(),i.first);
 		} else {
-			SymbolToAddr[i.second] = i.first;
+			storage->SymbolToAddr[i.second] = i.first;
 			fprintf(stderr, "%s: %s\n", "Wrote symbol to file", i.second.c_str());
 		}
 	}

@@ -98,8 +98,9 @@ void LibLoadedCallBack(BPatch_thread * thread, BPatch_module * mod, bool loaded)
 	if (tmp.find(std::string("libcuda.so")) != std::string::npos) {
 		// We have found libcuda, trigger instrimentation
 		InsertBreakpoints(mod);
+		loaded = true;
 	}
-	loaded = true;
+
 }
 
 std::vector<std::string> GetFunctionNames(const char * file) {
@@ -111,6 +112,18 @@ std::vector<std::string> GetFunctionNames(const char * file) {
 		ret.push_back(line);
 	}
 	return ret;
+}
+
+void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
+	for(auto i : threads){
+		BPatch_Vector<BPatch_frame> frames;
+		i->getCallStack(frames);
+		for (auto frame : frames) {
+			BPatch_function * func = frame->findFunction();
+			std::string name = func->getName();
+			std::cerr << name << std::endl;
+		}
+	}
 }
 
 int main(const int argc, const char * argv[]){
@@ -139,8 +152,14 @@ int main(const int argc, const char * argv[]){
 	    fprintf(stderr, "continueExecution failed\n");
 	}
 	while (!appProc->isTerminated()) {
-		bpatch.waitForStatusChange();
+		bpatch.waitUntilStopped();
 		std::cerr << "Status Changed...." << std::endl;
+		// We have stopped
+		if(appProc->isStopped() == true) {
+			BPatch_Vector<BPatch_thread *> threads;
+			appProc->getThreads(threads);
+			StoppedThreadCheck(threads);
+		}
 		appProc->continueExecution();
 	}
 	std::cerr << "loaded: " << loaded << std::endl;

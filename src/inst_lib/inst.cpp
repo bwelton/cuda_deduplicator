@@ -202,6 +202,8 @@ void InsertSymbols(InstStorage * storage, char * outputName) {
 	for(auto i : storage->SymbolsToWrite){
 		if(symtab->createFunction(i.second, i.first, 0) == NULL){
 			fprintf(stderr, "Could not write symbol: %s,%llu\n",i.second.c_str(),i.first);
+		} else {
+			fprintf(stderr, "%s: %s\n", "Wrote symbol to file", i.second.c_str());
 		}
 	}
 	// std::string outfile = std::string(outputName) + std::string(".symboled");

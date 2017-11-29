@@ -63,6 +63,8 @@ BPatch_addressSpace * LaunchProcess(const char * name, const char * argv[]) {
 }
 
 void InsertBreakpoints(BPatch_module * mod){
+	if (loaded == true)
+		return;
 	BPatch_breakPointExpr bp;
 	//BPatch_Vector<BPatch_function *> * allFuncs = mod->getProcedures(true);
 	BPatch_Vector<BPatch_point *> points;
@@ -129,6 +131,7 @@ int main(const int argc, const char * argv[]){
 			// We have found libcuda, trigger instrimentation
 			InsertBreakpoints(mod);
 			loaded = true;
+			break;
 		}
 	}
 	if (!appProc->continueExecution()) {
@@ -137,6 +140,7 @@ int main(const int argc, const char * argv[]){
 	while (!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
 		std::cerr << "Status Changed...." << std::endl;
+		appProc->continueExecution();
 	}
 	std::cerr << "loaded: " << loaded << std::endl;
 }

@@ -261,7 +261,7 @@ int PerformRewrite(InstStorage * storage, char * outputName) {
 		std::string tmpName = std::string(fname);
 		std::vector<BPatch_function *> orig_funcs;
 		if (storage->SymbolToAddr.find(tmpName) != storage->SymbolToAddr.end())
-			orig_funcs.push_back(appImage->findFunction((unsigned long)SymbolToAddr[tmpName]));
+			orig_funcs.push_back(appImage->findFunction((unsigned long)storage->SymbolToAddr[tmpName]));
 		else
 		    orig_funcs = findFuncByName(appImage, fname);
 		fprintf(stderr, "Replacing %lu occurances of %s\n", orig_funcs.size(), fname);

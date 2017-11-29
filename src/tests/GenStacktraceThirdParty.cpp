@@ -74,7 +74,7 @@ void InsertBreakpoints(BPatch_module * mod){
 		entry_points = (*tmp)[0]->findPoint(BPatch_entry);
 		points.insert(points.end(), entry_points->begin(), entry_points->end());
 	}
-	if(!addrs->insertSnippet(bp, addrs)) {
+	if(!addrs->insertSnippet(bp, points)) {
 		fprintf(stderr, "%s\n", "InsertFailed");
 		exit(-1);
 	}

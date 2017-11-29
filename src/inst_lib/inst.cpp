@@ -218,7 +218,7 @@ int PerformRewrite(InstStorage * storage, char * outputName) {
 	// wrap or replace.
 
 	// Insert any symbols we needm
-//	InsertSymbols(storage, outputName);
+	InsertSymbols(storage, outputName);
 	std::set<char *> libnames;
 	std::set<char *> functions;
 	BPatch_binaryEdit * app = storage->app;

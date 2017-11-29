@@ -290,7 +290,7 @@ int PerformRewrite(InstStorage * storage, char * outputName) {
 				}
 				BPatch_funcCallExpr beforeExec(*(rep_funcs[0]),  std::vector<BPatch_snippet*>());
 				BPatch_Vector<BPatch_point *> * entry_points;
-				entry_points = fun->findPoint(BPatch_exit);		
+				entry_points = fun->findPoint(BPatch_entry);		
 				if (!app->insertSnippet(beforeExec, *entry_points)){
 					fprintf(stderr, "%s %s %s %s\n", "Could not insert ", std::get<0>(storage->InsertAtEntry[fname]) , " before call ", fname);
 				}					

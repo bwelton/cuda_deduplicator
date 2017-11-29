@@ -73,6 +73,7 @@ void InsertBreakpoints(BPatch_module * mod){
 		BPatch_Vector<BPatch_point *> * entry_points;
 		entry_points = (*tmp)[0]->findPoint(BPatch_entry);
 		points.insert(points.end(), entry_points->begin(), entry_points->end());
+		std::cerr << "Inserting instrimentation into " << i << std::endl;
 	}
 	if(!addrs->insertSnippet(bp, points)) {
 		fprintf(stderr, "%s\n", "InsertFailed");
@@ -112,5 +113,6 @@ int main(const int argc, const char * argv[]){
 	}
 	while (!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
+		std::cerr << "Status Changed...." << std::endl;
 	}
 }

@@ -175,23 +175,41 @@ std::vector<BPatch_function *> findFuncByNameRegEx(BPatch_image * appImage, cons
 void InsertSymbols(InstStorage * storage, char * outputName) {
 	// Close the existing open file....
 	//delete storage->app;
-	Symtab * obj = NULL;
-	fprintf(stderr, "Opening %s\n", storage->binaryName.c_str());
-	bool err = Symtab::openFile(obj, storage->binaryName);
-	assert(err == true);
+	BPatch_image * appImage = storage->app->getImage();
+	BPatch_Vector<BPatch_module *> mods;
+	appImage->getModules(mods);
+
+	// Make this non-specific to cuda
+	BPatch_module * cudaMod = NULL;
+	std::string search = std::string("libcuda.so");
+	char modname = (char*) malloc(500*sizeof(char));
+	std::transform(search.begin(), search.end(), search.begin(), ::tolower);
+	for (auto i : mods) {
+		modname = i->getName(modname, 500);
+		std::string mname = std::string(modname);
+		std::transform(mname.begin(), mname.end(), mname.begin(), ::tolower);
+		if (mname.find(search) != std::string::npos){
+			cudaMod = i;
+			fprintf(stderr, "%s %s\n", "Found Cuda Module", modname);
+			break;
+		}
+	}
+	free(modname);
+
+	assert(cudaMod != NULL);
+	Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(cudaMod);
 
 	for(auto i : storage->SymbolsToWrite){
-		if(obj->createFunction(i.second, i.first, 0) == NULL){
+		if(symtab->createFunction(i.second, i.first, 0) == NULL){
 			fprintf(stderr, "Could not write symbol: %s,%llu\n",i.second.c_str(),i.first);
 		}
 	}
-	std::string outfile = std::string(outputName) + std::string(".symboled");
-	obj->emit(outfile);
-	storage->app = storage->bpatch.openBinary(outfile.c_str(), true);
-	if (storage->app == NULL){
-		fprintf(stderr, "%s\n", "COULD NOT REOPEN BINARY,EXITING NOW");
-		exit(-1);
-	}
+	// std::string outfile = std::string(outputName) + std::string(".symboled");
+	// storage->app = storage->bpatch.openBinary(outfile.c_str(), true);
+	// if (storage->app == NULL){
+	// 	fprintf(stderr, "%s\n", "COULD NOT REOPEN BINARY,EXITING NOW");
+	// 	exit(-1);
+	// }
 }
 
 int PerformRewrite(InstStorage * storage, char * outputName) {

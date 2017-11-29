@@ -116,6 +116,21 @@ int main(const int argc, const char * argv[]){
 	addrs = LaunchProcess(argv[2], &(argv[2]));
 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&LibLoadedCallBack);
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
+	BPatch_binaryEdit* appBin = dynamic_cast<BPatch_binaryEdit*>(addrs);
+	BPatch_image *image = appBin->getImage();
+	BPatch_Vector<BPatch_module*> mods;
+	image->getModules(mods);
+	for (auto i : mods){
+		char * name = (char *) malloc(500 * sizeof(char));
+		name = mod->getName(name, 500);
+		std::string tmp = std::string(name);
+		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+		if (tmp.find(std::string("libcuda.so")) != std::string::npos) {
+			// We have found libcuda, trigger instrimentation
+			InsertBreakpoints(mod);
+			loaded = true;
+		}
+	}
 	if (!appProc->continueExecution()) {
 	    fprintf(stderr, "continueExecution failed\n");
 	}

@@ -197,7 +197,7 @@ void InsertSymbols(InstStorage * storage, char * outputName) {
 	free(modname);
 
 	assert(cudaMod != NULL);
-	Dyninst::SymtabAPI *symtab =  Dyninst::SymtabAPI::convert(cudaMod->getObject());
+	Symtab *symtab =  Dyninst::SymtabAPI::convert(cudaMod->getObject());
 
 	for(auto i : storage->SymbolsToWrite){
 		if(symtab->createFunction(i.second, i.first, 0) == NULL){

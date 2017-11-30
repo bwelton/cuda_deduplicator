@@ -78,7 +78,7 @@ void InsertBreakpoints(BPatch_module * mod){
 		points.insert(points.end(), entry_points->begin(), entry_points->end());
 		std::cerr << "Inserting instrimentation into " << i << std::endl;
 	}
-	for (auto x : entry_points){
+	for (auto x : points){
 		uint64_t p = (uint64_t)x->getAddress();
 		std::cerr << std::hex << p << std::dec << std::endl;
 	}
@@ -124,7 +124,7 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 		i->getCallStack(frames);
 		for (auto frame : frames) {
 			BPatch_function * func = frame.findFunction();
-			Bpatch_point * point = frame.getPoint();
+			BPatch_point * point = frame.getPoint();
 
 			if (func == NULL){
 				uint64_t p = (uint64_t)point->getAddress();

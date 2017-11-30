@@ -116,10 +116,13 @@ void ExecCallback(BPatch_thread * exec) {
 }
 
 void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
-	if (l == false)
-		return;
+
 	// if (loaded == true)
 	// 	return;
+	BPatch_process myProc = thread->getProcess();
+	std::cerr << "My process id is " << myProc->getPid() << std::endl;
+	if (l == false)
+		return;
 	std::cerr << "in loaded library callback" << std::endl;
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
 	bpatch.registerPreForkCallback((BPatchForkCallback)&ForkCallback);

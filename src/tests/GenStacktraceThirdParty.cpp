@@ -98,6 +98,9 @@ void InsertBreakpoints(BPatch_module * mod){
 	}
 }
 
+// void HookClone() {
+// }
+
 // bool InsertBreakpointsBeforeLaunch() {
 // 	bool ret = false;
 
@@ -113,6 +116,8 @@ void ExecCallback(BPatch_thread * exec) {
 }
 
 void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
+	if (l == false)
+		return;
 	// if (loaded == true)
 	// 	return;
 	std::cerr << "in loaded library callback" << std::endl;

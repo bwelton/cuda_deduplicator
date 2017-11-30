@@ -52,6 +52,7 @@ using namespace SymtabAPI;
 
 std::vector<std::string> funcNames;
 std::map<uint64_t, std::string> namePoints; 
+std::map<std::string, uint64_t> stackCounts;
 
 BPatch_addressSpace * addrs;
 BPatch bpatch;
@@ -124,6 +125,7 @@ std::vector<std::string> GetFunctionNames(const char * file) {
 
 void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 	for(auto i : threads){
+		std::stringstream ss;
 		BPatch_Vector<BPatch_frame> frames;
 		i->getCallStack(frames);
 		for (auto frame : frames) {
@@ -135,14 +137,18 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 			if (func == NULL && point != NULL){
 				uint64_t p = (uint64_t)point->getAddress();
 				if (namePoints.find(p) != namePoints.end())
-					std::cerr << namePoints[p] << std::endl;
+					ss << namePoints[p] << std::endl;
 				else
-					std::cerr << "unknown" << std::endl;
+					ss << "unknown" << std::endl;
 				continue;
 			}
 			std::string name = func->getName();
-			std::cerr << name << std::endl;
+			ss << name << std::endl;
 		}
+		std::string s = ss.str();
+		if (stackCounts.find(s) == stackCounts.end())
+			stackCounts[s] = 0;
+		stackCounts[s] = stackCounts[s] + 1;
 	}
 }
 

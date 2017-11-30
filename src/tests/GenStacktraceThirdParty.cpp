@@ -100,19 +100,35 @@ void InsertBreakpoints(BPatch_module * mod){
 
 // }
 
-void LibLoadedCallBack(BPatch_thread * thread, BPatch_module * mod, bool l) {
+void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
 	std::cerr << "in loaded library callback" << std::endl;
-	//char * name = (char *) malloc(500 * sizeof(char));
-	const char * name = mod->libraryName();
-	if (name == NULL)
-		return;
-	std::string tmp = std::string(name);
-	std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-	if (tmp.find(std::string("libcuda.so")) != std::string::npos) {
-		// We have found libcuda, trigger instrimentation
-		InsertBreakpoints(mod);
-		loaded = true;
+	std::vector<BPatch_module *> mods;
+	obj->modules(mods);
+	for (auto mod : mods){
+		char * name = (char *) malloc(500 * sizeof(char));
+		name = mod->getName(name, 500);
+		std::string tmp = std::string(name);
+		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+		if (tmp.find(std::string("libcuda.so")) != std::string::npos) {
+			// We have found libcuda, trigger instrimentation
+			InsertBreakpoints(mod);
+			loaded = true;
+			break;
+		}
 	}
+
+
+	// std::string tmp = mod->name();
+	// std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+	// if (tmp.find(std::string("libcuda.so")) != std::string::npos) {
+	// 	std::vector<BPatch_module *> mods;
+	// 	mod->modules(mods);
+	// 	for (auto i : mods)
+
+	// 	// We have found libcuda, trigger instrimentation
+	// 	InsertBreakpoints(mod);
+	// 	loaded = true;
+	// }
 
 }
 

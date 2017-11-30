@@ -117,6 +117,7 @@ void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
 	// 	return;
 	std::cerr << "in loaded library callback" << std::endl;
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
+	bpatch.registerPreForkCallback((BPatchForkCallback)&ForkCallback);
 	BPatch_image *image = addrs->getImage();
 	BPatch_Vector<BPatch_module*> mods;
 	image->getModules(mods);

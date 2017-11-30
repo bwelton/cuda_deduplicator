@@ -106,8 +106,11 @@ void InsertBreakpoints(BPatch_module * mod){
 void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
 
 	std::cerr << "in loaded library callback" << std::endl;
-	std::vector<BPatch_module *> mods;
-	obj->modules(mods);
+	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
+	BPatch_image *image = addrs->getImage();
+	BPatch_Vector<BPatch_module*> mods;
+	image->getModules(mods);
+	// obj->modules(mods);
 	for (auto mod : mods){
 		char * name = (char *) malloc(500 * sizeof(char));
 		name = mod->getName(name, 500);
@@ -115,8 +118,8 @@ void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
 		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
 		if (tmp.find(std::string("libcuda.so")) != std::string::npos) {
 			// We have found libcuda, trigger instrimentation
-			///std::cerr << "We are inserting into " << name << std::endl;
-			std::cerr << "Signalling to insert now" << std::endl;
+			std::cerr << "We are inserting into " << name << std::endl;
+			assert(appProc->isStopped() == true);
 			// InsertBreakpoints(mod);
 			// loaded = true;
 			// break;

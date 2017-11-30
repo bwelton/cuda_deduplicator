@@ -74,6 +74,7 @@ void InsertBreakpoints(BPatch_module * mod){
 	//BPatch_Vector<BPatch_function *> * allFuncs = mod->getProcedures(true);
 	BPatch_Vector<BPatch_point *> points;
 	for(auto i : funcNames) {
+		std::cerr << "Trying to insert " << i << std::endl;
 		BPatch_Vector<BPatch_function *> funcs;
 		BPatch_Vector<BPatch_function *> * tmp = mod->findFunction(i.c_str(), funcs, true, false, false, false);
 		if (tmp == NULL)
@@ -204,6 +205,7 @@ int main(const int argc, const char * argv[]){
 	}
 	while (!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
+		std::cerr << "Status Changed...." << std::endl;
 		if (loaded == false)
 			sleep(1);
 		//std::cerr << "Status Changed...." << std::endl;

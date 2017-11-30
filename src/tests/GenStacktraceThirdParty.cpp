@@ -26,6 +26,7 @@
 #include <string>
 #include <sys/types.h>
 #include <unistd.h>
+#include <mutex>
 
 // Dyninst includes
 #include "CodeObject.h"
@@ -102,6 +103,7 @@ void InsertBreakpoints(BPatch_module * mod){
 // }
 
 void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
+
 	std::cerr << "in loaded library callback" << std::endl;
 	std::vector<BPatch_module *> mods;
 	obj->modules(mods);
@@ -191,6 +193,7 @@ int main(const int argc, const char * argv[]){
 		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
 		if (tmp.find(std::string("libcuda.so")) != std::string::npos) {
 			// We have found libcuda, trigger instrimentation
+			std::cerr << "We are inserting into " << name << std::endl;
 			InsertBreakpoints(mod);
 			loaded = true;
 			break;
@@ -201,6 +204,8 @@ int main(const int argc, const char * argv[]){
 	}
 	while (!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
+		if (loaded == false)
+			sleep(1);
 		//std::cerr << "Status Changed...." << std::endl;
 		// We have stopped
 		if(appProc->isStopped() == true) {

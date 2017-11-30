@@ -104,8 +104,8 @@ void InsertBreakpoints(BPatch_module * mod){
 // }
 
 void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
-	if (loaded == true)
-		return;
+	// if (loaded == true)
+	// 	return;
 	std::cerr << "in loaded library callback" << std::endl;
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
 	BPatch_image *image = addrs->getImage();

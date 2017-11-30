@@ -269,9 +269,11 @@ int main(const int argc, const char * argv[]){
 		std::cout << "===========================================" << std::endl;
 		std::cout << i.first << std::endl;
 		std::cout << "===========================================" << std::endl << std::endl << std::endl;
-		std::replace(i.first.begin(), i.first.end(),'\n',',');
-		i.first.erase(i.first.size()-1, 1);
-		outfile << i.second << "," << i.first << std::endl;
+		std::string tmpstr = i.first;
+		std::replace(tmpstr.begin(), tmpstr.end(),'\n',',');
+
+		tmpstr.erase(tmpstr.size()-1, 1);
+		outfile << i.second << "," << tmpstr << std::endl;
 	}
 	outfile.close();
 }

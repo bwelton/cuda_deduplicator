@@ -198,14 +198,14 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 				continue;
 			}
 			std::string name = func->getName();
-			assert(func->getModule() == NULL);
+			assert(func->getModule() != NULL);
 			const char * libname = func->getModule()->libraryName();
 			std::string outlibname;
 			if (libname == NULL)
 				outlibname = std::string("Unknown");
 			else{
 				outlibname = std::string(strdup(libname));
-				libraries.push_back(outlibname)
+				libraries.push_back(outlibname);
 			}
 			// libraries.push_back(std::string(strdup(libname)));
 			ss << name << " (" << outlibname << ")" << std::endl;

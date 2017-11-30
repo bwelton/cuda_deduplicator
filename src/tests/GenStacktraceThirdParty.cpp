@@ -112,6 +112,7 @@ void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
 		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
 		if (tmp.find(std::string("libcuda.so")) != std::string::npos) {
 			// We have found libcuda, trigger instrimentation
+			std::cerr << "We are inserting into " << name << std::endl;
 			InsertBreakpoints(mod);
 			loaded = true;
 			break;

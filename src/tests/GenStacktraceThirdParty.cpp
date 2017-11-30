@@ -119,7 +119,7 @@ void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
 
 	// if (loaded == true)
 	// 	return;
-	BPatch_process myProc = thread->getProcess();
+	BPatch_process * myProc = thread->getProcess();
 	std::cerr << "My process id is " << myProc->getPid() << std::endl;
 	if (l == false)
 		return;

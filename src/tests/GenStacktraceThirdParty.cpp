@@ -198,7 +198,7 @@ int main(const int argc, const char * argv[]){
 	addrs = LaunchProcess(argv[2], &(argv[2]));
 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&LibLoadedCallBack);
 	bpatch.registerPreForkCallback((BPatchForkCallback)&ForkCallback);
-	bpatch.registerExecCallback((ExecCallback)&ExecCallback);
+	bpatch.registerExecCallback((BPatchExecCallback)&ExecCallback);
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
 	// BPatch_binaryEdit* appBin = dynamic_cast<BPatch_binaryEdit*>(addrs);
 	BPatch_image *image = addrs->getImage();

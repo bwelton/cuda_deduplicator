@@ -199,7 +199,7 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 			}
 			std::string name = func->getName();
 			const char * libname = func->getModule()->libraryName();
-			libraries.push_back(std::string(strdup(libname));
+			libraries.push_back(std::string(strdup(libname)));
 			ss << name << " (" << libname << ")" << std::endl;
 		}
 		std::string s = ss.str();

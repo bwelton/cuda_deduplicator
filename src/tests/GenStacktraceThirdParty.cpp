@@ -265,6 +265,8 @@ int main(const int argc, const char * argv[]){
 	outfile.open("stacks.csv", std::ios::binary | std::ios::out);
 	// Print the stack traces:
 	for(auto i : stackCounts) {
+		if (i.first.size() == 0)
+			continue;
 		std::cout << "Unique Stack with Count: " << i.second << std::endl;
 		std::cout << "===========================================" << std::endl;
 		std::cout << i.first << std::endl;

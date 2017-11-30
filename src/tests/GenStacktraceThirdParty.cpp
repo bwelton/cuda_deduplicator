@@ -102,6 +102,15 @@ void InsertBreakpoints(BPatch_module * mod){
 // 	bool ret = false;
 
 // }
+// 
+void ForkCallback(BPatch_thread * parent, BPatch_thread * child) {
+	std::cerr << "We have forked" << std::endl;
+
+}
+
+void ExecCallback(BPatch_thread * exec) {
+	std::cerr << "We have execed something" << std::endl;
+}
 
 void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
 	// if (loaded == true)
@@ -188,6 +197,8 @@ int main(const int argc, const char * argv[]){
 	funcNames = GetFunctionNames(argv[1]);
 	addrs = LaunchProcess(argv[2], &(argv[2]));
 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&LibLoadedCallBack);
+	bpatch.registerPreForkCallback((BPatchForkCallback)&ForkCallback);
+	bpatch.registerExecCallback((ExecCallback)&ExecCallback);
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
 	// BPatch_binaryEdit* appBin = dynamic_cast<BPatch_binaryEdit*>(addrs);
 	BPatch_image *image = addrs->getImage();

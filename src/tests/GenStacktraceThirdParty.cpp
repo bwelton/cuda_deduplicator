@@ -261,11 +261,17 @@ int main(const int argc, const char * argv[]){
 	}
 	std::cerr << "loaded: " << loaded << std::endl;
 	uint64_t totalCount = 0;
+	std::ofstream outfile;
+	outfile.open("stacks.csv", std::ios::binary | std::ios::out);
 	// Print the stack traces:
 	for(auto i : stackCounts) {
 		std::cout << "Unique Stack with Count: " << i.second << std::endl;
 		std::cout << "===========================================" << std::endl;
 		std::cout << i.first << std::endl;
 		std::cout << "===========================================" << std::endl << std::endl << std::endl;
+		std::replace(i.first.begin(), i.first.end(),'\n',',');
+		i.first.erase(i.first.size()-1, 1);
+		outfile << i.second << "," << i.first << std::endl;
 	}
+	outfile.close();
 }

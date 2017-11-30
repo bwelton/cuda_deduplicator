@@ -196,15 +196,39 @@ void InsertSymbols(InstStorage * storage, char * outputName) {
 	}
 	free(modname);
 
+
+
 	assert(cudaMod != NULL);
 	Symtab *symtab =  Dyninst::SymtabAPI::convert(cudaMod->getObject());
 
+	std::vector<Symbol *> symbols;
+	symtab->getAllSymbols(symbols);
+	std::map<uint64_t, Symbol *> symMap;
+	for (auto i : symbols)
+		symMap[uint64_t(i->getOffset())] = i;
+
+	// Get all the symbols in this module
+
 	for(auto i : storage->SymbolsToWrite){
+		uint64_t size = 0;
+
+		if (symMap.find(uint64_t(i.first)) != symMap.end()) {
+			size = symMap[uint64_t(i.first)]->getSize();
+		} else {
+			for(auto p : symMap) {
+				if(p.first < uint64_t(i.first))
+					continue;
+				size = p.first - i.first;
+				break;
+			}
+		}
+
+
 		if(symtab->createFunction(i.second, i.first, 0) == NULL){
 			fprintf(stderr, "Could not write symbol: %s,%llu\n",i.second.c_str(),i.first);
 		} else {
 			storage->SymbolToAddr[i.second] = i.first;
-			fprintf(stderr, "%s: %s\n", "Wrote symbol to file", i.second.c_str());
+			fprintf(stderr, "%s: %s %s %llu\n", "Wrote symbol to file", i.second.c_str(), "with size of", size);
 		}
 	}
 	// std::string outfile = std::string(outputName) + std::string(".symboled");

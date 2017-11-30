@@ -189,4 +189,12 @@ int main(const int argc, const char * argv[]){
 		appProc->continueExecution();
 	}
 	std::cerr << "loaded: " << loaded << std::endl;
+
+	// Print the stack traces:
+	for(auto i : stackCounts) {
+		std::cout << "Unique Stack with Count: " << i.second << std::endl;
+		std::cout << "===========================================" << std::endl;
+		std::cout << i.first << std::endl;
+		std::cout << "===========================================" << std::endl << std::endl << std::endl;
+	}
 }

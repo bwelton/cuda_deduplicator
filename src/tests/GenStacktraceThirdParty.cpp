@@ -55,6 +55,7 @@ using namespace SymtabAPI;
 std::vector<std::string> funcNames;
 std::map<uint64_t, std::string> namePoints; 
 std::map<std::string, uint64_t> stackCounts;
+std::set<std::string> _interestingStacks;
 
 BPatch_addressSpace * addrs;
 BPatch bpatch;
@@ -173,10 +174,8 @@ std::vector<std::string> GetFunctionNames(const char * file) {
 }
 
 void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
-	uint64_t threadCount = 1;
 	for(auto i : threads){
-		std::cerr << "Iterating Thread - " << threadCount << std::endl;
-		threadCount++;
+		std::vector<std::string> libraries;
 		std::stringstream ss;
 		BPatch_Vector<BPatch_frame> frames;
 		i->getCallStack(frames);
@@ -184,18 +183,24 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 			BPatch_function * func = frame.findFunction();
 			BPatch_point * point = frame.getPoint();
 
-			if (func == NULL && point == NULL)
+			if (func == NULL && point == NULL){
+				ss << "<Unknown Frame>" << std::endl;
 				continue;
+			}
 			if (func == NULL && point != NULL){
 				uint64_t p = (uint64_t)point->getAddress();
-				if (namePoints.find(p) != namePoints.end())
-					ss << namePoints[p] << std::endl;
+				if (namePoints.find(p) != namePoints.end()){
+					ss << namePoints[p] <<  " (libcuda.so.1)" << std::endl;
+					libraries.push_back(std::string("libcuda.so.1"));
+				}
 				else
-					ss << "unknown" << std::endl;
+					ss << "<Unknown Frame>" << std::endl;
 				continue;
 			}
 			std::string name = func->getName();
-			ss << name << std::endl;
+			const char * libname = func->getModule()->libraryName();
+			libraries.push_back(libname);
+			ss << name << " (" << libname << ")" << std::endl;
 		}
 		std::string s = ss.str();
 		if (stackCounts.find(s) == stackCounts.end())
@@ -247,7 +252,7 @@ int main(const int argc, const char * argv[]){
 		appProc->continueExecution();
 	}
 	std::cerr << "loaded: " << loaded << std::endl;
-
+	uint64_t totalCount = 0;
 	// Print the stack traces:
 	for(auto i : stackCounts) {
 		std::cout << "Unique Stack with Count: " << i.second << std::endl;

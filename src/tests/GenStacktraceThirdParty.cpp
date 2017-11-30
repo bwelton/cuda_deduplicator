@@ -194,7 +194,7 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 					libraries.push_back(std::string("libcuda.so.1"));
 				}
 				else
-					ss << "<Unknown Frame>" << std::endl;
+					ss << "<Unknown Frame w/point>" << std::endl;
 				continue;
 			}
 			std::string name = func->getName();

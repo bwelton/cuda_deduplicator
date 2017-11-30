@@ -120,8 +120,10 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 		i->getCallStack(frames);
 		for (auto frame : frames) {
 			BPatch_function * func = frame.findFunction();
-			if (func == NULL)
+			if (func == NULL){
+				std::cerr << "Null Frame" << std::endl;
 				continue;
+			}
 			std::string name = func->getName();
 			std::cerr << name << std::endl;
 		}

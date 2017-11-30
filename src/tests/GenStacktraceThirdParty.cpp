@@ -179,7 +179,7 @@ int main(const int argc, const char * argv[]){
 	}
 	while (!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
-		std::cerr << "Status Changed...." << std::endl;
+		//std::cerr << "Status Changed...." << std::endl;
 		// We have stopped
 		if(appProc->isStopped() == true) {
 			BPatch_Vector<BPatch_thread *> threads;

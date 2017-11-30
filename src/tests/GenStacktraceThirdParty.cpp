@@ -173,7 +173,10 @@ std::vector<std::string> GetFunctionNames(const char * file) {
 }
 
 void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
+	uint64_t threadCount = 1;
 	for(auto i : threads){
+		std::cerr << "Iterating Thread - " << threadCount << std::endl;
+		threadCount++;
 		std::stringstream ss;
 		BPatch_Vector<BPatch_frame> frames;
 		i->getCallStack(frames);

@@ -33,6 +33,7 @@
 #include "PatchObject.h"
 #include "PatchMgr.h"
 #include "Point.h"
+#include "BPatch_object.h"
 #include "BPatch_snippet.h"
 #include "BPatch.h"
 #include "BPatch_binaryEdit.h"

@@ -100,10 +100,12 @@ void InsertBreakpoints(BPatch_module * mod){
 
 // }
 
-void LibLoadedCallBack(BPatch_thread * thread, BPatch_module * mod, bool loaded) {
+void LibLoadedCallBack(BPatch_thread * thread, BPatch_module * mod, bool l) {
 	std::cerr << "in loaded library callback" << std::endl;
-	char * name = (char *) malloc(500 * sizeof(char));
-	name = mod->getName(name, 500);
+	//char * name = (char *) malloc(500 * sizeof(char));
+	const char * name = mod->libraryName();
+	if (name == NULL)
+		return;
 	std::string tmp = std::string(name);
 	std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
 	if (tmp.find(std::string("libcuda.so")) != std::string::npos) {

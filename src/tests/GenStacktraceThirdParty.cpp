@@ -77,7 +77,7 @@ void InsertBreakpoints(BPatch_module * mod){
 			continue;
 		BPatch_Vector<BPatch_point *> * entry_points;
 		entry_points = (*tmp)[0]->findPoint(BPatch_entry);
-		for (auto x : entry_points){
+		for (auto x : *entry_points){
 			uint64_t p = (uint64_t)x->getAddress();
 			namePoints[p] = i;
 			//std::cerr << std::hex << p << std::dec << std::endl;

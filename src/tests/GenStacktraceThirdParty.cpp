@@ -204,7 +204,7 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 int main(const int argc, const char * argv[]){
 	loaded = false;
 	funcNames = GetFunctionNames(argv[1]);
-	bpatch.registerPreForkCallback((BPatchForkCallback)&ForkCallback);
+	bpatch.registerPostForkCallback((BPatchForkCallback)&ForkCallback);
 	addrs = LaunchProcess(argv[2], &(argv[2]));
 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&LibLoadedCallBack);
 	bpatch.registerExecCallback((BPatchExecCallback)&ExecCallback);

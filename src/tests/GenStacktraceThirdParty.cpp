@@ -76,6 +76,8 @@ void InsertBreakpoints(BPatch_module * mod){
 		BPatch_Vector<BPatch_function *> * tmp = mod->findFunction(i.c_str(), funcs, true, false, false, false);
 		if (tmp == NULL)
 			continue;
+		if (tmp->size() ==0)
+			continue;
 		BPatch_Vector<BPatch_point *> * entry_points;
 		entry_points = (*tmp)[0]->findPoint(BPatch_entry);
 		for (auto x : *entry_points){

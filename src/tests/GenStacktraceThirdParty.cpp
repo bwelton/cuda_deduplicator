@@ -104,7 +104,8 @@ void InsertBreakpoints(BPatch_module * mod){
 // }
 
 void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
-
+	if (loaded == true)
+		return;
 	std::cerr << "in loaded library callback" << std::endl;
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
 	BPatch_image *image = addrs->getImage();
@@ -122,8 +123,8 @@ void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
 			InsertBreakpoints(mod);
 			//assert(appProc->isStopped() == true);
 			// InsertBreakpoints(mod);
-			// loaded = true;
-			// break;
+			loaded = true;
+			break;
 		}
 	}
 
@@ -211,8 +212,8 @@ int main(const int argc, const char * argv[]){
 	while (!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
 		std::cerr << "Status Changed...." << std::endl;
-		if (loaded == false)
-			sleep(1);
+		// if (loaded == false)
+		// 	sleep(1);
 		//std::cerr << "Status Changed...." << std::endl;
 		// We have stopped
 		if(appProc->isStopped() == true) {

@@ -51,6 +51,8 @@ using namespace SymtabAPI;
 
 
 std::vector<std::string> funcNames;
+std::map<uint64_t, std::string> namePoints; 
+
 BPatch_addressSpace * addrs;
 BPatch bpatch;
 bool loaded;
@@ -75,13 +77,15 @@ void InsertBreakpoints(BPatch_module * mod){
 			continue;
 		BPatch_Vector<BPatch_point *> * entry_points;
 		entry_points = (*tmp)[0]->findPoint(BPatch_entry);
+		for (auto x : entry_points){
+			uint64_t p = (uint64_t)x->getAddress();
+			namePoints[p] = i;
+			//std::cerr << std::hex << p << std::dec << std::endl;
+		}
 		points.insert(points.end(), entry_points->begin(), entry_points->end());
 		std::cerr << "Inserting instrimentation into " << i << std::endl;
 	}
-	for (auto x : points){
-		uint64_t p = (uint64_t)x->getAddress();
-		std::cerr << std::hex << p << std::dec << std::endl;
-	}
+
 	if(!addrs->insertSnippet(bp, points)) {
 		fprintf(stderr, "%s\n", "InsertFailed");
 		exit(-1);
@@ -126,9 +130,14 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 			BPatch_function * func = frame.findFunction();
 			BPatch_point * point = frame.getPoint();
 
-			if (func == NULL){
+			if (func == NULL && point == NULL)
+				continue;
+			if (func == NULL && point != NULL){
 				uint64_t p = (uint64_t)point->getAddress();
-				std::cerr << std::hex << p << std::dec << std::endl;
+				if (namePoints.find(p) != namePoints.end())
+					std::cerr << namePoints[p] << std::endl;
+				else
+					std::cerr << "unknown" << std::endl;
 				continue;
 			}
 			std::string name = func->getName();

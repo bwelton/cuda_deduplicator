@@ -68,8 +68,8 @@ BPatch_addressSpace * LaunchProcess(const char * name, const char * argv[]) {
 }
 
 void InsertBreakpoints(BPatch_module * mod){
-	if (loaded == true)
-		return;
+	// if (loaded == true)
+	// 	return;
 	BPatch_breakPointExpr bp;
 	//BPatch_Vector<BPatch_function *> * allFuncs = mod->getProcedures(true);
 	BPatch_Vector<BPatch_point *> points;

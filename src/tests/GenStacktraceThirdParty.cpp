@@ -211,6 +211,8 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 			ss << name << " (" << outlibname << ")" << std::endl;
 		}
 		std::string s = ss.str();
+		if (s.find("HIDDEN") == std::string::npos)
+			continue;
 		if (stackCounts.find(s) == stackCounts.end())
 			stackCounts[s] = 0;
 		stackCounts[s] = stackCounts[s] + 1;

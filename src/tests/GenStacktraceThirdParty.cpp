@@ -204,7 +204,8 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 			if (libname == NULL)
 				outlibname = std::string("Unknown");
 			else{
-				outlibname = std::string(strdup(libname));
+				outlibname = std::string(libname);
+				//outlibname = std::string(strdup(libname));
 				libraries.push_back(outlibname);
 			}
 			// libraries.push_back(std::string(strdup(libname)));

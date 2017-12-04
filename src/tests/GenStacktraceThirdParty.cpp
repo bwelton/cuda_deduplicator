@@ -202,6 +202,7 @@ void StoppedThreadCheck(BPatch_Vector<BPatch_thread *> & threads) {
 				libraries.push_back(outlibname);
 			}
 			// libraries.push_back(std::string(strdup(libname)));
+			name.erase(std::remove(name.begin(), name.end(), ' '), name.end());
 			ss << name << " (" << outlibname << ")" << std::endl;
 		}
 		std::string s = ss.str();
@@ -269,10 +270,10 @@ int main(const int argc, const char * argv[]){
 			continue;
 		}
 		std::string tmpstr = i.first;
-		std::replace(tmpstr.begin(), tmpstr.end(),'\n',',');
+		std::replace(tmpstr.begin(), tmpstr.end(),'\n','$');
 
 		tmpstr.erase(tmpstr.size()-1, 1);
-		outfile << i.second << "," << tmpstr << std::endl;
+		outfile << i.second << "$" << tmpstr << std::endl;
 	}
 	outfile.close();
 }

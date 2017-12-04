@@ -99,14 +99,7 @@ void InsertBreakpoints(BPatch_module * mod){
 	}
 }
 
-// void HookClone() {
-// }
 
-// bool InsertBreakpointsBeforeLaunch() {
-// 	bool ret = false;
-
-// }
-// 
 void ForkCallback(BPatch_thread * parent, BPatch_thread * child) {
 	std::cerr << "We have forked" << std::endl;
 
@@ -224,7 +217,7 @@ int main(const int argc, const char * argv[]){
 	loaded = false;
 	funcNames = GetFunctionNames(argv[1]);
 	bpatch.registerPostForkCallback((BPatchForkCallback)&ForkCallback);
-	addrs = LaunchProcess(argv[2], &(argv[2]));
+	addrs = LaunchProcess(argv[3], &(argv[3]));
 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&LibLoadedCallBack);
 	bpatch.registerExecCallback((BPatchExecCallback)&ExecCallback);
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
@@ -250,7 +243,6 @@ int main(const int argc, const char * argv[]){
 	}
 	while (!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
-		std::cerr << "Status Changed...." << std::endl;
 		if (loaded == false)
 			sleep(1);
 		//std::cerr << "Status Changed...." << std::endl;
@@ -265,7 +257,7 @@ int main(const int argc, const char * argv[]){
 	std::cerr << "loaded: " << loaded << std::endl;
 	uint64_t totalCount = 0;
 	std::ofstream outfile;
-	outfile.open("stacks.csv", std::ios::binary | std::ios::out);
+	outfile.open(argv[2], std::ios::binary | std::ios::out);
 	// Print the stack traces:
 	for(auto i : stackCounts) {
 		std::cout << "Unique Stack with Count: " << i.second << std::endl;

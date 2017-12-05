@@ -1,12 +1,12 @@
 #include "DriverWrapperFactory.h"
 #include <unistd.h>
-DriverWrapperFactory::DriverWrapperFactory() {  _stack = new StackTraceGen(); }
+DriverWrapperFactory::DriverWrapperFactory() {  _stack = new StackTraceGen(); firstExec = false; }
 DriverWrapperFactory::~DriverWrapperFactory() { }
 void DriverWrapperFactory::PrintStack() {
 	//_stack->GenStackTrace();
 }
 int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
-	//std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;
+	std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;
 	// if (params.get()->GetID() == 195)
 	// 	_stack->PerformAction(t, params);
 

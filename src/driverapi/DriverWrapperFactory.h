@@ -21,6 +21,7 @@ class DriverWrapperFactory : public DriverWrapperBase{
 private:
 	// boost::recursive_mutex _mtx;
 	StackTraceGen * _stack;
+	bool firstExec;
 public:
 	DriverWrapperFactory();
 	int PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params);

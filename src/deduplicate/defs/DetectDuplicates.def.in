@@ -6,3 +6,4 @@ wrap,cuMemcpyDtoA_v2,cuMemcpyD2A_detect,@CMAKE_INSTALL_PREFIX@/lib/libdedup.so,c
 wrap,cuMemcpyDtoH_v2,cuMemcpyD2H_detect,@CMAKE_INSTALL_PREFIX@/lib/libdedup.so,cuMemcpyD2H_detect_CALL
 wrap,cuMemcpyDtoHAsync_v2,cuMemcpyD2HAsync_detect,@CMAKE_INSTALL_PREFIX@/lib/libdedup.so,cuMemcpyD2HAsync_detect_CALL
 wrap,cuMemcpyHtoD_v2,cuMemcpyH2D_detect,@CMAKE_INSTALL_PREFIX@/lib/libdedup.so,cuMemcpyH2D_detect_CALL
+wrap,cuInit,cuInit_detect,@CMAKE_INSTALL_PREFIX@/lib/libdedup.so,cuInit_detect_CALL

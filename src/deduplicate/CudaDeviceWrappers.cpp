@@ -53,6 +53,11 @@ void DeviceToHostDetect(float time, void * dst, void * src, size_t bytecount) {
 }
 
 
+UNSUPPORTED_CALL(cuInit_detect, 1, int)
+
+	return ret_value;
+}
+
 // Tracking Calls
 UNSUPPORTED_CALL(cuMemcpy_detect, 3, int)
 	//STORAGE_PTR->LogOutput("cuMemcpy - Unified Addressing Not Supported for detect");

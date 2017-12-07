@@ -81,8 +81,8 @@ extern "C" {
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_RUNTIME) {
 	    	CUpti_ActivityAPI *api = (CUpti_ActivityAPI *) record;
 	    	std::stringstream ss;
-	    	if (strcmp(translateRuntimeCallback(api->cbid), "<unknown>") == 0)
-	    		return;
+	    	// if (strcmp(translateRuntimeCallback(api->cbid), "<unknown>") == 0)
+	    	// 	return;
 	    	ss << "RR" << "," << translateRuntimeCallback(api->cbid) << "," << api->correlationId << "," 
 	    	   << api->start - startTimestamp << "," << api->end - startTimestamp << "," 
 	    	   << api->processId << "," << api->threadId << std::endl;

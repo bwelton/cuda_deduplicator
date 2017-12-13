@@ -141,21 +141,10 @@ void LibLoadedCallBack(BPatch_thread * thread, BPatch_object * obj, bool l) {
 	}
 
 
-	// std::string tmp = mod->name();
-	// std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-	// if (tmp.find(std::string("libcuda.so")) != std::string::npos) {
-	// 	std::vector<BPatch_module *> mods;
-	// 	mod->modules(mods);
-	// 	for (auto i : mods)
-
-	// 	// We have found libcuda, trigger instrimentation
-	// 	InsertBreakpoints(mod);
-	// 	loaded = true;
-	// }
-
 }
 
 std::vector<std::string> GetFunctionNames(const char * file) {
+	std::cerr << "Loading function file : " << file << std::endl;
 	std::vector<std::string> ret;
 	std::ifstream t;
 	std::string line;

@@ -1,5 +1,12 @@
 #pragma Once
 
+#include <iostream>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <memory>
+#include <map>
+#include <vector>
+
 enum CallReturn{
 	NO_ACTION = 0,         
 	NOTIFY_ON_CHANGE,	// Notify when the parameter has changed

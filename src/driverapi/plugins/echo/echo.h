@@ -1,9 +1,6 @@
 #pragma ONCE
 
-#include <iostream>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <memory>
+#include "PluginCommon.h"
 
 extern "C" {
 	void init(std::vector<std::string> & cmd_list);

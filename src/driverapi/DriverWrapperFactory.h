@@ -6,6 +6,7 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <memory>
+#include <dlfcn.h>
 
 #include "DriverWrapperBase.h"
 #include "Parameters.h"

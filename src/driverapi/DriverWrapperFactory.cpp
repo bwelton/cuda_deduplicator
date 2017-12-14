@@ -42,7 +42,13 @@ void DriverWrapperFactory::PrintStack() {
 	//_stack->GenStackTrace();
 }
 int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
-	std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;
+	//std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;
+
+	// for (auto i : _plugins) {
+	// 	CallReturn v;
+		
+	// }
+
 	// if (params.get()->GetID() == 195)
 	// 	_stack->PerformAction(t, params);
 

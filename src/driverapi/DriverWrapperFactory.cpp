@@ -25,9 +25,9 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 		initF = (CallReturn (*)(std::vector<std::string> &)) dlsym(handle, "init");
 		precallF = (CallReturn (*)(DriverAPICall, std::shared_ptr<ParameterBase>)) dlsym(handle, "Precall");
 		postcallF = (CallReturn (*)(DriverAPICall, std::shared_ptr<ParameterBase>, bool)) dlsym(handle, "Postcall");
-		InitFunc finit = std::bind(initF, _1);
-		PrecallFunc pcf = std::bind(precallF, _1, _2);
-		PostcallFunc postcf = std::bind(postcallF, _1, _2, _3);
+		InitFunc finit = std::bind(initF, std::placeholders::_1);
+		PrecallFunc pcf = std::bind(precallF, std::placeholders::_1, std::placeholders::_2);
+		PostcallFunc postcf = std::bind(postcallF, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 		assert(initF != NULL);
 		assert(precallF != NULL);
 		assert(postcallF != NULL);

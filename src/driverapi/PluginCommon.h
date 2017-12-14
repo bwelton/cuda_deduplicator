@@ -17,4 +17,4 @@ enum CallReturn{
 	PERFORMED_ACTION,	// This plugin performed the action, do not perform again
 	MODIFIED_PARAMS,	// This plugin modified the parameters
 	FAILED				// This plugin has failed
-}
+};

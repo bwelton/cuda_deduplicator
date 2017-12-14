@@ -1,6 +1,6 @@
 #include "echo.h"
 
-std::shared_ptr<DriverWrapperFactory> Worker;
+std::shared_ptr<Echo> Worker;
 
 Echo::Echo(std::vector<std::string> & cmd_list) {
 	int count = 0;

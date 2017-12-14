@@ -7,6 +7,9 @@
 #include <map>
 #include <vector>
 
+#include "ParameterBase.h"
+#include "DriverWrapperBase.h"
+
 enum CallReturn{
 	NO_ACTION = 0,         
 	NOTIFY_ON_CHANGE,	// Notify when the parameter has changed

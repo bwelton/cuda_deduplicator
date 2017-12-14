@@ -38,7 +38,7 @@ CallReturn Precall(DriverAPICall t, std::shared_ptr<ParameterBase> params){
 }
 
 CallReturn Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params, bool CallPerfromed) {
-	return PLUG_FACTORY_PTR->Precall(t, params, CallPerfromed);
+	return PLUG_FACTORY_PTR->Postcall(t, params, CallPerfromed);
 }
 
 }

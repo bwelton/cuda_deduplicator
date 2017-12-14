@@ -1,5 +1,5 @@
 add_library(DriverAPIWrapper SHARED "Parameters.cpp" "DriverWrapperBase.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp" "StackTraceGen.cpp")
-add_compile_options(-O0 -g)
+add_compile_options(-O3 -g)
 target_link_libraries(DriverAPIWrapper ${Boost_LIBRARIES})
 target_link_libraries(DriverAPIWrapper ${DYNINST_LIBRARIES})
 target_link_libraries(DriverAPIWrapper "-lpthread")
@@ -34,14 +34,16 @@ install(TARGETS InterpositionDriverAPI
         ARCHIVE DESTINATION lib/static)
 
 
-add_library(dlsymwrap SHARED "dlsym_wrapper.cpp")
-target_link_libraries(dlsymwrap ${Boost_LIBRARIES})
-target_link_libraries(dlsymwrap ${DYNINST_LIBRARIES})
-target_link_libraries(dlsymwrap "-lpthread")
-INCLUDE_DIRECTORIES(dlsymwrap ${Boost_INCLUDE_DIRS})
-SET_TARGET_PROPERTIES(dlsymwrap PROPERTIES COMPILE_FLAGS "-Wl,-wrap,dlsym -Wl,-wrap,dlopen -ldl")
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
-install(TARGETS dlsymwrap
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib/static)
+# add_library(dlsymwrap SHARED "dlsym_wrapper.cpp")
+# target_link_libraries(dlsymwrap ${Boost_LIBRARIES})
+# target_link_libraries(dlsymwrap ${DYNINST_LIBRARIES})
+# target_link_libraries(dlsymwrap "-lpthread")
+# INCLUDE_DIRECTORIES(dlsymwrap ${Boost_INCLUDE_DIRS})
+# SET_TARGET_PROPERTIES(dlsymwrap PROPERTIES COMPILE_FLAGS "-Wl,-wrap,dlsym -Wl,-wrap,dlopen -ldl")
+# INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+# install(TARGETS dlsymwrap
+#         RUNTIME DESTINATION bin
+#         LIBRARY DESTINATION lib
+#         ARCHIVE DESTINATION lib/static)
+
+add_subdirectory(plugins)

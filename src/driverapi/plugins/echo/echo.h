@@ -19,9 +19,9 @@ private:
 	size_t callcount;
 };
 
-#define BUILD_FACTORY(param) \
+#define PLUG_BUILD_FACTORY(param) \
 	if (Worker.get() == NULL) { \
 		Worker.reset(new Echo(param)); \
 	} 
 
-#define FACTORY_PTR Worker.get()
+#define PLUG_FACTORY_PTR Worker.get()

@@ -30,15 +30,15 @@ CallReturn Echo::Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params
 extern "C"{
 
 void init(std::vector<std::string> & cmd_list) {
-	BUILD_FACTORY(cmd_list)
+	PLUG_BUILD_FACTORY(cmd_list)
 }
 
 CallReturn Precall(DriverAPICall t, std::shared_ptr<ParameterBase> params){
-	return BUILD_FACTORY->Precall(t, params);
+	return PLUG_FACTORY_PTR->Precall(t, params);
 }
 
 CallReturn Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params, bool CallPerfromed) {
-	return BUILD_FACTORY->Precall(t, params, CallPerfromed);
+	return PLUG_FACTORY_PTR->Precall(t, params, CallPerfromed);
 }
 
 }

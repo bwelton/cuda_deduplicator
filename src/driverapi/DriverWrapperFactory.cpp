@@ -24,7 +24,7 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 		assert(initF != NULL);
 		assert(precallF != NULL);
 		assert(postcallF != NULL);
-		_plugins.push_back(std::make_tuple(std::bind(initF, _1), std::bind(precallF, _1,_2), std::bind(postcallF,_1,_2,_3)));
+		_plugins.push_back(std::make_tuple((InitFunc)std::bind(initF, _1),(PrecallFunc)std::bind(precallF, _1,_2), (PostcallFunc)std::bind(postcallF,_1,_2,_3)));
 	}
 	for (auto i : _plugins) {
 		std::get<0>(i)(DriverCVec);
@@ -43,11 +43,25 @@ void DriverWrapperFactory::PrintStack() {
 }
 int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
 	//std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;
-
-	// for (auto i : _plugins) {
-	// 	CallReturn v;
-		
-	// }
+	CallReturn status = NO_ACTION;
+	int ret = 0;
+	for (auto i : _plugins) {
+		CallReturn v = std::get<1>(i)(t, params);
+		assert(v != FAILED);
+		if (v == PERFORMED_ACTION || v == DO_NOT_PERFORM){
+			status = v;
+		}
+	}
+	if (status != DO_NOT_PERFORM && status != PERFORMED_ACTION) {
+		ret = t();
+		status = PERFORMED_ACTION;
+	}
+	for (auto i : _plugins) {
+		if (status == PERFORMED_ACTION)
+			CallReturn v = std::get<2>(i)(t, params, true);
+		else
+			CallReturn v = std::get<2>(i)(t, params, false);
+	}
 
 	// if (params.get()->GetID() == 195)
 	// 	_stack->PerformAction(t, params);
@@ -88,5 +102,5 @@ int DriverWrapperFactory::PerformAction(DriverAPICall t, std::shared_ptr<Paramet
 	// 		return ret;
 	// 	}
 	// }
-	return t();
+	return ret;
 }		

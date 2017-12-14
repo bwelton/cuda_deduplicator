@@ -11,5 +11,5 @@ INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/driverapi")
 target_link_libraries(Echo "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti")
 install(TARGETS Echo
         RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
+        LIBRARY DESTINATION lib/plugins
         ARCHIVE DESTINATION lib/static)

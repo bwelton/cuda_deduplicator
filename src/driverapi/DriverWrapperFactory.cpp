@@ -18,9 +18,13 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 		void * handle = dlopen(i.c_str(), RTLD_LAZY);
 		// Fail immediately if wrapper cannot be loaded
 		assert(handle != NULL);
-		CallReturn (*initF)(std::vector<std::string> &) = (CallReturn (*)(std::vector<std::string> &)) dlsym(handle, "init");
-		CallReturn (*precallF)(DriverAPICall, std::shared_ptr<ParameterBase>) = (CallReturn (*)(DriverAPICall, std::shared_ptr<ParameterBase>)) dlsym(handle, "Precall");
-		CallReturn (*postcallF)(DriverAPICall, std::shared_ptr<ParameterBase>, bool) = (CallReturn (*)(DriverAPICall, std::shared_ptr<ParameterBase>, bool)) dlsym(handle, "Postcall");
+		CallReturn (*initF)(std::vector<std::string> &);
+		CallReturn (*precallF)(DriverAPICall, std::shared_ptr<ParameterBase>);
+		CallReturn (*postcallF)(DriverAPICall, std::shared_ptr<ParameterBase>, bool);
+
+		initF = (CallReturn (*)(std::vector<std::string> &)) dlsym(handle, "init");
+		precallF = (CallReturn (*)(DriverAPICall, std::shared_ptr<ParameterBase>)) dlsym(handle, "Precall");
+		postcallF = (CallReturn (*)(DriverAPICall, std::shared_ptr<ParameterBase>, bool)) dlsym(handle, "Postcall");
 		InitFunc finit = std::bind(initF, _1);
 		PrecallFunc pcf = std::bind(precallF, _1, _2);
 		PostcallFunc postcf = std::bind(postcallF, _1, _2, _3);

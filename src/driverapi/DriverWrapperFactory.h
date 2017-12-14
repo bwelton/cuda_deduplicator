@@ -17,15 +17,23 @@
 #include "InterpositionHeader.h"
 #endif
 
+#include "PluginCommon.h"
+typedef std::function<CallReturn(std::vector<std::string> &)> InitFunc;
+typedef std::function<CallReturn(DriverAPICall, std::shared_ptr<ParameterBase>)> PrecallFunc;
+typedef std::function<CallReturn(DriverAPICall, std::shared_ptr<ParameterBase>, bool)> PostcallFunc;
+
 class DriverWrapperFactory : public DriverWrapperBase{
 private:
 	// boost::recursive_mutex _mtx;
 	StackTraceGen * _stack;
 	bool firstExec;
+	std::vector<std::tuple<InitFunc, PrecallFunc, PostcallFunc> > _plugins;
 public:
 	DriverWrapperFactory();
 	int PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params);
 	~DriverWrapperFactory();
+	void LoadLibraries(std::vector<std::string> libs);
+	std::vector<std::string> GetLibraryNames(const char * file);
 	void PrintStack();
 };
 

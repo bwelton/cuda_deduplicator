@@ -27,7 +27,7 @@ CallReturn Echo::Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params
 	return NO_ACTION;
 }
 
-extern "C" {
+extern "C"{
 
 void init(std::vector<std::string> & cmd_list) {
 	BUILD_FACTORY(cmd_list)

@@ -17,7 +17,7 @@ public:
 private:
 	std::map<int,std::string> _cmdToName;
 	size_t callcount;
-}
+};
 
 #define BUILD_FACTORY(param) \
 	if (Worker.get() == NULL) { \

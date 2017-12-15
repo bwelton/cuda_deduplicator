@@ -5,10 +5,10 @@
 #include "cuda.h"
 #include "DriverWrapperBase.h"
 #include <vector>
-extern "C"{
-typedef CUresult int
-int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr );
-int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr );
+extern "C" {
+
+int ORIGINAL_cuGetErrorString( CUresult error, const char ** pStr );
+int ORIGINAL_cuGetErrorName( CUresult error, const char ** pStr );
 int ORIGINAL_cuInit( unsigned int Flags );
 int ORIGINAL_cuDriverGetVersion( int * driverVersion );
 int ORIGINAL_cuDeviceGet( CUdevice * device, int ordinal );

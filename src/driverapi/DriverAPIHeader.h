@@ -1,9 +1,12 @@
 #pragma once
+#include "PluginCommon.h"
+#include <vector>
 #include "Parameters.h"
 #include "cuda.h"
 #include "DriverWrapperBase.h"
 #include <vector>
 extern "C"{
+typedef CUresult int
 int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr );
 int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr );
 int ORIGINAL_cuInit( unsigned int Flags );
@@ -118,6 +121,10 @@ int ORIGINAL_cuMipmappedArrayCreate( CUmipmappedArray * pHandle, const CUDA_ARRA
 int ORIGINAL_cuMipmappedArrayGetLevel( CUarray * pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level );
 int ORIGINAL_cuMipmappedArrayDestroy( CUmipmappedArray hMipmappedArray );
 int ORIGINAL_cuPointerGetAttribute( void * data, CUpointer_attribute attribute, CUdeviceptr ptr );
+int ORIGINAL_cuMemPrefetchAsync( CUdeviceptr devPtr, size_t count, CUdevice dstDevice, CUstream hStream );
+int ORIGINAL_cuMemAdvise( CUdeviceptr devPtr, size_t count, CUmem_advise advice, CUdevice device );
+int ORIGINAL_cuMemRangeGetAttribute( void * data, size_t dataSize, CUmem_range_attribute attribute, CUdeviceptr devPtr, size_t count );
+int ORIGINAL_cuMemRangeGetAttributes( void * * data, size_t * dataSizes, CUmem_range_attribute * attributes, size_t numAttributes, CUdeviceptr devPtr, size_t count );
 int ORIGINAL_cuPointerSetAttribute( const void * value, CUpointer_attribute attribute, CUdeviceptr ptr );
 int ORIGINAL_cuPointerGetAttributes( unsigned int numAttributes, CUpointer_attribute * attributes, void * * data, CUdeviceptr ptr );
 int ORIGINAL_cuStreamCreate( CUstream * phStream, unsigned int Flags );
@@ -136,6 +143,9 @@ int ORIGINAL_cuEventQuery( CUevent hEvent );
 int ORIGINAL_cuEventSynchronize( CUevent hEvent );
 int ORIGINAL_cuEventDestroy( CUevent hEvent );
 int ORIGINAL_cuEventElapsedTime( float * pMilliseconds, CUevent hStart, CUevent hEnd );
+int ORIGINAL_cuStreamWaitValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags );
+int ORIGINAL_cuStreamWriteValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags );
+int ORIGINAL_cuStreamBatchMemOp( CUstream stream, unsigned int count, CUstreamBatchMemOpParams * paramArray, unsigned int flags );
 int ORIGINAL_cuFuncGetAttribute( int * pi, CUfunction_attribute attrib, CUfunction hfunc );
 int ORIGINAL_cuFuncSetCacheConfig( CUfunction hfunc, CUfunc_cache config );
 int ORIGINAL_cuFuncSetSharedMemConfig( CUfunction hfunc, CUsharedconfig config );
@@ -165,6 +175,7 @@ int ORIGINAL_cuTexRefSetMipmapFilterMode( CUtexref hTexRef, CUfilter_mode fm );
 int ORIGINAL_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias );
 int ORIGINAL_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelClamp, float maxMipmapLevelClamp );
 int ORIGINAL_cuTexRefSetMaxAnisotropy( CUtexref hTexRef, unsigned int maxAniso );
+int ORIGINAL_cuTexRefSetBorderColor( CUtexref hTexRef, float * pBorderColor );
 int ORIGINAL_cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags );
 int ORIGINAL_cuTexRefGetAddress( CUdeviceptr * pdptr, CUtexref hTexRef );
 int ORIGINAL_cuTexRefGetArray( CUarray * phArray, CUtexref hTexRef );
@@ -176,6 +187,7 @@ int ORIGINAL_cuTexRefGetMipmapFilterMode( CUfilter_mode * pfm, CUtexref hTexRef 
 int ORIGINAL_cuTexRefGetMipmapLevelBias( float * pbias, CUtexref hTexRef );
 int ORIGINAL_cuTexRefGetMipmapLevelClamp( float * pminMipmapLevelClamp, float * pmaxMipmapLevelClamp, CUtexref hTexRef );
 int ORIGINAL_cuTexRefGetMaxAnisotropy( int * pmaxAniso, CUtexref hTexRef );
+int ORIGINAL_cuTexRefGetBorderColor( float * pBorderColor, CUtexref hTexRef );
 int ORIGINAL_cuTexRefGetFlags( unsigned int * pFlags, CUtexref hTexRef );
 int ORIGINAL_cuTexRefCreate( CUtexref * pTexRef );
 int ORIGINAL_cuTexRefDestroy( CUtexref hTexRef );
@@ -190,6 +202,7 @@ int ORIGINAL_cuSurfObjectCreate( CUsurfObject * pSurfObject, const CUDA_RESOURCE
 int ORIGINAL_cuSurfObjectDestroy( CUsurfObject surfObject );
 int ORIGINAL_cuSurfObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUsurfObject surfObject );
 int ORIGINAL_cuDeviceCanAccessPeer( int * canAccessPeer, CUdevice dev, CUdevice peerDev );
+int ORIGINAL_cuDeviceGetP2PAttribute( int * value, CUdevice_P2PAttribute attrib, CUdevice srcDevice, CUdevice dstDevice );
 int ORIGINAL_cuCtxEnablePeerAccess( CUcontext peerContext, unsigned int Flags );
 int ORIGINAL_cuCtxDisablePeerAccess( CUcontext peerContext );
 int ORIGINAL_cuGraphicsUnregisterResource( CUgraphicsResource resource );
@@ -225,5 +238,5 @@ int ORIGINAL_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N );
 int ORIGINAL_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height );
 int ORIGINAL_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height );
 int ORIGINAL_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height );
-void CheckInit_DriverAPI();
+
 }

@@ -1,7 +1,7 @@
 #include "echo.h"
 
 std::shared_ptr<Echo> Worker;
-
+int exited = 0;
 Echo::Echo(std::vector<std::string> & cmd_list) {
 	int count = 0;
 	for (auto i : cmd_list) {
@@ -12,6 +12,7 @@ Echo::Echo(std::vector<std::string> & cmd_list) {
 }
 
 Echo::~Echo() {
+	exited = 1;
 	std::cout << "[ECHO-END] Call Count: " << callcount << std::endl;
 }
 
@@ -34,10 +35,14 @@ void init(std::vector<std::string> & cmd_list) {
 }
 
 PluginReturn Precall(std::shared_ptr<Parameters> params){
+	if (exited == 1)
+		return NO_ACTION;
 	return PLUG_FACTORY_PTR->Precall(params);
 }
 
 PluginReturn Postcall(std::shared_ptr<Parameters> params) {
+	if (exited == 1)
+		return NO_ACTION;
 	return PLUG_FACTORY_PTR->Postcall(params);
 }
 

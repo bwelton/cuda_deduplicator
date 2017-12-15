@@ -18,7 +18,7 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 	for(auto i : DriverCVec)
 		DriverAPICalls.push_back(std::string(i));
 	for(auto i : libs) {
-		void * handle = dlopen(i.c_str(), RTLD_LAZY | RTLD_NODELETE);
+		void * handle = dlopen(i.c_str(), RTLD_LAZY);
 		// Fail immediately if wrapper cannot be loaded
 		assert(handle != NULL);
 		PluginReturn (*initF)(std::vector<std::string> &);
@@ -48,7 +48,7 @@ DriverWrapperFactory::DriverWrapperFactory() {
 	LoadLibraries(libs);
 }
 DriverWrapperFactory::~DriverWrapperFactory() { 
-
+	_plugins.clear();
 }
 void DriverWrapperFactory::PrintStack() {
 	//_stack->GenStackTrace();

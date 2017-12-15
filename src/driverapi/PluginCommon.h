@@ -16,7 +16,7 @@ enum PluginReturn {
 	FAILED			// This plugin has failed
 };
 
-enum  {
+typedef enum {
 	ID_cuGetErrorString = 0,
 	ID_cuGetErrorName,
 	ID_cuInit,

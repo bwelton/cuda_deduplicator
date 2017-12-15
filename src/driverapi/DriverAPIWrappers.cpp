@@ -2675,6 +2675,7 @@ int ORIGINAL_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t
 int INTER_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
+	fprintf(stderr, "%s\n", "Calling device to host async");
 	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoHAsync_v2, (void*) &ORIGINAL_cuMemcpyDtoHAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);

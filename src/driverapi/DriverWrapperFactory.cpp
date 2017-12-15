@@ -22,12 +22,12 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 		// Fail immediately if wrapper cannot be loaded
 		assert(handle != NULL);
 		PluginReturn (*initF)(std::vector<std::string> &);
-		PluginReturn (*precallF)(DriverAPICall, std::shared_ptr<Parameters>);
-		PluginReturn (*postcallF)(DriverAPICall, std::shared_ptr<Parameters>, bool);
+		PluginReturn (*precallF)(std::shared_ptr<Parameters>);
+		PluginReturn (*postcallF)(std::shared_ptr<Parameters>, bool);
 
 		initF = (PluginReturn (*)(std::vector<std::string> &)) dlsym(handle, "init");
-		precallF = (PluginReturn (*)(DriverAPICall, std::shared_ptr<Parameters>)) dlsym(handle, "Precall");
-		postcallF = (PluginReturn (*)(DriverAPICall, std::shared_ptr<Parameters>, bool)) dlsym(handle, "Postcall");
+		precallF = (PluginReturn (*)(std::shared_ptr<Parameters>)) dlsym(handle, "Precall");
+		postcallF = (PluginReturn (*)(std::shared_ptr<Parameters>, bool)) dlsym(handle, "Postcall");
 		InitFunc finit = std::bind(initF, std::placeholders::_1);
 		PrecallFunc pcf = std::bind(precallF, std::placeholders::_1, std::placeholders::_2);
 		PostcallFunc postcf = std::bind(postcallF, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);

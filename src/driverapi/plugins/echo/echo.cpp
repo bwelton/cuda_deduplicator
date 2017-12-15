@@ -15,12 +15,12 @@ Echo::~Echo() {
 	std::cout << "[ECHO-END] Call Count: " << callcount << std::endl;
 }
 
-CallReturn Echo::Precall(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
+PluginReturn Echo::Precall(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
 	std::cout << "[PRECALL] Call: " << _cmdToName[params.get()->GetID()] << " Param Count:" << params.get()->GetLen() << std::endl;
 	return NO_ACTION;
 }
 
-CallReturn Echo::Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params, bool CallPerfromed) {
+PluginReturn Echo::Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params, bool CallPerfromed) {
 	std::cout << "[POSTCALL] Call: " << _cmdToName[params.get()->GetID()] << " Param Count:" << params.get()->GetLen() << " Performed: " << CallPerfromed << std::endl;
 	if (CallPerfromed)
 		callcount++;

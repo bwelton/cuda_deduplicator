@@ -5,8 +5,8 @@
 #include <map>
 #include <vector>
 #include "cuda.h"
-#include "Parameters.h"
-#include "DriverWrapperBase.h"
+//#include "Parameters.h"
+//#include "DriverWrapperBase.h"
 enum PluginReturn {
 	NO_ACTION = 0,
 	NOTIFY_ON_CHANGE,	// Notify when the parameter has changed

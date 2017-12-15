@@ -250,6 +250,238 @@ typedef enum {
 	ID_cuMemsetD2D32_v2
 } CallID;
 
+#define PT_cuGetErrorString CUresult,const char * *
+#define PT_cuGetErrorName CUresult,const char * *
+#define PT_cuInit unsigned int
+#define PT_cuDriverGetVersion int *
+#define PT_cuDeviceGet CUdevice *,int
+#define PT_cuDeviceGetCount int *
+#define PT_cuDeviceGetName char *,int,CUdevice
+#define PT_cuDeviceTotalMem size_t *,CUdevice
+#define PT_cuDeviceGetAttribute int *,CUdevice_attribute,CUdevice
+#define PT_cuDeviceGetProperties CUdevprop *,CUdevice
+#define PT_cuDeviceComputeCapability int *,int *,CUdevice
+#define PT_cuDevicePrimaryCtxRetain CUcontext *,CUdevice
+#define PT_cuDevicePrimaryCtxRelease CUdevice
+#define PT_cuDevicePrimaryCtxSetFlags CUdevice,unsigned int
+#define PT_cuDevicePrimaryCtxGetState CUdevice,unsigned int *,int *
+#define PT_cuDevicePrimaryCtxReset CUdevice
+#define PT_cuCtxCreate CUcontext *,unsigned int,CUdevice
+#define PT_cuCtxDestroy CUcontext
+#define PT_cuCtxPushCurrent CUcontext
+#define PT_cuCtxPopCurrent CUcontext *
+#define PT_cuCtxSetCurrent CUcontext
+#define PT_cuCtxGetCurrent CUcontext *
+#define PT_cuCtxGetDevice CUdevice *
+#define PT_cuCtxGetFlags unsigned int *
+#define PT_cuCtxSetLimit CUlimit,size_t
+#define PT_cuCtxGetLimit size_t *,CUlimit
+#define PT_cuCtxGetCacheConfig CUfunc_cache *
+#define PT_cuCtxSetCacheConfig CUfunc_cache
+#define PT_cuCtxGetSharedMemConfig CUsharedconfig *
+#define PT_cuCtxSetSharedMemConfig CUsharedconfig
+#define PT_cuCtxGetApiVersion CUcontext,unsigned int *
+#define PT_cuCtxGetStreamPriorityRange int *,int *
+#define PT_cuCtxAttach CUcontext *,unsigned int
+#define PT_cuCtxDetach CUcontext
+#define PT_cuModuleLoad CUmodule *,const char *
+#define PT_cuModuleLoadData CUmodule *,const void *
+#define PT_cuModuleLoadDataEx CUmodule *,const void *,unsigned int,CUjit_option *,void * *
+#define PT_cuModuleLoadFatBinary CUmodule *,const void *
+#define PT_cuModuleUnload CUmodule
+#define PT_cuModuleGetFunction CUfunction *,CUmodule,const char *
+#define PT_cuModuleGetGlobal CUdeviceptr *,size_t *,CUmodule,const char *
+#define PT_cuModuleGetTexRef CUtexref *,CUmodule,const char *
+#define PT_cuModuleGetSurfRef CUsurfref *,CUmodule,const char *
+#define PT_cuLinkCreate unsigned int,CUjit_option *,void * *,CUlinkState *
+#define PT_cuLinkAddData CUlinkState,CUjitInputType,void *,size_t,const char *,unsigned int,CUjit_option *,void * *
+#define PT_cuLinkAddFile CUlinkState,CUjitInputType,const char *,unsigned int,CUjit_option *,void * *
+#define PT_cuLinkComplete CUlinkState,void * *,size_t *
+#define PT_cuLinkDestroy CUlinkState
+#define PT_cuMemGetInfo size_t *,size_t *
+#define PT_cuMemAlloc CUdeviceptr *,size_t
+#define PT_cuMemAllocPitch CUdeviceptr *,size_t *,size_t,size_t,unsigned int
+#define PT_cuMemFree CUdeviceptr
+#define PT_cuMemGetAddressRange CUdeviceptr *,size_t *,CUdeviceptr
+#define PT_cuMemAllocHost void * *,size_t
+#define PT_cuMemFreeHost void *
+#define PT_cuMemHostAlloc void * *,size_t,unsigned int
+#define PT_cuMemHostGetDevicePointer CUdeviceptr *,void *,unsigned int
+#define PT_cuMemHostGetFlags unsigned int *,void *
+#define PT_cuMemAllocManaged CUdeviceptr *,size_t,unsigned int
+#define PT_cuDeviceGetByPCIBusId CUdevice *,const char *
+#define PT_cuDeviceGetPCIBusId char *,int,CUdevice
+#define PT_cuIpcGetEventHandle CUipcEventHandle *,CUevent
+#define PT_cuIpcOpenEventHandle CUevent *,CUipcEventHandle
+#define PT_cuIpcGetMemHandle CUipcMemHandle *,CUdeviceptr
+#define PT_cuIpcOpenMemHandle CUdeviceptr *,CUipcMemHandle,unsigned int
+#define PT_cuIpcCloseMemHandle CUdeviceptr
+#define PT_cuMemHostRegister void *,size_t,unsigned int
+#define PT_cuMemHostUnregister void *
+#define PT_cuMemcpy CUdeviceptr,CUdeviceptr,size_t
+#define PT_cuMemcpyPeer CUdeviceptr,CUcontext,CUdeviceptr,CUcontext,size_t
+#define PT_cuMemcpyHtoD CUdeviceptr,const void *,size_t
+#define PT_cuMemcpyDtoH void *,CUdeviceptr,size_t
+#define PT_cuMemcpyDtoD CUdeviceptr,CUdeviceptr,size_t
+#define PT_cuMemcpyDtoA CUarray,size_t,CUdeviceptr,size_t
+#define PT_cuMemcpyAtoD CUdeviceptr,CUarray,size_t,size_t
+#define PT_cuMemcpyHtoA CUarray,size_t,const void *,size_t
+#define PT_cuMemcpyAtoH void *,CUarray,size_t,size_t
+#define PT_cuMemcpyAtoA CUarray,size_t,CUarray,size_t,size_t
+#define PT_cuMemcpy2D const CUDA_MEMCPY2D *
+#define PT_cuMemcpy2DUnaligned const CUDA_MEMCPY2D *
+#define PT_cuMemcpy3D const CUDA_MEMCPY3D *
+#define PT_cuMemcpy3DPeer const CUDA_MEMCPY3D_PEER *
+#define PT_cuMemcpyAsync CUdeviceptr,CUdeviceptr,size_t,CUstream
+#define PT_cuMemcpyPeerAsync CUdeviceptr,CUcontext,CUdeviceptr,CUcontext,size_t,CUstream
+#define PT_cuMemcpyHtoDAsync CUdeviceptr,const void *,size_t,CUstream
+#define PT_cuMemcpyDtoHAsync void *,CUdeviceptr,size_t,CUstream
+#define PT_cuMemcpyDtoDAsync CUdeviceptr,CUdeviceptr,size_t,CUstream
+#define PT_cuMemcpyHtoAAsync CUarray,size_t,const void *,size_t,CUstream
+#define PT_cuMemcpyAtoHAsync void *,CUarray,size_t,size_t,CUstream
+#define PT_cuMemcpy2DAsync const CUDA_MEMCPY2D *,CUstream
+#define PT_cuMemcpy3DAsync const CUDA_MEMCPY3D *,CUstream
+#define PT_cuMemcpy3DPeerAsync const CUDA_MEMCPY3D_PEER *,CUstream
+#define PT_cuMemsetD8 CUdeviceptr,unsigned char,size_t
+#define PT_cuMemsetD16 CUdeviceptr,unsigned short,size_t
+#define PT_cuMemsetD32 CUdeviceptr,unsigned int,size_t
+#define PT_cuMemsetD2D8 CUdeviceptr,size_t,unsigned char,size_t,size_t
+#define PT_cuMemsetD2D16 CUdeviceptr,size_t,unsigned short,size_t,size_t
+#define PT_cuMemsetD2D32 CUdeviceptr,size_t,unsigned int,size_t,size_t
+#define PT_cuMemsetD8Async CUdeviceptr,unsigned char,size_t,CUstream
+#define PT_cuMemsetD16Async CUdeviceptr,unsigned short,size_t,CUstream
+#define PT_cuMemsetD32Async CUdeviceptr,unsigned int,size_t,CUstream
+#define PT_cuMemsetD2D8Async CUdeviceptr,size_t,unsigned char,size_t,size_t,CUstream
+#define PT_cuMemsetD2D16Async CUdeviceptr,size_t,unsigned short,size_t,size_t,CUstream
+#define PT_cuMemsetD2D32Async CUdeviceptr,size_t,unsigned int,size_t,size_t,CUstream
+#define PT_cuArrayCreate CUarray *,const CUDA_ARRAY_DESCRIPTOR *
+#define PT_cuArrayGetDescriptor CUDA_ARRAY_DESCRIPTOR *,CUarray
+#define PT_cuArrayDestroy CUarray
+#define PT_cuArray3DCreate CUarray *,const CUDA_ARRAY3D_DESCRIPTOR *
+#define PT_cuArray3DGetDescriptor CUDA_ARRAY3D_DESCRIPTOR *,CUarray
+#define PT_cuMipmappedArrayCreate CUmipmappedArray *,const CUDA_ARRAY3D_DESCRIPTOR *,unsigned int
+#define PT_cuMipmappedArrayGetLevel CUarray *,CUmipmappedArray,unsigned int
+#define PT_cuMipmappedArrayDestroy CUmipmappedArray
+#define PT_cuPointerGetAttribute void *,CUpointer_attribute,CUdeviceptr
+#define PT_cuMemPrefetchAsync CUdeviceptr,size_t,CUdevice,CUstream
+#define PT_cuMemAdvise CUdeviceptr,size_t,CUmem_advise,CUdevice
+#define PT_cuMemRangeGetAttribute void *,size_t,CUmem_range_attribute,CUdeviceptr,size_t
+#define PT_cuMemRangeGetAttributes void * *,size_t *,CUmem_range_attribute *,size_t,CUdeviceptr,size_t
+#define PT_cuPointerSetAttribute const void *,CUpointer_attribute,CUdeviceptr
+#define PT_cuPointerGetAttributes unsigned int,CUpointer_attribute *,void * *,CUdeviceptr
+#define PT_cuStreamCreate CUstream *,unsigned int
+#define PT_cuStreamCreateWithPriority CUstream *,unsigned int,int
+#define PT_cuStreamGetPriority CUstream,int *
+#define PT_cuStreamGetFlags CUstream,unsigned int *
+#define PT_cuStreamWaitEvent CUstream,CUevent,unsigned int
+#define PT_cuStreamAddCallback CUstream,CUstreamCallback,void *,unsigned int
+#define PT_cuStreamAttachMemAsync CUstream,CUdeviceptr,size_t,unsigned int
+#define PT_cuStreamQuery CUstream
+#define PT_cuStreamSynchronize CUstream
+#define PT_cuStreamDestroy CUstream
+#define PT_cuEventCreate CUevent *,unsigned int
+#define PT_cuEventRecord CUevent,CUstream
+#define PT_cuEventQuery CUevent
+#define PT_cuEventSynchronize CUevent
+#define PT_cuEventDestroy CUevent
+#define PT_cuEventElapsedTime float *,CUevent,CUevent
+#define PT_cuStreamWaitValue32 CUstream,CUdeviceptr,cuuint32_t,unsigned int
+#define PT_cuStreamWriteValue32 CUstream,CUdeviceptr,cuuint32_t,unsigned int
+#define PT_cuStreamBatchMemOp CUstream,unsigned int,CUstreamBatchMemOpParams *,unsigned int
+#define PT_cuFuncGetAttribute int *,CUfunction_attribute,CUfunction
+#define PT_cuFuncSetCacheConfig CUfunction,CUfunc_cache
+#define PT_cuFuncSetSharedMemConfig CUfunction,CUsharedconfig
+#define PT_cuLaunchKernel CUfunction,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int,CUstream,void * *,void * *
+#define PT_cuFuncSetBlockShape CUfunction,int,int,int
+#define PT_cuFuncSetSharedSize CUfunction,unsigned int
+#define PT_cuParamSetSize CUfunction,unsigned int
+#define PT_cuParamSeti CUfunction,int,unsigned int
+#define PT_cuParamSetf CUfunction,int,float
+#define PT_cuParamSetv CUfunction,int,void *,unsigned int
+#define PT_cuLaunch CUfunction
+#define PT_cuLaunchGrid CUfunction,int,int
+#define PT_cuLaunchGridAsync CUfunction,int,int,CUstream
+#define PT_cuParamSetTexRef CUfunction,int,CUtexref
+#define PT_cuOccupancyMaxActiveBlocksPerMultiprocessor int *,CUfunction,int,size_t
+#define PT_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags int *,CUfunction,int,size_t,unsigned int
+#define PT_cuOccupancyMaxPotentialBlockSize int *,int *,CUfunction,CUoccupancyB2DSize,size_t,int
+#define PT_cuOccupancyMaxPotentialBlockSizeWithFlags int *,int *,CUfunction,CUoccupancyB2DSize,size_t,int,unsigned int
+#define PT_cuTexRefSetArray CUtexref,CUarray,unsigned int
+#define PT_cuTexRefSetMipmappedArray CUtexref,CUmipmappedArray,unsigned int
+#define PT_cuTexRefSetAddress size_t *,CUtexref,CUdeviceptr,size_t
+#define PT_cuTexRefSetAddress2D CUtexref,const CUDA_ARRAY_DESCRIPTOR *,CUdeviceptr,size_t
+#define PT_cuTexRefSetFormat CUtexref,CUarray_format,int
+#define PT_cuTexRefSetAddressMode CUtexref,int,CUaddress_mode
+#define PT_cuTexRefSetFilterMode CUtexref,CUfilter_mode
+#define PT_cuTexRefSetMipmapFilterMode CUtexref,CUfilter_mode
+#define PT_cuTexRefSetMipmapLevelBias CUtexref,float
+#define PT_cuTexRefSetMipmapLevelClamp CUtexref,float,float
+#define PT_cuTexRefSetMaxAnisotropy CUtexref,unsigned int
+#define PT_cuTexRefSetBorderColor CUtexref,float *
+#define PT_cuTexRefSetFlags CUtexref,unsigned int
+#define PT_cuTexRefGetAddress CUdeviceptr *,CUtexref
+#define PT_cuTexRefGetArray CUarray *,CUtexref
+#define PT_cuTexRefGetMipmappedArray CUmipmappedArray *,CUtexref
+#define PT_cuTexRefGetAddressMode CUaddress_mode *,CUtexref,int
+#define PT_cuTexRefGetFilterMode CUfilter_mode *,CUtexref
+#define PT_cuTexRefGetFormat CUarray_format *,int *,CUtexref
+#define PT_cuTexRefGetMipmapFilterMode CUfilter_mode *,CUtexref
+#define PT_cuTexRefGetMipmapLevelBias float *,CUtexref
+#define PT_cuTexRefGetMipmapLevelClamp float *,float *,CUtexref
+#define PT_cuTexRefGetMaxAnisotropy int *,CUtexref
+#define PT_cuTexRefGetBorderColor float *,CUtexref
+#define PT_cuTexRefGetFlags unsigned int *,CUtexref
+#define PT_cuTexRefCreate CUtexref *
+#define PT_cuTexRefDestroy CUtexref
+#define PT_cuSurfRefSetArray CUsurfref,CUarray,unsigned int
+#define PT_cuSurfRefGetArray CUarray *,CUsurfref
+#define PT_cuTexObjectCreate CUtexObject *,const CUDA_RESOURCE_DESC *,const CUDA_TEXTURE_DESC *,const CUDA_RESOURCE_VIEW_DESC *
+#define PT_cuTexObjectDestroy CUtexObject
+#define PT_cuTexObjectGetResourceDesc CUDA_RESOURCE_DESC *,CUtexObject
+#define PT_cuTexObjectGetTextureDesc CUDA_TEXTURE_DESC *,CUtexObject
+#define PT_cuTexObjectGetResourceViewDesc CUDA_RESOURCE_VIEW_DESC *,CUtexObject
+#define PT_cuSurfObjectCreate CUsurfObject *,const CUDA_RESOURCE_DESC *
+#define PT_cuSurfObjectDestroy CUsurfObject
+#define PT_cuSurfObjectGetResourceDesc CUDA_RESOURCE_DESC *,CUsurfObject
+#define PT_cuDeviceCanAccessPeer int *,CUdevice,CUdevice
+#define PT_cuDeviceGetP2PAttribute int *,CUdevice_P2PAttribute,CUdevice,CUdevice
+#define PT_cuCtxEnablePeerAccess CUcontext,unsigned int
+#define PT_cuCtxDisablePeerAccess CUcontext
+#define PT_cuGraphicsUnregisterResource CUgraphicsResource
+#define PT_cuGraphicsSubResourceGetMappedArray CUarray *,CUgraphicsResource,unsigned int,unsigned int
+#define PT_cuGraphicsResourceGetMappedMipmappedArray CUmipmappedArray *,CUgraphicsResource
+#define PT_cuGraphicsResourceGetMappedPointer CUdeviceptr *,size_t *,CUgraphicsResource
+#define PT_cuGraphicsResourceSetMapFlags CUgraphicsResource,unsigned int
+#define PT_cuGraphicsMapResources unsigned int,CUgraphicsResource *,CUstream
+#define PT_cuGraphicsUnmapResources unsigned int,CUgraphicsResource *,CUstream
+#define PT_cuGetExportTable const void * *,const CUuuid *
+#define PT_cuTexRefSetAddress2D_v2 CUtexref,const CUDA_ARRAY_DESCRIPTOR *,CUdeviceptr,size_t
+#define PT_cuMemcpyHtoD_v2 CUdeviceptr,const void *,size_t
+#define PT_cuMemcpyDtoH_v2 void *,CUdeviceptr,size_t
+#define PT_cuMemcpyDtoD_v2 CUdeviceptr,CUdeviceptr,size_t
+#define PT_cuMemcpyDtoA_v2 CUarray,size_t,CUdeviceptr,size_t
+#define PT_cuMemcpyAtoD_v2 CUdeviceptr,CUarray,size_t,size_t
+#define PT_cuMemcpyHtoA_v2 CUarray,size_t,const void *,size_t
+#define PT_cuMemcpyAtoH_v2 void *,CUarray,size_t,size_t
+#define PT_cuMemcpyAtoA_v2 CUarray,size_t,CUarray,size_t,size_t
+#define PT_cuMemcpyHtoAAsync_v2 CUarray,size_t,const void *,size_t,CUstream
+#define PT_cuMemcpyAtoHAsync_v2 void *,CUarray,size_t,size_t,CUstream
+#define PT_cuMemcpy2D_v2 const CUDA_MEMCPY2D *
+#define PT_cuMemcpy2DUnaligned_v2 const CUDA_MEMCPY2D *
+#define PT_cuMemcpy3D_v2 const CUDA_MEMCPY3D *
+#define PT_cuMemcpyHtoDAsync_v2 CUdeviceptr,const void *,size_t,CUstream
+#define PT_cuMemcpyDtoHAsync_v2 void *,CUdeviceptr,size_t,CUstream
+#define PT_cuMemcpyDtoDAsync_v2 CUdeviceptr,CUdeviceptr,size_t,CUstream
+#define PT_cuMemcpy2DAsync_v2 const CUDA_MEMCPY2D *,CUstream
+#define PT_cuMemcpy3DAsync_v2 const CUDA_MEMCPY3D *,CUstream
+#define PT_cuMemsetD8_v2 CUdeviceptr,unsigned char,size_t
+#define PT_cuMemsetD16_v2 CUdeviceptr,unsigned short,size_t
+#define PT_cuMemsetD32_v2 CUdeviceptr,unsigned int,size_t
+#define PT_cuMemsetD2D8_v2 CUdeviceptr,size_t,unsigned char,size_t,size_t
+#define PT_cuMemsetD2D16_v2 CUdeviceptr,size_t,unsigned short,size_t,size_t
+#define PT_cuMemsetD2D32_v2 CUdeviceptr,size_t,unsigned int,size_t,size_t
+
+
 #ifndef EXTERN_FLAG
 #ifndef DEFINED_TEMPLATES
 #define EXTERN_FLAG extern

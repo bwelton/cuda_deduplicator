@@ -16,7 +16,7 @@ enum PluginReturn {
 	FAILED			// This plugin has failed
 };
 
-enum CallID {
+enum  {
 	ID_cuGetErrorString = 0,
 	ID_cuGetErrorName,
 	ID_cuInit,
@@ -248,7 +248,7 @@ enum CallID {
 	ID_cuMemsetD2D8_v2,
 	ID_cuMemsetD2D16_v2,
 	ID_cuMemsetD2D32_v2
-};
+} CallID;
 
 #ifndef EXTERN_FLAG
 #ifndef DEFINED_TEMPLATES

@@ -20,7 +20,7 @@ PluginReturn Echo::Precall(std::shared_ptr<Parameters> params) {
 	std::cout << "[PRECALL] Call: " << _cmdToName[params.get()->GetID()] << " Param Count:" << params.get()->GetLen() << std::endl;
 	if (params.get()->GetID() == ID_cuMemcpyHtoDAsync_v2) {
 		std::tuple<PT_cuMemcpyHtoDAsync_v2> ret =  GetParams<PT_cuMemcpyHtoDAsync_v2>(params);
-		std::cout << "Copy Size: " << std::get<2>(ret) << std::endl;
+		std::cout << "Copy Size: " << std::get<2>(ret)[0] << std::endl;
 	}
 	return NO_ACTION;
 }

@@ -2602,6 +2602,7 @@ int ORIGINAL_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const voi
 int INTER_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
+	fprintf(stderr, "%s\n", "Calling host to array async");
 	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoAAsync_v2, (void*) &ORIGINAL_cuMemcpyHtoAAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);

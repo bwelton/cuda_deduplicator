@@ -26,7 +26,7 @@ typedef std::function<PluginReturn(std::shared_ptr<Parameters>)> PostcallFunc;
 
 class DriverWrapperFactory : public DriverWrapperBase{
 private:
-	boost::recursive_mutex _mtx;
+	boost::recursive_mutex _driverMtx;
 	//StackTraceGen * _stack;
 	size_t _globalID;
 	bool firstExec;

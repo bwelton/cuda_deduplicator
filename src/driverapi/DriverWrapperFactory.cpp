@@ -40,6 +40,7 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 		std::get<0>(i)(DriverAPICalls);
 	}
 }
+
 DriverWrapperFactory::DriverWrapperFactory() {
 	DefineBinders();
 	std::string libraryFile = std::string("pluginlist.txt");
@@ -53,6 +54,17 @@ void DriverWrapperFactory::PrintStack() {
 	//_stack->GenStackTrace();
 }
 int DriverWrapperFactory::PerformAction(std::shared_ptr<Parameters> params) {
+	// Call precall's
+	for (auto i : _plugins) 
+		std::get<1>(i)(params);
+
+	if (params.get()->Called() == false)
+		params.get()->Call();
+
+	for (auto i : _plugins) 
+		std::get<2>(i)(params);
+
+	return params.get()->GetReturn();
 	//std::cerr << "Call to " << params.get()->GetName() << " was made" << std::endl;
 	// CallReturn status = NO_ACTION;
 	// int ret = 0;
@@ -113,5 +125,5 @@ int DriverWrapperFactory::PerformAction(std::shared_ptr<Parameters> params) {
 	// 		return ret;
 	// 	}
 	// }
-	return 0;
+	//return 0;
 }		

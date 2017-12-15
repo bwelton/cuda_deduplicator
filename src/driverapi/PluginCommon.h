@@ -249,11 +249,12 @@ enum CallID {
 	ID_CUMEMSETD2D16_V2,
 	ID_CUMEMSETD2D32_V2
 };
-
+#ifndef EXTERN_FLAG
 #ifndef DEFINED_TEMPLATES
 #define EXTERN_FLAG extern
 #else
 #define EXTERN_FLAG 
+#endif
 #endif
 EXTERN_FLAG std::function<int(CUresult,const char * *)> Bound_cuGetErrorString;
 EXTERN_FLAG std::function<int(CUresult,const char * *)> Bound_cuGetErrorName;

@@ -7,9 +7,9 @@
 #include <boost/bind.hpp>
 #include <memory>
 #include <dlfcn.h>
-
 #include "DriverWrapperBase.h"
 #include "Parameters.h"
+#include "PluginCommon.h"
 //#include "StackTraceGen.h"
 #ifndef INTERPOSITION_BUILD
 #include "DriverAPIHeader.h"
@@ -18,7 +18,7 @@
 #include "InterpositionHeader.h"
 #endif
 
-#include "PluginCommon.h"
+
 typedef std::function<PluginReturn(std::vector<std::string> &)> InitFunc;
 typedef std::function<PluginReturn(DriverAPICall, std::shared_ptr<Parameters>)> PrecallFunc;
 typedef std::function<PluginReturn(DriverAPICall, std::shared_ptr<Parameters>, bool)> PostcallFunc;
@@ -45,3 +45,4 @@ public:
 	} 
 
 #define FACTORY_PTR DriverFactory.get()
+

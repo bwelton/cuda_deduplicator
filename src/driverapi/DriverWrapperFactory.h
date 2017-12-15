@@ -20,8 +20,8 @@
 
 #include "PluginCommon.h"
 typedef std::function<PluginReturn(std::vector<std::string> &)> InitFunc;
-typedef std::function<PluginReturn(DriverAPICall, std::shared_ptr<ParameterBase>)> PrecallFunc;
-typedef std::function<PluginReturn(DriverAPICall, std::shared_ptr<ParameterBase>, bool)> PostcallFunc;
+typedef std::function<PluginReturn(DriverAPICall, std::shared_ptr<Parameters>)> PrecallFunc;
+typedef std::function<PluginReturn(DriverAPICall, std::shared_ptr<Parameters>, bool)> PostcallFunc;
 
 class DriverWrapperFactory : public DriverWrapperBase{
 private:

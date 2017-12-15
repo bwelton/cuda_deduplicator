@@ -2,6 +2,7 @@
 #include <vector>
 #include <tuple>
 #include "PluginCommon.h"
+
 class Parameters{
 private:
 	void * _func;

@@ -112,5 +112,5 @@ int DriverWrapperFactory::PerformAction(std::shared_ptr<Parameters> params) {
 	// 		return ret;
 	// 	}
 	// }
-	return ret;
+	return 0;
 }		

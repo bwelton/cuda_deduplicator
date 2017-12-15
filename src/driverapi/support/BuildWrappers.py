@@ -128,9 +128,9 @@ for x in protos:
 		variables["PARAMETERS_NAMES"] = "," + variables["PARAMETERS_NAMES"]
 	variables["CALL_ID"] = str(count)
 	if count == 0:
-		structFile += "ID_" + tmp[1].upper() + " = 0,\n\t"
+		structFile += "ID_" + tmp[1] + " = 0,\n\t"
 	else:
-		structFile += "ID_" + tmp[1].upper() + ",\n\t"
+		structFile += "ID_" + tmp[1] + ",\n\t"
 	count += 1
 	
 	hdr += Template(headerTemplate).substitute(variables)

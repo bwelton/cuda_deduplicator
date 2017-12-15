@@ -14,7 +14,7 @@ enum PluginReturn {
 	MODIFIED_PARAMS,	// This plugin modified the parameters
 	FAILED			// This plugin has failed
 };
-
+typedef CUresult int
 enum CallID {
 	ID_CUGETERRORSTRING = 0,
 	ID_CUGETERRORNAME,

@@ -622,6 +622,7 @@ int ORIGINAL_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) { }
 int INTER_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
+	fprintf(stderr, "%s\n", "In memalloc\n");
 	std::vector<void **> params = { (void **)&dptr,(void **)&bytesize };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAlloc, (void*) &ORIGINAL_cuMemAlloc, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);

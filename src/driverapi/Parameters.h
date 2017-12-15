@@ -9,10 +9,17 @@ private:
 	CallID _callId;
 	bool _called;
 	int _ret;
+	size_t _instId;
+	uint32_t _hash;
 public:
 	std::vector<void **> values;
 	const char * GetName();
+	uint32_t GetHash();
+	void SetHash(uint32_t hash);
 	CallID GetID();
+	void SetInstID(size_t i);
+	size_t GetInstID();
+
 	Parameters(CallID id, void * func, std::vector<void**> v);
 	~Parameters();
 	size_t GetLen();

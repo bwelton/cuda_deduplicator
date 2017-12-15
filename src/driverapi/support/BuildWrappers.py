@@ -84,6 +84,7 @@ charVector = ""
 alreadyWritten = {}
 defFile = ""
 count = 0
+outDefines = ""
 structFile = '#pragma once\n#include <iostream>\n#include <functional>\n#include <memory>\n#include <map>\n#include <vector>\n#include "Parameters.h"\n#include "DriverWrapperBase.h"\n'
 structFile += 'enum PluginReturn {\n\tNO_ACTION = 0,\n\tNOTIFY_ON_CHANGE,	// Notify when the parameter has changed\n\tDO_NOT_PERFORM,		// Instruct driver to not perform the action\n\tPERFORMED_ACTION,	// This plugin performed the action, do not perform again\n\tMODIFIED_PARAMS,	// This plugin modified the parameters\n\tFAILED			// This plugin has failed\n};\n\n'
 structFile += "enum CallID {\n\t"
@@ -107,12 +108,14 @@ for x in protos:
 	variables["PARAMETER_TYPES"] = "int,"
 	variables["PARAMETER_TYPES_ORIG"] = ""
 	variables["BINDER_PLACEHOLDERS"] = ""
+	variables["PARAMETER_TYPES_ORIG_DEFINE"] = ""
 	tmp[-1] = tmp[-1][:-1]	
 	tr = 1
 	for y in tmp[2:]:
 		pnames = y.split("$")
 		variables["PARAMETER_TYPES"] += pnames[0] + ","
 		variables["PARAMETER_TYPES_ORIG"] += pnames[0] + ","
+		variables["PARAMETER_TYPES_ORIG_DEFINE"] += pnames[0] + "* ,"
 		variables["PARAMETERS_FULL"] += pnames[0] + " " + pnames[1] + ", "
 		variables["PARAMETERS_NAMES"] += pnames[1] + ","
 		variables["BINDER_PLACEHOLDERS"] += "std::placeholders::" + "_" + str(tr) +","
@@ -122,10 +125,12 @@ for x in protos:
 	variables["PARAMETERS_NAMES"] = variables["PARAMETERS_NAMES"][:-1]	
 	variables["PARAMETER_TYPES"] = variables["PARAMETER_TYPES"][:-1]
 	variables["PARAMETER_TYPES_ORIG"] = variables["PARAMETER_TYPES_ORIG"][:-1]
+	variables["PARAMETER_TYPES_ORIG_DEFINE"] = variables["PARAMETER_TYPES_ORIG_DEFINE"][:-1]
 	if len(variables["PARAMETERS_NAMES"]) == 0:
 		variables["PARAMETERS_NAMES"] = ""
 	else:
 		variables["PARAMETERS_NAMES"] = "," + variables["PARAMETERS_NAMES"]
+	outDefines += "#define " + "PT_" + str(tmp[1]) + " " +variables["PARAMETER_TYPES_ORIG_DEFINE"] + "\n" 
 	variables["CALL_ID"] = str(count)
 	if count == 0:
 		structFile += "ID_" + tmp[1] + " = 0,\n\t"
@@ -157,3 +162,4 @@ f = open(sys.argv[1],"w")
 f.write(outStr)
 f.close()
 
+print outDefines

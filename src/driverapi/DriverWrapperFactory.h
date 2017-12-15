@@ -18,6 +18,7 @@
 #include "InterpositionHeader.h"
 #endif
 
+#include <boost/thread/recursive_mutex.hpp>
 
 typedef std::function<PluginReturn(std::vector<std::string> &)> InitFunc;
 typedef std::function<PluginReturn(std::shared_ptr<Parameters>)> PrecallFunc;
@@ -25,8 +26,9 @@ typedef std::function<PluginReturn(std::shared_ptr<Parameters>)> PostcallFunc;
 
 class DriverWrapperFactory : public DriverWrapperBase{
 private:
-	// boost::recursive_mutex _mtx;
+	boost::recursive_mutex _mtx;
 	//StackTraceGen * _stack;
+	size_t _globalID;
 	bool firstExec;
 	std::vector<std::tuple<InitFunc, PrecallFunc, PostcallFunc> > _plugins;
 public:

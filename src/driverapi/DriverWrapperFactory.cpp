@@ -43,6 +43,7 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 
 DriverWrapperFactory::DriverWrapperFactory() {
 	DefineBinders();
+	_globalID = 0;
 	std::string libraryFile = std::string("pluginlist.txt");
 	std::vector<std::string> libs = GetLibraryNames(libraryFile.c_str());
 	LoadLibraries(libs);
@@ -55,6 +56,12 @@ void DriverWrapperFactory::PrintStack() {
 }
 int DriverWrapperFactory::PerformAction(std::shared_ptr<Parameters> params) {
 	// Call precall's
+	{
+		boost::recursive_mutex::scoped_lock lock(_driverMtx);
+		params.get()->SetInstID(_globalID);
+		_globalID++;
+	}
+
 	for (auto i : _plugins) 
 		std::get<1>(i)(params);
 

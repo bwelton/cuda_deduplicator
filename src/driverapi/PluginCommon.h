@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include "cuda.h"
 #include "Parameters.h"
 #include "DriverWrapperBase.h"
 enum PluginReturn {
@@ -14,9 +15,7 @@ enum PluginReturn {
 	MODIFIED_PARAMS,	// This plugin modified the parameters
 	FAILED			// This plugin has failed
 };
-#ifndef CUresult
-#define CUresult int
-#endif
+
 enum CallID {
 	ID_CUGETERRORSTRING = 0,
 	ID_CUGETERRORNAME,

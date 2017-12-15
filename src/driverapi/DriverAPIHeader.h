@@ -6,6 +6,7 @@
 #include "DriverWrapperBase.h"
 #include <vector>
 extern "C" {
+void CheckInit_DriverAPI();
 void DefineBinders();
 int ORIGINAL_cuGetErrorString( CUresult error, const char ** pStr );
 int ORIGINAL_cuGetErrorName( CUresult error, const char ** pStr );

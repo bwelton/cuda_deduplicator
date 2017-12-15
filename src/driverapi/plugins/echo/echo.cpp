@@ -22,7 +22,7 @@ PluginReturn Echo::Precall(std::shared_ptr<Parameters> params) {
 
 PluginReturn Echo::Postcall(std::shared_ptr<Parameters> params) {
 	std::cout << "[POSTCALL] Call: " << _cmdToName[params.get()->GetID()] << " Param Count:" << params.get()->GetLen() << " Performed: " << params.get()->Called() << std::endl;
-	if (CallPerfromed)
+	if (params.get()->Called())
 		callcount++;
 	return NO_ACTION;
 }

@@ -1,19 +1,19 @@
 #pragma ONCE
-
+#include "Parameters.h"
 #include "PluginCommon.h"
 
 extern "C" {
 	void init(std::vector<std::string> & cmd_list);
-	PluginReturn Precall(std::shared_ptr<ParameterBase> params);
-	PluginReturn Postcall(std::shared_ptr<ParameterBase> params);
+	PluginReturn Precall(std::shared_ptr<Parameters> params);
+	PluginReturn Postcall(std::shared_ptr<Parameters> params);
 }
 
 class Echo {
 public:
 	Echo(std::vector<std::string> & cmd_list);
 	~Echo();
-	PluginReturn Precall(std::shared_ptr<ParameterBase> params);
-	PluginReturn Postcall(std::shared_ptr<ParameterBase> params);
+	PluginReturn Precall(std::shared_ptr<Parameters> params);
+	PluginReturn Postcall(std::shared_ptr<Parameters> params);
 private:
 	std::map<int,std::string> _cmdToName;
 	size_t callcount;

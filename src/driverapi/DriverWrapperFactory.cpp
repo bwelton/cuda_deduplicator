@@ -23,7 +23,7 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 		assert(handle != NULL);
 		PluginReturn (*initF)(std::vector<std::string> &);
 		PluginReturn (*precallF)(std::shared_ptr<Parameters>);
-		PluginReturn (*postcallF)(std::shared_ptr<Parameters>, bool);
+		PluginReturn (*postcallF)(std::shared_ptr<Parameters>);
 
 		initF = (PluginReturn (*)(std::vector<std::string> &)) dlsym(handle, "init");
 		precallF = (PluginReturn (*)(std::shared_ptr<Parameters>)) dlsym(handle, "Precall");

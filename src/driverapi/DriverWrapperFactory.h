@@ -10,7 +10,7 @@
 
 #include "DriverWrapperBase.h"
 #include "Parameters.h"
-#include "StackTraceGen.h"
+//#include "StackTraceGen.h"
 #ifndef INTERPOSITION_BUILD
 #include "DriverAPIHeader.h"
 #include "cuda.h"
@@ -26,7 +26,7 @@ typedef std::function<CallReturn(DriverAPICall, std::shared_ptr<ParameterBase>, 
 class DriverWrapperFactory : public DriverWrapperBase{
 private:
 	// boost::recursive_mutex _mtx;
-	StackTraceGen * _stack;
+	//StackTraceGen * _stack;
 	bool firstExec;
 	std::vector<std::tuple<InitFunc, PrecallFunc, PostcallFunc> > _plugins;
 public:

@@ -488,12 +488,13 @@ int ORIGINAL_cuModuleUnload( CUmodule hmod ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleUnload( CUmodule hmod ) {
-	// Build the instriment factory
-	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hmod };
-	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleUnload, (void*) &ORIGINAL_cuModuleUnload, params));
-	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
-	return ret;
+	// This specific function can be called at unwind, which will screw us.
+	
+	// BUILD_FACTORY
+	// std::vector<void **> params = { (void **)&hmod };
+	// std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleUnload, (void*) &ORIGINAL_cuModuleUnload, params));
+	// int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ORIGINAL_cuModuleUnload(hmod);
 }
 // This "function" will be rewritten to point to cuModuleGetFunction
 int ORIGINAL_cuModuleGetFunction( CUfunction * hfunc, CUmodule hmod, const char * name ) { }

@@ -31,7 +31,7 @@ private:
 	std::vector<std::tuple<InitFunc, PrecallFunc, PostcallFunc> > _plugins;
 public:
 	DriverWrapperFactory();
-	int PerformAction(DriverAPICall t, std::shared_ptr<ParameterBase> params);
+	int PerformAction(std::shared_ptr<Parameters> params);
 	~DriverWrapperFactory();
 	void LoadLibraries(std::vector<std::string> libs);
 	std::vector<std::string> GetLibraryNames(const char * file);

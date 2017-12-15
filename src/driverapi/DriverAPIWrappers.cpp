@@ -3,11 +3,9 @@
 #include "DriverWrapperBase.h"
 #include "DriverWrapperFactory.h"
 #include "cuda.h"
-#include <vector>
 std::shared_ptr<DriverWrapperFactory> DriverFactory;
-extern "C" {// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
+extern "C" {
+	
 void JustGenStackTrace() {
 	BUILD_FACTORY
 	FACTORY_PTR->PrintStack();
@@ -17,3770 +15,3250 @@ void JustGenStackTrace() {
 void CheckInit_DriverAPI() {
 	
 }
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGetErrorString
 int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGetErrorString( CUresult error, const char * * pStr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&error,(void *)&pStr };
-	// std::tuple<int,CUresult,const char * *> params = std::make_tuple(0 ,error,pStr);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(0, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGetErrorString ,error,pStr);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&error,(void **)&pStr };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGetErrorString, (void*) &ORIGINAL_cuGetErrorString, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGetErrorName
 int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGetErrorName( CUresult error, const char * * pStr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&error,(void *)&pStr };
-	// std::tuple<int,CUresult,const char * *> params = std::make_tuple(1 ,error,pStr);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(1, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGetErrorName ,error,pStr);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&error,(void **)&pStr };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGetErrorName, (void*) &ORIGINAL_cuGetErrorName, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuInit
 int ORIGINAL_cuInit( unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuInit( unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&Flags };
-	// std::tuple<int,unsigned int> params = std::make_tuple(2 ,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(2, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuInit ,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuInit, (void*) &ORIGINAL_cuInit, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDriverGetVersion
 int ORIGINAL_cuDriverGetVersion( int * driverVersion ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDriverGetVersion( int * driverVersion ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&driverVersion };
-	// std::tuple<int,int *> params = std::make_tuple(3 ,driverVersion);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(3, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDriverGetVersion ,driverVersion);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&driverVersion };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDriverGetVersion, (void*) &ORIGINAL_cuDriverGetVersion, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceGet
 int ORIGINAL_cuDeviceGet( CUdevice * device, int ordinal ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGet( CUdevice * device, int ordinal ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&device,(void *)&ordinal };
-	// std::tuple<int,CUdevice *,int> params = std::make_tuple(4 ,device,ordinal);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(4, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceGet ,device,ordinal);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&device,(void **)&ordinal };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGet, (void*) &ORIGINAL_cuDeviceGet, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceGetCount
 int ORIGINAL_cuDeviceGetCount( int * count ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetCount( int * count ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&count };
-	// std::tuple<int,int *> params = std::make_tuple(5 ,count);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(5, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceGetCount ,count);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&count };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetCount, (void*) &ORIGINAL_cuDeviceGetCount, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceGetName
 int ORIGINAL_cuDeviceGetName( char * name, int len, CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetName( char * name, int len, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&name,(void *)&len,(void *)&dev };
-	// std::tuple<int,char *,int,CUdevice> params = std::make_tuple(6 ,name,len,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(6, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceGetName ,name,len,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&name,(void **)&len,(void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetName, (void*) &ORIGINAL_cuDeviceGetName, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceTotalMem
 int ORIGINAL_cuDeviceTotalMem( size_t * bytes, CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceTotalMem( size_t * bytes, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&bytes,(void *)&dev };
-	// std::tuple<int,size_t *,CUdevice> params = std::make_tuple(7 ,bytes,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(7, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceTotalMem ,bytes,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&bytes,(void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceTotalMem, (void*) &ORIGINAL_cuDeviceTotalMem, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceGetAttribute
 int ORIGINAL_cuDeviceGetAttribute( int * pi, CUdevice_attribute attrib, CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetAttribute( int * pi, CUdevice_attribute attrib, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pi,(void *)&attrib,(void *)&dev };
-	// std::tuple<int,int *,CUdevice_attribute,CUdevice> params = std::make_tuple(8 ,pi,attrib,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(8, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceGetAttribute ,pi,attrib,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pi,(void **)&attrib,(void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetAttribute, (void*) &ORIGINAL_cuDeviceGetAttribute, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceGetProperties
 int ORIGINAL_cuDeviceGetProperties( CUdevprop * prop, CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetProperties( CUdevprop * prop, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&prop,(void *)&dev };
-	// std::tuple<int,CUdevprop *,CUdevice> params = std::make_tuple(9 ,prop,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(9, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceGetProperties ,prop,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&prop,(void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetProperties, (void*) &ORIGINAL_cuDeviceGetProperties, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceComputeCapability
 int ORIGINAL_cuDeviceComputeCapability( int * major, int * minor, CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceComputeCapability( int * major, int * minor, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&major,(void *)&minor,(void *)&dev };
-	// std::tuple<int,int *,int *,CUdevice> params = std::make_tuple(10 ,major,minor,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(10, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceComputeCapability ,major,minor,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&major,(void **)&minor,(void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceComputeCapability, (void*) &ORIGINAL_cuDeviceComputeCapability, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDevicePrimaryCtxRetain
 int ORIGINAL_cuDevicePrimaryCtxRetain( CUcontext * pctx, CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxRetain( CUcontext * pctx, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pctx,(void *)&dev };
-	// std::tuple<int,CUcontext *,CUdevice> params = std::make_tuple(11 ,pctx,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(11, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDevicePrimaryCtxRetain ,pctx,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pctx,(void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxRetain, (void*) &ORIGINAL_cuDevicePrimaryCtxRetain, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDevicePrimaryCtxRelease
 int ORIGINAL_cuDevicePrimaryCtxRelease( CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxRelease( CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dev };
-	// std::tuple<int,CUdevice> params = std::make_tuple(12 ,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(12, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDevicePrimaryCtxRelease ,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxRelease, (void*) &ORIGINAL_cuDevicePrimaryCtxRelease, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDevicePrimaryCtxSetFlags
 int ORIGINAL_cuDevicePrimaryCtxSetFlags( CUdevice dev, unsigned int flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxSetFlags( CUdevice dev, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dev,(void *)&flags };
-	// std::tuple<int,CUdevice,unsigned int> params = std::make_tuple(13 ,dev,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(13, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDevicePrimaryCtxSetFlags ,dev,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dev,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxSetFlags, (void*) &ORIGINAL_cuDevicePrimaryCtxSetFlags, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDevicePrimaryCtxGetState
 int ORIGINAL_cuDevicePrimaryCtxGetState( CUdevice dev, unsigned int * flags, int * active ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxGetState( CUdevice dev, unsigned int * flags, int * active ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dev,(void *)&flags,(void *)&active };
-	// std::tuple<int,CUdevice,unsigned int *,int *> params = std::make_tuple(14 ,dev,flags,active);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(14, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDevicePrimaryCtxGetState ,dev,flags,active);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dev,(void **)&flags,(void **)&active };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxGetState, (void*) &ORIGINAL_cuDevicePrimaryCtxGetState, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDevicePrimaryCtxReset
 int ORIGINAL_cuDevicePrimaryCtxReset( CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxReset( CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dev };
-	// std::tuple<int,CUdevice> params = std::make_tuple(15 ,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(15, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDevicePrimaryCtxReset ,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxReset, (void*) &ORIGINAL_cuDevicePrimaryCtxReset, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxCreate
 int ORIGINAL_cuCtxCreate( CUcontext * pctx, unsigned int flags, CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxCreate( CUcontext * pctx, unsigned int flags, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pctx,(void *)&flags,(void *)&dev };
-	// std::tuple<int,CUcontext *,unsigned int,CUdevice> params = std::make_tuple(16 ,pctx,flags,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(16, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxCreate ,pctx,flags,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pctx,(void **)&flags,(void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxCreate, (void*) &ORIGINAL_cuCtxCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxDestroy
 int ORIGINAL_cuCtxDestroy( CUcontext ctx ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxDestroy( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&ctx };
-	// std::tuple<int,CUcontext> params = std::make_tuple(17 ,ctx);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(17, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxDestroy ,ctx);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&ctx };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxDestroy, (void*) &ORIGINAL_cuCtxDestroy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxPushCurrent
 int ORIGINAL_cuCtxPushCurrent( CUcontext ctx ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxPushCurrent( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&ctx };
-	// std::tuple<int,CUcontext> params = std::make_tuple(18 ,ctx);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(18, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxPushCurrent ,ctx);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&ctx };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxPushCurrent, (void*) &ORIGINAL_cuCtxPushCurrent, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxPopCurrent
 int ORIGINAL_cuCtxPopCurrent( CUcontext * pctx ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxPopCurrent( CUcontext * pctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pctx };
-	// std::tuple<int,CUcontext *> params = std::make_tuple(19 ,pctx);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(19, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxPopCurrent ,pctx);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pctx };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxPopCurrent, (void*) &ORIGINAL_cuCtxPopCurrent, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxSetCurrent
 int ORIGINAL_cuCtxSetCurrent( CUcontext ctx ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSetCurrent( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&ctx };
-	// std::tuple<int,CUcontext> params = std::make_tuple(20 ,ctx);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(20, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxSetCurrent ,ctx);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&ctx };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSetCurrent, (void*) &ORIGINAL_cuCtxSetCurrent, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxGetCurrent
 int ORIGINAL_cuCtxGetCurrent( CUcontext * pctx ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetCurrent( CUcontext * pctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pctx };
-	// std::tuple<int,CUcontext *> params = std::make_tuple(21 ,pctx);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(21, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxGetCurrent ,pctx);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pctx };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetCurrent, (void*) &ORIGINAL_cuCtxGetCurrent, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxGetDevice
 int ORIGINAL_cuCtxGetDevice( CUdevice * device ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetDevice( CUdevice * device ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&device };
-	// std::tuple<int,CUdevice *> params = std::make_tuple(22 ,device);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(22, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxGetDevice ,device);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&device };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetDevice, (void*) &ORIGINAL_cuCtxGetDevice, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxGetFlags
 int ORIGINAL_cuCtxGetFlags( unsigned int * flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetFlags( unsigned int * flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&flags };
-	// std::tuple<int,unsigned int *> params = std::make_tuple(23 ,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(23, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxGetFlags ,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetFlags, (void*) &ORIGINAL_cuCtxGetFlags, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxSynchronize
 int ORIGINAL_cuCtxSynchronize( void  ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSynchronize( void  ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = {  };
-	// std::tuple<int> params = std::make_tuple(24 );
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(24, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxSynchronize );
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params;
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSynchronize, (void*) &ORIGINAL_cuCtxSynchronize, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxSetLimit
 int ORIGINAL_cuCtxSetLimit( CUlimit limit, size_t value ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSetLimit( CUlimit limit, size_t value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&limit,(void *)&value };
-	// std::tuple<int,CUlimit,size_t> params = std::make_tuple(25 ,limit,value);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(25, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxSetLimit ,limit,value);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&limit,(void **)&value };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSetLimit, (void*) &ORIGINAL_cuCtxSetLimit, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxGetLimit
 int ORIGINAL_cuCtxGetLimit( size_t * pvalue, CUlimit limit ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetLimit( size_t * pvalue, CUlimit limit ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pvalue,(void *)&limit };
-	// std::tuple<int,size_t *,CUlimit> params = std::make_tuple(26 ,pvalue,limit);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(26, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxGetLimit ,pvalue,limit);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pvalue,(void **)&limit };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetLimit, (void*) &ORIGINAL_cuCtxGetLimit, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxGetCacheConfig
 int ORIGINAL_cuCtxGetCacheConfig( CUfunc_cache * pconfig ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetCacheConfig( CUfunc_cache * pconfig ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pconfig };
-	// std::tuple<int,CUfunc_cache *> params = std::make_tuple(27 ,pconfig);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(27, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxGetCacheConfig ,pconfig);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pconfig };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetCacheConfig, (void*) &ORIGINAL_cuCtxGetCacheConfig, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxSetCacheConfig
 int ORIGINAL_cuCtxSetCacheConfig( CUfunc_cache config ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSetCacheConfig( CUfunc_cache config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&config };
-	// std::tuple<int,CUfunc_cache> params = std::make_tuple(28 ,config);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(28, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxSetCacheConfig ,config);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&config };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSetCacheConfig, (void*) &ORIGINAL_cuCtxSetCacheConfig, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxGetSharedMemConfig
 int ORIGINAL_cuCtxGetSharedMemConfig( CUsharedconfig * pConfig ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetSharedMemConfig( CUsharedconfig * pConfig ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pConfig };
-	// std::tuple<int,CUsharedconfig *> params = std::make_tuple(29 ,pConfig);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(29, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxGetSharedMemConfig ,pConfig);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pConfig };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetSharedMemConfig, (void*) &ORIGINAL_cuCtxGetSharedMemConfig, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxSetSharedMemConfig
 int ORIGINAL_cuCtxSetSharedMemConfig( CUsharedconfig config ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSetSharedMemConfig( CUsharedconfig config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&config };
-	// std::tuple<int,CUsharedconfig> params = std::make_tuple(30 ,config);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(30, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxSetSharedMemConfig ,config);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&config };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSetSharedMemConfig, (void*) &ORIGINAL_cuCtxSetSharedMemConfig, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxGetApiVersion
 int ORIGINAL_cuCtxGetApiVersion( CUcontext ctx, unsigned int * version ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetApiVersion( CUcontext ctx, unsigned int * version ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&ctx,(void *)&version };
-	// std::tuple<int,CUcontext,unsigned int *> params = std::make_tuple(31 ,ctx,version);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(31, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxGetApiVersion ,ctx,version);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&ctx,(void **)&version };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetApiVersion, (void*) &ORIGINAL_cuCtxGetApiVersion, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxGetStreamPriorityRange
 int ORIGINAL_cuCtxGetStreamPriorityRange( int * leastPriority, int * greatestPriority ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetStreamPriorityRange( int * leastPriority, int * greatestPriority ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&leastPriority,(void *)&greatestPriority };
-	// std::tuple<int,int *,int *> params = std::make_tuple(32 ,leastPriority,greatestPriority);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(32, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxGetStreamPriorityRange ,leastPriority,greatestPriority);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&leastPriority,(void **)&greatestPriority };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetStreamPriorityRange, (void*) &ORIGINAL_cuCtxGetStreamPriorityRange, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxAttach
 int ORIGINAL_cuCtxAttach( CUcontext * pctx, unsigned int flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxAttach( CUcontext * pctx, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pctx,(void *)&flags };
-	// std::tuple<int,CUcontext *,unsigned int> params = std::make_tuple(33 ,pctx,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(33, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxAttach ,pctx,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pctx,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxAttach, (void*) &ORIGINAL_cuCtxAttach, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxDetach
 int ORIGINAL_cuCtxDetach( CUcontext ctx ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxDetach( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&ctx };
-	// std::tuple<int,CUcontext> params = std::make_tuple(34 ,ctx);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(34, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxDetach ,ctx);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&ctx };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxDetach, (void*) &ORIGINAL_cuCtxDetach, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuModuleLoad
 int ORIGINAL_cuModuleLoad( CUmodule * module, const char * fname ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleLoad( CUmodule * module, const char * fname ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&module,(void *)&fname };
-	// std::tuple<int,CUmodule *,const char *> params = std::make_tuple(35 ,module,fname);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(35, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuModuleLoad ,module,fname);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&module,(void **)&fname };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleLoad, (void*) &ORIGINAL_cuModuleLoad, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuModuleLoadData
 int ORIGINAL_cuModuleLoadData( CUmodule * module, const void * image ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleLoadData( CUmodule * module, const void * image ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&module,(void *)&image };
-	// std::tuple<int,CUmodule *,const void *> params = std::make_tuple(36 ,module,image);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(36, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuModuleLoadData ,module,image);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&module,(void **)&image };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleLoadData, (void*) &ORIGINAL_cuModuleLoadData, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuModuleLoadDataEx
 int ORIGINAL_cuModuleLoadDataEx( CUmodule * module, const void * image, unsigned int numOptions, CUjit_option * options, void * * optionValues ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleLoadDataEx( CUmodule * module, const void * image, unsigned int numOptions, CUjit_option * options, void * * optionValues ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&module,(void *)&image,(void *)&numOptions,(void *)&options,(void *)&optionValues };
-	// std::tuple<int,CUmodule *,const void *,unsigned int,CUjit_option *,void * *> params = std::make_tuple(37 ,module,image,numOptions,options,optionValues);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(37, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuModuleLoadDataEx ,module,image,numOptions,options,optionValues);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&module,(void **)&image,(void **)&numOptions,(void **)&options,(void **)&optionValues };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleLoadDataEx, (void*) &ORIGINAL_cuModuleLoadDataEx, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuModuleLoadFatBinary
 int ORIGINAL_cuModuleLoadFatBinary( CUmodule * module, const void * fatCubin ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleLoadFatBinary( CUmodule * module, const void * fatCubin ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&module,(void *)&fatCubin };
-	// std::tuple<int,CUmodule *,const void *> params = std::make_tuple(38 ,module,fatCubin);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(38, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuModuleLoadFatBinary ,module,fatCubin);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&module,(void **)&fatCubin };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleLoadFatBinary, (void*) &ORIGINAL_cuModuleLoadFatBinary, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuModuleUnload
 int ORIGINAL_cuModuleUnload( CUmodule hmod ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleUnload( CUmodule hmod ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hmod };
-	// std::tuple<int,CUmodule> params = std::make_tuple(39 ,hmod);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(39, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuModuleUnload ,hmod);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hmod };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleUnload, (void*) &ORIGINAL_cuModuleUnload, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuModuleGetFunction
 int ORIGINAL_cuModuleGetFunction( CUfunction * hfunc, CUmodule hmod, const char * name ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleGetFunction( CUfunction * hfunc, CUmodule hmod, const char * name ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&hmod,(void *)&name };
-	// std::tuple<int,CUfunction *,CUmodule,const char *> params = std::make_tuple(40 ,hfunc,hmod,name);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(40, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuModuleGetFunction ,hfunc,hmod,name);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&hmod,(void **)&name };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleGetFunction, (void*) &ORIGINAL_cuModuleGetFunction, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuModuleGetGlobal
 int ORIGINAL_cuModuleGetGlobal( CUdeviceptr * dptr, size_t * bytes, CUmodule hmod, const char * name ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleGetGlobal( CUdeviceptr * dptr, size_t * bytes, CUmodule hmod, const char * name ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dptr,(void *)&bytes,(void *)&hmod,(void *)&name };
-	// std::tuple<int,CUdeviceptr *,size_t *,CUmodule,const char *> params = std::make_tuple(41 ,dptr,bytes,hmod,name);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(41, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuModuleGetGlobal ,dptr,bytes,hmod,name);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dptr,(void **)&bytes,(void **)&hmod,(void **)&name };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleGetGlobal, (void*) &ORIGINAL_cuModuleGetGlobal, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuModuleGetTexRef
 int ORIGINAL_cuModuleGetTexRef( CUtexref * pTexRef, CUmodule hmod, const char * name ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleGetTexRef( CUtexref * pTexRef, CUmodule hmod, const char * name ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pTexRef,(void *)&hmod,(void *)&name };
-	// std::tuple<int,CUtexref *,CUmodule,const char *> params = std::make_tuple(42 ,pTexRef,hmod,name);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(42, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuModuleGetTexRef ,pTexRef,hmod,name);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pTexRef,(void **)&hmod,(void **)&name };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleGetTexRef, (void*) &ORIGINAL_cuModuleGetTexRef, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuModuleGetSurfRef
 int ORIGINAL_cuModuleGetSurfRef( CUsurfref * pSurfRef, CUmodule hmod, const char * name ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuModuleGetSurfRef( CUsurfref * pSurfRef, CUmodule hmod, const char * name ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pSurfRef,(void *)&hmod,(void *)&name };
-	// std::tuple<int,CUsurfref *,CUmodule,const char *> params = std::make_tuple(43 ,pSurfRef,hmod,name);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(43, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuModuleGetSurfRef ,pSurfRef,hmod,name);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pSurfRef,(void **)&hmod,(void **)&name };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleGetSurfRef, (void*) &ORIGINAL_cuModuleGetSurfRef, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuLinkCreate
 int ORIGINAL_cuLinkCreate( unsigned int numOptions, CUjit_option * options, void * * optionValues, CUlinkState * stateOut ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuLinkCreate( unsigned int numOptions, CUjit_option * options, void * * optionValues, CUlinkState * stateOut ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&numOptions,(void *)&options,(void *)&optionValues,(void *)&stateOut };
-	// std::tuple<int,unsigned int,CUjit_option *,void * *,CUlinkState *> params = std::make_tuple(44 ,numOptions,options,optionValues,stateOut);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(44, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuLinkCreate ,numOptions,options,optionValues,stateOut);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&numOptions,(void **)&options,(void **)&optionValues,(void **)&stateOut };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkCreate, (void*) &ORIGINAL_cuLinkCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuLinkAddData
 int ORIGINAL_cuLinkAddData( CUlinkState state, CUjitInputType type, void * data, size_t size, const char * name, unsigned int numOptions, CUjit_option * options, void * * optionValues ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuLinkAddData( CUlinkState state, CUjitInputType type, void * data, size_t size, const char * name, unsigned int numOptions, CUjit_option * options, void * * optionValues ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&state,(void *)&type,(void *)&data,(void *)&size,(void *)&name,(void *)&numOptions,(void *)&options,(void *)&optionValues };
-	// std::tuple<int,CUlinkState,CUjitInputType,void *,size_t,const char *,unsigned int,CUjit_option *,void * *> params = std::make_tuple(45 ,state,type,data,size,name,numOptions,options,optionValues);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(45, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuLinkAddData ,state,type,data,size,name,numOptions,options,optionValues);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&state,(void **)&type,(void **)&data,(void **)&size,(void **)&name,(void **)&numOptions,(void **)&options,(void **)&optionValues };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkAddData, (void*) &ORIGINAL_cuLinkAddData, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuLinkAddFile
 int ORIGINAL_cuLinkAddFile( CUlinkState state, CUjitInputType type, const char * path, unsigned int numOptions, CUjit_option * options, void * * optionValues ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuLinkAddFile( CUlinkState state, CUjitInputType type, const char * path, unsigned int numOptions, CUjit_option * options, void * * optionValues ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&state,(void *)&type,(void *)&path,(void *)&numOptions,(void *)&options,(void *)&optionValues };
-	// std::tuple<int,CUlinkState,CUjitInputType,const char *,unsigned int,CUjit_option *,void * *> params = std::make_tuple(46 ,state,type,path,numOptions,options,optionValues);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(46, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuLinkAddFile ,state,type,path,numOptions,options,optionValues);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&state,(void **)&type,(void **)&path,(void **)&numOptions,(void **)&options,(void **)&optionValues };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkAddFile, (void*) &ORIGINAL_cuLinkAddFile, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuLinkComplete
 int ORIGINAL_cuLinkComplete( CUlinkState state, void * * cubinOut, size_t * sizeOut ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuLinkComplete( CUlinkState state, void * * cubinOut, size_t * sizeOut ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&state,(void *)&cubinOut,(void *)&sizeOut };
-	// std::tuple<int,CUlinkState,void * *,size_t *> params = std::make_tuple(47 ,state,cubinOut,sizeOut);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(47, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuLinkComplete ,state,cubinOut,sizeOut);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&state,(void **)&cubinOut,(void **)&sizeOut };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkComplete, (void*) &ORIGINAL_cuLinkComplete, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuLinkDestroy
 int ORIGINAL_cuLinkDestroy( CUlinkState state ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuLinkDestroy( CUlinkState state ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&state };
-	// std::tuple<int,CUlinkState> params = std::make_tuple(48 ,state);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(48, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuLinkDestroy ,state);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&state };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkDestroy, (void*) &ORIGINAL_cuLinkDestroy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemGetInfo
 int ORIGINAL_cuMemGetInfo( size_t * free, size_t * total ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemGetInfo( size_t * free, size_t * total ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&free,(void *)&total };
-	// std::tuple<int,size_t *,size_t *> params = std::make_tuple(49 ,free,total);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(49, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemGetInfo ,free,total);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&free,(void **)&total };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemGetInfo, (void*) &ORIGINAL_cuMemGetInfo, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemAlloc
 int ORIGINAL_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dptr,(void *)&bytesize };
-	// std::tuple<int,CUdeviceptr *,size_t> params = std::make_tuple(50 ,dptr,bytesize);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(50, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemAlloc ,dptr,bytesize);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dptr,(void **)&bytesize };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAlloc, (void*) &ORIGINAL_cuMemAlloc, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemAllocPitch
 int ORIGINAL_cuMemAllocPitch( CUdeviceptr * dptr, size_t * pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemAllocPitch( CUdeviceptr * dptr, size_t * pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dptr,(void *)&pPitch,(void *)&WidthInBytes,(void *)&Height,(void *)&ElementSizeBytes };
-	// std::tuple<int,CUdeviceptr *,size_t *,size_t,size_t,unsigned int> params = std::make_tuple(51 ,dptr,pPitch,WidthInBytes,Height,ElementSizeBytes);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(51, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemAllocPitch ,dptr,pPitch,WidthInBytes,Height,ElementSizeBytes);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dptr,(void **)&pPitch,(void **)&WidthInBytes,(void **)&Height,(void **)&ElementSizeBytes };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAllocPitch, (void*) &ORIGINAL_cuMemAllocPitch, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemFree
 int ORIGINAL_cuMemFree( CUdeviceptr dptr ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemFree( CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dptr };
-	// std::tuple<int,CUdeviceptr> params = std::make_tuple(52 ,dptr);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(52, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemFree ,dptr);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dptr };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemFree, (void*) &ORIGINAL_cuMemFree, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemGetAddressRange
 int ORIGINAL_cuMemGetAddressRange( CUdeviceptr * pbase, size_t * psize, CUdeviceptr dptr ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemGetAddressRange( CUdeviceptr * pbase, size_t * psize, CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pbase,(void *)&psize,(void *)&dptr };
-	// std::tuple<int,CUdeviceptr *,size_t *,CUdeviceptr> params = std::make_tuple(53 ,pbase,psize,dptr);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(53, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemGetAddressRange ,pbase,psize,dptr);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pbase,(void **)&psize,(void **)&dptr };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemGetAddressRange, (void*) &ORIGINAL_cuMemGetAddressRange, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemAllocHost
 int ORIGINAL_cuMemAllocHost( void * * pp, size_t bytesize ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemAllocHost( void * * pp, size_t bytesize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pp,(void *)&bytesize };
-	// std::tuple<int,void * *,size_t> params = std::make_tuple(54 ,pp,bytesize);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(54, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemAllocHost ,pp,bytesize);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pp,(void **)&bytesize };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAllocHost, (void*) &ORIGINAL_cuMemAllocHost, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemFreeHost
 int ORIGINAL_cuMemFreeHost( void * p ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemFreeHost( void * p ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&p };
-	// std::tuple<int,void *> params = std::make_tuple(55 ,p);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(55, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemFreeHost ,p);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&p };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemFreeHost, (void*) &ORIGINAL_cuMemFreeHost, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemHostAlloc
 int ORIGINAL_cuMemHostAlloc( void * * pp, size_t bytesize, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostAlloc( void * * pp, size_t bytesize, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pp,(void *)&bytesize,(void *)&Flags };
-	// std::tuple<int,void * *,size_t,unsigned int> params = std::make_tuple(56 ,pp,bytesize,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(56, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemHostAlloc ,pp,bytesize,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pp,(void **)&bytesize,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostAlloc, (void*) &ORIGINAL_cuMemHostAlloc, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemHostGetDevicePointer
 int ORIGINAL_cuMemHostGetDevicePointer( CUdeviceptr * pdptr, void * p, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostGetDevicePointer( CUdeviceptr * pdptr, void * p, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pdptr,(void *)&p,(void *)&Flags };
-	// std::tuple<int,CUdeviceptr *,void *,unsigned int> params = std::make_tuple(57 ,pdptr,p,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(57, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemHostGetDevicePointer ,pdptr,p,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pdptr,(void **)&p,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostGetDevicePointer, (void*) &ORIGINAL_cuMemHostGetDevicePointer, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemHostGetFlags
 int ORIGINAL_cuMemHostGetFlags( unsigned int * pFlags, void * p ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostGetFlags( unsigned int * pFlags, void * p ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pFlags,(void *)&p };
-	// std::tuple<int,unsigned int *,void *> params = std::make_tuple(58 ,pFlags,p);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(58, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemHostGetFlags ,pFlags,p);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pFlags,(void **)&p };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostGetFlags, (void*) &ORIGINAL_cuMemHostGetFlags, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemAllocManaged
 int ORIGINAL_cuMemAllocManaged( CUdeviceptr * dptr, size_t bytesize, unsigned int flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemAllocManaged( CUdeviceptr * dptr, size_t bytesize, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dptr,(void *)&bytesize,(void *)&flags };
-	// std::tuple<int,CUdeviceptr *,size_t,unsigned int> params = std::make_tuple(59 ,dptr,bytesize,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(59, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemAllocManaged ,dptr,bytesize,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dptr,(void **)&bytesize,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAllocManaged, (void*) &ORIGINAL_cuMemAllocManaged, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceGetByPCIBusId
 int ORIGINAL_cuDeviceGetByPCIBusId( CUdevice * dev, const char * pciBusId ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetByPCIBusId( CUdevice * dev, const char * pciBusId ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dev,(void *)&pciBusId };
-	// std::tuple<int,CUdevice *,const char *> params = std::make_tuple(60 ,dev,pciBusId);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(60, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceGetByPCIBusId ,dev,pciBusId);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dev,(void **)&pciBusId };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetByPCIBusId, (void*) &ORIGINAL_cuDeviceGetByPCIBusId, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceGetPCIBusId
 int ORIGINAL_cuDeviceGetPCIBusId( char * pciBusId, int len, CUdevice dev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetPCIBusId( char * pciBusId, int len, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pciBusId,(void *)&len,(void *)&dev };
-	// std::tuple<int,char *,int,CUdevice> params = std::make_tuple(61 ,pciBusId,len,dev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(61, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceGetPCIBusId ,pciBusId,len,dev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pciBusId,(void **)&len,(void **)&dev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetPCIBusId, (void*) &ORIGINAL_cuDeviceGetPCIBusId, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuIpcGetEventHandle
 int ORIGINAL_cuIpcGetEventHandle( CUipcEventHandle * pHandle, CUevent event ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuIpcGetEventHandle( CUipcEventHandle * pHandle, CUevent event ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pHandle,(void *)&event };
-	// std::tuple<int,CUipcEventHandle *,CUevent> params = std::make_tuple(62 ,pHandle,event);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(62, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuIpcGetEventHandle ,pHandle,event);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pHandle,(void **)&event };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcGetEventHandle, (void*) &ORIGINAL_cuIpcGetEventHandle, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuIpcOpenEventHandle
 int ORIGINAL_cuIpcOpenEventHandle( CUevent * phEvent, CUipcEventHandle handle ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuIpcOpenEventHandle( CUevent * phEvent, CUipcEventHandle handle ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&phEvent,(void *)&handle };
-	// std::tuple<int,CUevent *,CUipcEventHandle> params = std::make_tuple(63 ,phEvent,handle);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(63, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuIpcOpenEventHandle ,phEvent,handle);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&phEvent,(void **)&handle };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcOpenEventHandle, (void*) &ORIGINAL_cuIpcOpenEventHandle, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuIpcGetMemHandle
 int ORIGINAL_cuIpcGetMemHandle( CUipcMemHandle * pHandle, CUdeviceptr dptr ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuIpcGetMemHandle( CUipcMemHandle * pHandle, CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pHandle,(void *)&dptr };
-	// std::tuple<int,CUipcMemHandle *,CUdeviceptr> params = std::make_tuple(64 ,pHandle,dptr);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(64, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuIpcGetMemHandle ,pHandle,dptr);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pHandle,(void **)&dptr };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcGetMemHandle, (void*) &ORIGINAL_cuIpcGetMemHandle, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuIpcOpenMemHandle
 int ORIGINAL_cuIpcOpenMemHandle( CUdeviceptr * pdptr, CUipcMemHandle handle, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuIpcOpenMemHandle( CUdeviceptr * pdptr, CUipcMemHandle handle, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pdptr,(void *)&handle,(void *)&Flags };
-	// std::tuple<int,CUdeviceptr *,CUipcMemHandle,unsigned int> params = std::make_tuple(65 ,pdptr,handle,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(65, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuIpcOpenMemHandle ,pdptr,handle,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pdptr,(void **)&handle,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcOpenMemHandle, (void*) &ORIGINAL_cuIpcOpenMemHandle, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuIpcCloseMemHandle
 int ORIGINAL_cuIpcCloseMemHandle( CUdeviceptr dptr ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuIpcCloseMemHandle( CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dptr };
-	// std::tuple<int,CUdeviceptr> params = std::make_tuple(66 ,dptr);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(66, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuIpcCloseMemHandle ,dptr);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dptr };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcCloseMemHandle, (void*) &ORIGINAL_cuIpcCloseMemHandle, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemHostRegister
 int ORIGINAL_cuMemHostRegister( void * p, size_t bytesize, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostRegister( void * p, size_t bytesize, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&p,(void *)&bytesize,(void *)&Flags };
-	// std::tuple<int,void *,size_t,unsigned int> params = std::make_tuple(67 ,p,bytesize,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(67, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemHostRegister ,p,bytesize,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&p,(void **)&bytesize,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostRegister, (void*) &ORIGINAL_cuMemHostRegister, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemHostUnregister
 int ORIGINAL_cuMemHostUnregister( void * p ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostUnregister( void * p ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&p };
-	// std::tuple<int,void *> params = std::make_tuple(68 ,p);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(68, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemHostUnregister ,p);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&p };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostUnregister, (void*) &ORIGINAL_cuMemHostUnregister, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy
 int ORIGINAL_cuMemcpy( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dst,(void *)&src,(void *)&ByteCount };
-	// std::tuple<int,CUdeviceptr,CUdeviceptr,size_t> params = std::make_tuple(69 ,dst,src,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(69, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy ,dst,src,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dst,(void **)&src,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy, (void*) &ORIGINAL_cuMemcpy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyPeer
 int ORIGINAL_cuMemcpyPeer( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyPeer( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstContext,(void *)&srcDevice,(void *)&srcContext,(void *)&ByteCount };
-	// std::tuple<int,CUdeviceptr,CUcontext,CUdeviceptr,CUcontext,size_t> params = std::make_tuple(70 ,dstDevice,dstContext,srcDevice,srcContext,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(70, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyPeer ,dstDevice,dstContext,srcDevice,srcContext,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstContext,(void **)&srcDevice,(void **)&srcContext,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyPeer, (void*) &ORIGINAL_cuMemcpyPeer, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyHtoD
 int ORIGINAL_cuMemcpyHtoD( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoD( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcHost,(void *)&ByteCount };
-	// std::tuple<int,CUdeviceptr,const void *,size_t> params = std::make_tuple(71 ,dstDevice,srcHost,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(71, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyHtoD ,dstDevice,srcHost,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcHost,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoD, (void*) &ORIGINAL_cuMemcpyHtoD, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoH
 int ORIGINAL_cuMemcpyDtoH( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoH( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstHost,(void *)&srcDevice,(void *)&ByteCount };
-	// std::tuple<int,void *,CUdeviceptr,size_t> params = std::make_tuple(72 ,dstHost,srcDevice,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(72, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoH ,dstHost,srcDevice,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoH, (void*) &ORIGINAL_cuMemcpyDtoH, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoD
 int ORIGINAL_cuMemcpyDtoD( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoD( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcDevice,(void *)&ByteCount };
-	// std::tuple<int,CUdeviceptr,CUdeviceptr,size_t> params = std::make_tuple(73 ,dstDevice,srcDevice,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(73, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoD ,dstDevice,srcDevice,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcDevice,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoD, (void*) &ORIGINAL_cuMemcpyDtoD, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoA
 int ORIGINAL_cuMemcpyDtoA( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoA( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstArray,(void *)&dstOffset,(void *)&srcDevice,(void *)&ByteCount };
-	// std::tuple<int,CUarray,size_t,CUdeviceptr,size_t> params = std::make_tuple(74 ,dstArray,dstOffset,srcDevice,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(74, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoA ,dstArray,dstOffset,srcDevice,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcDevice,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoA, (void*) &ORIGINAL_cuMemcpyDtoA, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyAtoD
 int ORIGINAL_cuMemcpyAtoD( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoD( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcArray,(void *)&srcOffset,(void *)&ByteCount };
-	// std::tuple<int,CUdeviceptr,CUarray,size_t,size_t> params = std::make_tuple(75 ,dstDevice,srcArray,srcOffset,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(75, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyAtoD ,dstDevice,srcArray,srcOffset,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoD, (void*) &ORIGINAL_cuMemcpyAtoD, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyHtoA
 int ORIGINAL_cuMemcpyHtoA( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoA( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstArray,(void *)&dstOffset,(void *)&srcHost,(void *)&ByteCount };
-	// std::tuple<int,CUarray,size_t,const void *,size_t> params = std::make_tuple(76 ,dstArray,dstOffset,srcHost,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(76, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyHtoA ,dstArray,dstOffset,srcHost,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoA, (void*) &ORIGINAL_cuMemcpyHtoA, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyAtoH
 int ORIGINAL_cuMemcpyAtoH( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoH( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstHost,(void *)&srcArray,(void *)&srcOffset,(void *)&ByteCount };
-	// std::tuple<int,void *,CUarray,size_t,size_t> params = std::make_tuple(77 ,dstHost,srcArray,srcOffset,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(77, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyAtoH ,dstHost,srcArray,srcOffset,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstHost,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoH, (void*) &ORIGINAL_cuMemcpyAtoH, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyAtoA
 int ORIGINAL_cuMemcpyAtoA( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoA( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstArray,(void *)&dstOffset,(void *)&srcArray,(void *)&srcOffset,(void *)&ByteCount };
-	// std::tuple<int,CUarray,size_t,CUarray,size_t,size_t> params = std::make_tuple(78 ,dstArray,dstOffset,srcArray,srcOffset,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(78, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyAtoA ,dstArray,dstOffset,srcArray,srcOffset,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoA, (void*) &ORIGINAL_cuMemcpyAtoA, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy2D
 int ORIGINAL_cuMemcpy2D( const CUDA_MEMCPY2D * pCopy ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2D( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy };
-	// std::tuple<int,const CUDA_MEMCPY2D *> params = std::make_tuple(79 ,pCopy);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(79, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy2D ,pCopy);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2D, (void*) &ORIGINAL_cuMemcpy2D, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy2DUnaligned
 int ORIGINAL_cuMemcpy2DUnaligned( const CUDA_MEMCPY2D * pCopy ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2DUnaligned( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy };
-	// std::tuple<int,const CUDA_MEMCPY2D *> params = std::make_tuple(80 ,pCopy);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(80, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy2DUnaligned ,pCopy);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2DUnaligned, (void*) &ORIGINAL_cuMemcpy2DUnaligned, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy3D
 int ORIGINAL_cuMemcpy3D( const CUDA_MEMCPY3D * pCopy ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3D( const CUDA_MEMCPY3D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy };
-	// std::tuple<int,const CUDA_MEMCPY3D *> params = std::make_tuple(81 ,pCopy);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(81, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy3D ,pCopy);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3D, (void*) &ORIGINAL_cuMemcpy3D, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy3DPeer
 int ORIGINAL_cuMemcpy3DPeer( const CUDA_MEMCPY3D_PEER * pCopy ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3DPeer( const CUDA_MEMCPY3D_PEER * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy };
-	// std::tuple<int,const CUDA_MEMCPY3D_PEER *> params = std::make_tuple(82 ,pCopy);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(82, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy3DPeer ,pCopy);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3DPeer, (void*) &ORIGINAL_cuMemcpy3DPeer, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyAsync
 int ORIGINAL_cuMemcpyAsync( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAsync( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dst,(void *)&src,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,CUdeviceptr,size_t,CUstream> params = std::make_tuple(83 ,dst,src,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(83, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyAsync ,dst,src,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dst,(void **)&src,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAsync, (void*) &ORIGINAL_cuMemcpyAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyPeerAsync
 int ORIGINAL_cuMemcpyPeerAsync( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyPeerAsync( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstContext,(void *)&srcDevice,(void *)&srcContext,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,CUcontext,CUdeviceptr,CUcontext,size_t,CUstream> params = std::make_tuple(84 ,dstDevice,dstContext,srcDevice,srcContext,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(84, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyPeerAsync ,dstDevice,dstContext,srcDevice,srcContext,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstContext,(void **)&srcDevice,(void **)&srcContext,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyPeerAsync, (void*) &ORIGINAL_cuMemcpyPeerAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyHtoDAsync
 int ORIGINAL_cuMemcpyHtoDAsync( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoDAsync( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcHost,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,const void *,size_t,CUstream> params = std::make_tuple(85 ,dstDevice,srcHost,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(85, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyHtoDAsync ,dstDevice,srcHost,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoDAsync, (void*) &ORIGINAL_cuMemcpyHtoDAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoHAsync
 int ORIGINAL_cuMemcpyDtoHAsync( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoHAsync( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstHost,(void *)&srcDevice,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,void *,CUdeviceptr,size_t,CUstream> params = std::make_tuple(86 ,dstHost,srcDevice,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(86, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoHAsync ,dstHost,srcDevice,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoHAsync, (void*) &ORIGINAL_cuMemcpyDtoHAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoDAsync
 int ORIGINAL_cuMemcpyDtoDAsync( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoDAsync( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcDevice,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,CUdeviceptr,size_t,CUstream> params = std::make_tuple(87 ,dstDevice,srcDevice,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(87, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoDAsync ,dstDevice,srcDevice,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoDAsync, (void*) &ORIGINAL_cuMemcpyDtoDAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyHtoAAsync
 int ORIGINAL_cuMemcpyHtoAAsync( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoAAsync( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstArray,(void *)&dstOffset,(void *)&srcHost,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,CUarray,size_t,const void *,size_t,CUstream> params = std::make_tuple(88 ,dstArray,dstOffset,srcHost,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(88, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyHtoAAsync ,dstArray,dstOffset,srcHost,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoAAsync, (void*) &ORIGINAL_cuMemcpyHtoAAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyAtoHAsync
 int ORIGINAL_cuMemcpyAtoHAsync( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoHAsync( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstHost,(void *)&srcArray,(void *)&srcOffset,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,void *,CUarray,size_t,size_t,CUstream> params = std::make_tuple(89 ,dstHost,srcArray,srcOffset,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(89, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyAtoHAsync ,dstHost,srcArray,srcOffset,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstHost,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoHAsync, (void*) &ORIGINAL_cuMemcpyAtoHAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy2DAsync
 int ORIGINAL_cuMemcpy2DAsync( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2DAsync( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy,(void *)&hStream };
-	// std::tuple<int,const CUDA_MEMCPY2D *,CUstream> params = std::make_tuple(90 ,pCopy,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(90, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy2DAsync ,pCopy,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2DAsync, (void*) &ORIGINAL_cuMemcpy2DAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy3DAsync
 int ORIGINAL_cuMemcpy3DAsync( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3DAsync( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy,(void *)&hStream };
-	// std::tuple<int,const CUDA_MEMCPY3D *,CUstream> params = std::make_tuple(91 ,pCopy,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(91, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy3DAsync ,pCopy,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3DAsync, (void*) &ORIGINAL_cuMemcpy3DAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy3DPeerAsync
 int ORIGINAL_cuMemcpy3DPeerAsync( const CUDA_MEMCPY3D_PEER * pCopy, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3DPeerAsync( const CUDA_MEMCPY3D_PEER * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy,(void *)&hStream };
-	// std::tuple<int,const CUDA_MEMCPY3D_PEER *,CUstream> params = std::make_tuple(92 ,pCopy,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(92, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy3DPeerAsync ,pCopy,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3DPeerAsync, (void*) &ORIGINAL_cuMemcpy3DPeerAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD8
 int ORIGINAL_cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, size_t N ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&uc,(void *)&N };
-	// std::tuple<int,CUdeviceptr,unsigned char,size_t> params = std::make_tuple(93 ,dstDevice,uc,N);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(93, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD8 ,dstDevice,uc,N);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&uc,(void **)&N };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD8, (void*) &ORIGINAL_cuMemsetD8, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD16
 int ORIGINAL_cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, size_t N ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&us,(void *)&N };
-	// std::tuple<int,CUdeviceptr,unsigned short,size_t> params = std::make_tuple(94 ,dstDevice,us,N);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(94, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD16 ,dstDevice,us,N);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&us,(void **)&N };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD16, (void*) &ORIGINAL_cuMemsetD16, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD32
 int ORIGINAL_cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, size_t N ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&ui,(void *)&N };
-	// std::tuple<int,CUdeviceptr,unsigned int,size_t> params = std::make_tuple(95 ,dstDevice,ui,N);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(95, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD32 ,dstDevice,ui,N);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&ui,(void **)&N };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD32, (void*) &ORIGINAL_cuMemsetD32, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD2D8
 int ORIGINAL_cuMemsetD2D8( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D8( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstPitch,(void *)&uc,(void *)&Width,(void *)&Height };
-	// std::tuple<int,CUdeviceptr,size_t,unsigned char,size_t,size_t> params = std::make_tuple(96 ,dstDevice,dstPitch,uc,Width,Height);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(96, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD2D8 ,dstDevice,dstPitch,uc,Width,Height);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&uc,(void **)&Width,(void **)&Height };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D8, (void*) &ORIGINAL_cuMemsetD2D8, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD2D16
 int ORIGINAL_cuMemsetD2D16( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D16( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstPitch,(void *)&us,(void *)&Width,(void *)&Height };
-	// std::tuple<int,CUdeviceptr,size_t,unsigned short,size_t,size_t> params = std::make_tuple(97 ,dstDevice,dstPitch,us,Width,Height);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(97, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD2D16 ,dstDevice,dstPitch,us,Width,Height);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&us,(void **)&Width,(void **)&Height };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D16, (void*) &ORIGINAL_cuMemsetD2D16, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD2D32
 int ORIGINAL_cuMemsetD2D32( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D32( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstPitch,(void *)&ui,(void *)&Width,(void *)&Height };
-	// std::tuple<int,CUdeviceptr,size_t,unsigned int,size_t,size_t> params = std::make_tuple(98 ,dstDevice,dstPitch,ui,Width,Height);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(98, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD2D32 ,dstDevice,dstPitch,ui,Width,Height);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&ui,(void **)&Width,(void **)&Height };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D32, (void*) &ORIGINAL_cuMemsetD2D32, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD8Async
 int ORIGINAL_cuMemsetD8Async( CUdeviceptr dstDevice, unsigned char uc, size_t N, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD8Async( CUdeviceptr dstDevice, unsigned char uc, size_t N, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&uc,(void *)&N,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,unsigned char,size_t,CUstream> params = std::make_tuple(99 ,dstDevice,uc,N,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(99, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD8Async ,dstDevice,uc,N,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&uc,(void **)&N,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD8Async, (void*) &ORIGINAL_cuMemsetD8Async, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD16Async
 int ORIGINAL_cuMemsetD16Async( CUdeviceptr dstDevice, unsigned short us, size_t N, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD16Async( CUdeviceptr dstDevice, unsigned short us, size_t N, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&us,(void *)&N,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,unsigned short,size_t,CUstream> params = std::make_tuple(100 ,dstDevice,us,N,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(100, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD16Async ,dstDevice,us,N,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&us,(void **)&N,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD16Async, (void*) &ORIGINAL_cuMemsetD16Async, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD32Async
 int ORIGINAL_cuMemsetD32Async( CUdeviceptr dstDevice, unsigned int ui, size_t N, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD32Async( CUdeviceptr dstDevice, unsigned int ui, size_t N, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&ui,(void *)&N,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,unsigned int,size_t,CUstream> params = std::make_tuple(101 ,dstDevice,ui,N,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(101, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD32Async ,dstDevice,ui,N,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&ui,(void **)&N,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD32Async, (void*) &ORIGINAL_cuMemsetD32Async, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD2D8Async
 int ORIGINAL_cuMemsetD2D8Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D8Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstPitch,(void *)&uc,(void *)&Width,(void *)&Height,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,size_t,unsigned char,size_t,size_t,CUstream> params = std::make_tuple(102 ,dstDevice,dstPitch,uc,Width,Height,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(102, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD2D8Async ,dstDevice,dstPitch,uc,Width,Height,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&uc,(void **)&Width,(void **)&Height,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D8Async, (void*) &ORIGINAL_cuMemsetD2D8Async, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD2D16Async
 int ORIGINAL_cuMemsetD2D16Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D16Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstPitch,(void *)&us,(void *)&Width,(void *)&Height,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,size_t,unsigned short,size_t,size_t,CUstream> params = std::make_tuple(103 ,dstDevice,dstPitch,us,Width,Height,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(103, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD2D16Async ,dstDevice,dstPitch,us,Width,Height,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&us,(void **)&Width,(void **)&Height,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D16Async, (void*) &ORIGINAL_cuMemsetD2D16Async, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD2D32Async
 int ORIGINAL_cuMemsetD2D32Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D32Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstPitch,(void *)&ui,(void *)&Width,(void *)&Height,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,size_t,unsigned int,size_t,size_t,CUstream> params = std::make_tuple(104 ,dstDevice,dstPitch,ui,Width,Height,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(104, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD2D32Async ,dstDevice,dstPitch,ui,Width,Height,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&ui,(void **)&Width,(void **)&Height,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D32Async, (void*) &ORIGINAL_cuMemsetD2D32Async, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuArrayCreate
 int ORIGINAL_cuArrayCreate( CUarray * pHandle, const CUDA_ARRAY_DESCRIPTOR * pAllocateArray ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuArrayCreate( CUarray * pHandle, const CUDA_ARRAY_DESCRIPTOR * pAllocateArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pHandle,(void *)&pAllocateArray };
-	// std::tuple<int,CUarray *,const CUDA_ARRAY_DESCRIPTOR *> params = std::make_tuple(105 ,pHandle,pAllocateArray);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(105, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuArrayCreate ,pHandle,pAllocateArray);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pHandle,(void **)&pAllocateArray };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArrayCreate, (void*) &ORIGINAL_cuArrayCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuArrayGetDescriptor
 int ORIGINAL_cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pArrayDescriptor,(void *)&hArray };
-	// std::tuple<int,CUDA_ARRAY_DESCRIPTOR *,CUarray> params = std::make_tuple(106 ,pArrayDescriptor,hArray);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(106, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuArrayGetDescriptor ,pArrayDescriptor,hArray);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pArrayDescriptor,(void **)&hArray };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArrayGetDescriptor, (void*) &ORIGINAL_cuArrayGetDescriptor, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuArrayDestroy
 int ORIGINAL_cuArrayDestroy( CUarray hArray ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuArrayDestroy( CUarray hArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hArray };
-	// std::tuple<int,CUarray> params = std::make_tuple(107 ,hArray);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(107, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuArrayDestroy ,hArray);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hArray };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArrayDestroy, (void*) &ORIGINAL_cuArrayDestroy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuArray3DCreate
 int ORIGINAL_cuArray3DCreate( CUarray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pAllocateArray ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuArray3DCreate( CUarray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pAllocateArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pHandle,(void *)&pAllocateArray };
-	// std::tuple<int,CUarray *,const CUDA_ARRAY3D_DESCRIPTOR *> params = std::make_tuple(108 ,pHandle,pAllocateArray);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(108, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuArray3DCreate ,pHandle,pAllocateArray);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pHandle,(void **)&pAllocateArray };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArray3DCreate, (void*) &ORIGINAL_cuArray3DCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuArray3DGetDescriptor
 int ORIGINAL_cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pArrayDescriptor,(void *)&hArray };
-	// std::tuple<int,CUDA_ARRAY3D_DESCRIPTOR *,CUarray> params = std::make_tuple(109 ,pArrayDescriptor,hArray);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(109, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuArray3DGetDescriptor ,pArrayDescriptor,hArray);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pArrayDescriptor,(void **)&hArray };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArray3DGetDescriptor, (void*) &ORIGINAL_cuArray3DGetDescriptor, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMipmappedArrayCreate
 int ORIGINAL_cuMipmappedArrayCreate( CUmipmappedArray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pMipmappedArrayDesc, unsigned int numMipmapLevels ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMipmappedArrayCreate( CUmipmappedArray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pMipmappedArrayDesc, unsigned int numMipmapLevels ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pHandle,(void *)&pMipmappedArrayDesc,(void *)&numMipmapLevels };
-	// std::tuple<int,CUmipmappedArray *,const CUDA_ARRAY3D_DESCRIPTOR *,unsigned int> params = std::make_tuple(110 ,pHandle,pMipmappedArrayDesc,numMipmapLevels);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(110, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMipmappedArrayCreate ,pHandle,pMipmappedArrayDesc,numMipmapLevels);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pHandle,(void **)&pMipmappedArrayDesc,(void **)&numMipmapLevels };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMipmappedArrayCreate, (void*) &ORIGINAL_cuMipmappedArrayCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMipmappedArrayGetLevel
 int ORIGINAL_cuMipmappedArrayGetLevel( CUarray * pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMipmappedArrayGetLevel( CUarray * pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pLevelArray,(void *)&hMipmappedArray,(void *)&level };
-	// std::tuple<int,CUarray *,CUmipmappedArray,unsigned int> params = std::make_tuple(111 ,pLevelArray,hMipmappedArray,level);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(111, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMipmappedArrayGetLevel ,pLevelArray,hMipmappedArray,level);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pLevelArray,(void **)&hMipmappedArray,(void **)&level };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMipmappedArrayGetLevel, (void*) &ORIGINAL_cuMipmappedArrayGetLevel, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMipmappedArrayDestroy
 int ORIGINAL_cuMipmappedArrayDestroy( CUmipmappedArray hMipmappedArray ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMipmappedArrayDestroy( CUmipmappedArray hMipmappedArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hMipmappedArray };
-	// std::tuple<int,CUmipmappedArray> params = std::make_tuple(112 ,hMipmappedArray);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(112, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMipmappedArrayDestroy ,hMipmappedArray);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hMipmappedArray };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMipmappedArrayDestroy, (void*) &ORIGINAL_cuMipmappedArrayDestroy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuPointerGetAttribute
 int ORIGINAL_cuPointerGetAttribute( void * data, CUpointer_attribute attribute, CUdeviceptr ptr ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuPointerGetAttribute( void * data, CUpointer_attribute attribute, CUdeviceptr ptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&data,(void *)&attribute,(void *)&ptr };
-	// std::tuple<int,void *,CUpointer_attribute,CUdeviceptr> params = std::make_tuple(113 ,data,attribute,ptr);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(113, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuPointerGetAttribute ,data,attribute,ptr);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&data,(void **)&attribute,(void **)&ptr };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuPointerGetAttribute, (void*) &ORIGINAL_cuPointerGetAttribute, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
+// This "function" will be rewritten to point to cuMemPrefetchAsync
+int ORIGINAL_cuMemPrefetchAsync( CUdeviceptr devPtr, size_t count, CUdevice dstDevice, CUstream hStream ) { }
 
-// This is the prototype of the file
+// This is the call that will take the place of the original
+int INTER_cuMemPrefetchAsync( CUdeviceptr devPtr, size_t count, CUdevice dstDevice, CUstream hStream ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&devPtr,(void **)&count,(void **)&dstDevice,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemPrefetchAsync, (void*) &ORIGINAL_cuMemPrefetchAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuMemAdvise
+int ORIGINAL_cuMemAdvise( CUdeviceptr devPtr, size_t count, CUmem_advise advice, CUdevice device ) { }
+
+// This is the call that will take the place of the original
+int INTER_cuMemAdvise( CUdeviceptr devPtr, size_t count, CUmem_advise advice, CUdevice device ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&devPtr,(void **)&count,(void **)&advice,(void **)&device };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAdvise, (void*) &ORIGINAL_cuMemAdvise, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuMemRangeGetAttribute
+int ORIGINAL_cuMemRangeGetAttribute( void * data, size_t dataSize, CUmem_range_attribute attribute, CUdeviceptr devPtr, size_t count ) { }
+
+// This is the call that will take the place of the original
+int INTER_cuMemRangeGetAttribute( void * data, size_t dataSize, CUmem_range_attribute attribute, CUdeviceptr devPtr, size_t count ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&data,(void **)&dataSize,(void **)&attribute,(void **)&devPtr,(void **)&count };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemRangeGetAttribute, (void*) &ORIGINAL_cuMemRangeGetAttribute, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuMemRangeGetAttributes
+int ORIGINAL_cuMemRangeGetAttributes( void * * data, size_t * dataSizes, CUmem_range_attribute * attributes, size_t numAttributes, CUdeviceptr devPtr, size_t count ) { }
+
+// This is the call that will take the place of the original
+int INTER_cuMemRangeGetAttributes( void * * data, size_t * dataSizes, CUmem_range_attribute * attributes, size_t numAttributes, CUdeviceptr devPtr, size_t count ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&data,(void **)&dataSizes,(void **)&attributes,(void **)&numAttributes,(void **)&devPtr,(void **)&count };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemRangeGetAttributes, (void*) &ORIGINAL_cuMemRangeGetAttributes, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuPointerSetAttribute
 int ORIGINAL_cuPointerSetAttribute( const void * value, CUpointer_attribute attribute, CUdeviceptr ptr ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuPointerSetAttribute( const void * value, CUpointer_attribute attribute, CUdeviceptr ptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&value,(void *)&attribute,(void *)&ptr };
-	// std::tuple<int,const void *,CUpointer_attribute,CUdeviceptr> params = std::make_tuple(114 ,value,attribute,ptr);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(114, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuPointerSetAttribute ,value,attribute,ptr);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&value,(void **)&attribute,(void **)&ptr };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuPointerSetAttribute, (void*) &ORIGINAL_cuPointerSetAttribute, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuPointerGetAttributes
 int ORIGINAL_cuPointerGetAttributes( unsigned int numAttributes, CUpointer_attribute * attributes, void * * data, CUdeviceptr ptr ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuPointerGetAttributes( unsigned int numAttributes, CUpointer_attribute * attributes, void * * data, CUdeviceptr ptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&numAttributes,(void *)&attributes,(void *)&data,(void *)&ptr };
-	// std::tuple<int,unsigned int,CUpointer_attribute *,void * *,CUdeviceptr> params = std::make_tuple(115 ,numAttributes,attributes,data,ptr);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(115, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuPointerGetAttributes ,numAttributes,attributes,data,ptr);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&numAttributes,(void **)&attributes,(void **)&data,(void **)&ptr };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuPointerGetAttributes, (void*) &ORIGINAL_cuPointerGetAttributes, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamCreate
 int ORIGINAL_cuStreamCreate( CUstream * phStream, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamCreate( CUstream * phStream, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&phStream,(void *)&Flags };
-	// std::tuple<int,CUstream *,unsigned int> params = std::make_tuple(116 ,phStream,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(116, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamCreate ,phStream,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&phStream,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamCreate, (void*) &ORIGINAL_cuStreamCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamCreateWithPriority
 int ORIGINAL_cuStreamCreateWithPriority( CUstream * phStream, unsigned int flags, int priority ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamCreateWithPriority( CUstream * phStream, unsigned int flags, int priority ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&phStream,(void *)&flags,(void *)&priority };
-	// std::tuple<int,CUstream *,unsigned int,int> params = std::make_tuple(117 ,phStream,flags,priority);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(117, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamCreateWithPriority ,phStream,flags,priority);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&phStream,(void **)&flags,(void **)&priority };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamCreateWithPriority, (void*) &ORIGINAL_cuStreamCreateWithPriority, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamGetPriority
 int ORIGINAL_cuStreamGetPriority( CUstream hStream, int * priority ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamGetPriority( CUstream hStream, int * priority ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hStream,(void *)&priority };
-	// std::tuple<int,CUstream,int *> params = std::make_tuple(118 ,hStream,priority);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(118, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamGetPriority ,hStream,priority);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hStream,(void **)&priority };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamGetPriority, (void*) &ORIGINAL_cuStreamGetPriority, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamGetFlags
 int ORIGINAL_cuStreamGetFlags( CUstream hStream, unsigned int * flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamGetFlags( CUstream hStream, unsigned int * flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hStream,(void *)&flags };
-	// std::tuple<int,CUstream,unsigned int *> params = std::make_tuple(119 ,hStream,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(119, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamGetFlags ,hStream,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hStream,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamGetFlags, (void*) &ORIGINAL_cuStreamGetFlags, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamWaitEvent
 int ORIGINAL_cuStreamWaitEvent( CUstream hStream, CUevent hEvent, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamWaitEvent( CUstream hStream, CUevent hEvent, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hStream,(void *)&hEvent,(void *)&Flags };
-	// std::tuple<int,CUstream,CUevent,unsigned int> params = std::make_tuple(120 ,hStream,hEvent,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(120, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamWaitEvent ,hStream,hEvent,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hStream,(void **)&hEvent,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamWaitEvent, (void*) &ORIGINAL_cuStreamWaitEvent, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamAddCallback
 int ORIGINAL_cuStreamAddCallback( CUstream hStream, CUstreamCallback callback, void * userData, unsigned int flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamAddCallback( CUstream hStream, CUstreamCallback callback, void * userData, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hStream,(void *)&callback,(void *)&userData,(void *)&flags };
-	// std::tuple<int,CUstream,CUstreamCallback,void *,unsigned int> params = std::make_tuple(121 ,hStream,callback,userData,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(121, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamAddCallback ,hStream,callback,userData,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hStream,(void **)&callback,(void **)&userData,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamAddCallback, (void*) &ORIGINAL_cuStreamAddCallback, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamAttachMemAsync
 int ORIGINAL_cuStreamAttachMemAsync( CUstream hStream, CUdeviceptr dptr, size_t length, unsigned int flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamAttachMemAsync( CUstream hStream, CUdeviceptr dptr, size_t length, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hStream,(void *)&dptr,(void *)&length,(void *)&flags };
-	// std::tuple<int,CUstream,CUdeviceptr,size_t,unsigned int> params = std::make_tuple(122 ,hStream,dptr,length,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(122, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamAttachMemAsync ,hStream,dptr,length,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hStream,(void **)&dptr,(void **)&length,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamAttachMemAsync, (void*) &ORIGINAL_cuStreamAttachMemAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamQuery
 int ORIGINAL_cuStreamQuery( CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamQuery( CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hStream };
-	// std::tuple<int,CUstream> params = std::make_tuple(123 ,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(123, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamQuery ,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamQuery, (void*) &ORIGINAL_cuStreamQuery, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamSynchronize
 int ORIGINAL_cuStreamSynchronize( CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamSynchronize( CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hStream };
-	// std::tuple<int,CUstream> params = std::make_tuple(124 ,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(124, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamSynchronize ,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamSynchronize, (void*) &ORIGINAL_cuStreamSynchronize, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuStreamDestroy
 int ORIGINAL_cuStreamDestroy( CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuStreamDestroy( CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hStream };
-	// std::tuple<int,CUstream> params = std::make_tuple(125 ,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(125, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuStreamDestroy ,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamDestroy, (void*) &ORIGINAL_cuStreamDestroy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuEventCreate
 int ORIGINAL_cuEventCreate( CUevent * phEvent, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuEventCreate( CUevent * phEvent, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&phEvent,(void *)&Flags };
-	// std::tuple<int,CUevent *,unsigned int> params = std::make_tuple(126 ,phEvent,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(126, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuEventCreate ,phEvent,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&phEvent,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventCreate, (void*) &ORIGINAL_cuEventCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuEventRecord
 int ORIGINAL_cuEventRecord( CUevent hEvent, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuEventRecord( CUevent hEvent, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hEvent,(void *)&hStream };
-	// std::tuple<int,CUevent,CUstream> params = std::make_tuple(127 ,hEvent,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(127, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuEventRecord ,hEvent,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hEvent,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventRecord, (void*) &ORIGINAL_cuEventRecord, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuEventQuery
 int ORIGINAL_cuEventQuery( CUevent hEvent ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuEventQuery( CUevent hEvent ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hEvent };
-	// std::tuple<int,CUevent> params = std::make_tuple(128 ,hEvent);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(128, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuEventQuery ,hEvent);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hEvent };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventQuery, (void*) &ORIGINAL_cuEventQuery, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuEventSynchronize
 int ORIGINAL_cuEventSynchronize( CUevent hEvent ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuEventSynchronize( CUevent hEvent ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hEvent };
-	// std::tuple<int,CUevent> params = std::make_tuple(129 ,hEvent);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(129, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuEventSynchronize ,hEvent);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hEvent };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventSynchronize, (void*) &ORIGINAL_cuEventSynchronize, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuEventDestroy
 int ORIGINAL_cuEventDestroy( CUevent hEvent ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuEventDestroy( CUevent hEvent ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hEvent };
-	// std::tuple<int,CUevent> params = std::make_tuple(130 ,hEvent);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(130, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuEventDestroy ,hEvent);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hEvent };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventDestroy, (void*) &ORIGINAL_cuEventDestroy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuEventElapsedTime
 int ORIGINAL_cuEventElapsedTime( float * pMilliseconds, CUevent hStart, CUevent hEnd ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuEventElapsedTime( float * pMilliseconds, CUevent hStart, CUevent hEnd ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pMilliseconds,(void *)&hStart,(void *)&hEnd };
-	// std::tuple<int,float *,CUevent,CUevent> params = std::make_tuple(131 ,pMilliseconds,hStart,hEnd);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(131, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuEventElapsedTime ,pMilliseconds,hStart,hEnd);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pMilliseconds,(void **)&hStart,(void **)&hEnd };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventElapsedTime, (void*) &ORIGINAL_cuEventElapsedTime, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
+// This "function" will be rewritten to point to cuStreamWaitValue32
+int ORIGINAL_cuStreamWaitValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) { }
 
-// This is the prototype of the file
+// This is the call that will take the place of the original
+int INTER_cuStreamWaitValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&stream,(void **)&addr,(void **)&value,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamWaitValue32, (void*) &ORIGINAL_cuStreamWaitValue32, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuStreamWriteValue32
+int ORIGINAL_cuStreamWriteValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) { }
+
+// This is the call that will take the place of the original
+int INTER_cuStreamWriteValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&stream,(void **)&addr,(void **)&value,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamWriteValue32, (void*) &ORIGINAL_cuStreamWriteValue32, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuStreamBatchMemOp
+int ORIGINAL_cuStreamBatchMemOp( CUstream stream, unsigned int count, CUstreamBatchMemOpParams * paramArray, unsigned int flags ) { }
+
+// This is the call that will take the place of the original
+int INTER_cuStreamBatchMemOp( CUstream stream, unsigned int count, CUstreamBatchMemOpParams * paramArray, unsigned int flags ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&stream,(void **)&count,(void **)&paramArray,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamBatchMemOp, (void*) &ORIGINAL_cuStreamBatchMemOp, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuFuncGetAttribute
 int ORIGINAL_cuFuncGetAttribute( int * pi, CUfunction_attribute attrib, CUfunction hfunc ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuFuncGetAttribute( int * pi, CUfunction_attribute attrib, CUfunction hfunc ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pi,(void *)&attrib,(void *)&hfunc };
-	// std::tuple<int,int *,CUfunction_attribute,CUfunction> params = std::make_tuple(132 ,pi,attrib,hfunc);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(132, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuFuncGetAttribute ,pi,attrib,hfunc);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pi,(void **)&attrib,(void **)&hfunc };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncGetAttribute, (void*) &ORIGINAL_cuFuncGetAttribute, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuFuncSetCacheConfig
 int ORIGINAL_cuFuncSetCacheConfig( CUfunction hfunc, CUfunc_cache config ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuFuncSetCacheConfig( CUfunction hfunc, CUfunc_cache config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&config };
-	// std::tuple<int,CUfunction,CUfunc_cache> params = std::make_tuple(133 ,hfunc,config);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(133, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuFuncSetCacheConfig ,hfunc,config);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&config };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncSetCacheConfig, (void*) &ORIGINAL_cuFuncSetCacheConfig, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuFuncSetSharedMemConfig
 int ORIGINAL_cuFuncSetSharedMemConfig( CUfunction hfunc, CUsharedconfig config ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuFuncSetSharedMemConfig( CUfunction hfunc, CUsharedconfig config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&config };
-	// std::tuple<int,CUfunction,CUsharedconfig> params = std::make_tuple(134 ,hfunc,config);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(134, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuFuncSetSharedMemConfig ,hfunc,config);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&config };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncSetSharedMemConfig, (void*) &ORIGINAL_cuFuncSetSharedMemConfig, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuLaunchKernel
 int ORIGINAL_cuLaunchKernel( CUfunction f, unsigned int gridDimX, unsigned int gridDimY, unsigned int gridDimZ, unsigned int blockDimX, unsigned int blockDimY, unsigned int blockDimZ, unsigned int sharedMemBytes, CUstream hStream, void * * kernelParams, void * * extra ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuLaunchKernel( CUfunction f, unsigned int gridDimX, unsigned int gridDimY, unsigned int gridDimZ, unsigned int blockDimX, unsigned int blockDimY, unsigned int blockDimZ, unsigned int sharedMemBytes, CUstream hStream, void * * kernelParams, void * * extra ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&f,(void *)&gridDimX,(void *)&gridDimY,(void *)&gridDimZ,(void *)&blockDimX,(void *)&blockDimY,(void *)&blockDimZ,(void *)&sharedMemBytes,(void *)&hStream,(void *)&kernelParams,(void *)&extra };
-	// std::tuple<int,CUfunction,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int,CUstream,void * *,void * *> params = std::make_tuple(135 ,f,gridDimX,gridDimY,gridDimZ,blockDimX,blockDimY,blockDimZ,sharedMemBytes,hStream,kernelParams,extra);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(135, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuLaunchKernel ,f,gridDimX,gridDimY,gridDimZ,blockDimX,blockDimY,blockDimZ,sharedMemBytes,hStream,kernelParams,extra);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&f,(void **)&gridDimX,(void **)&gridDimY,(void **)&gridDimZ,(void **)&blockDimX,(void **)&blockDimY,(void **)&blockDimZ,(void **)&sharedMemBytes,(void **)&hStream,(void **)&kernelParams,(void **)&extra };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLaunchKernel, (void*) &ORIGINAL_cuLaunchKernel, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuFuncSetBlockShape
 int ORIGINAL_cuFuncSetBlockShape( CUfunction hfunc, int x, int y, int z ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuFuncSetBlockShape( CUfunction hfunc, int x, int y, int z ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&x,(void *)&y,(void *)&z };
-	// std::tuple<int,CUfunction,int,int,int> params = std::make_tuple(136 ,hfunc,x,y,z);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(136, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuFuncSetBlockShape ,hfunc,x,y,z);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&x,(void **)&y,(void **)&z };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncSetBlockShape, (void*) &ORIGINAL_cuFuncSetBlockShape, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuFuncSetSharedSize
 int ORIGINAL_cuFuncSetSharedSize( CUfunction hfunc, unsigned int bytes ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuFuncSetSharedSize( CUfunction hfunc, unsigned int bytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&bytes };
-	// std::tuple<int,CUfunction,unsigned int> params = std::make_tuple(137 ,hfunc,bytes);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(137, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuFuncSetSharedSize ,hfunc,bytes);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&bytes };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncSetSharedSize, (void*) &ORIGINAL_cuFuncSetSharedSize, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuParamSetSize
 int ORIGINAL_cuParamSetSize( CUfunction hfunc, unsigned int numbytes ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuParamSetSize( CUfunction hfunc, unsigned int numbytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&numbytes };
-	// std::tuple<int,CUfunction,unsigned int> params = std::make_tuple(138 ,hfunc,numbytes);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(138, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuParamSetSize ,hfunc,numbytes);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&numbytes };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetSize, (void*) &ORIGINAL_cuParamSetSize, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuParamSeti
 int ORIGINAL_cuParamSeti( CUfunction hfunc, int offset, unsigned int value ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuParamSeti( CUfunction hfunc, int offset, unsigned int value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&offset,(void *)&value };
-	// std::tuple<int,CUfunction,int,unsigned int> params = std::make_tuple(139 ,hfunc,offset,value);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(139, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuParamSeti ,hfunc,offset,value);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&offset,(void **)&value };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSeti, (void*) &ORIGINAL_cuParamSeti, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuParamSetf
 int ORIGINAL_cuParamSetf( CUfunction hfunc, int offset, float value ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuParamSetf( CUfunction hfunc, int offset, float value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&offset,(void *)&value };
-	// std::tuple<int,CUfunction,int,float> params = std::make_tuple(140 ,hfunc,offset,value);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(140, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuParamSetf ,hfunc,offset,value);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&offset,(void **)&value };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetf, (void*) &ORIGINAL_cuParamSetf, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuParamSetv
 int ORIGINAL_cuParamSetv( CUfunction hfunc, int offset, void * ptr, unsigned int numbytes ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuParamSetv( CUfunction hfunc, int offset, void * ptr, unsigned int numbytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&offset,(void *)&ptr,(void *)&numbytes };
-	// std::tuple<int,CUfunction,int,void *,unsigned int> params = std::make_tuple(141 ,hfunc,offset,ptr,numbytes);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(141, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuParamSetv ,hfunc,offset,ptr,numbytes);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&offset,(void **)&ptr,(void **)&numbytes };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetv, (void*) &ORIGINAL_cuParamSetv, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuLaunch
 int ORIGINAL_cuLaunch( CUfunction f ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuLaunch( CUfunction f ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&f };
-	// std::tuple<int,CUfunction> params = std::make_tuple(142 ,f);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(142, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuLaunch ,f);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&f };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLaunch, (void*) &ORIGINAL_cuLaunch, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuLaunchGrid
 int ORIGINAL_cuLaunchGrid( CUfunction f, int grid_width, int grid_height ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuLaunchGrid( CUfunction f, int grid_width, int grid_height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&f,(void *)&grid_width,(void *)&grid_height };
-	// std::tuple<int,CUfunction,int,int> params = std::make_tuple(143 ,f,grid_width,grid_height);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(143, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuLaunchGrid ,f,grid_width,grid_height);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&f,(void **)&grid_width,(void **)&grid_height };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLaunchGrid, (void*) &ORIGINAL_cuLaunchGrid, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuLaunchGridAsync
 int ORIGINAL_cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&f,(void *)&grid_width,(void *)&grid_height,(void *)&hStream };
-	// std::tuple<int,CUfunction,int,int,CUstream> params = std::make_tuple(144 ,f,grid_width,grid_height,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(144, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuLaunchGridAsync ,f,grid_width,grid_height,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&f,(void **)&grid_width,(void **)&grid_height,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLaunchGridAsync, (void*) &ORIGINAL_cuLaunchGridAsync, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuParamSetTexRef
 int ORIGINAL_cuParamSetTexRef( CUfunction hfunc, int texunit, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuParamSetTexRef( CUfunction hfunc, int texunit, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hfunc,(void *)&texunit,(void *)&hTexRef };
-	// std::tuple<int,CUfunction,int,CUtexref> params = std::make_tuple(145 ,hfunc,texunit,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(145, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuParamSetTexRef ,hfunc,texunit,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hfunc,(void **)&texunit,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetTexRef, (void*) &ORIGINAL_cuParamSetTexRef, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuOccupancyMaxActiveBlocksPerMultiprocessor
 int ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessor( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&numBlocks,(void *)&func,(void *)&blockSize,(void *)&dynamicSMemSize };
-	// std::tuple<int,int *,CUfunction,int,size_t> params = std::make_tuple(146 ,numBlocks,func,blockSize,dynamicSMemSize);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(146, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor ,numBlocks,func,blockSize,dynamicSMemSize);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&numBlocks,(void **)&func,(void **)&blockSize,(void **)&dynamicSMemSize };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuOccupancyMaxActiveBlocksPerMultiprocessor, (void*) &ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags
 int ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize, unsigned int flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&numBlocks,(void *)&func,(void *)&blockSize,(void *)&dynamicSMemSize,(void *)&flags };
-	// std::tuple<int,int *,CUfunction,int,size_t,unsigned int> params = std::make_tuple(147 ,numBlocks,func,blockSize,dynamicSMemSize,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(147, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags ,numBlocks,func,blockSize,dynamicSMemSize,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&numBlocks,(void **)&func,(void **)&blockSize,(void **)&dynamicSMemSize,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags, (void*) &ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuOccupancyMaxPotentialBlockSize
 int ORIGINAL_cuOccupancyMaxPotentialBlockSize( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuOccupancyMaxPotentialBlockSize( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&minGridSize,(void *)&blockSize,(void *)&func,(void *)&blockSizeToDynamicSMemSize,(void *)&dynamicSMemSize,(void *)&blockSizeLimit };
-	// std::tuple<int,int *,int *,CUfunction,CUoccupancyB2DSize,size_t,int> params = std::make_tuple(148 ,minGridSize,blockSize,func,blockSizeToDynamicSMemSize,dynamicSMemSize,blockSizeLimit);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(148, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuOccupancyMaxPotentialBlockSize ,minGridSize,blockSize,func,blockSizeToDynamicSMemSize,dynamicSMemSize,blockSizeLimit);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&minGridSize,(void **)&blockSize,(void **)&func,(void **)&blockSizeToDynamicSMemSize,(void **)&dynamicSMemSize,(void **)&blockSizeLimit };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuOccupancyMaxPotentialBlockSize, (void*) &ORIGINAL_cuOccupancyMaxPotentialBlockSize, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuOccupancyMaxPotentialBlockSizeWithFlags
 int ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit, unsigned int flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuOccupancyMaxPotentialBlockSizeWithFlags( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&minGridSize,(void *)&blockSize,(void *)&func,(void *)&blockSizeToDynamicSMemSize,(void *)&dynamicSMemSize,(void *)&blockSizeLimit,(void *)&flags };
-	// std::tuple<int,int *,int *,CUfunction,CUoccupancyB2DSize,size_t,int,unsigned int> params = std::make_tuple(149 ,minGridSize,blockSize,func,blockSizeToDynamicSMemSize,dynamicSMemSize,blockSizeLimit,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(149, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags ,minGridSize,blockSize,func,blockSizeToDynamicSMemSize,dynamicSMemSize,blockSizeLimit,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&minGridSize,(void **)&blockSize,(void **)&func,(void **)&blockSizeToDynamicSMemSize,(void **)&dynamicSMemSize,(void **)&blockSizeLimit,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuOccupancyMaxPotentialBlockSizeWithFlags, (void*) &ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetArray
 int ORIGINAL_cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&hArray,(void *)&Flags };
-	// std::tuple<int,CUtexref,CUarray,unsigned int> params = std::make_tuple(150 ,hTexRef,hArray,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(150, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetArray ,hTexRef,hArray,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&hArray,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetArray, (void*) &ORIGINAL_cuTexRefSetArray, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetMipmappedArray
 int ORIGINAL_cuTexRefSetMipmappedArray( CUtexref hTexRef, CUmipmappedArray hMipmappedArray, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMipmappedArray( CUtexref hTexRef, CUmipmappedArray hMipmappedArray, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&hMipmappedArray,(void *)&Flags };
-	// std::tuple<int,CUtexref,CUmipmappedArray,unsigned int> params = std::make_tuple(151 ,hTexRef,hMipmappedArray,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(151, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetMipmappedArray ,hTexRef,hMipmappedArray,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&hMipmappedArray,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmappedArray, (void*) &ORIGINAL_cuTexRefSetMipmappedArray, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetAddress
 int ORIGINAL_cuTexRefSetAddress( size_t * ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, size_t bytes ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetAddress( size_t * ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, size_t bytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&ByteOffset,(void *)&hTexRef,(void *)&dptr,(void *)&bytes };
-	// std::tuple<int,size_t *,CUtexref,CUdeviceptr,size_t> params = std::make_tuple(152 ,ByteOffset,hTexRef,dptr,bytes);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(152, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetAddress ,ByteOffset,hTexRef,dptr,bytes);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&ByteOffset,(void **)&hTexRef,(void **)&dptr,(void **)&bytes };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetAddress, (void*) &ORIGINAL_cuTexRefSetAddress, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetAddress2D
 int ORIGINAL_cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&desc,(void *)&dptr,(void *)&Pitch };
-	// std::tuple<int,CUtexref,const CUDA_ARRAY_DESCRIPTOR *,CUdeviceptr,size_t> params = std::make_tuple(153 ,hTexRef,desc,dptr,Pitch);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(153, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetAddress2D ,hTexRef,desc,dptr,Pitch);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&desc,(void **)&dptr,(void **)&Pitch };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetAddress2D, (void*) &ORIGINAL_cuTexRefSetAddress2D, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetFormat
 int ORIGINAL_cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&fmt,(void *)&NumPackedComponents };
-	// std::tuple<int,CUtexref,CUarray_format,int> params = std::make_tuple(154 ,hTexRef,fmt,NumPackedComponents);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(154, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetFormat ,hTexRef,fmt,NumPackedComponents);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&fmt,(void **)&NumPackedComponents };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetFormat, (void*) &ORIGINAL_cuTexRefSetFormat, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetAddressMode
 int ORIGINAL_cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&dim,(void *)&am };
-	// std::tuple<int,CUtexref,int,CUaddress_mode> params = std::make_tuple(155 ,hTexRef,dim,am);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(155, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetAddressMode ,hTexRef,dim,am);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&dim,(void **)&am };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetAddressMode, (void*) &ORIGINAL_cuTexRefSetAddressMode, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetFilterMode
 int ORIGINAL_cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&fm };
-	// std::tuple<int,CUtexref,CUfilter_mode> params = std::make_tuple(156 ,hTexRef,fm);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(156, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetFilterMode ,hTexRef,fm);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&fm };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetFilterMode, (void*) &ORIGINAL_cuTexRefSetFilterMode, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetMipmapFilterMode
 int ORIGINAL_cuTexRefSetMipmapFilterMode( CUtexref hTexRef, CUfilter_mode fm ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMipmapFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&fm };
-	// std::tuple<int,CUtexref,CUfilter_mode> params = std::make_tuple(157 ,hTexRef,fm);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(157, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetMipmapFilterMode ,hTexRef,fm);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&fm };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmapFilterMode, (void*) &ORIGINAL_cuTexRefSetMipmapFilterMode, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetMipmapLevelBias
 int ORIGINAL_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&bias };
-	// std::tuple<int,CUtexref,float> params = std::make_tuple(158 ,hTexRef,bias);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(158, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetMipmapLevelBias ,hTexRef,bias);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&bias };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmapLevelBias, (void*) &ORIGINAL_cuTexRefSetMipmapLevelBias, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetMipmapLevelClamp
 int ORIGINAL_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelClamp, float maxMipmapLevelClamp ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelClamp, float maxMipmapLevelClamp ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&minMipmapLevelClamp,(void *)&maxMipmapLevelClamp };
-	// std::tuple<int,CUtexref,float,float> params = std::make_tuple(159 ,hTexRef,minMipmapLevelClamp,maxMipmapLevelClamp);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(159, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetMipmapLevelClamp ,hTexRef,minMipmapLevelClamp,maxMipmapLevelClamp);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&minMipmapLevelClamp,(void **)&maxMipmapLevelClamp };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmapLevelClamp, (void*) &ORIGINAL_cuTexRefSetMipmapLevelClamp, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetMaxAnisotropy
 int ORIGINAL_cuTexRefSetMaxAnisotropy( CUtexref hTexRef, unsigned int maxAniso ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMaxAnisotropy( CUtexref hTexRef, unsigned int maxAniso ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&maxAniso };
-	// std::tuple<int,CUtexref,unsigned int> params = std::make_tuple(160 ,hTexRef,maxAniso);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(160, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetMaxAnisotropy ,hTexRef,maxAniso);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&maxAniso };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMaxAnisotropy, (void*) &ORIGINAL_cuTexRefSetMaxAnisotropy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
+// This "function" will be rewritten to point to cuTexRefSetBorderColor
+int ORIGINAL_cuTexRefSetBorderColor( CUtexref hTexRef, float * pBorderColor ) { }
 
-// This is the prototype of the file
+// This is the call that will take the place of the original
+int INTER_cuTexRefSetBorderColor( CUtexref hTexRef, float * pBorderColor ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&pBorderColor };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetBorderColor, (void*) &ORIGINAL_cuTexRefSetBorderColor, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuTexRefSetFlags
 int ORIGINAL_cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&Flags };
-	// std::tuple<int,CUtexref,unsigned int> params = std::make_tuple(161 ,hTexRef,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(161, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetFlags ,hTexRef,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetFlags, (void*) &ORIGINAL_cuTexRefSetFlags, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetAddress
 int ORIGINAL_cuTexRefGetAddress( CUdeviceptr * pdptr, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetAddress( CUdeviceptr * pdptr, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pdptr,(void *)&hTexRef };
-	// std::tuple<int,CUdeviceptr *,CUtexref> params = std::make_tuple(162 ,pdptr,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(162, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetAddress ,pdptr,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pdptr,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetAddress, (void*) &ORIGINAL_cuTexRefGetAddress, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetArray
 int ORIGINAL_cuTexRefGetArray( CUarray * phArray, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetArray( CUarray * phArray, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&phArray,(void *)&hTexRef };
-	// std::tuple<int,CUarray *,CUtexref> params = std::make_tuple(163 ,phArray,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(163, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetArray ,phArray,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&phArray,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetArray, (void*) &ORIGINAL_cuTexRefGetArray, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetMipmappedArray
 int ORIGINAL_cuTexRefGetMipmappedArray( CUmipmappedArray * phMipmappedArray, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMipmappedArray( CUmipmappedArray * phMipmappedArray, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&phMipmappedArray,(void *)&hTexRef };
-	// std::tuple<int,CUmipmappedArray *,CUtexref> params = std::make_tuple(164 ,phMipmappedArray,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(164, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetMipmappedArray ,phMipmappedArray,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&phMipmappedArray,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMipmappedArray, (void*) &ORIGINAL_cuTexRefGetMipmappedArray, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetAddressMode
 int ORIGINAL_cuTexRefGetAddressMode( CUaddress_mode * pam, CUtexref hTexRef, int dim ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetAddressMode( CUaddress_mode * pam, CUtexref hTexRef, int dim ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pam,(void *)&hTexRef,(void *)&dim };
-	// std::tuple<int,CUaddress_mode *,CUtexref,int> params = std::make_tuple(165 ,pam,hTexRef,dim);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(165, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetAddressMode ,pam,hTexRef,dim);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pam,(void **)&hTexRef,(void **)&dim };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetAddressMode, (void*) &ORIGINAL_cuTexRefGetAddressMode, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetFilterMode
 int ORIGINAL_cuTexRefGetFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pfm,(void *)&hTexRef };
-	// std::tuple<int,CUfilter_mode *,CUtexref> params = std::make_tuple(166 ,pfm,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(166, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetFilterMode ,pfm,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pfm,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetFilterMode, (void*) &ORIGINAL_cuTexRefGetFilterMode, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetFormat
 int ORIGINAL_cuTexRefGetFormat( CUarray_format * pFormat, int * pNumChannels, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetFormat( CUarray_format * pFormat, int * pNumChannels, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pFormat,(void *)&pNumChannels,(void *)&hTexRef };
-	// std::tuple<int,CUarray_format *,int *,CUtexref> params = std::make_tuple(167 ,pFormat,pNumChannels,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(167, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetFormat ,pFormat,pNumChannels,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pFormat,(void **)&pNumChannels,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetFormat, (void*) &ORIGINAL_cuTexRefGetFormat, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetMipmapFilterMode
 int ORIGINAL_cuTexRefGetMipmapFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMipmapFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pfm,(void *)&hTexRef };
-	// std::tuple<int,CUfilter_mode *,CUtexref> params = std::make_tuple(168 ,pfm,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(168, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetMipmapFilterMode ,pfm,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pfm,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMipmapFilterMode, (void*) &ORIGINAL_cuTexRefGetMipmapFilterMode, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetMipmapLevelBias
 int ORIGINAL_cuTexRefGetMipmapLevelBias( float * pbias, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMipmapLevelBias( float * pbias, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pbias,(void *)&hTexRef };
-	// std::tuple<int,float *,CUtexref> params = std::make_tuple(169 ,pbias,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(169, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetMipmapLevelBias ,pbias,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pbias,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMipmapLevelBias, (void*) &ORIGINAL_cuTexRefGetMipmapLevelBias, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetMipmapLevelClamp
 int ORIGINAL_cuTexRefGetMipmapLevelClamp( float * pminMipmapLevelClamp, float * pmaxMipmapLevelClamp, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMipmapLevelClamp( float * pminMipmapLevelClamp, float * pmaxMipmapLevelClamp, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pminMipmapLevelClamp,(void *)&pmaxMipmapLevelClamp,(void *)&hTexRef };
-	// std::tuple<int,float *,float *,CUtexref> params = std::make_tuple(170 ,pminMipmapLevelClamp,pmaxMipmapLevelClamp,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(170, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetMipmapLevelClamp ,pminMipmapLevelClamp,pmaxMipmapLevelClamp,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pminMipmapLevelClamp,(void **)&pmaxMipmapLevelClamp,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMipmapLevelClamp, (void*) &ORIGINAL_cuTexRefGetMipmapLevelClamp, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefGetMaxAnisotropy
 int ORIGINAL_cuTexRefGetMaxAnisotropy( int * pmaxAniso, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMaxAnisotropy( int * pmaxAniso, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pmaxAniso,(void *)&hTexRef };
-	// std::tuple<int,int *,CUtexref> params = std::make_tuple(171 ,pmaxAniso,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(171, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetMaxAnisotropy ,pmaxAniso,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pmaxAniso,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMaxAnisotropy, (void*) &ORIGINAL_cuTexRefGetMaxAnisotropy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
+// This "function" will be rewritten to point to cuTexRefGetBorderColor
+int ORIGINAL_cuTexRefGetBorderColor( float * pBorderColor, CUtexref hTexRef ) { }
 
-// This is the prototype of the file
+// This is the call that will take the place of the original
+int INTER_cuTexRefGetBorderColor( float * pBorderColor, CUtexref hTexRef ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&pBorderColor,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetBorderColor, (void*) &ORIGINAL_cuTexRefGetBorderColor, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuTexRefGetFlags
 int ORIGINAL_cuTexRefGetFlags( unsigned int * pFlags, CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetFlags( unsigned int * pFlags, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pFlags,(void *)&hTexRef };
-	// std::tuple<int,unsigned int *,CUtexref> params = std::make_tuple(172 ,pFlags,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(172, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefGetFlags ,pFlags,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pFlags,(void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetFlags, (void*) &ORIGINAL_cuTexRefGetFlags, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefCreate
 int ORIGINAL_cuTexRefCreate( CUtexref * pTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefCreate( CUtexref * pTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pTexRef };
-	// std::tuple<int,CUtexref *> params = std::make_tuple(173 ,pTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(173, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefCreate ,pTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefCreate, (void*) &ORIGINAL_cuTexRefCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefDestroy
 int ORIGINAL_cuTexRefDestroy( CUtexref hTexRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefDestroy( CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef };
-	// std::tuple<int,CUtexref> params = std::make_tuple(174 ,hTexRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(174, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefDestroy ,hTexRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefDestroy, (void*) &ORIGINAL_cuTexRefDestroy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuSurfRefSetArray
 int ORIGINAL_cuSurfRefSetArray( CUsurfref hSurfRef, CUarray hArray, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuSurfRefSetArray( CUsurfref hSurfRef, CUarray hArray, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hSurfRef,(void *)&hArray,(void *)&Flags };
-	// std::tuple<int,CUsurfref,CUarray,unsigned int> params = std::make_tuple(175 ,hSurfRef,hArray,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(175, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuSurfRefSetArray ,hSurfRef,hArray,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hSurfRef,(void **)&hArray,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfRefSetArray, (void*) &ORIGINAL_cuSurfRefSetArray, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuSurfRefGetArray
 int ORIGINAL_cuSurfRefGetArray( CUarray * phArray, CUsurfref hSurfRef ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuSurfRefGetArray( CUarray * phArray, CUsurfref hSurfRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&phArray,(void *)&hSurfRef };
-	// std::tuple<int,CUarray *,CUsurfref> params = std::make_tuple(176 ,phArray,hSurfRef);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(176, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuSurfRefGetArray ,phArray,hSurfRef);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&phArray,(void **)&hSurfRef };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfRefGetArray, (void*) &ORIGINAL_cuSurfRefGetArray, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexObjectCreate
 int ORIGINAL_cuTexObjectCreate( CUtexObject * pTexObject, const CUDA_RESOURCE_DESC * pResDesc, const CUDA_TEXTURE_DESC * pTexDesc, const CUDA_RESOURCE_VIEW_DESC * pResViewDesc ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectCreate( CUtexObject * pTexObject, const CUDA_RESOURCE_DESC * pResDesc, const CUDA_TEXTURE_DESC * pTexDesc, const CUDA_RESOURCE_VIEW_DESC * pResViewDesc ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pTexObject,(void *)&pResDesc,(void *)&pTexDesc,(void *)&pResViewDesc };
-	// std::tuple<int,CUtexObject *,const CUDA_RESOURCE_DESC *,const CUDA_TEXTURE_DESC *,const CUDA_RESOURCE_VIEW_DESC *> params = std::make_tuple(177 ,pTexObject,pResDesc,pTexDesc,pResViewDesc);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(177, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexObjectCreate ,pTexObject,pResDesc,pTexDesc,pResViewDesc);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pTexObject,(void **)&pResDesc,(void **)&pTexDesc,(void **)&pResViewDesc };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectCreate, (void*) &ORIGINAL_cuTexObjectCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexObjectDestroy
 int ORIGINAL_cuTexObjectDestroy( CUtexObject texObject ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectDestroy( CUtexObject texObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&texObject };
-	// std::tuple<int,CUtexObject> params = std::make_tuple(178 ,texObject);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(178, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexObjectDestroy ,texObject);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&texObject };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectDestroy, (void*) &ORIGINAL_cuTexObjectDestroy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexObjectGetResourceDesc
 int ORIGINAL_cuTexObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUtexObject texObject ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUtexObject texObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pResDesc,(void *)&texObject };
-	// std::tuple<int,CUDA_RESOURCE_DESC *,CUtexObject> params = std::make_tuple(179 ,pResDesc,texObject);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(179, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexObjectGetResourceDesc ,pResDesc,texObject);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pResDesc,(void **)&texObject };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectGetResourceDesc, (void*) &ORIGINAL_cuTexObjectGetResourceDesc, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexObjectGetTextureDesc
 int ORIGINAL_cuTexObjectGetTextureDesc( CUDA_TEXTURE_DESC * pTexDesc, CUtexObject texObject ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectGetTextureDesc( CUDA_TEXTURE_DESC * pTexDesc, CUtexObject texObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pTexDesc,(void *)&texObject };
-	// std::tuple<int,CUDA_TEXTURE_DESC *,CUtexObject> params = std::make_tuple(180 ,pTexDesc,texObject);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(180, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexObjectGetTextureDesc ,pTexDesc,texObject);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pTexDesc,(void **)&texObject };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectGetTextureDesc, (void*) &ORIGINAL_cuTexObjectGetTextureDesc, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexObjectGetResourceViewDesc
 int ORIGINAL_cuTexObjectGetResourceViewDesc( CUDA_RESOURCE_VIEW_DESC * pResViewDesc, CUtexObject texObject ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectGetResourceViewDesc( CUDA_RESOURCE_VIEW_DESC * pResViewDesc, CUtexObject texObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pResViewDesc,(void *)&texObject };
-	// std::tuple<int,CUDA_RESOURCE_VIEW_DESC *,CUtexObject> params = std::make_tuple(181 ,pResViewDesc,texObject);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(181, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexObjectGetResourceViewDesc ,pResViewDesc,texObject);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pResViewDesc,(void **)&texObject };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectGetResourceViewDesc, (void*) &ORIGINAL_cuTexObjectGetResourceViewDesc, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuSurfObjectCreate
 int ORIGINAL_cuSurfObjectCreate( CUsurfObject * pSurfObject, const CUDA_RESOURCE_DESC * pResDesc ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuSurfObjectCreate( CUsurfObject * pSurfObject, const CUDA_RESOURCE_DESC * pResDesc ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pSurfObject,(void *)&pResDesc };
-	// std::tuple<int,CUsurfObject *,const CUDA_RESOURCE_DESC *> params = std::make_tuple(182 ,pSurfObject,pResDesc);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(182, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuSurfObjectCreate ,pSurfObject,pResDesc);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pSurfObject,(void **)&pResDesc };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfObjectCreate, (void*) &ORIGINAL_cuSurfObjectCreate, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuSurfObjectDestroy
 int ORIGINAL_cuSurfObjectDestroy( CUsurfObject surfObject ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuSurfObjectDestroy( CUsurfObject surfObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&surfObject };
-	// std::tuple<int,CUsurfObject> params = std::make_tuple(183 ,surfObject);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(183, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuSurfObjectDestroy ,surfObject);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&surfObject };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfObjectDestroy, (void*) &ORIGINAL_cuSurfObjectDestroy, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuSurfObjectGetResourceDesc
 int ORIGINAL_cuSurfObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUsurfObject surfObject ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuSurfObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUsurfObject surfObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pResDesc,(void *)&surfObject };
-	// std::tuple<int,CUDA_RESOURCE_DESC *,CUsurfObject> params = std::make_tuple(184 ,pResDesc,surfObject);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(184, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuSurfObjectGetResourceDesc ,pResDesc,surfObject);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pResDesc,(void **)&surfObject };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfObjectGetResourceDesc, (void*) &ORIGINAL_cuSurfObjectGetResourceDesc, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuDeviceCanAccessPeer
 int ORIGINAL_cuDeviceCanAccessPeer( int * canAccessPeer, CUdevice dev, CUdevice peerDev ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceCanAccessPeer( int * canAccessPeer, CUdevice dev, CUdevice peerDev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&canAccessPeer,(void *)&dev,(void *)&peerDev };
-	// std::tuple<int,int *,CUdevice,CUdevice> params = std::make_tuple(185 ,canAccessPeer,dev,peerDev);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(185, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuDeviceCanAccessPeer ,canAccessPeer,dev,peerDev);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&canAccessPeer,(void **)&dev,(void **)&peerDev };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceCanAccessPeer, (void*) &ORIGINAL_cuDeviceCanAccessPeer, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
+// This "function" will be rewritten to point to cuDeviceGetP2PAttribute
+int ORIGINAL_cuDeviceGetP2PAttribute( int * value, CUdevice_P2PAttribute attrib, CUdevice srcDevice, CUdevice dstDevice ) { }
 
-// This is the prototype of the file
+// This is the call that will take the place of the original
+int INTER_cuDeviceGetP2PAttribute( int * value, CUdevice_P2PAttribute attrib, CUdevice srcDevice, CUdevice dstDevice ) {
+	// Build the instriment factory
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&value,(void **)&attrib,(void **)&srcDevice,(void **)&dstDevice };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetP2PAttribute, (void*) &ORIGINAL_cuDeviceGetP2PAttribute, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+// This "function" will be rewritten to point to cuCtxEnablePeerAccess
 int ORIGINAL_cuCtxEnablePeerAccess( CUcontext peerContext, unsigned int Flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxEnablePeerAccess( CUcontext peerContext, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&peerContext,(void *)&Flags };
-	// std::tuple<int,CUcontext,unsigned int> params = std::make_tuple(186 ,peerContext,Flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(186, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxEnablePeerAccess ,peerContext,Flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&peerContext,(void **)&Flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxEnablePeerAccess, (void*) &ORIGINAL_cuCtxEnablePeerAccess, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuCtxDisablePeerAccess
 int ORIGINAL_cuCtxDisablePeerAccess( CUcontext peerContext ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuCtxDisablePeerAccess( CUcontext peerContext ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&peerContext };
-	// std::tuple<int,CUcontext> params = std::make_tuple(187 ,peerContext);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(187, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuCtxDisablePeerAccess ,peerContext);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&peerContext };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxDisablePeerAccess, (void*) &ORIGINAL_cuCtxDisablePeerAccess, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGraphicsUnregisterResource
 int ORIGINAL_cuGraphicsUnregisterResource( CUgraphicsResource resource ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsUnregisterResource( CUgraphicsResource resource ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&resource };
-	// std::tuple<int,CUgraphicsResource> params = std::make_tuple(188 ,resource);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(188, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGraphicsUnregisterResource ,resource);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&resource };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsUnregisterResource, (void*) &ORIGINAL_cuGraphicsUnregisterResource, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGraphicsSubResourceGetMappedArray
 int ORIGINAL_cuGraphicsSubResourceGetMappedArray( CUarray * pArray, CUgraphicsResource resource, unsigned int arrayIndex, unsigned int mipLevel ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsSubResourceGetMappedArray( CUarray * pArray, CUgraphicsResource resource, unsigned int arrayIndex, unsigned int mipLevel ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pArray,(void *)&resource,(void *)&arrayIndex,(void *)&mipLevel };
-	// std::tuple<int,CUarray *,CUgraphicsResource,unsigned int,unsigned int> params = std::make_tuple(189 ,pArray,resource,arrayIndex,mipLevel);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(189, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGraphicsSubResourceGetMappedArray ,pArray,resource,arrayIndex,mipLevel);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pArray,(void **)&resource,(void **)&arrayIndex,(void **)&mipLevel };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsSubResourceGetMappedArray, (void*) &ORIGINAL_cuGraphicsSubResourceGetMappedArray, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGraphicsResourceGetMappedMipmappedArray
 int ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray( CUmipmappedArray * pMipmappedArray, CUgraphicsResource resource ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsResourceGetMappedMipmappedArray( CUmipmappedArray * pMipmappedArray, CUgraphicsResource resource ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pMipmappedArray,(void *)&resource };
-	// std::tuple<int,CUmipmappedArray *,CUgraphicsResource> params = std::make_tuple(190 ,pMipmappedArray,resource);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(190, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray ,pMipmappedArray,resource);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pMipmappedArray,(void **)&resource };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsResourceGetMappedMipmappedArray, (void*) &ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGraphicsResourceGetMappedPointer
 int ORIGINAL_cuGraphicsResourceGetMappedPointer( CUdeviceptr * pDevPtr, size_t * pSize, CUgraphicsResource resource ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsResourceGetMappedPointer( CUdeviceptr * pDevPtr, size_t * pSize, CUgraphicsResource resource ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pDevPtr,(void *)&pSize,(void *)&resource };
-	// std::tuple<int,CUdeviceptr *,size_t *,CUgraphicsResource> params = std::make_tuple(191 ,pDevPtr,pSize,resource);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(191, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGraphicsResourceGetMappedPointer ,pDevPtr,pSize,resource);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pDevPtr,(void **)&pSize,(void **)&resource };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsResourceGetMappedPointer, (void*) &ORIGINAL_cuGraphicsResourceGetMappedPointer, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGraphicsResourceSetMapFlags
 int ORIGINAL_cuGraphicsResourceSetMapFlags( CUgraphicsResource resource, unsigned int flags ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsResourceSetMapFlags( CUgraphicsResource resource, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&resource,(void *)&flags };
-	// std::tuple<int,CUgraphicsResource,unsigned int> params = std::make_tuple(192 ,resource,flags);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(192, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGraphicsResourceSetMapFlags ,resource,flags);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&resource,(void **)&flags };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsResourceSetMapFlags, (void*) &ORIGINAL_cuGraphicsResourceSetMapFlags, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGraphicsMapResources
 int ORIGINAL_cuGraphicsMapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsMapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&count,(void *)&resources,(void *)&hStream };
-	// std::tuple<int,unsigned int,CUgraphicsResource *,CUstream> params = std::make_tuple(193 ,count,resources,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(193, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGraphicsMapResources ,count,resources,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&count,(void **)&resources,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsMapResources, (void*) &ORIGINAL_cuGraphicsMapResources, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGraphicsUnmapResources
 int ORIGINAL_cuGraphicsUnmapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsUnmapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&count,(void *)&resources,(void *)&hStream };
-	// std::tuple<int,unsigned int,CUgraphicsResource *,CUstream> params = std::make_tuple(194 ,count,resources,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(194, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGraphicsUnmapResources ,count,resources,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&count,(void **)&resources,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsUnmapResources, (void*) &ORIGINAL_cuGraphicsUnmapResources, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuGetExportTable
 int ORIGINAL_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExportTableId ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExportTableId ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&ppExportTable,(void *)&pExportTableId };
-	fprintf(stderr, "Table ID: ");
-	for (int i = 0; i < 16; i++) {
-		fprintf(stderr, "%hhx:", pExportTableId->bytes[i]);
-	}
-	fprintf(stderr, "\n");
-	// std::tuple<int,const void * *,const CUuuid *> params = std::make_tuple(195 ,ppExportTable,pExportTableId);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(195, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuGetExportTable ,ppExportTable,pExportTableId);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
-	// volatile uint64_t * expTable = (uint64_t *)*ppExportTable;
-	// volatile CUuuid * expTableId = (CUuuid *)pExportTableId;
-	// uint64_t count = expTable[0];
-	// fprintf(stderr, " Table Count: %llu\n", count/8);
+	std::vector<void **> params = { (void **)&ppExportTable,(void **)&pExportTableId };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGetExportTable, (void*) &ORIGINAL_cuGetExportTable, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuTexRefSetAddress2D_v2
 int ORIGINAL_cuTexRefSetAddress2D_v2( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetAddress2D_v2( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&hTexRef,(void *)&desc,(void *)&dptr,(void *)&Pitch };
-	// std::tuple<int,CUtexref,const CUDA_ARRAY_DESCRIPTOR *,CUdeviceptr,size_t> params = std::make_tuple(196 ,hTexRef,desc,dptr,Pitch);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(196, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuTexRefSetAddress2D_v2 ,hTexRef,desc,dptr,Pitch);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&hTexRef,(void **)&desc,(void **)&dptr,(void **)&Pitch };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetAddress2D_v2, (void*) &ORIGINAL_cuTexRefSetAddress2D_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyHtoD_v2
 int ORIGINAL_cuMemcpyHtoD_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoD_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcHost,(void *)&ByteCount };
-	// std::tuple<int,CUdeviceptr,const void *,size_t> params = std::make_tuple(197 ,dstDevice,srcHost,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(197, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyHtoD_v2 ,dstDevice,srcHost,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcHost,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoD_v2, (void*) &ORIGINAL_cuMemcpyHtoD_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoH_v2
 int ORIGINAL_cuMemcpyDtoH_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoH_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstHost,(void *)&srcDevice,(void *)&ByteCount };
-	// std::tuple<int,void *,CUdeviceptr,size_t> params = std::make_tuple(198 ,dstHost,srcDevice,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(198, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoH_v2 ,dstHost,srcDevice,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoH_v2, (void*) &ORIGINAL_cuMemcpyDtoH_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoD_v2
 int ORIGINAL_cuMemcpyDtoD_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoD_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcDevice,(void *)&ByteCount };
-	// std::tuple<int,CUdeviceptr,CUdeviceptr,size_t> params = std::make_tuple(199 ,dstDevice,srcDevice,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(199, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoD_v2 ,dstDevice,srcDevice,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcDevice,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoD_v2, (void*) &ORIGINAL_cuMemcpyDtoD_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoA_v2
 int ORIGINAL_cuMemcpyDtoA_v2( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoA_v2( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstArray,(void *)&dstOffset,(void *)&srcDevice,(void *)&ByteCount };
-	// std::tuple<int,CUarray,size_t,CUdeviceptr,size_t> params = std::make_tuple(200 ,dstArray,dstOffset,srcDevice,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(200, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoA_v2 ,dstArray,dstOffset,srcDevice,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcDevice,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoA_v2, (void*) &ORIGINAL_cuMemcpyDtoA_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyAtoD_v2
 int ORIGINAL_cuMemcpyAtoD_v2( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoD_v2( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcArray,(void *)&srcOffset,(void *)&ByteCount };
-	// std::tuple<int,CUdeviceptr,CUarray,size_t,size_t> params = std::make_tuple(201 ,dstDevice,srcArray,srcOffset,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(201, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyAtoD_v2 ,dstDevice,srcArray,srcOffset,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoD_v2, (void*) &ORIGINAL_cuMemcpyAtoD_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyHtoA_v2
 int ORIGINAL_cuMemcpyHtoA_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoA_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstArray,(void *)&dstOffset,(void *)&srcHost,(void *)&ByteCount };
-	// std::tuple<int,CUarray,size_t,const void *,size_t> params = std::make_tuple(202 ,dstArray,dstOffset,srcHost,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(202, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyHtoA_v2 ,dstArray,dstOffset,srcHost,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoA_v2, (void*) &ORIGINAL_cuMemcpyHtoA_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyAtoH_v2
 int ORIGINAL_cuMemcpyAtoH_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoH_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstHost,(void *)&srcArray,(void *)&srcOffset,(void *)&ByteCount };
-	// std::tuple<int,void *,CUarray,size_t,size_t> params = std::make_tuple(203 ,dstHost,srcArray,srcOffset,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(203, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyAtoH_v2 ,dstHost,srcArray,srcOffset,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstHost,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoH_v2, (void*) &ORIGINAL_cuMemcpyAtoH_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyAtoA_v2
 int ORIGINAL_cuMemcpyAtoA_v2( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoA_v2( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstArray,(void *)&dstOffset,(void *)&srcArray,(void *)&srcOffset,(void *)&ByteCount };
-	// std::tuple<int,CUarray,size_t,CUarray,size_t,size_t> params = std::make_tuple(204 ,dstArray,dstOffset,srcArray,srcOffset,ByteCount);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(204, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyAtoA_v2 ,dstArray,dstOffset,srcArray,srcOffset,ByteCount);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoA_v2, (void*) &ORIGINAL_cuMemcpyAtoA_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyHtoAAsync_v2
 int ORIGINAL_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstArray,(void *)&dstOffset,(void *)&srcHost,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,CUarray,size_t,const void *,size_t,CUstream> params = std::make_tuple(205 ,dstArray,dstOffset,srcHost,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(205, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyHtoAAsync_v2 ,dstArray,dstOffset,srcHost,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoAAsync_v2, (void*) &ORIGINAL_cuMemcpyHtoAAsync_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyAtoHAsync_v2
 int ORIGINAL_cuMemcpyAtoHAsync_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoHAsync_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstHost,(void *)&srcArray,(void *)&srcOffset,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,void *,CUarray,size_t,size_t,CUstream> params = std::make_tuple(206 ,dstHost,srcArray,srcOffset,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(206, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyAtoHAsync_v2 ,dstHost,srcArray,srcOffset,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstHost,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoHAsync_v2, (void*) &ORIGINAL_cuMemcpyAtoHAsync_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy2D_v2
 int ORIGINAL_cuMemcpy2D_v2( const CUDA_MEMCPY2D * pCopy ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2D_v2( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy };
-	// std::tuple<int,const CUDA_MEMCPY2D *> params = std::make_tuple(207 ,pCopy);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(207, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy2D_v2 ,pCopy);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2D_v2, (void*) &ORIGINAL_cuMemcpy2D_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy2DUnaligned_v2
 int ORIGINAL_cuMemcpy2DUnaligned_v2( const CUDA_MEMCPY2D * pCopy ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2DUnaligned_v2( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy };
-	// std::tuple<int,const CUDA_MEMCPY2D *> params = std::make_tuple(208 ,pCopy);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(208, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy2DUnaligned_v2 ,pCopy);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2DUnaligned_v2, (void*) &ORIGINAL_cuMemcpy2DUnaligned_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy3D_v2
 int ORIGINAL_cuMemcpy3D_v2( const CUDA_MEMCPY3D * pCopy ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3D_v2( const CUDA_MEMCPY3D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy };
-	// std::tuple<int,const CUDA_MEMCPY3D *> params = std::make_tuple(209 ,pCopy);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(209, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy3D_v2 ,pCopy);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3D_v2, (void*) &ORIGINAL_cuMemcpy3D_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyHtoDAsync_v2
 int ORIGINAL_cuMemcpyHtoDAsync_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoDAsync_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcHost,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,const void *,size_t,CUstream> params = std::make_tuple(210 ,dstDevice,srcHost,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(210, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyHtoDAsync_v2 ,dstDevice,srcHost,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoDAsync_v2, (void*) &ORIGINAL_cuMemcpyHtoDAsync_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoHAsync_v2
 int ORIGINAL_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstHost,(void *)&srcDevice,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,void *,CUdeviceptr,size_t,CUstream> params = std::make_tuple(211 ,dstHost,srcDevice,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(211, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoHAsync_v2 ,dstHost,srcDevice,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoHAsync_v2, (void*) &ORIGINAL_cuMemcpyDtoHAsync_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpyDtoDAsync_v2
 int ORIGINAL_cuMemcpyDtoDAsync_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoDAsync_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&srcDevice,(void *)&ByteCount,(void *)&hStream };
-	// std::tuple<int,CUdeviceptr,CUdeviceptr,size_t,CUstream> params = std::make_tuple(212 ,dstDevice,srcDevice,ByteCount,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(212, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpyDtoDAsync_v2 ,dstDevice,srcDevice,ByteCount,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoDAsync_v2, (void*) &ORIGINAL_cuMemcpyDtoDAsync_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy2DAsync_v2
 int ORIGINAL_cuMemcpy2DAsync_v2( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2DAsync_v2( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy,(void *)&hStream };
-	// std::tuple<int,const CUDA_MEMCPY2D *,CUstream> params = std::make_tuple(213 ,pCopy,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(213, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy2DAsync_v2 ,pCopy,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2DAsync_v2, (void*) &ORIGINAL_cuMemcpy2DAsync_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemcpy3DAsync_v2
 int ORIGINAL_cuMemcpy3DAsync_v2( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3DAsync_v2( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&pCopy,(void *)&hStream };
-	// std::tuple<int,const CUDA_MEMCPY3D *,CUstream> params = std::make_tuple(214 ,pCopy,hStream);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(214, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemcpy3DAsync_v2 ,pCopy,hStream);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3DAsync_v2, (void*) &ORIGINAL_cuMemcpy3DAsync_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD8_v2
 int ORIGINAL_cuMemsetD8_v2( CUdeviceptr dstDevice, unsigned char uc, size_t N ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD8_v2( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&uc,(void *)&N };
-	// std::tuple<int,CUdeviceptr,unsigned char,size_t> params = std::make_tuple(215 ,dstDevice,uc,N);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(215, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD8_v2 ,dstDevice,uc,N);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&uc,(void **)&N };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD8_v2, (void*) &ORIGINAL_cuMemsetD8_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD16_v2
 int ORIGINAL_cuMemsetD16_v2( CUdeviceptr dstDevice, unsigned short us, size_t N ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD16_v2( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&us,(void *)&N };
-	// std::tuple<int,CUdeviceptr,unsigned short,size_t> params = std::make_tuple(216 ,dstDevice,us,N);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(216, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD16_v2 ,dstDevice,us,N);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&us,(void **)&N };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD16_v2, (void*) &ORIGINAL_cuMemsetD16_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD32_v2
 int ORIGINAL_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&ui,(void *)&N };
-	// std::tuple<int,CUdeviceptr,unsigned int,size_t> params = std::make_tuple(217 ,dstDevice,ui,N);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(217, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD32_v2 ,dstDevice,ui,N);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&ui,(void **)&N };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD32_v2, (void*) &ORIGINAL_cuMemsetD32_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD2D8_v2
 int ORIGINAL_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstPitch,(void *)&uc,(void *)&Width,(void *)&Height };
-	// std::tuple<int,CUdeviceptr,size_t,unsigned char,size_t,size_t> params = std::make_tuple(218 ,dstDevice,dstPitch,uc,Width,Height);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(218, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD2D8_v2 ,dstDevice,dstPitch,uc,Width,Height);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&uc,(void **)&Width,(void **)&Height };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D8_v2, (void*) &ORIGINAL_cuMemsetD2D8_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD2D16_v2
 int ORIGINAL_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstPitch,(void *)&us,(void *)&Width,(void *)&Height };
-	// std::tuple<int,CUdeviceptr,size_t,unsigned short,size_t,size_t> params = std::make_tuple(219 ,dstDevice,dstPitch,us,Width,Height);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(219, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD2D16_v2 ,dstDevice,dstPitch,us,Width,Height);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&us,(void **)&Width,(void **)&Height };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D16_v2, (void*) &ORIGINAL_cuMemsetD2D16_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to cuMemsetD2D32_v2
 int ORIGINAL_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) { }
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { (void *)&dstDevice,(void *)&dstPitch,(void *)&ui,(void *)&Width,(void *)&Height };
-	// std::tuple<int,CUdeviceptr,size_t,unsigned int,size_t,size_t> params = std::make_tuple(220 ,dstDevice,dstPitch,ui,Width,Height);
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(220, &params));
-	DriverAPICall call = std::bind(ORIGINAL_cuMemsetD2D32_v2 ,dstDevice,dstPitch,ui,Width,Height);
-	int ret = ( int ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&ui,(void **)&Width,(void **)&Height };
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D32_v2, (void*) &ORIGINAL_cuMemsetD2D32_v2, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
 
 }
 
+#define DEFINED_TEMPLATES 1
+#ifndef DEFINED_TEMPLATES
+#define EXTERN_FLAG extern
+#else
+#define EXTERN_FLAG 
+#endif
+EXTERN_FLAG std::function<int(CUresult,const char * *)> Bound_cuGetErrorString;
+EXTERN_FLAG std::function<int(CUresult,const char * *)> Bound_cuGetErrorName;
+EXTERN_FLAG std::function<int(unsigned int)> Bound_cuInit;
+EXTERN_FLAG std::function<int(int *)> Bound_cuDriverGetVersion;
+EXTERN_FLAG std::function<int(CUdevice *,int)> Bound_cuDeviceGet;
+EXTERN_FLAG std::function<int(int *)> Bound_cuDeviceGetCount;
+EXTERN_FLAG std::function<int(char *,int,CUdevice)> Bound_cuDeviceGetName;
+EXTERN_FLAG std::function<int(size_t *,CUdevice)> Bound_cuDeviceTotalMem;
+EXTERN_FLAG std::function<int(int *,CUdevice_attribute,CUdevice)> Bound_cuDeviceGetAttribute;
+EXTERN_FLAG std::function<int(CUdevprop *,CUdevice)> Bound_cuDeviceGetProperties;
+EXTERN_FLAG std::function<int(int *,int *,CUdevice)> Bound_cuDeviceComputeCapability;
+EXTERN_FLAG std::function<int(CUcontext *,CUdevice)> Bound_cuDevicePrimaryCtxRetain;
+EXTERN_FLAG std::function<int(CUdevice)> Bound_cuDevicePrimaryCtxRelease;
+EXTERN_FLAG std::function<int(CUdevice,unsigned int)> Bound_cuDevicePrimaryCtxSetFlags;
+EXTERN_FLAG std::function<int(CUdevice,unsigned int *,int *)> Bound_cuDevicePrimaryCtxGetState;
+EXTERN_FLAG std::function<int(CUdevice)> Bound_cuDevicePrimaryCtxReset;
+EXTERN_FLAG std::function<int(CUcontext *,unsigned int,CUdevice)> Bound_cuCtxCreate;
+EXTERN_FLAG std::function<int(CUcontext)> Bound_cuCtxDestroy;
+EXTERN_FLAG std::function<int(CUcontext)> Bound_cuCtxPushCurrent;
+EXTERN_FLAG std::function<int(CUcontext *)> Bound_cuCtxPopCurrent;
+EXTERN_FLAG std::function<int(CUcontext)> Bound_cuCtxSetCurrent;
+EXTERN_FLAG std::function<int(CUcontext *)> Bound_cuCtxGetCurrent;
+EXTERN_FLAG std::function<int(CUdevice *)> Bound_cuCtxGetDevice;
+EXTERN_FLAG std::function<int(unsigned int *)> Bound_cuCtxGetFlags;
+EXTERN_FLAG std::function<int(void)> Bound_cuCtxSynchronize;
+EXTERN_FLAG std::function<int(CUlimit,size_t)> Bound_cuCtxSetLimit;
+EXTERN_FLAG std::function<int(size_t *,CUlimit)> Bound_cuCtxGetLimit;
+EXTERN_FLAG std::function<int(CUfunc_cache *)> Bound_cuCtxGetCacheConfig;
+EXTERN_FLAG std::function<int(CUfunc_cache)> Bound_cuCtxSetCacheConfig;
+EXTERN_FLAG std::function<int(CUsharedconfig *)> Bound_cuCtxGetSharedMemConfig;
+EXTERN_FLAG std::function<int(CUsharedconfig)> Bound_cuCtxSetSharedMemConfig;
+EXTERN_FLAG std::function<int(CUcontext,unsigned int *)> Bound_cuCtxGetApiVersion;
+EXTERN_FLAG std::function<int(int *,int *)> Bound_cuCtxGetStreamPriorityRange;
+EXTERN_FLAG std::function<int(CUcontext *,unsigned int)> Bound_cuCtxAttach;
+EXTERN_FLAG std::function<int(CUcontext)> Bound_cuCtxDetach;
+EXTERN_FLAG std::function<int(CUmodule *,const char *)> Bound_cuModuleLoad;
+EXTERN_FLAG std::function<int(CUmodule *,const void *)> Bound_cuModuleLoadData;
+EXTERN_FLAG std::function<int(CUmodule *,const void *,unsigned int,CUjit_option *,void * *)> Bound_cuModuleLoadDataEx;
+EXTERN_FLAG std::function<int(CUmodule *,const void *)> Bound_cuModuleLoadFatBinary;
+EXTERN_FLAG std::function<int(CUmodule)> Bound_cuModuleUnload;
+EXTERN_FLAG std::function<int(CUfunction *,CUmodule,const char *)> Bound_cuModuleGetFunction;
+EXTERN_FLAG std::function<int(CUdeviceptr *,size_t *,CUmodule,const char *)> Bound_cuModuleGetGlobal;
+EXTERN_FLAG std::function<int(CUtexref *,CUmodule,const char *)> Bound_cuModuleGetTexRef;
+EXTERN_FLAG std::function<int(CUsurfref *,CUmodule,const char *)> Bound_cuModuleGetSurfRef;
+EXTERN_FLAG std::function<int(unsigned int,CUjit_option *,void * *,CUlinkState *)> Bound_cuLinkCreate;
+EXTERN_FLAG std::function<int(CUlinkState,CUjitInputType,void *,size_t,const char *,unsigned int,CUjit_option *,void * *)> Bound_cuLinkAddData;
+EXTERN_FLAG std::function<int(CUlinkState,CUjitInputType,const char *,unsigned int,CUjit_option *,void * *)> Bound_cuLinkAddFile;
+EXTERN_FLAG std::function<int(CUlinkState,void * *,size_t *)> Bound_cuLinkComplete;
+EXTERN_FLAG std::function<int(CUlinkState)> Bound_cuLinkDestroy;
+EXTERN_FLAG std::function<int(size_t *,size_t *)> Bound_cuMemGetInfo;
+EXTERN_FLAG std::function<int(CUdeviceptr *,size_t)> Bound_cuMemAlloc;
+EXTERN_FLAG std::function<int(CUdeviceptr *,size_t *,size_t,size_t,unsigned int)> Bound_cuMemAllocPitch;
+EXTERN_FLAG std::function<int(CUdeviceptr)> Bound_cuMemFree;
+EXTERN_FLAG std::function<int(CUdeviceptr *,size_t *,CUdeviceptr)> Bound_cuMemGetAddressRange;
+EXTERN_FLAG std::function<int(void * *,size_t)> Bound_cuMemAllocHost;
+EXTERN_FLAG std::function<int(void *)> Bound_cuMemFreeHost;
+EXTERN_FLAG std::function<int(void * *,size_t,unsigned int)> Bound_cuMemHostAlloc;
+EXTERN_FLAG std::function<int(CUdeviceptr *,void *,unsigned int)> Bound_cuMemHostGetDevicePointer;
+EXTERN_FLAG std::function<int(unsigned int *,void *)> Bound_cuMemHostGetFlags;
+EXTERN_FLAG std::function<int(CUdeviceptr *,size_t,unsigned int)> Bound_cuMemAllocManaged;
+EXTERN_FLAG std::function<int(CUdevice *,const char *)> Bound_cuDeviceGetByPCIBusId;
+EXTERN_FLAG std::function<int(char *,int,CUdevice)> Bound_cuDeviceGetPCIBusId;
+EXTERN_FLAG std::function<int(CUipcEventHandle *,CUevent)> Bound_cuIpcGetEventHandle;
+EXTERN_FLAG std::function<int(CUevent *,CUipcEventHandle)> Bound_cuIpcOpenEventHandle;
+EXTERN_FLAG std::function<int(CUipcMemHandle *,CUdeviceptr)> Bound_cuIpcGetMemHandle;
+EXTERN_FLAG std::function<int(CUdeviceptr *,CUipcMemHandle,unsigned int)> Bound_cuIpcOpenMemHandle;
+EXTERN_FLAG std::function<int(CUdeviceptr)> Bound_cuIpcCloseMemHandle;
+EXTERN_FLAG std::function<int(void *,size_t,unsigned int)> Bound_cuMemHostRegister;
+EXTERN_FLAG std::function<int(void *)> Bound_cuMemHostUnregister;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUdeviceptr,size_t)> Bound_cuMemcpy;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUcontext,CUdeviceptr,CUcontext,size_t)> Bound_cuMemcpyPeer;
+EXTERN_FLAG std::function<int(CUdeviceptr,const void *,size_t)> Bound_cuMemcpyHtoD;
+EXTERN_FLAG std::function<int(void *,CUdeviceptr,size_t)> Bound_cuMemcpyDtoH;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUdeviceptr,size_t)> Bound_cuMemcpyDtoD;
+EXTERN_FLAG std::function<int(CUarray,size_t,CUdeviceptr,size_t)> Bound_cuMemcpyDtoA;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUarray,size_t,size_t)> Bound_cuMemcpyAtoD;
+EXTERN_FLAG std::function<int(CUarray,size_t,const void *,size_t)> Bound_cuMemcpyHtoA;
+EXTERN_FLAG std::function<int(void *,CUarray,size_t,size_t)> Bound_cuMemcpyAtoH;
+EXTERN_FLAG std::function<int(CUarray,size_t,CUarray,size_t,size_t)> Bound_cuMemcpyAtoA;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY2D *)> Bound_cuMemcpy2D;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY2D *)> Bound_cuMemcpy2DUnaligned;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY3D *)> Bound_cuMemcpy3D;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY3D_PEER *)> Bound_cuMemcpy3DPeer;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUdeviceptr,size_t,CUstream)> Bound_cuMemcpyAsync;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUcontext,CUdeviceptr,CUcontext,size_t,CUstream)> Bound_cuMemcpyPeerAsync;
+EXTERN_FLAG std::function<int(CUdeviceptr,const void *,size_t,CUstream)> Bound_cuMemcpyHtoDAsync;
+EXTERN_FLAG std::function<int(void *,CUdeviceptr,size_t,CUstream)> Bound_cuMemcpyDtoHAsync;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUdeviceptr,size_t,CUstream)> Bound_cuMemcpyDtoDAsync;
+EXTERN_FLAG std::function<int(CUarray,size_t,const void *,size_t,CUstream)> Bound_cuMemcpyHtoAAsync;
+EXTERN_FLAG std::function<int(void *,CUarray,size_t,size_t,CUstream)> Bound_cuMemcpyAtoHAsync;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY2D *,CUstream)> Bound_cuMemcpy2DAsync;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY3D *,CUstream)> Bound_cuMemcpy3DAsync;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY3D_PEER *,CUstream)> Bound_cuMemcpy3DPeerAsync;
+EXTERN_FLAG std::function<int(CUdeviceptr,unsigned char,size_t)> Bound_cuMemsetD8;
+EXTERN_FLAG std::function<int(CUdeviceptr,unsigned short,size_t)> Bound_cuMemsetD16;
+EXTERN_FLAG std::function<int(CUdeviceptr,unsigned int,size_t)> Bound_cuMemsetD32;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned char,size_t,size_t)> Bound_cuMemsetD2D8;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned short,size_t,size_t)> Bound_cuMemsetD2D16;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned int,size_t,size_t)> Bound_cuMemsetD2D32;
+EXTERN_FLAG std::function<int(CUdeviceptr,unsigned char,size_t,CUstream)> Bound_cuMemsetD8Async;
+EXTERN_FLAG std::function<int(CUdeviceptr,unsigned short,size_t,CUstream)> Bound_cuMemsetD16Async;
+EXTERN_FLAG std::function<int(CUdeviceptr,unsigned int,size_t,CUstream)> Bound_cuMemsetD32Async;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned char,size_t,size_t,CUstream)> Bound_cuMemsetD2D8Async;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned short,size_t,size_t,CUstream)> Bound_cuMemsetD2D16Async;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned int,size_t,size_t,CUstream)> Bound_cuMemsetD2D32Async;
+EXTERN_FLAG std::function<int(CUarray *,const CUDA_ARRAY_DESCRIPTOR *)> Bound_cuArrayCreate;
+EXTERN_FLAG std::function<int(CUDA_ARRAY_DESCRIPTOR *,CUarray)> Bound_cuArrayGetDescriptor;
+EXTERN_FLAG std::function<int(CUarray)> Bound_cuArrayDestroy;
+EXTERN_FLAG std::function<int(CUarray *,const CUDA_ARRAY3D_DESCRIPTOR *)> Bound_cuArray3DCreate;
+EXTERN_FLAG std::function<int(CUDA_ARRAY3D_DESCRIPTOR *,CUarray)> Bound_cuArray3DGetDescriptor;
+EXTERN_FLAG std::function<int(CUmipmappedArray *,const CUDA_ARRAY3D_DESCRIPTOR *,unsigned int)> Bound_cuMipmappedArrayCreate;
+EXTERN_FLAG std::function<int(CUarray *,CUmipmappedArray,unsigned int)> Bound_cuMipmappedArrayGetLevel;
+EXTERN_FLAG std::function<int(CUmipmappedArray)> Bound_cuMipmappedArrayDestroy;
+EXTERN_FLAG std::function<int(void *,CUpointer_attribute,CUdeviceptr)> Bound_cuPointerGetAttribute;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,CUdevice,CUstream)> Bound_cuMemPrefetchAsync;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,CUmem_advise,CUdevice)> Bound_cuMemAdvise;
+EXTERN_FLAG std::function<int(void *,size_t,CUmem_range_attribute,CUdeviceptr,size_t)> Bound_cuMemRangeGetAttribute;
+EXTERN_FLAG std::function<int(void * *,size_t *,CUmem_range_attribute *,size_t,CUdeviceptr,size_t)> Bound_cuMemRangeGetAttributes;
+EXTERN_FLAG std::function<int(const void *,CUpointer_attribute,CUdeviceptr)> Bound_cuPointerSetAttribute;
+EXTERN_FLAG std::function<int(unsigned int,CUpointer_attribute *,void * *,CUdeviceptr)> Bound_cuPointerGetAttributes;
+EXTERN_FLAG std::function<int(CUstream *,unsigned int)> Bound_cuStreamCreate;
+EXTERN_FLAG std::function<int(CUstream *,unsigned int,int)> Bound_cuStreamCreateWithPriority;
+EXTERN_FLAG std::function<int(CUstream,int *)> Bound_cuStreamGetPriority;
+EXTERN_FLAG std::function<int(CUstream,unsigned int *)> Bound_cuStreamGetFlags;
+EXTERN_FLAG std::function<int(CUstream,CUevent,unsigned int)> Bound_cuStreamWaitEvent;
+EXTERN_FLAG std::function<int(CUstream,CUstreamCallback,void *,unsigned int)> Bound_cuStreamAddCallback;
+EXTERN_FLAG std::function<int(CUstream,CUdeviceptr,size_t,unsigned int)> Bound_cuStreamAttachMemAsync;
+EXTERN_FLAG std::function<int(CUstream)> Bound_cuStreamQuery;
+EXTERN_FLAG std::function<int(CUstream)> Bound_cuStreamSynchronize;
+EXTERN_FLAG std::function<int(CUstream)> Bound_cuStreamDestroy;
+EXTERN_FLAG std::function<int(CUevent *,unsigned int)> Bound_cuEventCreate;
+EXTERN_FLAG std::function<int(CUevent,CUstream)> Bound_cuEventRecord;
+EXTERN_FLAG std::function<int(CUevent)> Bound_cuEventQuery;
+EXTERN_FLAG std::function<int(CUevent)> Bound_cuEventSynchronize;
+EXTERN_FLAG std::function<int(CUevent)> Bound_cuEventDestroy;
+EXTERN_FLAG std::function<int(float *,CUevent,CUevent)> Bound_cuEventElapsedTime;
+EXTERN_FLAG std::function<int(CUstream,CUdeviceptr,cuuint32_t,unsigned int)> Bound_cuStreamWaitValue32;
+EXTERN_FLAG std::function<int(CUstream,CUdeviceptr,cuuint32_t,unsigned int)> Bound_cuStreamWriteValue32;
+EXTERN_FLAG std::function<int(CUstream,unsigned int,CUstreamBatchMemOpParams *,unsigned int)> Bound_cuStreamBatchMemOp;
+EXTERN_FLAG std::function<int(int *,CUfunction_attribute,CUfunction)> Bound_cuFuncGetAttribute;
+EXTERN_FLAG std::function<int(CUfunction,CUfunc_cache)> Bound_cuFuncSetCacheConfig;
+EXTERN_FLAG std::function<int(CUfunction,CUsharedconfig)> Bound_cuFuncSetSharedMemConfig;
+EXTERN_FLAG std::function<int(CUfunction,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int,unsigned int,CUstream,void * *,void * *)> Bound_cuLaunchKernel;
+EXTERN_FLAG std::function<int(CUfunction,int,int,int)> Bound_cuFuncSetBlockShape;
+EXTERN_FLAG std::function<int(CUfunction,unsigned int)> Bound_cuFuncSetSharedSize;
+EXTERN_FLAG std::function<int(CUfunction,unsigned int)> Bound_cuParamSetSize;
+EXTERN_FLAG std::function<int(CUfunction,int,unsigned int)> Bound_cuParamSeti;
+EXTERN_FLAG std::function<int(CUfunction,int,float)> Bound_cuParamSetf;
+EXTERN_FLAG std::function<int(CUfunction,int,void *,unsigned int)> Bound_cuParamSetv;
+EXTERN_FLAG std::function<int(CUfunction)> Bound_cuLaunch;
+EXTERN_FLAG std::function<int(CUfunction,int,int)> Bound_cuLaunchGrid;
+EXTERN_FLAG std::function<int(CUfunction,int,int,CUstream)> Bound_cuLaunchGridAsync;
+EXTERN_FLAG std::function<int(CUfunction,int,CUtexref)> Bound_cuParamSetTexRef;
+EXTERN_FLAG std::function<int(int *,CUfunction,int,size_t)> Bound_cuOccupancyMaxActiveBlocksPerMultiprocessor;
+EXTERN_FLAG std::function<int(int *,CUfunction,int,size_t,unsigned int)> Bound_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags;
+EXTERN_FLAG std::function<int(int *,int *,CUfunction,CUoccupancyB2DSize,size_t,int)> Bound_cuOccupancyMaxPotentialBlockSize;
+EXTERN_FLAG std::function<int(int *,int *,CUfunction,CUoccupancyB2DSize,size_t,int,unsigned int)> Bound_cuOccupancyMaxPotentialBlockSizeWithFlags;
+EXTERN_FLAG std::function<int(CUtexref,CUarray,unsigned int)> Bound_cuTexRefSetArray;
+EXTERN_FLAG std::function<int(CUtexref,CUmipmappedArray,unsigned int)> Bound_cuTexRefSetMipmappedArray;
+EXTERN_FLAG std::function<int(size_t *,CUtexref,CUdeviceptr,size_t)> Bound_cuTexRefSetAddress;
+EXTERN_FLAG std::function<int(CUtexref,const CUDA_ARRAY_DESCRIPTOR *,CUdeviceptr,size_t)> Bound_cuTexRefSetAddress2D;
+EXTERN_FLAG std::function<int(CUtexref,CUarray_format,int)> Bound_cuTexRefSetFormat;
+EXTERN_FLAG std::function<int(CUtexref,int,CUaddress_mode)> Bound_cuTexRefSetAddressMode;
+EXTERN_FLAG std::function<int(CUtexref,CUfilter_mode)> Bound_cuTexRefSetFilterMode;
+EXTERN_FLAG std::function<int(CUtexref,CUfilter_mode)> Bound_cuTexRefSetMipmapFilterMode;
+EXTERN_FLAG std::function<int(CUtexref,float)> Bound_cuTexRefSetMipmapLevelBias;
+EXTERN_FLAG std::function<int(CUtexref,float,float)> Bound_cuTexRefSetMipmapLevelClamp;
+EXTERN_FLAG std::function<int(CUtexref,unsigned int)> Bound_cuTexRefSetMaxAnisotropy;
+EXTERN_FLAG std::function<int(CUtexref,float *)> Bound_cuTexRefSetBorderColor;
+EXTERN_FLAG std::function<int(CUtexref,unsigned int)> Bound_cuTexRefSetFlags;
+EXTERN_FLAG std::function<int(CUdeviceptr *,CUtexref)> Bound_cuTexRefGetAddress;
+EXTERN_FLAG std::function<int(CUarray *,CUtexref)> Bound_cuTexRefGetArray;
+EXTERN_FLAG std::function<int(CUmipmappedArray *,CUtexref)> Bound_cuTexRefGetMipmappedArray;
+EXTERN_FLAG std::function<int(CUaddress_mode *,CUtexref,int)> Bound_cuTexRefGetAddressMode;
+EXTERN_FLAG std::function<int(CUfilter_mode *,CUtexref)> Bound_cuTexRefGetFilterMode;
+EXTERN_FLAG std::function<int(CUarray_format *,int *,CUtexref)> Bound_cuTexRefGetFormat;
+EXTERN_FLAG std::function<int(CUfilter_mode *,CUtexref)> Bound_cuTexRefGetMipmapFilterMode;
+EXTERN_FLAG std::function<int(float *,CUtexref)> Bound_cuTexRefGetMipmapLevelBias;
+EXTERN_FLAG std::function<int(float *,float *,CUtexref)> Bound_cuTexRefGetMipmapLevelClamp;
+EXTERN_FLAG std::function<int(int *,CUtexref)> Bound_cuTexRefGetMaxAnisotropy;
+EXTERN_FLAG std::function<int(float *,CUtexref)> Bound_cuTexRefGetBorderColor;
+EXTERN_FLAG std::function<int(unsigned int *,CUtexref)> Bound_cuTexRefGetFlags;
+EXTERN_FLAG std::function<int(CUtexref *)> Bound_cuTexRefCreate;
+EXTERN_FLAG std::function<int(CUtexref)> Bound_cuTexRefDestroy;
+EXTERN_FLAG std::function<int(CUsurfref,CUarray,unsigned int)> Bound_cuSurfRefSetArray;
+EXTERN_FLAG std::function<int(CUarray *,CUsurfref)> Bound_cuSurfRefGetArray;
+EXTERN_FLAG std::function<int(CUtexObject *,const CUDA_RESOURCE_DESC *,const CUDA_TEXTURE_DESC *,const CUDA_RESOURCE_VIEW_DESC *)> Bound_cuTexObjectCreate;
+EXTERN_FLAG std::function<int(CUtexObject)> Bound_cuTexObjectDestroy;
+EXTERN_FLAG std::function<int(CUDA_RESOURCE_DESC *,CUtexObject)> Bound_cuTexObjectGetResourceDesc;
+EXTERN_FLAG std::function<int(CUDA_TEXTURE_DESC *,CUtexObject)> Bound_cuTexObjectGetTextureDesc;
+EXTERN_FLAG std::function<int(CUDA_RESOURCE_VIEW_DESC *,CUtexObject)> Bound_cuTexObjectGetResourceViewDesc;
+EXTERN_FLAG std::function<int(CUsurfObject *,const CUDA_RESOURCE_DESC *)> Bound_cuSurfObjectCreate;
+EXTERN_FLAG std::function<int(CUsurfObject)> Bound_cuSurfObjectDestroy;
+EXTERN_FLAG std::function<int(CUDA_RESOURCE_DESC *,CUsurfObject)> Bound_cuSurfObjectGetResourceDesc;
+EXTERN_FLAG std::function<int(int *,CUdevice,CUdevice)> Bound_cuDeviceCanAccessPeer;
+EXTERN_FLAG std::function<int(int *,CUdevice_P2PAttribute,CUdevice,CUdevice)> Bound_cuDeviceGetP2PAttribute;
+EXTERN_FLAG std::function<int(CUcontext,unsigned int)> Bound_cuCtxEnablePeerAccess;
+EXTERN_FLAG std::function<int(CUcontext)> Bound_cuCtxDisablePeerAccess;
+EXTERN_FLAG std::function<int(CUgraphicsResource)> Bound_cuGraphicsUnregisterResource;
+EXTERN_FLAG std::function<int(CUarray *,CUgraphicsResource,unsigned int,unsigned int)> Bound_cuGraphicsSubResourceGetMappedArray;
+EXTERN_FLAG std::function<int(CUmipmappedArray *,CUgraphicsResource)> Bound_cuGraphicsResourceGetMappedMipmappedArray;
+EXTERN_FLAG std::function<int(CUdeviceptr *,size_t *,CUgraphicsResource)> Bound_cuGraphicsResourceGetMappedPointer;
+EXTERN_FLAG std::function<int(CUgraphicsResource,unsigned int)> Bound_cuGraphicsResourceSetMapFlags;
+EXTERN_FLAG std::function<int(unsigned int,CUgraphicsResource *,CUstream)> Bound_cuGraphicsMapResources;
+EXTERN_FLAG std::function<int(unsigned int,CUgraphicsResource *,CUstream)> Bound_cuGraphicsUnmapResources;
+EXTERN_FLAG std::function<int(const void * *,const CUuuid *)> Bound_cuGetExportTable;
+EXTERN_FLAG std::function<int(CUtexref,const CUDA_ARRAY_DESCRIPTOR *,CUdeviceptr,size_t)> Bound_cuTexRefSetAddress2D_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,const void *,size_t)> Bound_cuMemcpyHtoD_v2;
+EXTERN_FLAG std::function<int(void *,CUdeviceptr,size_t)> Bound_cuMemcpyDtoH_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUdeviceptr,size_t)> Bound_cuMemcpyDtoD_v2;
+EXTERN_FLAG std::function<int(CUarray,size_t,CUdeviceptr,size_t)> Bound_cuMemcpyDtoA_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUarray,size_t,size_t)> Bound_cuMemcpyAtoD_v2;
+EXTERN_FLAG std::function<int(CUarray,size_t,const void *,size_t)> Bound_cuMemcpyHtoA_v2;
+EXTERN_FLAG std::function<int(void *,CUarray,size_t,size_t)> Bound_cuMemcpyAtoH_v2;
+EXTERN_FLAG std::function<int(CUarray,size_t,CUarray,size_t,size_t)> Bound_cuMemcpyAtoA_v2;
+EXTERN_FLAG std::function<int(CUarray,size_t,const void *,size_t,CUstream)> Bound_cuMemcpyHtoAAsync_v2;
+EXTERN_FLAG std::function<int(void *,CUarray,size_t,size_t,CUstream)> Bound_cuMemcpyAtoHAsync_v2;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY2D *)> Bound_cuMemcpy2D_v2;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY2D *)> Bound_cuMemcpy2DUnaligned_v2;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY3D *)> Bound_cuMemcpy3D_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,const void *,size_t,CUstream)> Bound_cuMemcpyHtoDAsync_v2;
+EXTERN_FLAG std::function<int(void *,CUdeviceptr,size_t,CUstream)> Bound_cuMemcpyDtoHAsync_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,CUdeviceptr,size_t,CUstream)> Bound_cuMemcpyDtoDAsync_v2;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY2D *,CUstream)> Bound_cuMemcpy2DAsync_v2;
+EXTERN_FLAG std::function<int(const CUDA_MEMCPY3D *,CUstream)> Bound_cuMemcpy3DAsync_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,unsigned char,size_t)> Bound_cuMemsetD8_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,unsigned short,size_t)> Bound_cuMemsetD16_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,unsigned int,size_t)> Bound_cuMemsetD32_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned char,size_t,size_t)> Bound_cuMemsetD2D8_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned short,size_t,size_t)> Bound_cuMemsetD2D16_v2;
+EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned int,size_t,size_t)> Bound_cuMemsetD2D32_v2;
+
+extern "C" void DefineBinders() {
+	Bound_cuGetErrorString = std::bind(&ORIGINAL_cuGetErrorString,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuGetErrorName = std::bind(&ORIGINAL_cuGetErrorName,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);
+	Bound_cuDriverGetVersion = std::bind(&ORIGINAL_cuDriverGetVersion,std::placeholders::_1);
+	Bound_cuDeviceGet = std::bind(&ORIGINAL_cuDeviceGet,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuDeviceGetCount = std::bind(&ORIGINAL_cuDeviceGetCount,std::placeholders::_1);
+	Bound_cuDeviceGetName = std::bind(&ORIGINAL_cuDeviceGetName,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuDeviceTotalMem = std::bind(&ORIGINAL_cuDeviceTotalMem,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuDeviceGetAttribute = std::bind(&ORIGINAL_cuDeviceGetAttribute,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuDeviceGetProperties = std::bind(&ORIGINAL_cuDeviceGetProperties,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuDeviceComputeCapability = std::bind(&ORIGINAL_cuDeviceComputeCapability,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuDevicePrimaryCtxRetain = std::bind(&ORIGINAL_cuDevicePrimaryCtxRetain,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuDevicePrimaryCtxRelease = std::bind(&ORIGINAL_cuDevicePrimaryCtxRelease,std::placeholders::_1);
+	Bound_cuDevicePrimaryCtxSetFlags = std::bind(&ORIGINAL_cuDevicePrimaryCtxSetFlags,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuDevicePrimaryCtxGetState = std::bind(&ORIGINAL_cuDevicePrimaryCtxGetState,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuDevicePrimaryCtxReset = std::bind(&ORIGINAL_cuDevicePrimaryCtxReset,std::placeholders::_1);
+	Bound_cuCtxCreate = std::bind(&ORIGINAL_cuCtxCreate,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuCtxDestroy = std::bind(&ORIGINAL_cuCtxDestroy,std::placeholders::_1);
+	Bound_cuCtxPushCurrent = std::bind(&ORIGINAL_cuCtxPushCurrent,std::placeholders::_1);
+	Bound_cuCtxPopCurrent = std::bind(&ORIGINAL_cuCtxPopCurrent,std::placeholders::_1);
+	Bound_cuCtxSetCurrent = std::bind(&ORIGINAL_cuCtxSetCurrent,std::placeholders::_1);
+	Bound_cuCtxGetCurrent = std::bind(&ORIGINAL_cuCtxGetCurrent,std::placeholders::_1);
+	Bound_cuCtxGetDevice = std::bind(&ORIGINAL_cuCtxGetDevice,std::placeholders::_1);
+	Bound_cuCtxGetFlags = std::bind(&ORIGINAL_cuCtxGetFlags,std::placeholders::_1);
+	Bound_cuCtxSynchronize = std::bind(&ORIGINAL_cuCtxSynchronize);
+	Bound_cuCtxSetLimit = std::bind(&ORIGINAL_cuCtxSetLimit,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuCtxGetLimit = std::bind(&ORIGINAL_cuCtxGetLimit,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuCtxGetCacheConfig = std::bind(&ORIGINAL_cuCtxGetCacheConfig,std::placeholders::_1);
+	Bound_cuCtxSetCacheConfig = std::bind(&ORIGINAL_cuCtxSetCacheConfig,std::placeholders::_1);
+	Bound_cuCtxGetSharedMemConfig = std::bind(&ORIGINAL_cuCtxGetSharedMemConfig,std::placeholders::_1);
+	Bound_cuCtxSetSharedMemConfig = std::bind(&ORIGINAL_cuCtxSetSharedMemConfig,std::placeholders::_1);
+	Bound_cuCtxGetApiVersion = std::bind(&ORIGINAL_cuCtxGetApiVersion,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuCtxGetStreamPriorityRange = std::bind(&ORIGINAL_cuCtxGetStreamPriorityRange,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuCtxAttach = std::bind(&ORIGINAL_cuCtxAttach,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuCtxDetach = std::bind(&ORIGINAL_cuCtxDetach,std::placeholders::_1);
+	Bound_cuModuleLoad = std::bind(&ORIGINAL_cuModuleLoad,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuModuleLoadData = std::bind(&ORIGINAL_cuModuleLoadData,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuModuleLoadDataEx = std::bind(&ORIGINAL_cuModuleLoadDataEx,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuModuleLoadFatBinary = std::bind(&ORIGINAL_cuModuleLoadFatBinary,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuModuleUnload = std::bind(&ORIGINAL_cuModuleUnload,std::placeholders::_1);
+	Bound_cuModuleGetFunction = std::bind(&ORIGINAL_cuModuleGetFunction,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuModuleGetGlobal = std::bind(&ORIGINAL_cuModuleGetGlobal,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuModuleGetTexRef = std::bind(&ORIGINAL_cuModuleGetTexRef,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuModuleGetSurfRef = std::bind(&ORIGINAL_cuModuleGetSurfRef,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuLinkCreate = std::bind(&ORIGINAL_cuLinkCreate,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuLinkAddData = std::bind(&ORIGINAL_cuLinkAddData,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6,std::placeholders::_7,std::placeholders::_8);
+	Bound_cuLinkAddFile = std::bind(&ORIGINAL_cuLinkAddFile,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6);
+	Bound_cuLinkComplete = std::bind(&ORIGINAL_cuLinkComplete,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuLinkDestroy = std::bind(&ORIGINAL_cuLinkDestroy,std::placeholders::_1);
+	Bound_cuMemGetInfo = std::bind(&ORIGINAL_cuMemGetInfo,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMemAlloc = std::bind(&ORIGINAL_cuMemAlloc,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMemAllocPitch = std::bind(&ORIGINAL_cuMemAllocPitch,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemFree = std::bind(&ORIGINAL_cuMemFree,std::placeholders::_1);
+	Bound_cuMemGetAddressRange = std::bind(&ORIGINAL_cuMemGetAddressRange,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemAllocHost = std::bind(&ORIGINAL_cuMemAllocHost,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMemFreeHost = std::bind(&ORIGINAL_cuMemFreeHost,std::placeholders::_1);
+	Bound_cuMemHostAlloc = std::bind(&ORIGINAL_cuMemHostAlloc,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemHostGetDevicePointer = std::bind(&ORIGINAL_cuMemHostGetDevicePointer,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemHostGetFlags = std::bind(&ORIGINAL_cuMemHostGetFlags,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMemAllocManaged = std::bind(&ORIGINAL_cuMemAllocManaged,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuDeviceGetByPCIBusId = std::bind(&ORIGINAL_cuDeviceGetByPCIBusId,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuDeviceGetPCIBusId = std::bind(&ORIGINAL_cuDeviceGetPCIBusId,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuIpcGetEventHandle = std::bind(&ORIGINAL_cuIpcGetEventHandle,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuIpcOpenEventHandle = std::bind(&ORIGINAL_cuIpcOpenEventHandle,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuIpcGetMemHandle = std::bind(&ORIGINAL_cuIpcGetMemHandle,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuIpcOpenMemHandle = std::bind(&ORIGINAL_cuIpcOpenMemHandle,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuIpcCloseMemHandle = std::bind(&ORIGINAL_cuIpcCloseMemHandle,std::placeholders::_1);
+	Bound_cuMemHostRegister = std::bind(&ORIGINAL_cuMemHostRegister,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemHostUnregister = std::bind(&ORIGINAL_cuMemHostUnregister,std::placeholders::_1);
+	Bound_cuMemcpy = std::bind(&ORIGINAL_cuMemcpy,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemcpyPeer = std::bind(&ORIGINAL_cuMemcpyPeer,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemcpyHtoD = std::bind(&ORIGINAL_cuMemcpyHtoD,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemcpyDtoH = std::bind(&ORIGINAL_cuMemcpyDtoH,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemcpyDtoD = std::bind(&ORIGINAL_cuMemcpyDtoD,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemcpyDtoA = std::bind(&ORIGINAL_cuMemcpyDtoA,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyAtoD = std::bind(&ORIGINAL_cuMemcpyAtoD,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyHtoA = std::bind(&ORIGINAL_cuMemcpyHtoA,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyAtoH = std::bind(&ORIGINAL_cuMemcpyAtoH,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyAtoA = std::bind(&ORIGINAL_cuMemcpyAtoA,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemcpy2D = std::bind(&ORIGINAL_cuMemcpy2D,std::placeholders::_1);
+	Bound_cuMemcpy2DUnaligned = std::bind(&ORIGINAL_cuMemcpy2DUnaligned,std::placeholders::_1);
+	Bound_cuMemcpy3D = std::bind(&ORIGINAL_cuMemcpy3D,std::placeholders::_1);
+	Bound_cuMemcpy3DPeer = std::bind(&ORIGINAL_cuMemcpy3DPeer,std::placeholders::_1);
+	Bound_cuMemcpyAsync = std::bind(&ORIGINAL_cuMemcpyAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyPeerAsync = std::bind(&ORIGINAL_cuMemcpyPeerAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6);
+	Bound_cuMemcpyHtoDAsync = std::bind(&ORIGINAL_cuMemcpyHtoDAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyDtoHAsync = std::bind(&ORIGINAL_cuMemcpyDtoHAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyDtoDAsync = std::bind(&ORIGINAL_cuMemcpyDtoDAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyHtoAAsync = std::bind(&ORIGINAL_cuMemcpyHtoAAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemcpyAtoHAsync = std::bind(&ORIGINAL_cuMemcpyAtoHAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemcpy2DAsync = std::bind(&ORIGINAL_cuMemcpy2DAsync,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMemcpy3DAsync = std::bind(&ORIGINAL_cuMemcpy3DAsync,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMemcpy3DPeerAsync = std::bind(&ORIGINAL_cuMemcpy3DPeerAsync,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMemsetD8 = std::bind(&ORIGINAL_cuMemsetD8,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemsetD16 = std::bind(&ORIGINAL_cuMemsetD16,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemsetD32 = std::bind(&ORIGINAL_cuMemsetD32,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemsetD2D8 = std::bind(&ORIGINAL_cuMemsetD2D8,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemsetD2D16 = std::bind(&ORIGINAL_cuMemsetD2D16,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemsetD2D32 = std::bind(&ORIGINAL_cuMemsetD2D32,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemsetD8Async = std::bind(&ORIGINAL_cuMemsetD8Async,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemsetD16Async = std::bind(&ORIGINAL_cuMemsetD16Async,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemsetD32Async = std::bind(&ORIGINAL_cuMemsetD32Async,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemsetD2D8Async = std::bind(&ORIGINAL_cuMemsetD2D8Async,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6);
+	Bound_cuMemsetD2D16Async = std::bind(&ORIGINAL_cuMemsetD2D16Async,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6);
+	Bound_cuMemsetD2D32Async = std::bind(&ORIGINAL_cuMemsetD2D32Async,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6);
+	Bound_cuArrayCreate = std::bind(&ORIGINAL_cuArrayCreate,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuArrayGetDescriptor = std::bind(&ORIGINAL_cuArrayGetDescriptor,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuArrayDestroy = std::bind(&ORIGINAL_cuArrayDestroy,std::placeholders::_1);
+	Bound_cuArray3DCreate = std::bind(&ORIGINAL_cuArray3DCreate,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuArray3DGetDescriptor = std::bind(&ORIGINAL_cuArray3DGetDescriptor,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMipmappedArrayCreate = std::bind(&ORIGINAL_cuMipmappedArrayCreate,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMipmappedArrayGetLevel = std::bind(&ORIGINAL_cuMipmappedArrayGetLevel,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMipmappedArrayDestroy = std::bind(&ORIGINAL_cuMipmappedArrayDestroy,std::placeholders::_1);
+	Bound_cuPointerGetAttribute = std::bind(&ORIGINAL_cuPointerGetAttribute,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemPrefetchAsync = std::bind(&ORIGINAL_cuMemPrefetchAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemAdvise = std::bind(&ORIGINAL_cuMemAdvise,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemRangeGetAttribute = std::bind(&ORIGINAL_cuMemRangeGetAttribute,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemRangeGetAttributes = std::bind(&ORIGINAL_cuMemRangeGetAttributes,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6);
+	Bound_cuPointerSetAttribute = std::bind(&ORIGINAL_cuPointerSetAttribute,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuPointerGetAttributes = std::bind(&ORIGINAL_cuPointerGetAttributes,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuStreamCreate = std::bind(&ORIGINAL_cuStreamCreate,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuStreamCreateWithPriority = std::bind(&ORIGINAL_cuStreamCreateWithPriority,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuStreamGetPriority = std::bind(&ORIGINAL_cuStreamGetPriority,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuStreamGetFlags = std::bind(&ORIGINAL_cuStreamGetFlags,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuStreamWaitEvent = std::bind(&ORIGINAL_cuStreamWaitEvent,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuStreamAddCallback = std::bind(&ORIGINAL_cuStreamAddCallback,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuStreamAttachMemAsync = std::bind(&ORIGINAL_cuStreamAttachMemAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuStreamQuery = std::bind(&ORIGINAL_cuStreamQuery,std::placeholders::_1);
+	Bound_cuStreamSynchronize = std::bind(&ORIGINAL_cuStreamSynchronize,std::placeholders::_1);
+	Bound_cuStreamDestroy = std::bind(&ORIGINAL_cuStreamDestroy,std::placeholders::_1);
+	Bound_cuEventCreate = std::bind(&ORIGINAL_cuEventCreate,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuEventRecord = std::bind(&ORIGINAL_cuEventRecord,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuEventQuery = std::bind(&ORIGINAL_cuEventQuery,std::placeholders::_1);
+	Bound_cuEventSynchronize = std::bind(&ORIGINAL_cuEventSynchronize,std::placeholders::_1);
+	Bound_cuEventDestroy = std::bind(&ORIGINAL_cuEventDestroy,std::placeholders::_1);
+	Bound_cuEventElapsedTime = std::bind(&ORIGINAL_cuEventElapsedTime,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuStreamWaitValue32 = std::bind(&ORIGINAL_cuStreamWaitValue32,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuStreamWriteValue32 = std::bind(&ORIGINAL_cuStreamWriteValue32,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuStreamBatchMemOp = std::bind(&ORIGINAL_cuStreamBatchMemOp,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuFuncGetAttribute = std::bind(&ORIGINAL_cuFuncGetAttribute,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuFuncSetCacheConfig = std::bind(&ORIGINAL_cuFuncSetCacheConfig,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuFuncSetSharedMemConfig = std::bind(&ORIGINAL_cuFuncSetSharedMemConfig,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuLaunchKernel = std::bind(&ORIGINAL_cuLaunchKernel,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6,std::placeholders::_7,std::placeholders::_8,std::placeholders::_9,std::placeholders::_10,std::placeholders::_11);
+	Bound_cuFuncSetBlockShape = std::bind(&ORIGINAL_cuFuncSetBlockShape,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuFuncSetSharedSize = std::bind(&ORIGINAL_cuFuncSetSharedSize,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuParamSetSize = std::bind(&ORIGINAL_cuParamSetSize,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuParamSeti = std::bind(&ORIGINAL_cuParamSeti,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuParamSetf = std::bind(&ORIGINAL_cuParamSetf,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuParamSetv = std::bind(&ORIGINAL_cuParamSetv,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuLaunch = std::bind(&ORIGINAL_cuLaunch,std::placeholders::_1);
+	Bound_cuLaunchGrid = std::bind(&ORIGINAL_cuLaunchGrid,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuLaunchGridAsync = std::bind(&ORIGINAL_cuLaunchGridAsync,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuParamSetTexRef = std::bind(&ORIGINAL_cuParamSetTexRef,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuOccupancyMaxActiveBlocksPerMultiprocessor = std::bind(&ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags = std::bind(&ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuOccupancyMaxPotentialBlockSize = std::bind(&ORIGINAL_cuOccupancyMaxPotentialBlockSize,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6);
+	Bound_cuOccupancyMaxPotentialBlockSizeWithFlags = std::bind(&ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5,std::placeholders::_6,std::placeholders::_7);
+	Bound_cuTexRefSetArray = std::bind(&ORIGINAL_cuTexRefSetArray,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuTexRefSetMipmappedArray = std::bind(&ORIGINAL_cuTexRefSetMipmappedArray,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuTexRefSetAddress = std::bind(&ORIGINAL_cuTexRefSetAddress,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuTexRefSetAddress2D = std::bind(&ORIGINAL_cuTexRefSetAddress2D,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuTexRefSetFormat = std::bind(&ORIGINAL_cuTexRefSetFormat,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuTexRefSetAddressMode = std::bind(&ORIGINAL_cuTexRefSetAddressMode,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuTexRefSetFilterMode = std::bind(&ORIGINAL_cuTexRefSetFilterMode,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefSetMipmapFilterMode = std::bind(&ORIGINAL_cuTexRefSetMipmapFilterMode,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefSetMipmapLevelBias = std::bind(&ORIGINAL_cuTexRefSetMipmapLevelBias,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefSetMipmapLevelClamp = std::bind(&ORIGINAL_cuTexRefSetMipmapLevelClamp,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuTexRefSetMaxAnisotropy = std::bind(&ORIGINAL_cuTexRefSetMaxAnisotropy,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefSetBorderColor = std::bind(&ORIGINAL_cuTexRefSetBorderColor,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefSetFlags = std::bind(&ORIGINAL_cuTexRefSetFlags,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefGetAddress = std::bind(&ORIGINAL_cuTexRefGetAddress,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefGetArray = std::bind(&ORIGINAL_cuTexRefGetArray,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefGetMipmappedArray = std::bind(&ORIGINAL_cuTexRefGetMipmappedArray,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefGetAddressMode = std::bind(&ORIGINAL_cuTexRefGetAddressMode,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuTexRefGetFilterMode = std::bind(&ORIGINAL_cuTexRefGetFilterMode,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefGetFormat = std::bind(&ORIGINAL_cuTexRefGetFormat,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuTexRefGetMipmapFilterMode = std::bind(&ORIGINAL_cuTexRefGetMipmapFilterMode,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefGetMipmapLevelBias = std::bind(&ORIGINAL_cuTexRefGetMipmapLevelBias,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefGetMipmapLevelClamp = std::bind(&ORIGINAL_cuTexRefGetMipmapLevelClamp,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuTexRefGetMaxAnisotropy = std::bind(&ORIGINAL_cuTexRefGetMaxAnisotropy,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefGetBorderColor = std::bind(&ORIGINAL_cuTexRefGetBorderColor,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefGetFlags = std::bind(&ORIGINAL_cuTexRefGetFlags,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefCreate = std::bind(&ORIGINAL_cuTexRefCreate,std::placeholders::_1);
+	Bound_cuTexRefDestroy = std::bind(&ORIGINAL_cuTexRefDestroy,std::placeholders::_1);
+	Bound_cuSurfRefSetArray = std::bind(&ORIGINAL_cuSurfRefSetArray,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuSurfRefGetArray = std::bind(&ORIGINAL_cuSurfRefGetArray,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexObjectCreate = std::bind(&ORIGINAL_cuTexObjectCreate,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuTexObjectDestroy = std::bind(&ORIGINAL_cuTexObjectDestroy,std::placeholders::_1);
+	Bound_cuTexObjectGetResourceDesc = std::bind(&ORIGINAL_cuTexObjectGetResourceDesc,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexObjectGetTextureDesc = std::bind(&ORIGINAL_cuTexObjectGetTextureDesc,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexObjectGetResourceViewDesc = std::bind(&ORIGINAL_cuTexObjectGetResourceViewDesc,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuSurfObjectCreate = std::bind(&ORIGINAL_cuSurfObjectCreate,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuSurfObjectDestroy = std::bind(&ORIGINAL_cuSurfObjectDestroy,std::placeholders::_1);
+	Bound_cuSurfObjectGetResourceDesc = std::bind(&ORIGINAL_cuSurfObjectGetResourceDesc,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuDeviceCanAccessPeer = std::bind(&ORIGINAL_cuDeviceCanAccessPeer,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuDeviceGetP2PAttribute = std::bind(&ORIGINAL_cuDeviceGetP2PAttribute,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuCtxEnablePeerAccess = std::bind(&ORIGINAL_cuCtxEnablePeerAccess,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuCtxDisablePeerAccess = std::bind(&ORIGINAL_cuCtxDisablePeerAccess,std::placeholders::_1);
+	Bound_cuGraphicsUnregisterResource = std::bind(&ORIGINAL_cuGraphicsUnregisterResource,std::placeholders::_1);
+	Bound_cuGraphicsSubResourceGetMappedArray = std::bind(&ORIGINAL_cuGraphicsSubResourceGetMappedArray,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuGraphicsResourceGetMappedMipmappedArray = std::bind(&ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuGraphicsResourceGetMappedPointer = std::bind(&ORIGINAL_cuGraphicsResourceGetMappedPointer,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuGraphicsResourceSetMapFlags = std::bind(&ORIGINAL_cuGraphicsResourceSetMapFlags,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuGraphicsMapResources = std::bind(&ORIGINAL_cuGraphicsMapResources,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuGraphicsUnmapResources = std::bind(&ORIGINAL_cuGraphicsUnmapResources,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuGetExportTable = std::bind(&ORIGINAL_cuGetExportTable,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuTexRefSetAddress2D_v2 = std::bind(&ORIGINAL_cuTexRefSetAddress2D_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyHtoD_v2 = std::bind(&ORIGINAL_cuMemcpyHtoD_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemcpyDtoH_v2 = std::bind(&ORIGINAL_cuMemcpyDtoH_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemcpyDtoD_v2 = std::bind(&ORIGINAL_cuMemcpyDtoD_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemcpyDtoA_v2 = std::bind(&ORIGINAL_cuMemcpyDtoA_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyAtoD_v2 = std::bind(&ORIGINAL_cuMemcpyAtoD_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyHtoA_v2 = std::bind(&ORIGINAL_cuMemcpyHtoA_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyAtoH_v2 = std::bind(&ORIGINAL_cuMemcpyAtoH_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyAtoA_v2 = std::bind(&ORIGINAL_cuMemcpyAtoA_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemcpyHtoAAsync_v2 = std::bind(&ORIGINAL_cuMemcpyHtoAAsync_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemcpyAtoHAsync_v2 = std::bind(&ORIGINAL_cuMemcpyAtoHAsync_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemcpy2D_v2 = std::bind(&ORIGINAL_cuMemcpy2D_v2,std::placeholders::_1);
+	Bound_cuMemcpy2DUnaligned_v2 = std::bind(&ORIGINAL_cuMemcpy2DUnaligned_v2,std::placeholders::_1);
+	Bound_cuMemcpy3D_v2 = std::bind(&ORIGINAL_cuMemcpy3D_v2,std::placeholders::_1);
+	Bound_cuMemcpyHtoDAsync_v2 = std::bind(&ORIGINAL_cuMemcpyHtoDAsync_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyDtoHAsync_v2 = std::bind(&ORIGINAL_cuMemcpyDtoHAsync_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpyDtoDAsync_v2 = std::bind(&ORIGINAL_cuMemcpyDtoDAsync_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4);
+	Bound_cuMemcpy2DAsync_v2 = std::bind(&ORIGINAL_cuMemcpy2DAsync_v2,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMemcpy3DAsync_v2 = std::bind(&ORIGINAL_cuMemcpy3DAsync_v2,std::placeholders::_1,std::placeholders::_2);
+	Bound_cuMemsetD8_v2 = std::bind(&ORIGINAL_cuMemsetD8_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemsetD16_v2 = std::bind(&ORIGINAL_cuMemsetD16_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemsetD32_v2 = std::bind(&ORIGINAL_cuMemsetD32_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	Bound_cuMemsetD2D8_v2 = std::bind(&ORIGINAL_cuMemsetD2D8_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemsetD2D16_v2 = std::bind(&ORIGINAL_cuMemsetD2D16_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+	Bound_cuMemsetD2D32_v2 = std::bind(&ORIGINAL_cuMemsetD2D32_v2,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4,std::placeholders::_5);
+
+}

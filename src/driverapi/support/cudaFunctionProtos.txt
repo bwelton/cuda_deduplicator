@@ -112,6 +112,10 @@ CUresult CUDAAPI,cuMipmappedArrayCreate,CUmipmappedArray *$pHandle,const CUDA_AR
 CUresult CUDAAPI,cuMipmappedArrayGetLevel,CUarray *$pLevelArray,CUmipmappedArray$hMipmappedArray,unsigned int$level
 CUresult CUDAAPI,cuMipmappedArrayDestroy,CUmipmappedArray$hMipmappedArray
 CUresult CUDAAPI,cuPointerGetAttribute,void *$data,CUpointer_attribute$attribute,CUdeviceptr$ptr
+CUresult CUDAAPI,cuMemPrefetchAsync,CUdeviceptr$devPtr,size_t$count,CUdevice$dstDevice,CUstream$hStream
+CUresult CUDAAPI,cuMemAdvise,CUdeviceptr$devPtr,size_t$count,CUmem_advise$advice,CUdevice$device
+CUresult CUDAAPI,cuMemRangeGetAttribute,void *$data,size_t$dataSize,CUmem_range_attribute$attribute,CUdeviceptr$devPtr,size_t$count
+CUresult CUDAAPI,cuMemRangeGetAttributes,void * *$data,size_t *$dataSizes,CUmem_range_attribute *$attributes,size_t$numAttributes,CUdeviceptr$devPtr,size_t$count
 CUresult CUDAAPI,cuPointerSetAttribute,const void *$value,CUpointer_attribute$attribute,CUdeviceptr$ptr
 CUresult CUDAAPI,cuPointerGetAttributes,unsigned int$numAttributes,CUpointer_attribute *$attributes,void * *$data,CUdeviceptr$ptr
 CUresult CUDAAPI,cuStreamCreate,CUstream *$phStream,unsigned int$Flags
@@ -130,6 +134,9 @@ CUresult CUDAAPI,cuEventQuery,CUevent$hEvent
 CUresult CUDAAPI,cuEventSynchronize,CUevent$hEvent
 CUresult CUDAAPI,cuEventDestroy,CUevent$hEvent
 CUresult CUDAAPI,cuEventElapsedTime,float *$pMilliseconds,CUevent$hStart,CUevent$hEnd
+CUresult CUDAAPI,cuStreamWaitValue32,CUstream$stream,CUdeviceptr$addr,cuuint32_t$value,unsigned int$flags
+CUresult CUDAAPI,cuStreamWriteValue32,CUstream$stream,CUdeviceptr$addr,cuuint32_t$value,unsigned int$flags
+CUresult CUDAAPI,cuStreamBatchMemOp,CUstream$stream,unsigned int$count,CUstreamBatchMemOpParams *$paramArray,unsigned int$flags
 CUresult CUDAAPI,cuFuncGetAttribute,int *$pi,CUfunction_attribute$attrib,CUfunction$hfunc
 CUresult CUDAAPI,cuFuncSetCacheConfig,CUfunction$hfunc,CUfunc_cache$config
 CUresult CUDAAPI,cuFuncSetSharedMemConfig,CUfunction$hfunc,CUsharedconfig$config
@@ -159,6 +166,7 @@ CUresult CUDAAPI,cuTexRefSetMipmapFilterMode,CUtexref$hTexRef,CUfilter_mode$fm
 CUresult CUDAAPI,cuTexRefSetMipmapLevelBias,CUtexref$hTexRef,float$bias
 CUresult CUDAAPI,cuTexRefSetMipmapLevelClamp,CUtexref$hTexRef,float$minMipmapLevelClamp,float$maxMipmapLevelClamp
 CUresult CUDAAPI,cuTexRefSetMaxAnisotropy,CUtexref$hTexRef,unsigned int$maxAniso
+CUresult CUDAAPI,cuTexRefSetBorderColor,CUtexref$hTexRef,float *$pBorderColor
 CUresult CUDAAPI,cuTexRefSetFlags,CUtexref$hTexRef,unsigned int$Flags
 CUresult CUDAAPI,cuTexRefGetAddress,CUdeviceptr *$pdptr,CUtexref$hTexRef
 CUresult CUDAAPI,cuTexRefGetArray,CUarray *$phArray,CUtexref$hTexRef
@@ -170,6 +178,7 @@ CUresult CUDAAPI,cuTexRefGetMipmapFilterMode,CUfilter_mode *$pfm,CUtexref$hTexRe
 CUresult CUDAAPI,cuTexRefGetMipmapLevelBias,float *$pbias,CUtexref$hTexRef
 CUresult CUDAAPI,cuTexRefGetMipmapLevelClamp,float *$pminMipmapLevelClamp,float *$pmaxMipmapLevelClamp,CUtexref$hTexRef
 CUresult CUDAAPI,cuTexRefGetMaxAnisotropy,int *$pmaxAniso,CUtexref$hTexRef
+CUresult CUDAAPI,cuTexRefGetBorderColor,float *$pBorderColor,CUtexref$hTexRef
 CUresult CUDAAPI,cuTexRefGetFlags,unsigned int *$pFlags,CUtexref$hTexRef
 CUresult CUDAAPI,cuTexRefCreate,CUtexref *$pTexRef
 CUresult CUDAAPI,cuTexRefDestroy,CUtexref$hTexRef
@@ -184,6 +193,7 @@ CUresult CUDAAPI,cuSurfObjectCreate,CUsurfObject *$pSurfObject,const CUDA_RESOUR
 CUresult CUDAAPI,cuSurfObjectDestroy,CUsurfObject$surfObject
 CUresult CUDAAPI,cuSurfObjectGetResourceDesc,CUDA_RESOURCE_DESC *$pResDesc,CUsurfObject$surfObject
 CUresult CUDAAPI,cuDeviceCanAccessPeer,int *$canAccessPeer,CUdevice$dev,CUdevice$peerDev
+CUresult CUDAAPI,cuDeviceGetP2PAttribute,int *$value,CUdevice_P2PAttribute$attrib,CUdevice$srcDevice,CUdevice$dstDevice
 CUresult CUDAAPI,cuCtxEnablePeerAccess,CUcontext$peerContext,unsigned int$Flags
 CUresult CUDAAPI,cuCtxDisablePeerAccess,CUcontext$peerContext
 CUresult CUDAAPI,cuGraphicsUnregisterResource,CUgraphicsResource$resource
@@ -294,3 +304,7 @@ CUresult CUDAAPI,cuEventRecord,CUevent$hEvent,CUstream$hStream
 CUresult CUDAAPI,cuLaunchKernel,CUfunction$f,unsigned int$gridDimX,unsigned int$gridDimY,unsigned int$gridDimZ,unsigned int$blockDimX,unsigned int$blockDimY,unsigned int$blockDimZ,unsigned int$sharedMemBytes,CUstream$hStream,void * *$kernelParams,void * *$extra
 CUresult CUDAAPI,cuGraphicsMapResources,unsigned int$count,CUgraphicsResource *$resources,CUstream$hStream
 CUresult CUDAAPI,cuGraphicsUnmapResources,unsigned int$count,CUgraphicsResource *$resources,CUstream$hStream
+CUresult CUDAAPI,cuMemPrefetchAsync,CUdeviceptr$devPtr,size_t$count,CUdevice$dstDevice,CUstream$hStream
+CUresult CUDAAPI,cuStreamWriteValue32,CUstream$stream,CUdeviceptr$addr,cuuint32_t$value,unsigned int$flags
+CUresult CUDAAPI,cuStreamWaitValue32,CUstream$stream,CUdeviceptr$addr,cuuint32_t$value,unsigned int$flags
+CUresult CUDAAPI,cuStreamBatchMemOp,CUstream$stream,unsigned int$count,CUstreamBatchMemOpParams *$paramArray,unsigned int$flags

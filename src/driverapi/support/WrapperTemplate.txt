@@ -1,17 +1,12 @@
-// typedef boost::function<int(void)> DriverAPICall;
-// std::shared_ptr<InstrumentFactory> InstFactory;
-
-// This is the prototype of the file
+// This "function" will be rewritten to point to ${CALL_NAME}
 ${RETURN_TYPE} ORIGINAL_${CALL_NAME}( ${PARAMETERS_FULL} ) { }
 
 // This is the call that will take the place of the original
 ${RETURN_TYPE} INTER_${CALL_NAME}( ${PARAMETERS_FULL} ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> params = { ${PARAMETERS_NAMES_VOID_CAST} };
-	// std::tuple<${PARAMETER_TYPES}> params = std::make_tuple(${CALL_ID} ${PARAMETERS_NAMES});
-	std::shared_ptr<ParameterBase> paramsPtr(new ParameterImpl(${CALL_ID}, &params));
-	DriverAPICall call = std::bind(ORIGINAL_${CALL_NAME} ${PARAMETERS_NAMES});
-	${RETURN_TYPE} ret = ( ${RETURN_TYPE} ) FACTORY_PTR->PerformAction(call, paramsPtr);
+	std::vector<void **> params = { ${PARAMETERS_NAMES_VOID_CAST} };
+	std::shared_ptr<ParameterBase> paramsPtr(new Parameters(ID_${CALL_NAME}, (void*) &ORIGINAL_${CALL_NAME}, params));
+	${RETURN_TYPE} ret = ( ${RETURN_TYPE} ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }

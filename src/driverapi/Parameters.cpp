@@ -31,6 +31,9 @@ CallID Parameters::GetID() {
 	return _callId;
 }
 
+bool Parameters::Called(){
+	return _called;
+}
 int Parameters::Call(){
 	if(_called == false){
 		_ret = CallUnderlying();

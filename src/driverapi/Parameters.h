@@ -17,6 +17,7 @@ public:
 	~Parameters();
 	size_t GetLen();
 	void * GetParameter(int pos);
+	bool Called();
 	int Call();
 	int GetReturn();
 	int CallUnderlying();

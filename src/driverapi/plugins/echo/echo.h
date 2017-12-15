@@ -4,16 +4,16 @@
 
 extern "C" {
 	void init(std::vector<std::string> & cmd_list);
-	PluginReturn Precall(DriverAPICall t, std::shared_ptr<ParameterBase> params);
-	PluginReturn Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params, bool CallPerfromed);
+	PluginReturn Precall(std::shared_ptr<ParameterBase> params);
+	PluginReturn Postcall(std::shared_ptr<ParameterBase> params);
 }
 
 class Echo {
 public:
 	Echo(std::vector<std::string> & cmd_list);
 	~Echo();
-	PluginReturn Precall(DriverAPICall t, std::shared_ptr<ParameterBase> params);
-	PluginReturn Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params, bool CallPerfromed);
+	PluginReturn Precall(std::shared_ptr<ParameterBase> params);
+	PluginReturn Postcall(std::shared_ptr<ParameterBase> params);
 private:
 	std::map<int,std::string> _cmdToName;
 	size_t callcount;

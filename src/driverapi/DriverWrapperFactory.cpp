@@ -27,10 +27,10 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 
 		initF = (PluginReturn (*)(std::vector<std::string> &)) dlsym(handle, "init");
 		precallF = (PluginReturn (*)(std::shared_ptr<Parameters>)) dlsym(handle, "Precall");
-		postcallF = (PluginReturn (*)(std::shared_ptr<Parameters>, bool)) dlsym(handle, "Postcall");
+		postcallF = (PluginReturn (*)(std::shared_ptr<Parameters>)) dlsym(handle, "Postcall");
 		InitFunc finit = std::bind(initF, std::placeholders::_1);
-		PrecallFunc pcf = std::bind(precallF, std::placeholders::_1, std::placeholders::_2);
-		PostcallFunc postcf = std::bind(postcallF, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+		PrecallFunc pcf = std::bind(precallF, std::placeholders::_1);
+		PostcallFunc postcf = std::bind(postcallF, std::placeholders::_1);
 		assert(initF != NULL);
 		assert(precallF != NULL);
 		assert(postcallF != NULL);
@@ -41,6 +41,7 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 	}
 }
 DriverWrapperFactory::DriverWrapperFactory() {
+	DefineBinders();
 	std::string libraryFile = std::string("pluginlist.txt");
 	std::vector<std::string> libs = GetLibraryNames(libraryFile.c_str());
 	LoadLibraries(libs);

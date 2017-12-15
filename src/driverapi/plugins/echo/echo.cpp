@@ -15,13 +15,13 @@ Echo::~Echo() {
 	std::cout << "[ECHO-END] Call Count: " << callcount << std::endl;
 }
 
-PluginReturn Echo::Precall(DriverAPICall t, std::shared_ptr<ParameterBase> params) {
+PluginReturn Echo::Precall(std::shared_ptr<ParameterBase> params) {
 	std::cout << "[PRECALL] Call: " << _cmdToName[params.get()->GetID()] << " Param Count:" << params.get()->GetLen() << std::endl;
 	return NO_ACTION;
 }
 
-PluginReturn Echo::Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params, bool CallPerfromed) {
-	std::cout << "[POSTCALL] Call: " << _cmdToName[params.get()->GetID()] << " Param Count:" << params.get()->GetLen() << " Performed: " << CallPerfromed << std::endl;
+PluginReturn Echo::Postcall(std::shared_ptr<ParameterBase> params) {
+	std::cout << "[POSTCALL] Call: " << _cmdToName[params.get()->GetID()] << " Param Count:" << params.get()->GetLen() << " Performed: " << params.get()->Called() << std::endl;
 	if (CallPerfromed)
 		callcount++;
 	return NO_ACTION;
@@ -33,12 +33,12 @@ void init(std::vector<std::string> & cmd_list) {
 	PLUG_BUILD_FACTORY(cmd_list)
 }
 
-CallReturn Precall(DriverAPICall t, std::shared_ptr<ParameterBase> params){
-	return PLUG_FACTORY_PTR->Precall(t, params);
+CallReturn Precall(std::shared_ptr<ParameterBase> params){
+	return PLUG_FACTORY_PTR->Precall(params);
 }
 
-CallReturn Postcall(DriverAPICall t, std::shared_ptr<ParameterBase> params, bool CallPerfromed) {
-	return PLUG_FACTORY_PTR->Postcall(t, params, CallPerfromed);
+CallReturn Postcall(std::shared_ptr<ParameterBase> params) {
+	return PLUG_FACTORY_PTR->Postcall(params);
 }
 
 }

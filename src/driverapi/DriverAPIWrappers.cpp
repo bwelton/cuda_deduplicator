@@ -622,7 +622,7 @@ int ORIGINAL_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) { }
 int INTER_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	fprintf(stderr, "%s\n", "In memalloc\n");
+	
 	std::vector<void **> params = { (void **)&dptr,(void **)&bytesize };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAlloc, (void*) &ORIGINAL_cuMemAlloc, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
@@ -2603,7 +2603,7 @@ int ORIGINAL_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const voi
 int INTER_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	fprintf(stderr, "%s\n", "Calling host to array async");
+	
 	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoAAsync_v2, (void*) &ORIGINAL_cuMemcpyHtoAAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
@@ -2676,7 +2676,7 @@ int ORIGINAL_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t
 int INTER_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	fprintf(stderr, "%s\n", "Calling device to host async");
+	
 	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoHAsync_v2, (void*) &ORIGINAL_cuMemcpyDtoHAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);

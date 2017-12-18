@@ -155,7 +155,7 @@ void MemoryTransfer::PrecallHandleArray() {
 		// Special case where arrays are both at source and destination...
 		Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(2)));
 		Bound_cuPointerGetAttribute((void*)&_dstType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(0)));
-		_transferSize = ((size_t*)params->GetParameter(4))[0];
+		_transferSize = ((size_t*)_params->GetParameter(4))[0];
 		_origData = GetSourceDataArray(*((void**)_params->GetParameter(0)),_transferSize, ((size_t*)_params->GetParameter(1))[0]);
 	} else {
 		std::cerr << "We are not an array that we know about/is supported, exiting now...." << std::endl;

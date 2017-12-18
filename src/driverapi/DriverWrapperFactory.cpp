@@ -1,5 +1,13 @@
 #include "DriverWrapperFactory.h"
 #include <unistd.h>
+#include <stdlib.h> 
+
+static bool performAction;
+
+void ExitFunction(void) {
+	fprintf(stderr, "%s\n", "Exit Call Triggered, stopping instrimentation");
+	performAction = false;
+}
 std::vector<std::string> DriverWrapperFactory::GetLibraryNames(const char * file) {
 	std::cerr << "Loading function file : " << file << std::endl;
 	std::vector<std::string> ret;
@@ -42,6 +50,8 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 }
 
 DriverWrapperFactory::DriverWrapperFactory() {
+	atexit(ExitFunction);
+	performAction = true;
 	InitParameterData();
 	DefineBinders();
 	_globalID = 0;
@@ -50,12 +60,17 @@ DriverWrapperFactory::DriverWrapperFactory() {
 	LoadLibraries(libs);
 }
 DriverWrapperFactory::~DriverWrapperFactory() { 
+	std::cerr << "Exiting now" << std::endl;
 	_plugins.clear();
 }
 void DriverWrapperFactory::PrintStack() {
 	//_stack->GenStackTrace();
 }
 int DriverWrapperFactory::PerformAction(std::shared_ptr<Parameters> params) {
+	if (performAction == false) {
+		params.get()->Call();
+		return params.get()->GetReturn();
+	}
 	// Call precall's
 	{
 		boost::recursive_mutex::scoped_lock lock(_driverMtx);

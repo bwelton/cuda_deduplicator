@@ -5,7 +5,7 @@
 static bool performAction;
 
 void ExitFunction(void) {
-	fprintf(stderr, "%s\n", "Exit Call Triggered, stopping instrimentation");
+	fprintf(stderr, "%s\n", "Exit Called, Stopping instrimentation now");
 	performAction = false;
 }
 std::vector<std::string> DriverWrapperFactory::GetLibraryNames(const char * file) {

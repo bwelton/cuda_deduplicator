@@ -16,6 +16,11 @@ bool CallIsTransfer(CallID call) {
 	return false;	
 }
 
+
+bool MemoryTransfer::IsTransfer() {
+	return _transfer;
+}
+
 bool MemoryTransfer::IsSupportedTransfer() {
 	if (_supported == 0)
 		return false;

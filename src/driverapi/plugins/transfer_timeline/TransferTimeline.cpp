@@ -4,7 +4,7 @@ int exited = 0;
 
 PluginReturn TransferTimeline::Precall(std::shared_ptr<Parameters> params) {
 	MemoryTransfer * mem = params.get()->GetMemtrans();
-	if (mem->CallIsTransfer() == false)
+	if (mem->IsTransfer() == false)
 		return NO_ACTION;
 
 	mem->PreTransfer();
@@ -13,7 +13,7 @@ PluginReturn TransferTimeline::Precall(std::shared_ptr<Parameters> params) {
 }
 
 PluginReturn TransferTimeline::Postcall(std::shared_ptr<Parameters> params) {
-	if (params.get()->GetMemtrans()->CallIsTransfer() == false)
+	if (params.get()->GetMemtrans()->IsTransfer() == false)
 		return NO_ACTION;
 
 	std::cerr << "[TRANSFER-TIMELINE] - Captured transfer Completed: " << params.get()->GetName() << std::endl;

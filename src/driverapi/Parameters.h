@@ -1,9 +1,13 @@
 #pragma once
+#define PARAMETERS 
 #include <vector>
 #include <tuple>
 #include <set>
 #include "PluginCommon.h"
+
+#ifndef MEMORYTRANFER_HDR
 class MemoryTransfer;
+#endif 
 
 class Parameters{
 private:

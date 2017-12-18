@@ -1,12 +1,11 @@
 #pragma ONCE
+#define MEMORYTRANFER_HDR
 #include "PluginCommon.h"
 #include <algorithm>
 #include <set>
 #include <iostream>
 #include "xxhash32.h"
 #include "cuda.h"
-
-class Parameters;
 
 class MemoryTransfer {
 private:

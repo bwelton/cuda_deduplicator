@@ -1,6 +1,7 @@
 #pragma ONCE
 #include "Parameters.h"
 #include "PluginCommon.h"
+#include <algorithm>
 #include <set>
 #include <iostream>
 #include "xxhash32.h"
@@ -18,7 +19,7 @@ private:
 	CUmemorytype _srcType;
 	CUmemorytype _dstType;
 public:
-	MemoryTransfer(CallID call, Parameters * params);
+	MemoryTransfer(Parameters * params);
 	bool IsSupportedTransfer();
 	uint32_t GetHash(void * ptr, size_t size);
 	uint32_t GetSourceDataHash( void * dstPtr, size_t tSize);

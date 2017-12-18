@@ -1,6 +1,6 @@
 #include "MemoryTransfer.h"
 
-extern "C" bool CallIsTransfer(CallID call) {
+bool CallIsTransfer(CallID call) {
 	if (TransferCallIDs == NULL)
 		return false;
 	if (TransferCallIDs->find(call) != TransferCallIDs->end())
@@ -126,11 +126,11 @@ uint32_t MemoryTransfer::GetSourceDataArray( void * dstPtr, size_t tSize, size_t
 void MemoryTransfer::PrecallHandleStandard() {
 	if (_origData != 0)
 		return;
-	Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)params->GetParameter(1)));
-	Bound_cuPointerGetAttribute((void*)&_dstType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)params->GetParameter(0)));
-	_transferSize = ((size_t*)params->GetParameter(2))[0];
+	Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(1)));
+	Bound_cuPointerGetAttribute((void*)&_dstType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(0)));
+	_transferSize = ((size_t*)_params->GetParameter(2))[0];
 
-	_origData = GetSourceDataHash(*((void**)params->GetParameter(0)), _transferSize);
+	_origData = GetSourceDataHash(*((void**)_params->GetParameter(0)), _transferSize);
 }
 
 void MemoryTransfer::PrecallHandleArray() {
@@ -139,24 +139,24 @@ void MemoryTransfer::PrecallHandleArray() {
 		return;
 	static std::vector<CallID> toSinglePtr = {ID_cuMemcpyAtoH, ID_cuMemcpyAtoD_v2, ID_cuMemcpyAtoHAsync_v2, ID_cuMemcpyAtoH_v2, ID_cuMemcpyAtoD, ID_cuMemcpyAtoHAsync};
 	static std::vector<CallID> toArray = {ID_cuMemcpyDtoA, ID_cuMemcpyDtoA_v2, ID_cuMemcpyHtoA_v2, ID_cuMemcpyHtoA, ID_cuMemcpyHtoAAsync, ID_cuMemcpyHtoAAsync_v2};
-	if (toSinglePtr.find(_params->GetID()) != toSinglePtr.end()) {
+	if (std::find(toSinglePtr.begin(), toSinglePtr.end(), _params->GetID()) != toSinglePtr.end()) {
 		// Array to normal pointer transfer
-		Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)params->GetParameter(1)));
-		Bound_cuPointerGetAttribute((void*)&_dstType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)params->GetParameter(0)));
-		_transferSize = ((size_t*)params->GetParameter(3))[0];
-		_origData = GetSourceDataHash(*((void**)params->GetParameter(0)), _transferSize);
-	} else if (toArray.find(_params->GetID()) != toArray.end()) {
+		Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(1)));
+		Bound_cuPointerGetAttribute((void*)&_dstType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(0)));
+		_transferSize = ((size_t*)_params->GetParameter(3))[0];
+		_origData = GetSourceDataHash(*((void**)_params->GetParameter(0)), _transferSize);
+	} else if (std::find(toArray.begin(), toArray.end(), _params->GetID()) != toArray.end()) {
 		// Pointer to Array
-		Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)params->GetParameter(2)));
-		Bound_cuPointerGetAttribute((void*)&_dstType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)params->GetParameter(0)));
-		_transferSize = ((size_t*)params->GetParameter(3))[0];
-		_origData = GetSourceDataArray(*((void**)params->GetParameter(0)),_transferSize, ((size_t*)params->GetParameter(1))[0]);
-	} else if (_params.GetID() == ID_cuMemcpyAtoA_v2) {
+		Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(2)));
+		Bound_cuPointerGetAttribute((void*)&_dstType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(0)));
+		_transferSize = ((size_t*)_params->GetParameter(3))[0];
+		_origData = GetSourceDataArray(*((void**)_params->GetParameter(0)),_transferSize, ((size_t*)_params->GetParameter(1))[0]);
+	} else if (_params->GetID() == ID_cuMemcpyAtoA_v2) {
 		// Special case where arrays are both at source and destination...
-		Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)params->GetParameter(2)));
-		Bound_cuPointerGetAttribute((void*)&_dstType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)params->GetParameter(0)));
+		Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(2)));
+		Bound_cuPointerGetAttribute((void*)&_dstType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, *((void**)_params->GetParameter(0)));
 		_transferSize = ((size_t*)params->GetParameter(4))[0];
-		_origData = GetSourceDataArray(*((void**)params->GetParameter(0)),_transferSize, ((size_t*)params->GetParameter(1))[0]);
+		_origData = GetSourceDataArray(*((void**)_params->GetParameter(0)),_transferSize, ((size_t*)_params->GetParameter(1))[0]);
 	} else {
 		std::cerr << "We are not an array that we know about/is supported, exiting now...." << std::endl;
 		exit(-1);
@@ -168,15 +168,15 @@ void MemoryTransfer::PostcallHandleArray() {
 		return;
 	static std::vector<CallID> toSinglePtr = {ID_cuMemcpyAtoH, ID_cuMemcpyAtoD_v2, ID_cuMemcpyAtoHAsync_v2, ID_cuMemcpyAtoH_v2, ID_cuMemcpyAtoD, ID_cuMemcpyAtoHAsync};
 	static std::vector<CallID> toArray = {ID_cuMemcpyDtoA, ID_cuMemcpyDtoA_v2, ID_cuMemcpyHtoA_v2, ID_cuMemcpyHtoA, ID_cuMemcpyHtoAAsync, ID_cuMemcpyHtoAAsync_v2};
-	if (toSinglePtr.find(_params->GetID()) != toSinglePtr.end()) {
+	if (std::find(toSinglePtr.begin(), toSinglePtr.end(), _params->GetID()) != toSinglePtr.end()) {
 		// Array to normal pointer transfer
-		_transferedData = GetSourceDataHash(*((void**)params->GetParameter(0)), _transferSize);
-	} else if (toArray.find(_params->GetID()) != toArray.end()) {
+		_transferedData = GetSourceDataHash(*((void**)_params->GetParameter(0)), _transferSize);
+	} else if (std::find(toArray.begin(), toArray.end(), _params->GetID()) != toArray.end()) {
 		// Pointer to Array
-		_transferedData = GetSourceDataArray(*((void**)params->GetParameter(0)),_transferSize, ((size_t*)params->GetParameter(1))[0]);
-	} else if (_params.GetID() == ID_cuMemcpyAtoA_v2) {
+		_transferedData = GetSourceDataArray(*((void**)_params->GetParameter(0)),_transferSize, ((size_t*)_params->GetParameter(1))[0]);
+	} else if (_params->GetID() == ID_cuMemcpyAtoA_v2) {
 		// Special case where arrays are both at source and destination...
-		_transferedData = GetSourceDataArray(*((void**)params->GetParameter(0)),_transferSize, ((size_t*)params->GetParameter(1))[0]);
+		_transferedData = GetSourceDataArray(*((void**)_params->GetParameter(0)),_transferSize, ((size_t*)_params->GetParameter(1))[0]);
 	} else {
 		std::cerr << "We are not an array that we know about/is supported, exiting now...." << std::endl;
 		exit(-1);

@@ -78,6 +78,7 @@ uint32_t MemoryTransfer::GetTransferredData( void * dstPtr, void * srcPtr, size_
 	void * data;
 	bool mallocd = false;
 	// Get a hash check of the data already at the destination
+	// Could be CUDA_ERROR_INVALID_VALUE as well....
 	if (_dstType == CU_MEMORYTYPE_HOST){
 		// Destination data already on the CPU, just use that ptr
 		data = dstPtr;

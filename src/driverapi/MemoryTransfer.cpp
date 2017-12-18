@@ -186,7 +186,7 @@ void MemoryTransfer::PostcallHandleArray() {
 void MemoryTransfer::PostcallHandleStandard() {
 	if (_transferedData != 0)
 		return;
-	_transferedData = GetTransferredData(*((void**)params->GetParameter(0)), *((void**)params->GetParameter(1)), _transferSize);
+	_transferedData = GetTransferredData(*((void**)_params->GetParameter(0)), *((void**)_params->GetParameter(1)), _transferSize);
 }
 // Perform the pretransfer operations to get hash of dest/source.
 void MemoryTransfer::PreTransfer() {

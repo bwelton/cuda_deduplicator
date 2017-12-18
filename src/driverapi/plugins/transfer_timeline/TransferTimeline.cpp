@@ -1,5 +1,6 @@
 #include "TransferTimeline.h"
 std::shared_ptr<TransferTimeline> Worker;
+int exited = 0;
 
 PluginReturn TransferTimeline::Precall(std::shared_ptr<Parameters> params) {
 	if (params.get()->GetMemtrans()->IsSupportedTransfer() == false)

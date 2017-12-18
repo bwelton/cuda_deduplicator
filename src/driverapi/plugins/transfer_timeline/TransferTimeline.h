@@ -18,7 +18,7 @@ public:
 	PluginReturn Precall(std::shared_ptr<Parameters> params);
 	PluginReturn Postcall(std::shared_ptr<Parameters> params);
 private:
-	int exited;
+	
 	// std::map<int,std::string> _cmdToName;
 	// size_t callcount;
 	// std::map<CallID, bool> _transferCalls;

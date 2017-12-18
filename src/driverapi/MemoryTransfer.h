@@ -1,4 +1,4 @@
-#pragma ONCE
+#pragma once
 #define MEMORYTRANFER_HDR
 #include "PluginCommon.h"
 #include <algorithm>

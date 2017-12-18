@@ -70,6 +70,8 @@ void DriverWrapperFactory::PrintStack() {
 }
 int DriverWrapperFactory::PerformAction(std::shared_ptr<Parameters> params) {
 	// Deal with CUPTI BS.....
+	// When using CUPTI, we will make recursive calls into this interface, we need to skip those
+	// or else deadlocking occurs.
 	if (loading == -1) {
 		boost::recursive_mutex::scoped_lock lock(_driverMtx);
 		if (loading == -1) {

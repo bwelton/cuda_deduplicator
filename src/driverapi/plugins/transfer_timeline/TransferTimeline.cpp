@@ -38,7 +38,7 @@ void TransferTimeline::WriteLog(std::shared_ptr<Parameters> params) {
 	Parameters * p = params.get();
 
 	MemoryTransfer * mem = params.get()->GetMemtrans();
-	int64_t isDuplicate = -1;
+	int64_t duplicateid = -1;
 	size_t globalId = p->GetInstID();
 
 	if (!mem->IsSupportedTransfer()){

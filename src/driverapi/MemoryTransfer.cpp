@@ -102,6 +102,8 @@ void MemoryTransfer::PrecallHandleStandard() {
 	// This function is designed to get data from the 
 	if (_origData != 0)
 		return;
+	WRITE_DEBUG ( "In Precall Handler for Standard Copies")
+
 	std::vector<CallID> DestIsCPU = STANDARD_COPIES_DEST_CPU
 	std::vector<CallID> DestIsGPU = STANDARD_COPIES_DEST_GPU
 	std::vector<CallID> DeviceToDevice = STANDARD_COPIES_HOSTDEST_DEVICE
@@ -110,15 +112,19 @@ void MemoryTransfer::PrecallHandleStandard() {
 
 	// setup source and destination types
 	if (std::find(DestIsCPU.begin(), DestIsCPU.end(), thiscall) != DestIsCPU.end()) {
+		WRITE_DEBUG(_params->GetName() << " is a GPU -> CPU transfer")
 		_dstType = CU_MEMORYTYPE_HOST;
 		_srcType = CU_MEMORYTYPE_DEVICE;  
 	} else if (std::find(DestIsGPU.begin(), DestIsGPU.end(), thiscall) != DestIsGPU.end()){
+		WRITE_DEBUG(_params->GetName() << " is a CPU -> GPU transfer")
 		_dstType = CU_MEMORYTYPE_DEVICE;
 		_srcType = CU_MEMORYTYPE_HOST;
 	} else if (std::find(DeviceToDevice.begin(), DeviceToDevice.end(), thiscall) != DeviceToDevice.end()) {
+		WRITE_DEBUG(_params->GetName() << " is a GPU -> GPU transfer")
 		_dstType = CU_MEMORYTYPE_DEVICE;
 		_srcType = CU_MEMORYTYPE_DEVICE;
 	} else if (std::find(UnknownIDs.begin(), UnknownIDs.end(), thiscall) != UnknownIDs.end()) {
+		WRITE_DEBUG(_params->GetName() << " is a Unified Memory Address transfer")
 		if (Bound_cuPointerGetAttribute((void*)&_srcType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, (CUdeviceptr)*((void**)_params->GetParameter(1))) != 0){
 			std::cerr << "Could not get source pointer attrs for call - " << _params->GetName() << std::endl;
 			assert (1 == 0);
@@ -133,6 +139,7 @@ void MemoryTransfer::PrecallHandleStandard() {
 	}
 	_transferSize = ((size_t*)_params->GetParameter(2))[0];
 	_origData = GetHashAtLocation(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
+	WRITE_DEBUG(_params->GetName() << " has a size of " << _transferSize << " and is overwriting data with a hash of " << std::hex << _origData << std::dec )
 }
 
 void MemoryTransfer::PrecallHandleArray() {

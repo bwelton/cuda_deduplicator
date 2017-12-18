@@ -68,39 +68,6 @@ uint32_t MemoryTransfer::GetHashAtLocation(void * dstPtr, size_t tSize, CUmemory
 	return hashv;
 }
 
-// uint32_t MemoryTransfer::GetTransferredData( void * dstPtr, void * srcPtr, size_t tSize) {
-// 	void * data;
-// 	bool mallocd = false;
-// 	// Get a hash check of the data already at the destination
-// 	// Could be CUDA_ERROR_INVALID_VALUE as well....
-// 	if (_dstType == CU_MEMORYTYPE_HOST){
-// 		// Destination data already on the CPU, just use that ptr
-// 		data = dstPtr;
-// 	} else if(_dstType == CU_MEMORYTYPE_DEVICE) {
-// 		// Destination is the GPU, grab existing data.
-// 		if (_srcType == CU_MEMORYTYPE_HOST) {
-// 			data = srcPtr;
-// 		} else {
-// 			data = malloc(tSize);
-// 			if(Bound_cuMemcpyDtoH_v2(data,(CUdeviceptr)dstPtr, tSize) != 0){
-// 				std::cerr << "Could not copy data off GPU for destination hash checking, exiting now" << std::endl;
-// 				exit(-1);
-// 			}
-// 			mallocd = true;
-// 		}
-// 	} else if (_dstType == CU_MEMORYTYPE_ARRAY) {
-// 	 	std::cerr << "Wrong processing routine has been used for this transfer with ID: " << _params->GetID() <<  " and name " << _params->GetName() << std::endl;
-// 	 	exit(-1);
-// 	} else {
-// 		std::cerr << "Unknown ptr type for destination has been used for this transfer with ID: " << _params->GetID() <<  " and name " << _params->GetName() << std::endl;
-// 		exit(-1);
-// 	}
-// 	uint32_t hashv = GetHash(data, tSize);
-// 	if (mallocd == true)
-// 		free(data);
-// 	return hashv;
-// }
-
 uint32_t MemoryTransfer::GetSourceDataArray( void * dstPtr, size_t tSize, size_t offset) {
 	void * data = malloc(tSize);
 	if (_dstType == CU_MEMORYTYPE_ARRAY) {
@@ -152,13 +119,7 @@ void MemoryTransfer::PrecallHandleStandard() {
 		assert(1 == 0);
 	}
 	_transferSize = ((size_t*)_params->GetParameter(2))[0];
-
-	// Some optimzation would could be performed here
 	_origData = GetHashAtLocation(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
-
-	// Optimization if the source is located on the host, we can just do the transfer hash check now.
-	// if (_srcType == CU_MEMORYTYPE_HOST)
-	// 	_transferedData = GetHashAtLocation(*((void**)_params->GetParameter(1)), _transferSize, _srcType);
 }
 
 void MemoryTransfer::PrecallHandleArray() {

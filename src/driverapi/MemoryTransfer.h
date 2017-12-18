@@ -1,11 +1,12 @@
 #pragma ONCE
-#include "Parameters.h"
 #include "PluginCommon.h"
 #include <algorithm>
 #include <set>
 #include <iostream>
 #include "xxhash32.h"
 #include "cuda.h"
+
+class Parameters;
 
 class MemoryTransfer {
 private:
@@ -31,3 +32,5 @@ public:
 	void PreTransfer();
 	void PostTransfer();
 };
+
+#include "Parameters.h"

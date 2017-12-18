@@ -140,7 +140,7 @@ extern "C" {
 	}
 }
 
-int CUPTIEventHandler::PerformAction(std::shared_ptr<Parameters> params) {
+PluginReturn CUPTIEventHandler::PerformAction(std::shared_ptr<Parameters> params) {
 	// if (_enabled == false)
 	// 	return 0;
 	// if(cuptiActivityPushExternalCorrelationId(CUPTI_EXTERNAL_CORRELATION_KIND_UNKNOWN, uint64_t(t.get()->GetID())) != CUPTI_SUCCESS)
@@ -151,7 +151,7 @@ int CUPTIEventHandler::PerformAction(std::shared_ptr<Parameters> params) {
 
 }
 
-int CUPTIEventHandler::PostTransfer(std::shared_ptr<Parameters> params) { 
+PluginReturn CUPTIEventHandler::PostTransfer(std::shared_ptr<Parameters> params) { 
 	// if (_enabled == false)
 	// 	return 0;
 	// uint64_t popId = 0;

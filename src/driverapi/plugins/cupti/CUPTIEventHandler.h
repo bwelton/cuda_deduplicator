@@ -20,8 +20,8 @@ private:
 	bool _enabled;
 	boost::timer::cpu_timer  _runtime;
 public: 
-	int PerformAction(std::shared_ptr<Parameters> params);
-	int PostTransfer(std::shared_ptr<Parameters> params);
+	PluginReturn PerformAction(std::shared_ptr<Parameters> params);
+	PluginReturn PostTransfer(std::shared_ptr<Parameters> params);
 	~CUPTIEventHandler();
 	CUPTIEventHandler();
 };

@@ -256,6 +256,6 @@ void MemoryTransfer::PostTransfer() {
 		return;
 	if (_arrayTransfer == true)
 		PostcallHandleArray();
-	else (_arrayTransfer == false)
+	else if (_arrayTransfer == false)
 		PostcallHandleStandard();
 }

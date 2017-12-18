@@ -214,10 +214,14 @@ void MemoryTransfer::PostcallHandleArray() {
 void MemoryTransfer::PostcallHandleStandard() {
 	if (_transferedData != 0)
 		return;
-	if(_dstType == CU_MEMORYTYPE_DEVICE)
+	if(_srcType == CU_MEMORYTYPE_DEVICE){
 		_transferedData = GetHashAtLocation(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
-	else
+	}
+	else{
 		_transferedData = GetHashAtLocation(*((void**)_params->GetParameter(1)), _transferSize, _srcType);
+	}
+
+	WRITE_DEBUG("Hash of the data being transferred was" << std::hex << _transferedData << std::dec)
 }
 
 // Perform the pretransfer operations to get hash of dest/source.

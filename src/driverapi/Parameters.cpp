@@ -47,6 +47,9 @@ extern "C" void InitParameterData() {
 		UnsupportedCopies->insert(i);			
 }
 
+MemoryTransfer * Parameters::GetMemtrans() {
+	return _memTrans;
+}
 Parameters::Parameters(CallID id, void * func, std::vector<void**> v) : _callId(id), _func(func), values(v) {
 	_hash = 0;
 	_called = false;
@@ -55,7 +58,6 @@ Parameters::Parameters(CallID id, void * func, std::vector<void**> v) : _callId(
 const char * Parameters::GetName() {return CallVector[(int)_callId];}
 
 Parameters::~Parameters(){
-
 	delete _memTrans;
 }
 

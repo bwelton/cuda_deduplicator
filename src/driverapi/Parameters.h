@@ -19,6 +19,7 @@ private:
 	uint32_t _hash;
 	MemoryTransfer * _memTrans;
 public:
+	MemoryTransfer * GetMemtrans();
 	std::vector<void **> values;
 	const char * GetName();
 	uint32_t GetHash();

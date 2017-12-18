@@ -1,7 +1,7 @@
 #include "TransferTimeline.h"
 
 PluginReturn TransferTimeline::Precall(std::shared_ptr<Parameters> params) {
-	if (params.get()->MemoryTransfer->IsSupportedTransfer() == false)
+	if (params.get()->GetMemtrans()->IsSupportedTransfer() == false)
 		return NO_ACTION;
 
 	std::cerr << "[TRANSFER-TIMELINE] - Captured transfer: " << params.get()->GetName() << std::endl;
@@ -9,7 +9,7 @@ PluginReturn TransferTimeline::Precall(std::shared_ptr<Parameters> params) {
 }
 
 PluginReturn TransferTimeline::Postcall(std::shared_ptr<Parameters> params) {
-	if (params.get()->MemoryTransfer->IsSupportedTransfer() == false)
+	if (params.get()->GetMemtrans()->IsSupportedTransfer() == false)
 		return NO_ACTION;
 
 	std::cerr << "[TRANSFER-TIMELINE] - Captured transfer Completed: " << params.get()->GetName() << std::endl;

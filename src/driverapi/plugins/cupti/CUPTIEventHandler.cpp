@@ -1,7 +1,7 @@
 #include "CUPTIEventHandler.h"
 #include "CUPTIDriverCIBTranslate.h"
 #include "CUPTIRuntimeCIBTranslate.h"
-
+std::shared_ptr<CUPTIEventHandler> Worker;
 static uint64_t startTimestamp;
 static LogInfo * _cupti_output;
 int exited = 0;
@@ -165,7 +165,7 @@ int CUPTIEventHandler::PostTransfer(std::shared_ptr<Parameters> params) {
 
 CUPTIEventHandler::~CUPTIEventHandler() {
 	exited = 1;
-	Bound_cudaDeviceSynchronize();
+	//cudaDeviceSynchronize();
 	cuptiActivityFlushAll(0);
 	cuptiFinalize();
 	std::stringstream ss;

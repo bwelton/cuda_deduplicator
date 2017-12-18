@@ -208,9 +208,6 @@ void MemoryTransfer::PostcallHandleStandard() {
 		_transferedData = GetHashAtLocation(*((void**)_params->GetParameter(1)), _transferSize, _srcType);
 }
 
-
-
-
 // Perform the pretransfer operations to get hash of dest/source.
 void MemoryTransfer::PreTransfer() {
 	if (_supported == false)
@@ -229,6 +226,7 @@ void MemoryTransfer::PreTransfer() {
 void MemoryTransfer::PostTransfer() {
 	if (_supported == false)
 		return;
+	Bound_cuCtxSynchronize();
 	if (_arrayTransfer == true)
 		PostcallHandleArray();
 	else if (_arrayTransfer == false)

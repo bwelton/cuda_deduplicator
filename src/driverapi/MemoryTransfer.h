@@ -6,7 +6,7 @@
 #include <iostream>
 #include "xxhash32.h"
 #include "cuda.h"
-
+#define DEBUG 1
 class MemoryTransfer;
 
 #include "Parameters.h"

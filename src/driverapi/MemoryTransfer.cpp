@@ -1,5 +1,5 @@
 #include "MemoryTransfer.h"
-
+#include <cassert>
 bool CallIsTransfer(CallID call) {
 	if (TransferCallIDs == NULL)
 		return false;
@@ -52,7 +52,7 @@ uint32_t MemoryTransfer::GetHashAtLocation(void * dstPtr, size_t tSize, CUmemory
 	if (location == CU_MEMORYTYPE_HOST) {
 		data = dstPtr;
 	} else if (location == CU_MEMORYTYPE_DEVICE) {
-		data = malloc(tsize);
+		data = malloc(tSize);
 		if(Bound_cuMemcpyDtoH_v2(data,(CUdeviceptr)dstPtr, tSize) != 0){
 			std::cerr << "Could not copy data off GPU for destination hash checking, exiting now" << std::endl;
 			exit(-1);
@@ -154,11 +154,11 @@ void MemoryTransfer::PrecallHandleStandard() {
 	_transferSize = ((size_t*)_params->GetParameter(2))[0];
 
 	// Some optimzation would could be performed here
-	_origData = GetSourceDataHash(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
+	_origData = GetHashAtLocation(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
 
 	// Optimization if the source is located on the host, we can just do the transfer hash check now.
 	// if (_srcType == CU_MEMORYTYPE_HOST)
-	// 	_transferedData = GetSourceDataHash(*((void**)_params->GetParameter(1)), _transferSize, _srcType);
+	// 	_transferedData = GetHashAtLocation(*((void**)_params->GetParameter(1)), _transferSize, _srcType);
 }
 
 void MemoryTransfer::PrecallHandleArray() {
@@ -234,15 +234,15 @@ void MemoryTransfer::PostcallHandleStandard() {
 	if (_transferedData != 0)
 		return;
 	if(_dstType == CU_MEMORYTYPE_DEVICE)
-		_transferedData = GetSourceDataHash(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
+		_transferedData = GetHashAtLocation(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
 	else
-		_transferedData = GetSourceDataHash(*((void**)_params->GetParameter(1)), _transferSize, _srcType);
+		_transferedData = GetHashAtLocation(*((void**)_params->GetParameter(1)), _transferSize, _srcType);
 }
 // Perform the pretransfer operations to get hash of dest/source.
 void MemoryTransfer::PreTransfer() {
 	if (_supported == false)
 		return;
-	
+
 	if (_arrayTransfer == true)
 		PrecallHandleArray();
 	else (_arrayTransfer == false)

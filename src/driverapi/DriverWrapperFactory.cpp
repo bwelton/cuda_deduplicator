@@ -42,6 +42,7 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 }
 
 DriverWrapperFactory::DriverWrapperFactory() {
+	InitParameterData();
 	DefineBinders();
 	_globalID = 0;
 	std::string libraryFile = std::string("pluginlist.txt");

@@ -1,5 +1,5 @@
 #pragma once
-#define PARAMETERS 
+#define PARAMETERS_HDR
 #include <vector>
 #include <tuple>
 #include <set>

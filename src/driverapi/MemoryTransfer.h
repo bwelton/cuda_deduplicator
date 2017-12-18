@@ -7,6 +7,10 @@
 #include "xxhash32.h"
 #include "cuda.h"
 
+#ifndef PARAMETERS_HDR
+class Parameters;
+#endif
+
 class MemoryTransfer {
 private:
 	int _supported;

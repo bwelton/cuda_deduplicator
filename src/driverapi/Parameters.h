@@ -3,7 +3,8 @@
 #include <tuple>
 #include <set>
 #include "PluginCommon.h"
-#include "MemoryTransfer.h"
+class MemoryTransfer;
+
 class Parameters{
 private:
 	void * _func;
@@ -58,3 +59,5 @@ extern std::set<CallID> * TransferCallIDs;
 extern std::set<CallID> * StandardCopies;
 extern std::set<CallID> * ArrayCopies;
 extern std::set<CallID> * UnsupportedCopies;
+
+#include "MemoryTransfer.h"

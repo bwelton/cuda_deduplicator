@@ -50,10 +50,14 @@ extern "C" void InitParameterData() {
 Parameters::Parameters(CallID id, void * func, std::vector<void**> v) : _callId(id), _func(func), values(v) {
 	_hash = 0;
 	_called = false;
+	_memTrans = new MemoryTransfer(this);
 }
 const char * Parameters::GetName() {return CallVector[(int)_callId];}
 
-Parameters::~Parameters(){}
+Parameters::~Parameters(){
+
+	delete _memTrans;
+}
 
 
 CallID Parameters::GetID() {

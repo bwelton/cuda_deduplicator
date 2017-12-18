@@ -4,6 +4,12 @@
 #include "PluginCommon.h"
 #include "xxhash32.h"
 #include "LogInfo.h"
+#include <iostream>
+#include <fstream>    
+#include <string>
+#include <map>
+#include <sstream>  
+#include <boost/thread/recursive_mutex.hpp>
 
 extern "C" {
 	void init(std::vector<std::string> & cmd_list);
@@ -17,14 +23,16 @@ public:
 	~TransferTimeline();
 	PluginReturn Precall(std::shared_ptr<Parameters> params);
 	PluginReturn Postcall(std::shared_ptr<Parameters> params);
+	void WriteLog(std::shared_ptr<Parameters> params);
+	void SetThreadLocals();
 private:
-	
+	std::shared_ptr<LogInfo> _tt_log;
 	// std::map<int,std::string> _cmdToName;
 	// size_t callcount;
 	// std::map<CallID, bool> _transferCalls;
-	// boost::recursive_mutex _timeline_mtx;
+	boost::recursive_mutex _timeline_mtx;
 	// std::shared_ptr<LogInfo> _timeline_log;
-	// std::map<uint32_t, uint64_t> _pastTransfers;
+	std::map<uint32_t, uint64_t> _pastTransfers;
 	// uint64_t _count; 
 	// bool _enabled;
 };

@@ -55,6 +55,18 @@ MemoryTransfer::MemoryTransfer(Parameters *params) :
 		IsSupportedTransfer();
 }
 
+uint32_t MemoryTransfer::GetOriginHash() {
+	return _origData;
+}
+
+uint32_t MemoryTransfer::GetTransferHash() {
+	return _transferedData;
+}
+
+size_t MemoryTransfer::GetSize() {
+	return _transferSize;
+}
+
 uint32_t MemoryTransfer::GetHash(void * ptr, size_t size){
 	return XXHash32::hash(ptr, size, 0);
 }
@@ -226,7 +238,7 @@ void MemoryTransfer::PostcallHandleStandard() {
 
 // Perform the pretransfer operations to get hash of dest/source.
 void MemoryTransfer::PreTransfer() {
-	if (_supported == false)
+	if (_supported == 0)
 		return;
 
 	WRITE_DEBUG("Precall transfer for call " << _params->GetName())
@@ -240,7 +252,7 @@ void MemoryTransfer::PreTransfer() {
 }
 
 void MemoryTransfer::PostTransfer() {
-	if (_supported == false)
+	if (_supported == 0)
 		return;
 	Bound_cuCtxSynchronize();
 	if (_arrayTransfer == true)

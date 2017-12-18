@@ -6,6 +6,9 @@
 #include <iostream>
 #include "xxhash32.h"
 #include "cuda.h"
+
+class MemoryTransfer;
+
 #include "Parameters.h"
 
 class MemoryTransfer {

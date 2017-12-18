@@ -213,7 +213,7 @@ void MemoryTransfer::PrecallHandleArray() {
 		_origData = GetHashAtLocation(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
 	} else if (_dstType == CU_MEMORYTYPE_ARRAY) {
 		_transferSize = ((size_t*)_params->GetParameter(3))[0];
-		_origData = GetSourceDataArray(*((void**)_params->GetParameter(0), _transferSize, ((size_t*)_params->GetParameter(1))[0]));
+		_origData = GetSourceDataArray(*((void**)_params->GetParameter(0)), _transferSize, ((size_t*)_params->GetParameter(1))[0]);
 	}
 }
 
@@ -243,10 +243,12 @@ void MemoryTransfer::PreTransfer() {
 	if (_supported == false)
 		return;
 
-	if (_arrayTransfer == true)
+	if (_arrayTransfer == true){
 		PrecallHandleArray();
-	else (_arrayTransfer == false)
+	}
+	else if (_arrayTransfer == false){
 		PrecallHandleStandard();
+	}
 }
 
 void MemoryTransfer::PostTransfer() {

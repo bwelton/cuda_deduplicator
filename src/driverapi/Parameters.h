@@ -6,7 +6,7 @@
 #include "PluginCommon.h"
 
 #ifndef MEMORYTRANFER_HDR
-class MemoryTransfer;
+extern class MemoryTransfer;
 #endif 
 
 class Parameters{

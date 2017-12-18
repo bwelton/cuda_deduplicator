@@ -6,9 +6,10 @@
 #include <iostream>
 #include "xxhash32.h"
 #include "cuda.h"
+#include "Parameters.h"
 
 #ifndef PARAMETERS_HDR
-class Parameters;
+extern class Parameters;
 #endif
 
 class MemoryTransfer {
@@ -36,4 +37,3 @@ public:
 	void PostTransfer();
 };
 
-#include "Parameters.h"

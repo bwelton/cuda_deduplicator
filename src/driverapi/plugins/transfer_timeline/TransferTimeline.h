@@ -8,8 +8,10 @@
 #include <fstream>    
 #include <string>
 #include <map>
-#include <sstream>  
+#include <sstream>
 #include <boost/thread/recursive_mutex.hpp>
+#include <unistd.h>
+#include <sys/syscall.h>
 
 extern "C" {
 	void init(std::vector<std::string> & cmd_list);

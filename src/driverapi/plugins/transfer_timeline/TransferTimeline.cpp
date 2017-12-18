@@ -41,11 +41,11 @@ void TransferTimeline::WriteLog(std::shared_ptr<Parameters> params) {
 	int64_t isDuplicate = -1;
 	size_t globalId = p->GetInstID();
 
-	if (!p->IsSupportedTransfer()){
+	if (!mem->IsSupportedTransfer()){
 		ss << globalId << "," << my_process_id << "," << my_thread_id << "," << p->GetName() << ",-1,0,0,-1" << std::endl;
 	} else {
-		uint32_t originData = mem>GetOriginHash();
-		uint32_t transferHash = mem>GetTransferHash();
+		uint32_t originData = mem->GetOriginHash();
+		uint32_t transferHash = mem->GetTransferHash();
 
 		if (originData == transferHash)
 			duplicateid = globalId;

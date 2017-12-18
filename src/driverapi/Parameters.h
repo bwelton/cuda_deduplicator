@@ -5,9 +5,9 @@
 #include <set>
 #include "PluginCommon.h"
 
-#ifndef MEMORYTRANFER_HDR
-extern class MemoryTransfer;
-#endif 
+class Parameters;
+
+#include "MemoryTransfer.h"
 
 class Parameters{
 private:
@@ -64,4 +64,3 @@ extern std::set<CallID> * StandardCopies;
 extern std::set<CallID> * ArrayCopies;
 extern std::set<CallID> * UnsupportedCopies;
 
-#include "MemoryTransfer.h"

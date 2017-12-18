@@ -8,10 +8,6 @@
 #include "cuda.h"
 #include "Parameters.h"
 
-#ifndef PARAMETERS_HDR
-extern class Parameters;
-#endif
-
 class MemoryTransfer {
 private:
 	int _supported;

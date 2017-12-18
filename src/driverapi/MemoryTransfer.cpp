@@ -1,5 +1,13 @@
 #include "MemoryTransfer.h"
 #include <cassert>
+
+#ifdef DEBUG
+#define WRITE_DEBUG(msg) \
+	std::cerr << "[MemoryTransferDebug] - " << msg << std::endl;
+#else
+#define WRITE_DEBUG(msg)
+#endif
+
 bool CallIsTransfer(CallID call) {
 	if (TransferCallIDs == NULL)
 		return false;
@@ -199,10 +207,16 @@ void MemoryTransfer::PostcallHandleStandard() {
 	else
 		_transferedData = GetHashAtLocation(*((void**)_params->GetParameter(1)), _transferSize, _srcType);
 }
+
+
+
+
 // Perform the pretransfer operations to get hash of dest/source.
 void MemoryTransfer::PreTransfer() {
 	if (_supported == false)
 		return;
+
+	WRITE_DEBUG("Precall transfer for call " << _params->GetName())
 
 	if (_arrayTransfer == true){
 		PrecallHandleArray();

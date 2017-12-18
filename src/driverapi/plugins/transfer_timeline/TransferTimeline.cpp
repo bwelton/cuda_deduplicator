@@ -3,9 +3,11 @@ std::shared_ptr<TransferTimeline> Worker;
 int exited = 0;
 
 PluginReturn TransferTimeline::Precall(std::shared_ptr<Parameters> params) {
-	if (params.get()->GetMemtrans()->IsSupportedTransfer() == false)
+	MemoryTransfer * mem = params.get()->GetMemtrans();
+	if (mem->IsSupportedTransfer() == false)
 		return NO_ACTION;
 
+	mem->PreTransfer();
 	std::cerr << "[TRANSFER-TIMELINE] - Captured transfer: " << params.get()->GetName() << std::endl;
 	return NO_ACTION;
 }

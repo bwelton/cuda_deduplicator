@@ -154,6 +154,15 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS GenStacktraceThirdParty
         RUNTIME DESTINATION tests)
 
+add_executable(GetCalledFuncs "GetCalledFuncs.cpp")
+target_link_libraries(GetCalledFuncs ${Boost_LIBRARIES})
+target_link_libraries(GetCalledFuncs "-lpthread")
+target_link_libraries(GetCalledFuncs ${DYNINST_LIBRARIES})
+INCLUDE_DIRECTORIES(GetCalledFuncs ${Boost_INCLUDE_DIRS})
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+install(TARGETS GetCalledFuncs
+        RUNTIME DESTINATION tests)
+
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/scripts)
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/tests/LoadSpackModules.py.in"

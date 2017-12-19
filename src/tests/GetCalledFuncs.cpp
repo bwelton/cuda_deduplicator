@@ -195,8 +195,8 @@ int main() {
 				if (exploredFunctions.find(cFunc->getName()) != exploredFunctions.end())
 					continue;				
 				unexplored.push_back(cFunc);
-				void * start;
-				void * end;
+				void * start = NULL;
+				void * end = NULL;
 				cFunc->getAddressRange(start,end);
 				ptrAddrs[cFunc->getName()] = start;
 			}
@@ -211,9 +211,10 @@ int main() {
 	}	
 	std::cout << "Intersection of callsets" << std::endl;
 	for (auto z : intersection){
-		if (ptrAddrs.find(z) == ptrAddrs.end())
-			std::cout << z << std::endl;
+		std::string test = z;
+		if (ptrAddrs.find(test) == ptrAddrs.end())
+			std::cout << test << std::endl;
 		else
-			std::cout << z << "," << std::hex << ptrAddrs[z] << std::dec << std::endl;
+			std::cout << test << "," << std::hex << ptrAddrs[test] << std::dec << std::endl;
 	}
 }

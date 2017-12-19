@@ -206,8 +206,14 @@ int main() {
 	for (auto z : _calledSyncFunctions){
 		std::set<std::string> tmp = intersection;
 		intersection.clear();
-		std::set_intersection(tmp.begin(), tmp.end(), z.begin(), z.end(),  std::inserter(intersection,intersection.begin()));
-
+		std::set_difference(tmp.begin(), tmp.end(), z.begin(), z.end(),  std::inserter(intersection,intersection.begin()));
+	}	
+	for (auto z : _calledSyncFunctions){
+		if (intersection.find(z) != intersection.end())
+			intersection.erase(z)
+		// std::set<std::string> tmp = intersection;
+		// intersection.clear();
+		// std::set_difference(tmp.begin(), tmp.end(), z.begin(), z.end(),  std::inserter(intersection,intersection.begin()));
 	}	
 	std::cout << "Intersection of callsets" << std::endl;
 	for (auto z : intersection){

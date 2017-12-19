@@ -86,7 +86,7 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
 }
 
 int main() {
-	std::vector<char *> synchMemoryCopies = {"cuMemcpyDtoH_v2","cuMemcpyHtoD_v2", "cuMemcpyHtoA_v2"};
+	std::vector<char *> synchMemoryCopies = {"cuMemcpyDtoH_v2","cuMemcpyHtoD_v2", "cuMemcpyHtoA_v2", "cuMemAlloc_v2","cuMemFree_v2"};
 	std::vector<char *> asyncMemoryCopies = {"cuMemcpyHtoDAsync_v2","cuMemcpyDtoHAsync_v2","cuMemcpyHtoAAsync_v2"};
 	std::vector<char *> knownSynch = {"cuMemAlloc_v2","cuMemFree_v2"};
 	BPatch_binaryEdit * app = bpatch.openBinary("/usr/lib/x86_64-linux-gnu/libcuda.so", true);
@@ -98,6 +98,7 @@ int main() {
 
 		std::vector<BPatch_function *> funcs = findFuncByName(appImage, i);
 		std::deque<BPatch_function *> unexplored;
+		std::cout << "==========================BEGIN===================" << std::endl;
 		unexplored.insert(unexplored.end(), funcs.begin(), funcs.end());
 		while(!unexplored.empty()) {
 			BPatch_function * thisFunc = unexplored.front();
@@ -125,6 +126,7 @@ int main() {
 			}
 		}
 		_calledSyncFunctions.push_back(exploredFunctions);
+		std::cout << "==========================END===================" << std::endl;
 	}	
 	std::set<std::string> intersection = _calledSyncFunctions[0];
 	for (auto z : _calledSyncFunctions){
@@ -172,7 +174,7 @@ int main() {
 	_calledSyncFunctions.clear();
 	for (auto i : asyncMemoryCopies) {
 		std::set<std::string> exploredFunctions;
-
+		std::cout << "==========================BEGIN===================" << std::endl;
 		std::vector<BPatch_function *> funcs = findFuncByName(appImage, i);
 		std::deque<BPatch_function *> unexplored;
 		unexplored.insert(unexplored.end(), funcs.begin(), funcs.end());
@@ -201,6 +203,7 @@ int main() {
 				ptrAddrs[cFunc->getName()] = start;
 			}
 		}
+		std::cout << "==========================END===================" << std::endl;
 		_calledSyncFunctions.push_back(exploredFunctions);
 	}	
 	for (auto z : _calledSyncFunctions){

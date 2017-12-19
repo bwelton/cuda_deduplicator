@@ -211,7 +211,7 @@ int main() {
 	for (auto z : _calledSyncFunctions){
 		for (auto y : z)
 			if (intersection.find(y) != intersection.end())
-				intersection.erase(y)
+				intersection.erase(y);
 		// std::set<std::string> tmp = intersection;
 		// intersection.clear();
 		// std::set_difference(tmp.begin(), tmp.end(), z.begin(), z.end(),  std::inserter(intersection,intersection.begin()));

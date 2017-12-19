@@ -92,6 +92,7 @@ int main() {
 	BPatch_binaryEdit * app = bpatch.openBinary("/usr/lib/x86_64-linux-gnu/libcuda.so", true);
 	BPatch_image * appImage = app->getImage();
 	std::vector<std::set<std::string>> _calledSyncFunctions;
+	std::map<std::string, void *> ptrAddrs;
 	for (auto i : synchMemoryCopies) {
 		std::set<std::string> exploredFunctions;
 
@@ -110,12 +111,16 @@ int main() {
 			std::vector<BPatch_point *> calledFunctions;
 			thisFunc->getCallPoints(calledFunctions);
 			for (auto z : calledFunctions) {
+				void * start;
+				void * end;
 				BPatch_function * cFunc = z->getCalledFunction();
 				if (cFunc == NULL)
 					continue;
 				std::cout << thisFunc->getName() << " is calling " << cFunc->getName() << std::endl;
 				if (exploredFunctions.find(cFunc->getName()) != exploredFunctions.end())
-					continue;				
+					continue;
+				cFunc->getAddressRange(start,end);
+				ptrAddrs[cFunc->getName()] = start;
 				unexplored.push_back(cFunc);
 			}
 		}
@@ -190,6 +195,10 @@ int main() {
 				if (exploredFunctions.find(cFunc->getName()) != exploredFunctions.end())
 					continue;				
 				unexplored.push_back(cFunc);
+				void * start;
+				void * end;
+				cFunc->getAddressRange(start,end);
+				ptrAddrs[cFunc->getName()] = start;
 			}
 		}
 		_calledSyncFunctions.push_back(exploredFunctions);
@@ -201,6 +210,10 @@ int main() {
 
 	}	
 	std::cout << "Intersection of callsets" << std::endl;
-	for (auto z : intersection)
-		std::cout << z << std::endl;
+	for (auto z : intersection){
+		if (ptrAddrs.find(z) == ptrAddrs.end())
+			std::cout << z << std::endl;
+		else
+			std::cout << z << "," << std::hex << ptrAddrs[z] << std::dec << std::endl;
+	}
 }

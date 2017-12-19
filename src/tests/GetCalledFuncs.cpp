@@ -72,10 +72,10 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
   BPatch_Vector<BPatch_function * >funcs;
   if (NULL == appImage->findFunction(funcName, funcs) || !funcs.size() || NULL == funcs[0])
   {
-      std::cerr << "Failed to find " << funcName <<" function in the instrumentation library" << endl;
+      std::cerr << "Failed to find " << funcName <<" function in the instrumentation library" << std::endl;
       return std::vector<BPatch_function *>();
   }
-  std::cerr << "Found " << funcName << " this many times " << funcs.size() << endl;
+  std::cerr << "Found " << funcName << " this many times " << funcs.size() << std::endl;
   if (funcs.size() > 1) {
     for(int i = 0; i < funcs.size(); i++ )
     {

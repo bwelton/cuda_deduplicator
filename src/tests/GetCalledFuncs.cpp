@@ -86,7 +86,7 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
 }
 
 int main() {
-	std::vector<char *> synchMemoryCopies = {"cuMemcpyDtoH_v2","cuMemcpyHtoD_v2", "cuMemcpyHtoA_v2","cuMemcpyPeer", "cuMemAlloc_v2","cuMemFree_v2"};
+	std::vector<char *> synchMemoryCopies = {"cuMemcpyDtoH_v2","cuMemcpyHtoD_v2", "cuMemcpyHtoA_v2", "cuMemAlloc_v2","cuMemFree_v2"};
 	std::vector<char *> asyncMemoryCopies = {"cuMemcpyHtoDAsync_v2","cuMemcpyDtoHAsync_v2","cuMemcpyHtoAAsync_v2"};
 	std::vector<char *> knownSynch = {"cuMemAlloc_v2","cuMemFree_v2"};
 	BPatch_binaryEdit * app = bpatch.openBinary("/usr/lib/x86_64-linux-gnu/libcuda.so", true);
@@ -208,6 +208,14 @@ int main() {
 		intersection.clear();
 		std::set_difference(tmp.begin(), tmp.end(), z.begin(), z.end(),  std::inserter(intersection,intersection.begin()));
 	}	
+	std::cout << "Intersection of callsets" << std::endl;
+	for (auto z : intersection){
+		std::string test = z;
+		if (ptrAddrs.find(test) == ptrAddrs.end())
+			std::cout << test << std::endl;
+		else
+			std::cout << test << "," << std::hex << ptrAddrs[test] << std::dec << std::endl;
+	}
 	for (auto z : _calledSyncFunctions){
 		for (auto y : z)
 			if (intersection.find(y) != intersection.end())
@@ -224,4 +232,5 @@ int main() {
 		else
 			std::cout << test << "," << std::hex << ptrAddrs[test] << std::dec << std::endl;
 	}
+
 }

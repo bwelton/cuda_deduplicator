@@ -128,7 +128,41 @@ int main() {
 		std::set_intersection(tmp.begin(), tmp.end(), z.begin(), z.end(),  std::inserter(intersection,intersection.begin()));
 
 	}
+	_calledSyncFunctions.clear();
+	for (auto i : asyncMemoryCopies) {
+		std::set<std::string> exploredFunctions;
 
+		std::vector<BPatch_function *> funcs = findFuncByName(appImage, i);
+		std::deque<BPatch_function *> unexplored;
+		unexplored.insert(unexplored.end(), funcs.begin(), funcs.end());
+		while(!unexplored.empty()) {
+			BPatch_function * thisFunc = unexplored.front();
+			unexplored.pop_front();
+			if (exploredFunctions.find(thisFunc->getName()) != exploredFunctions.end())
+				continue;
+
+			// We have a new function to explore...
+			exploredFunctions.insert(thisFunc->getName());
+
+			std::vector<BPatch_point *> calledFunctions;
+			thisFunc->getCallPoints(calledFunctions);
+			for (auto z : calledFunctions) {
+				BPatch_function * cFunc = z->getCalledFunction();
+				if (cFunc == NULL)
+					continue;
+				std::cout << thisFunc->getName() << " is calling " << cFunc->getName() << std::endl;
+				if (exploredFunctions.find(cFunc->getName()) != exploredFunctions.end())
+					continue;				
+				unexplored.push_back(cFunc);
+			}
+		}
+		_calledSyncFunctions.push_back(exploredFunctions);
+	}	
+	for (auto z : _calledSyncFunctions){
+		std::set<std::string> tmp = intersection;
+		intersection.clear();
+		std::set_intersection(tmp.begin(), tmp.end(), z.begin(), z.end(),  std::inserter(intersection,intersection.begin()));
+	}
 	std::cout << "Intersection of callsets" << std::endl;
 	for (auto z : intersection)
 		std::cout << z << std::endl;

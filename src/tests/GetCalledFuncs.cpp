@@ -96,6 +96,7 @@ int main() {
 	for (auto i : synchMemoryCopies) {
 		std::set<std::string> exploredFunctions;
 
+
 		std::vector<BPatch_function *> funcs = findFuncByName(appImage, i);
 		std::deque<BPatch_function *> unexplored;
 		std::cout << "==========================BEGIN===================" << std::endl;

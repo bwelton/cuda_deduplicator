@@ -86,9 +86,9 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
 }
 
 int main() {
-	std::vector<char *> synchMemoryCopies = {"cuMemcpyDtoH_v2","cuMemcpyHtoD_v2", "cuMemcpyHtoA_v2", "cuMemAlloc_v2","cuMemFree_v2"};
+	std::vector<char *> synchMemoryCopies = {"cuMemcpyDtoH_v2","cuMemcpyHtoD_v2", "cuMemcpyHtoA_v2","cuMemFree_v2"};
 	std::vector<char *> asyncMemoryCopies = {"cuMemcpyHtoDAsync_v2","cuMemcpyDtoHAsync_v2","cuMemcpyHtoAAsync_v2"};
-	std::vector<char *> knownSynch = {"cuCtxSynchronize"};
+	std::vector<char *> knownSynch = {"cuCtxSynchronize", "cuStreamSynchronize"};
 	BPatch_binaryEdit * app = bpatch.openBinary("/usr/lib/x86_64-linux-gnu/libcuda.so", true);
 	BPatch_image * appImage = app->getImage();
 	std::vector<std::set<std::string>> _calledSyncFunctions;

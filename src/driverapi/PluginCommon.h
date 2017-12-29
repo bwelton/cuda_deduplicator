@@ -247,7 +247,8 @@ typedef enum {
 	ID_cuMemsetD32_v2,
 	ID_cuMemsetD2D8_v2,
 	ID_cuMemsetD2D16_v2,
-	ID_cuMemsetD2D32_v2
+	ID_cuMemsetD2D32_v2,
+	ID_InternalSynchronization
 } CallID;
 
 #define PT_cuGetErrorString CUresult* ,const char * ** 

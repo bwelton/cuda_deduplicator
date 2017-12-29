@@ -55,6 +55,41 @@ MemoryTransfer::MemoryTransfer(Parameters *params) :
 		IsSupportedTransfer();
 }
 
+bool MemoryTransfer::IsCPUDest() {
+	std::vector<CallID> DestIsCPU = STANDARD_COPIES_DEST_CPU
+	CallID thiscall = _params->GetID();
+	if (std::find(DestIsCPU.begin(), DestIsCPU.end(), thiscall) != DestIsCPU.end())
+		return true;
+	return false;
+}
+
+bool MemoryTransfer::IsCPUSource() {
+	std::vector<CallID> GPUDest = STANDARD_COPIES_DEST_GPU
+	CallID thiscall = _params->GetID();
+	if (std::find(GPUDest.begin(), GPUDest.end(), thiscall) != GPUDest.end())
+		return true;
+	return false;
+}
+
+uint64_t MemoryTransfer::GetCPUAddress() {
+	CUdeviceptr cpuAddr;
+	if (_transfer == false)
+		return 0;
+	if (IsCPUDest()){
+		_dstType = CU_MEMORYTYPE_HOST;
+		_srcType = CU_MEMORYTYPE_DEVICE;
+		cpuAddr = (CUdeviceptr)*((void**)_params->GetParameter(0));
+	} else if (IsCPUSource()) {
+		_dstType = CU_MEMORYTYPE_DEVICE;
+		_srcType = CU_MEMORYTYPE_HOST;		
+		cpuAddr = (CUdeviceptr)*((void**)_params->GetParameter(1));
+	} else {
+		return 0;
+	}
+	_transferSize = ((size_t*)_params->GetParameter(2))[0];
+	return (uint64_t)((void*)cpuAddr);
+}
+
 uint32_t MemoryTransfer::GetOriginHash() {
 	return _origData;
 }

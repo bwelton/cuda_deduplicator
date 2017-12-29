@@ -26,6 +26,9 @@ public:
 	MemoryTransfer(Parameters * params);
 	bool IsSupportedTransfer();
 	bool IsTransfer();
+	bool IsCPUDest();
+	bool IsCPUSource();
+	uint64_t GetCPUAddress();
 	uint32_t GetOriginHash();
 	uint32_t GetTransferHash();
 	size_t GetSize();

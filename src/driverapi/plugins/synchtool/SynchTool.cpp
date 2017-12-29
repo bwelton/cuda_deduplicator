@@ -165,16 +165,8 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 			MemoryFree(params);
 	} else {
 		// Synchronization is complete, signal to 
-		
+		SignalToParent();	
 	}
-
-
-
-	// MemoryTransfer * mem = params.get()->GetMemtrans();	
-	// if (mem->IsTransfer() == false)
-	// 	return NO_ACTION;
-	// mem->PostTransfer();
-	// WriteLog(params);
 	return NO_ACTION;
 }
 

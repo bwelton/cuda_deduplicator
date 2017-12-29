@@ -115,7 +115,7 @@ uint64_t * SynchTool::SeralizeMemRanges(size_t & size) {
 		mem[pos + 2] = i.second.size;
 		mem[pos + 3] = i.second.transferID;
 		mem[pos + 4] = i.second.unifiedMemory;
-		pos += 5
+		pos += 5;
 	}
 	size = _ranges.size() * 5 * sizeof(uint64_t);
 	return mem;
@@ -139,7 +139,7 @@ void SynchTool::SignalToParent() {
 	free(mem);
 
 	MemProtectAddrs();
-	
+
 	ClearExisting();
 }
 

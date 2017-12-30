@@ -1,0 +1,32 @@
+#include <boost/program_options.hpp>
+#include <stdio>
+#include <iostream> 
+
+int main(char * argv[], int argc) {
+	using namespace boost::program_options;
+	try
+	{
+		options_description desc{"Options"};
+		desc.add_options()
+		("help,h", "Help screen")
+		("prog,p,program", value<std::vector<std::string> >()->multitoken(), "Program to instrument with all parameters")
+		("plugindir,plugin", value<std::string>()->default_value(std::string("@CMAKE_INSTALL_PREFIX@/lib")), "Directory containing the plugins (install lib directory)")
+		("synch,s", bool_switch()->default_value(false), "Enable synchronization checker");
+
+		variables_map vm;
+		store(parse_command_line(argc, argv, desc), vm);
+		notify(vm);
+
+		if (vm.count("prog") == 0) {
+			std::cerr << "Program to instriment is not set, specify with -p or -prog" << std::endl; 
+			exit(-1);
+		} 
+
+		std::vector<std::string> progName = vm["prog"].as<std::vector<std::string> >();
+		std::string pluginDirectory = vm["plugindir"].as<std::string>();
+		std::cerr << "Beginning Instrimentation of Program - " << progName[0] << std::endl;
+		std::cerr << "Plugin Directory In Use - " << pluginDirectory << std::endl; 
+	} catch (const error &ex) {
+		std::cerr << ex.what() << '\n';
+	}
+}

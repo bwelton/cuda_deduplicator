@@ -48,3 +48,4 @@ configure_file (
 #         ARCHIVE DESTINATION lib/static)
 
 add_subdirectory(plugins)
+add_subdirectory(launcher)

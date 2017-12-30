@@ -9,8 +9,8 @@ int main(char * argv[], int argc) {
 		options_description desc{"Options"};
 		desc.add_options()
 		("help,h", "Help screen")
-		("prog,p,program", value<std::vector<std::string> >()->multitoken(), "Program to instrument with all parameters")
-		("plugindir,plugin", value<std::string>()->default_value(std::string("@CMAKE_INSTALL_PREFIX@/lib")), "Directory containing the plugins (install lib directory)")
+		("prog,p", value<std::vector<std::string> >()->multitoken(), "Program to instrument with all parameters")
+		("plugindir", value<std::string>()->default_value(std::string("@CMAKE_INSTALL_PREFIX@/lib")), "Directory containing the plugins (install lib directory)")
 		("synch,s", bool_switch()->default_value(false), "Enable synchronization checker");
 
 		variables_map vm;

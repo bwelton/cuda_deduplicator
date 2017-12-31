@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <iostream> 
 
-int main(char * argv[], int argc) {
+int main(int argc, char * argv[]) {
 	using namespace boost::program_options;
+	variables_map vm;
 	try
 	{
 		options_description desc{"Options"};
@@ -13,7 +14,6 @@ int main(char * argv[], int argc) {
 		("plugindir", value<std::string>()->default_value(std::string("@CMAKE_INSTALL_PREFIX@/lib")), "Directory containing the plugins (install lib directory)")
 		("synch,s", bool_switch()->default_value(false), "Enable synchronization checker");
 
-		variables_map vm;
 		store(parse_command_line(argc, argv, desc), vm);
 		notify(vm);
 
@@ -21,7 +21,6 @@ int main(char * argv[], int argc) {
 			std::cerr << "Program to instriment is not set, specify with -p or -prog" << std::endl; 
 			exit(-1);
 		} 
-
 		std::vector<std::string> progName = vm["prog"].as<std::vector<std::string> >();
 		std::string pluginDirectory = vm["plugindir"].as<std::string>();
 		std::cerr << "Beginning Instrimentation of Program - " << progName[0] << std::endl;

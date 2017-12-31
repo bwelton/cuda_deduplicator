@@ -2,7 +2,7 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/main.cpp.in"
 	"${PROJECT_SOURCE_DIR}/src/driverapi/launcher/main.cpp"
 )
-add_executable(LaunchCUInstriment "main.cpp")
+add_executable(LaunchCUInstriment "main.cpp" "ProcessControl.cpp")
 target_link_libraries(LaunchCUInstriment ${Boost_LIBRARIES})
 target_link_libraries(LaunchCUInstriment "-lpthread")
 target_link_libraries(LaunchCUInstriment "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -lboost_program_options")

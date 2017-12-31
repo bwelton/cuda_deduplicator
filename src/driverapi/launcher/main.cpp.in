@@ -24,6 +24,10 @@ int main(int argc, char * argv[]) {
 		std::vector<std::string> progName = vm["prog"].as<std::vector<std::string> >();
 		std::string pluginDirectory = vm["plugindir"].as<std::string>();
 		std::cerr << "Beginning Instrimentation of Program - " << progName[0] << std::endl;
+		std::cerr << "Arguments to program: ";
+		for (auto i : progName)
+			std::cerr << i << " ";
+		std::cerr << std::endl;
 		std::cerr << "Plugin Directory In Use - " << pluginDirectory << std::endl; 
 	} catch (const error &ex) {
 		std::cerr << ex.what() << '\n';

@@ -76,7 +76,7 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
 }
 
 void ProcessController::InstrimentApplication() {
-	BPatch_image * img = _addrSpace->GetImage();
+	BPatch_image * img = _addrSpace->getImage();
 	std::map<std::string, std::vector<Symbol *> > instLibSymbols;
 	uint64_t wrapCount = 0;
 	uint64_t totalFunctions = 0;
@@ -103,7 +103,7 @@ void ProcessController::InstrimentApplication() {
 			instLibSymbols[std::get<3>(i)] = tmp;
 		}
 
-		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << hookFunc[0]->getName() << std::endl;
+		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
 		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
 			if (sym->getPrettyName() == std::get<4>(i)) {
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){

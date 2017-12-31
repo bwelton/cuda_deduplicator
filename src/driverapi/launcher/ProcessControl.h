@@ -47,7 +47,7 @@ using namespace SymtabAPI;
 
 class ProcessController {
 public:
-	ProcessControler(boost::program_options::variables_map vm);
+	ProcessController(boost::program_options::variables_map vm);
 	BPatch_addressSpace * LaunchProcess();
 	BPatch * GetBPatch();
 	void Run();
@@ -62,5 +62,5 @@ private:
 	BPatch_addressSpace * _addrSpace;
 	bool _launched;
 	bool _insertedInstrimentation;
-	std::vector<std::tuple<std::string, std::string, std::string, std::string> > _wrapFunctions;
+	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapFunctions;
 };

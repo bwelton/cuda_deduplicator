@@ -14,7 +14,7 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 		argv[i] = strdup(progName[i].c_str());
 
 	// Create the bpatch process
-	handle = bpatch.processCreate(argv[0],argv);
+	handle = bpatch.processCreate(argv[0],(const char **)argv);
 	assert(handle != NULL);
 
 	// Free temporary argv
@@ -39,7 +39,7 @@ void ProcessController::ReadDefinition(std::string WrapperDef) {
 	std::ifstream f;
 	std::string line;
 	f.open(WrapperDef.c_str(),std::ifstream::in);
-	while (std::getline(t, line)) {
+	while (std::getline(f, line)) {
 	    std::stringstream ss(line);
 	    std::vector<std::string> tokens;
 	    std::string item;
@@ -62,10 +62,10 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
   BPatch_Vector<BPatch_function * >funcs;
   if (NULL == appImage->findFunction(funcName, funcs) || !funcs.size() || NULL == funcs[0])
   {
-      std::cerr << "Failed to find " << funcName <<" function in the instrumentation library" << endl;
+      std::cerr << "Failed to find " << funcName <<" function in the instrumentation library" << std::endl;
       return std::vector<BPatch_function *>();
   }
-  std::cerr << "Found " << funcName << " this many times " << funcs.size() << endl;
+  std::cerr << "Found " << funcName << " this many times " << funcs.size() << std::endl;
   if (funcs.size() > 1) {
     for(int i = 0; i < funcs.size(); i++ )
     {
@@ -75,7 +75,7 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
   return funcs;
 }
 
-void ProcessControl::InstrimentApplication() {
+void ProcessController::InstrimentApplication() {
 	BPatch_image * img = _addrSpace->GetImage();
 	std::map<std::string, std::vector<Symbol *> > instLibSymbols;
 	uint64_t wrapCount = 0;

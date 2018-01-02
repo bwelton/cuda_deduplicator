@@ -37,7 +37,7 @@ BPatch * ProcessController::GetBPatch() {
 }
 
 void ProcessController::Run() {
-	_appProc->continueExecution();
+	//_appProc->continueExecution();
 	bpatch.waitForStatusChange();
 }
 

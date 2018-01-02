@@ -145,7 +145,7 @@ void ProcessController::InstrimentApplication() {
 
 bool ProcessController::LoadWrapperLibrary(std::string libname) {
 	std::cerr << "[PROCCTR] Loading library " << libname << " into address space\n";
-	if(!_addrSpace->loadLibrary(libname.c_str())) {
+	if(!_appProc->loadLibrary(libname.c_str())) {
 		return false;
 	}
 	return true;

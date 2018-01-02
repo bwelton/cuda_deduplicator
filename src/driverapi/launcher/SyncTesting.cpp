@@ -8,6 +8,7 @@ SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 void SyncTesting::Run() {
 	TimeApplications base(_vm);
 	double time = base.Run();
+	double CUPTITiming = RunWithCUPTI();
 
 }
 
@@ -31,5 +32,5 @@ void SyncTesting::RunWithCUPTI() {
 	TimeApplications base(_vm);
 	std::string def(WRAPPER_DEF);
 	double time = base.RunWithInstrimentation(def);
-	
+
 }

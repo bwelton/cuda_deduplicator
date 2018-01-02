@@ -169,7 +169,7 @@ void ProcessController::LibraryLoadCallback(BPatch_thread * thread, BPatch_objec
 	BPatch_process* appProc = dynamic_cast<BPatch_process*>(_addrSpace);
 	if (_insertedInstrimentation == true)
 		return;
-	BPatch_image *image = addrs->getImage();
+	BPatch_image *image = _addrSpace->getImage();
 	BPatch_Vector<BPatch_module*> mods;
 	image->getModules(mods);
 	for (auto mod : mods) {

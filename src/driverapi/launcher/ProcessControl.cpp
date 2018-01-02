@@ -175,17 +175,17 @@ void ProcessController::LibraryLoadCallback(BPatch_thread * thread, BPatch_objec
 	BPatch_Vector<BPatch_module*> mods;
 	image->getModules(mods);
 	for (auto mod : mods) {
-		char * name = (char *) malloc(500 * sizeof(char));
-		name = mod->getName(name, 500);
-		std::string tmp = std::string(name);
-		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-		if (tmp.find(std::string("libcuda.so")) != std::string::npos) {	
-			std::cerr << "[PROCCTR] Inserting Instrimentation into libcuda.so" << std::endl;
-			std::set<std::string> libsToLoad = WrapperLibraries();
-			for (auto i : libsToLoad)
-				LoadWrapperLibrary(i);
-			InstrimentApplication();
-		}
+		// char * name = (char *) malloc(500 * sizeof(char));
+		// name = mod->getName(name, 500);
+		// std::string tmp = std::string(name);
+		// std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+		// if (tmp.find(std::string("libcuda.so")) != std::string::npos) {	
+		// 	std::cerr << "[PROCCTR] Inserting Instrimentation into libcuda.so" << std::endl;
+		// 	std::set<std::string> libsToLoad = WrapperLibraries();
+		// 	for (auto i : libsToLoad)
+		// 		LoadWrapperLibrary(i);
+		// 	InstrimentApplication();
+		// }
 	}
 }
 

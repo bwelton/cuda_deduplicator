@@ -182,6 +182,7 @@ void ProcessController::LibraryLoadCallback(BPatch_thread * thread, BPatch_objec
 		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
 		if (tmp.find(std::string("libcuda.so")) != std::string::npos) {	
 			std::cerr << "[PROCCTR] Inserting Instrimentation into libcuda.so" << std::endl;
+			_insertedInstrimentation = true;
 			std::set<std::string> libsToLoad = WrapperLibraries();
 			for (auto i : libsToLoad)
 				LoadWrapperLibrary(i);

@@ -8,6 +8,7 @@ TimeApplications::TimeApplications(boost::program_options::variables_map vm) :
 double TimeApplications::Run() {
 	ProcessController proc(_vm);
 	proc.LaunchProcess();
+	proc.ContinueExecution();
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
 		proc.Run();
@@ -22,6 +23,7 @@ double TimeApplications::RunWithInstrimentation(std::string wrapperDef) {
 	ProcessController proc(_vm);
 	proc.LaunchProcess();
 	proc.InsertInstrimentation(wrapperDef);
+	proc.ContinueExecution();
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
 		proc.Run();

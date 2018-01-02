@@ -49,6 +49,7 @@ class ProcessController {
 public:
 	ProcessController(boost::program_options::variables_map vm);
 	BPatch_addressSpace * LaunchProcess();
+	BPatch_addressSpace * LaunchProcessInstrimenter(std::string WrapperDef);
 	BPatch * GetBPatch();
 	void Run();
 	bool LoadWrapperLibrary(std::string libname);

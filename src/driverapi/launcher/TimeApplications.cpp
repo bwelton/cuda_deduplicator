@@ -28,7 +28,8 @@ double TimeApplications::Run() {
 
 double TimeApplications::RunWithInstrimentation(std::string wrapperDef) {
 	ProcessController proc(_vm);
-	proc.LaunchProcess();
+	//proc.LaunchProcess();
+	proc.LaunchProcessInstrimenter(wrapperDef);
 	proc.InsertInstrimentation(wrapperDef);
 	proc.ContinueExecution();
 	auto start = std::chrono::high_resolution_clock::now();

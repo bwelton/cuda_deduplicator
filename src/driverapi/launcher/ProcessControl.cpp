@@ -32,6 +32,48 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	return handle;
 }
 
+BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string WrapperDef) {
+	BPatch_addressSpace * handle = NULL;
+	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
+
+	// Insert Instrimentation Library into binary before launching.
+
+	bpatch.setInstrStackFrames(true);
+	BPatch_binaryEdit *app = bpatch.openBinary(app_binary, true);
+	ReadDefinition(WrapperDef);
+	std::set<std::string> libs = WrapperLibraries();
+	for (auto i : libs) {
+		assert(app->loadLibrary(i.c_str()) == true);
+	}
+	progName[0] = progName[0] + std::string("_withlibs");
+	if(!app->writeFile(progName[0])) {
+		std::cerr << "[PROCCTR] Could not write output binary" << std::endl;
+		exit(-1);
+	}
+
+	// Setup arguments
+	char ** argv = (char**)malloc(progName.size() * sizeof(char *)+1);
+	for (int i = 0; i < progName.size(); i++) 
+		argv[i] = strdup(progName[i].c_str());
+
+	argv[progName.size()] = NULL;
+	for (int i = 0; i < progName.size(); i++)
+		std::cerr << "[PROCCTR] Launch Arguments - " << argv[i] << std::endl;
+	// Create the bpatch process
+	handle = bpatch.processCreate(argv[0],(const char **)argv);
+	assert(handle != NULL);
+
+	// Free temporary argv
+	for (int i = 0; i < progName.size(); i++)
+		free(argv[i]);
+	free(argv);
+
+	_addrSpace = handle;
+	_launched = true;
+	_appProc = dynamic_cast<BPatch_process*>(_addrSpace);
+	return handle;
+}
+
 BPatch * ProcessController::GetBPatch() {
 	return &bpatch;
 }
@@ -193,7 +235,7 @@ void ProcessController::LibraryLoadCallback(BPatch_thread * thread, BPatch_objec
 
 bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
 	curController = this;
-    ReadDefinition(WrapperDef);
+    //ReadDefinition(WrapperDef);
 	//std::set<std::string> libsToLoad = WrapperLibraries();
 	// Run application until libcuda is loaded. 
 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&DYNINST_LibraryLoadCallback);

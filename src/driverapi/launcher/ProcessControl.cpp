@@ -1,6 +1,6 @@
 #include "ProcessControl.h"
 BPatch bpatch;
-thread_local ProcessController * curController;
+ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm) :
 	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false) {
 }
@@ -38,7 +38,7 @@ BPatch * ProcessController::GetBPatch() {
 
 void ProcessController::Run() {
 	bpatch.waitForStatusChange();
-	_appProc->continueExecution();
+	//_appProc->continueExecution();
 }
 
 bool ProcessController::IsTerminated() {

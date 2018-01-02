@@ -131,11 +131,11 @@ void ProcessController::InstrimentApplication() {
 		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
 			if (sym->getPrettyName() == std::get<4>(i)) {
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
-					std::cerr << "[PROCCTR] Function " << orig[0] << " wrapped successful" << std::endl;
+					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
 				}
 				else 
-					std::cerr << "[PROCCTR] Function " << orig[0] << " WRAPPING FAILED" << std::endl;	
+					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
 				break;
 			}
 		}

@@ -9,8 +9,9 @@ double TimeApplications::Run() {
 	ProcessController proc(_vm);
 	proc.LaunchProcess();
 	auto start = std::chrono::high_resolution_clock::now();
-	while (!proc.IsTerminated())
-		proc.ContinueExecution();
+	while (!proc.IsTerminated()){
+		proc.Run();
+	}
 	auto stop = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> diff = stop-start;
 	std::cerr << "[TIMEAPP] Application runtime without instrimentation - " << diff.count() << std::endl;

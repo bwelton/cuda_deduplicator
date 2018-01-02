@@ -66,6 +66,7 @@ private:
 	BPatch_addressSpace * _addrSpace;
 	bool _launched;
 	bool _insertedInstrimentation;
+	bool _terminated;
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapFunctions;
 	BPatch_process * _appProc;
 };

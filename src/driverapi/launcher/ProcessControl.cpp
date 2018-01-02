@@ -1,7 +1,7 @@
 #include "ProcessControl.h"
 
 ProcessController::ProcessController(boost::program_options::variables_map vm) :
-	_vm(vm), _launched(false), _insertedInstrimentation(false) {
+	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false) {
 }
 
 BPatch_addressSpace * ProcessController::LaunchProcess() {
@@ -37,11 +37,17 @@ BPatch * ProcessController::GetBPatch() {
 
 void ProcessController::Run() {
 	_appProc->continueExecution();
+	if (IsTerminated() == true)
+		return;
 	bpatch.waitForStatusChange();
 }
 
 bool ProcessController::IsTerminated() {
-	return _appProc->isTerminated();
+	if (_terminated == true)
+		return _terminated;
+	else 
+		_terminated = _appProc->isTerminated();
+	return _terminated;
 }
 
 bool ProcessController::ContinueExecution() {
@@ -51,6 +57,7 @@ bool ProcessController::ContinueExecution() {
 bool ProcessController::IsStopped() {
 	return _appProc->isStopped();
 }
+
 
 void ProcessController::ReadDefinition(std::string WrapperDef) {
 	std::ifstream f;

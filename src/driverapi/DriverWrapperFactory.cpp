@@ -26,6 +26,7 @@ void DriverWrapperFactory::LoadLibraries(std::vector<std::string> libs) {
 	for(auto i : DriverCVec)
 		DriverAPICalls.push_back(std::string(i));
 	for(auto i : libs) {
+		//std::cerr << "[DRIVER_FACTORY] Loading Library - " << i.c_str() << std::endl;
 		void * handle = dlopen(i.c_str(), RTLD_LAZY);
 		// Fail immediately if wrapper cannot be loaded
 		assert(handle != NULL);

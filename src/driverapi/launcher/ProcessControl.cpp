@@ -1,6 +1,6 @@
 #include "ProcessControl.h"
 static BPatch bpatch;
-ProcessController * curController;
+static ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm) :
 	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false) {
 }
@@ -163,7 +163,7 @@ std::set<std::string> ProcessController::WrapperLibraries() {
 
 extern "C" void DYNINST_LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l) {
 	std::cerr << "[PROCCTR] In Load library callback" << std::endl;
-	//curController->LibraryLoadCallback(thread, obj, l);
+	curController->LibraryLoadCallback(thread, obj, l);
 }
 
 void ProcessController::LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l) {

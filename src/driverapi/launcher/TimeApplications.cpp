@@ -5,7 +5,7 @@ TimeApplications::TimeApplications(boost::program_options::variables_map vm) :
 
 }
 
-double TimeApplications::Run() {
+double TimeApplications::InternalRun() {
 	ProcessController proc(_vm);
 	proc.LaunchProcess();
 	assert(proc.ContinueExecution() == true);
@@ -13,14 +13,17 @@ double TimeApplications::Run() {
 	while (!proc.IsTerminated()){
 		proc.Run();
 		assert(proc.ContinueExecution() == true);
-
-		//std::cerr << "Waiting....." << std::endl;
-		//proc.Run();
 	}
 	auto stop = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> diff = stop-start;
 	std::cerr << "[TIMEAPP] Application runtime without instrimentation - " << diff.count() << std::endl;
 	return diff.count();	
+}
+
+double TimeApplications::Run() {
+	// Run this twice to get rid of dyninst overhead....
+	InternalRun();
+	return InternalRun();
 }
 
 double TimeApplications::RunWithInstrimentation(std::string wrapperDef) {

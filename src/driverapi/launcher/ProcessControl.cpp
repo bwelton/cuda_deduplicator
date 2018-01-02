@@ -164,7 +164,7 @@ std::set<std::string> ProcessController::WrapperLibraries() {
 
 extern "C" void DYNINST_LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l) {
 	std::cerr << "[PROCCTR] In Load library callback" << std::endl;
-	curController->LibraryLoadCallback(thread, obj, l);
+	//curController->LibraryLoadCallback(thread, obj, l);
 }
 
 void ProcessController::LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l) {
@@ -194,7 +194,7 @@ bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
     ReadDefinition(WrapperDef);
 	//std::set<std::string> libsToLoad = WrapperLibraries();
 	// Run application until libcuda is loaded. 
-	//bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&DYNINST_LibraryLoadCallback);
+	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&DYNINST_LibraryLoadCallback);
 	return true;
 	//assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
 	// for (auto i : libsToLoad)

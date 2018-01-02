@@ -16,14 +16,15 @@ void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {
 	std::vector<std::string> PluginList = PLUGIN_LIST;
 	std::ofstream pfile;
 	pfile.open("pluginlist.txt");
-	for (auto i : plugins) {
-		for (auto z : PluginList) {
-			if (z.find(i) != std::string::npos){
-				pfile << z << std::endl;
-				break;
-			}
-		}
-	}
+	// for (auto i : plugins) {
+	// 	for (auto z : PluginList) {
+	// 		if (z.find(i) != std::string::npos){
+	// 			pfile << z << std::endl;
+	// 			break;
+	// 		}
+	// 	}
+	// }
+	pfile.close();
 }
 
 void SyncTesting::RunWithCUPTI() {

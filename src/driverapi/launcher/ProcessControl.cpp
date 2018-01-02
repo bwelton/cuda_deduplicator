@@ -162,7 +162,7 @@ std::set<std::string> ProcessController::WrapperLibraries() {
 
 bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
 	// Force libcuda to be loaded
-	assert(LoadWrapperLibrary(std::string("libcuda.so")) != false);
+	assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
     ReadDefinition(WrapperDef);
 	std::set<std::string> libsToLoad = WrapperLibraries();
 	for (auto i : libsToLoad)

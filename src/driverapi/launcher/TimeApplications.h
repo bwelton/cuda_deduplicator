@@ -25,9 +25,9 @@
 #include "ProcessControl.h"
 
 class TimeApplications {
-private:
+public:
 	TimeApplications(boost::program_options::variables_map vm);
 	double Run();
-public:
+private:
 	boost::program_options::variables_map _vm;
 };

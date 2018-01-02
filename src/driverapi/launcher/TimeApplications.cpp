@@ -11,8 +11,11 @@ double TimeApplications::Run() {
 	assert(proc.ContinueExecution() == true);
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
-		//std::cerr << "Waiting....." << std::endl;
 		proc.Run();
+		assert(proc.ContinueExecution() == true);
+
+		//std::cerr << "Waiting....." << std::endl;
+		//proc.Run();
 	}
 	auto stop = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> diff = stop-start;

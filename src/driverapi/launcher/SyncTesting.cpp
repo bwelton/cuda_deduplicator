@@ -13,7 +13,7 @@ void SyncTesting::Run() {
 
 void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {
 	std::vector<std::string> PluginList = PLUGIN_LIST;
-	ofstream pfile;
+	std::ofstream pfile;
 	pfile.open("pluginlist.txt");
 	for (auto i : plugins) {
 		for (auto z : PluginList) {
@@ -28,5 +28,8 @@ void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {
 void SyncTesting::RunWithCUPTI() {
 	std::vector<std::string> cupti_plugin = {"libCUPTIEventHandler"};
 	CreatePluginFile(cupti_plugin);
+	TimeApplications base(_vm);
+	std::string def(WRAPPER_DEF);
+	double time = base.RunWithInstrimentation(def);
 	
 }

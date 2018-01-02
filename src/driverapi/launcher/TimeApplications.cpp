@@ -18,3 +18,18 @@ double TimeApplications::Run() {
 	return diff.count();	
 }
 
+double TimeApplications::RunWithInstrimentation(std::string wrapperDef) {
+	ProcessController proc(_vm);
+	proc.LaunchProcess();
+	proc.InsertInstrimentation(wrapperDef);
+	auto start = std::chrono::high_resolution_clock::now();
+	while (!proc.IsTerminated()){
+		proc.Run();
+	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> diff = stop-start;
+	std::cerr << "[TIMEAPP] Application runtime with instrimentation - " << diff.count() << std::endl;
+	return diff.count();	
+}
+
+

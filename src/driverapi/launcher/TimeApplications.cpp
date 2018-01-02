@@ -11,6 +11,7 @@ double TimeApplications::Run() {
 	proc.ContinueExecution();
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
+		std::cerr << "Waiting....." << std::endl;
 		proc.Run();
 	}
 	auto stop = std::chrono::high_resolution_clock::now();

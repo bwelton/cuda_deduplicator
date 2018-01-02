@@ -38,9 +38,9 @@ BPatch * ProcessController::GetBPatch() {
 
 void ProcessController::Run() {
 	_appProc->continueExecution();
+	bpatch.waitForStatusChange();
 	if (IsTerminated() == true)
 		return;
-	bpatch.waitForStatusChange();
 }
 
 bool ProcessController::IsTerminated() {

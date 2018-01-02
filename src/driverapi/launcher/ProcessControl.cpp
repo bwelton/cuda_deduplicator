@@ -1,5 +1,6 @@
 #include "ProcessControl.h"
 
+thread_local ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm) :
 	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false) {
 }
@@ -160,12 +161,52 @@ std::set<std::string> ProcessController::WrapperLibraries() {
 	return ret;
 }
 
-bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
-	// Force libcuda to be loaded
-	assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
-    ReadDefinition(WrapperDef);
-	std::set<std::string> libsToLoad = WrapperLibraries();
-	for (auto i : libsToLoad)
-		LoadWrapperLibrary(i);
-	InstrimentApplication();
+extern "C" void DYNINST_LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l) {
+	curController->LibraryLoadCallback(thread, obj, l);
 }
+
+void ProcessController::LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l) {
+	BPatch_process* appProc = dynamic_cast<BPatch_process*>(_addrSpace);
+	if (_insertedInstrimentation == true)
+		return;
+	BPatch_image *image = addrs->getImage();
+	BPatch_Vector<BPatch_module*> mods;
+	image->getModules(mods);
+	for (auto mod : mods) {
+		char * name = (char *) malloc(500 * sizeof(char));
+		name = mod->getName(name, 500);
+		std::string tmp = std::string(name);
+		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+		if (tmp.find(std::string("libcuda.so")) != std::string::npos) {	
+			std::cerr << "[PROCCTR] Inserting Instrimentation into libcuda.so" << std::endl;
+			std::set<std::string> libsToLoad = WrapperLibraries();
+			for (auto i : libsToLoad)
+				LoadWrapperLibrary(i);
+			InstrimentApplication();
+		}
+	}
+}
+
+bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
+	curController = this;
+    ReadDefinition(WrapperDef);
+	//std::set<std::string> libsToLoad = WrapperLibraries();
+	// Run application until libcuda is loaded. 
+	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&DYNINST_LibraryLoadCallback);
+	return true;
+	//assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
+	// for (auto i : libsToLoad)
+	// 	LoadWrapperLibrary(i);
+	// InstrimentApplication();
+}
+
+
+// bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
+// 	// Force libcuda to be loaded
+// 	assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
+//     ReadDefinition(WrapperDef);
+// 	std::set<std::string> libsToLoad = WrapperLibraries();
+// 	for (auto i : libsToLoad)
+// 		LoadWrapperLibrary(i);
+// 	InstrimentApplication();
+// }

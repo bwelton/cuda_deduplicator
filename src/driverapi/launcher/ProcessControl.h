@@ -60,7 +60,9 @@ public:
 	bool IsTerminated();
 	bool ContinueExecution();
 	bool IsStopped();
+	void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
+	double _instrimentationOverhead;
 	BPatch bpatch;
 	boost::program_options::variables_map _vm;
 	BPatch_addressSpace * _addrSpace;

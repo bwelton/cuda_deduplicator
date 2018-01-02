@@ -194,7 +194,7 @@ bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
     ReadDefinition(WrapperDef);
 	//std::set<std::string> libsToLoad = WrapperLibraries();
 	// Run application until libcuda is loaded. 
-	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&DYNINST_LibraryLoadCallback);
+	//bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&DYNINST_LibraryLoadCallback);
 	return true;
 	//assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
 	// for (auto i : libsToLoad)

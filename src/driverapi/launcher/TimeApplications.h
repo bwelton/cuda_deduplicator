@@ -27,7 +27,7 @@
 class TimeApplications {
 private:
 	TimeApplications(boost::program_options::variables_map vm);
-	uint64_t Run();
+	double Run();
 public:
 	boost::program_options::variables_map _vm;
 };

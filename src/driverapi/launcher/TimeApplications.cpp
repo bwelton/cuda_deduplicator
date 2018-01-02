@@ -5,15 +5,15 @@ TimeApplications::TimeApplications(boost::program_options::variables_map vm) :
 
 }
 
-uint64_t TimeApplications::Run() {
+double TimeApplications::Run() {
 	ProcessController proc(_vm);
 	proc.LaunchProcess();
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated())
 		proc.ContinueExecution();
 	auto stop = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<long int> diff = stop-start;
+	std::chrono::duration<double> diff = stop-start;
 	std::cerr << "[TIMEAPP] Application runtime without instrimentation - " << diff.count() << std::endl;
-	return uint64_t(diff.count());	
+	return diff.count();	
 }
 

@@ -1,6 +1,7 @@
 #include <boost/program_options.hpp>
 #include <stdio.h>
 #include <iostream> 
+#include "SyncTesting.h"
 
 int main(int argc, char * argv[]) {
 	using namespace boost::program_options;
@@ -29,6 +30,10 @@ int main(int argc, char * argv[]) {
 			std::cerr << i << " ";
 		std::cerr << std::endl;
 		std::cerr << "Plugin Directory In Use - " << pluginDirectory << std::endl; 
+		if (vm["synch"].as<bool>() == true) {
+			SyncTesting runSync(vm);
+			runSync.Run();
+		}
 	} catch (const error &ex) {
 		std::cerr << ex.what() << '\n';
 	}

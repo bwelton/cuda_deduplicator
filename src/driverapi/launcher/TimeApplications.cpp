@@ -12,8 +12,8 @@ uint64_t TimeApplications::Run() {
 	while (!proc.IsTerminated())
 		proc.ContinueExecution();
 	auto stop = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<uint64_t> diff = stop-start;
+	std::chrono::duration<long int> diff = stop-start;
 	std::cerr << "[TIMEAPP] Application runtime without instrimentation - " << diff.count() << std::endl;
-	return diff.count();	
+	return uint64_t(diff.count());	
 }
 

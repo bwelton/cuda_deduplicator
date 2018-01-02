@@ -1,5 +1,5 @@
 #include "ProcessControl.h"
-BPatch bpatch;
+static BPatch bpatch;
 ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm) :
 	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false) {

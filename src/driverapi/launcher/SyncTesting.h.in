@@ -24,7 +24,7 @@
 #include "ProcessControl.h"
 #include "TimeApplications.h"
 
-#define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/libCUPTIEventHandler.so"};
+#define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so"};
 #define WRAPPER_DEF "@CMAKE_INSTALL_PREFIX@/defs/DriverAPIWrapper.def"
 
 class SyncTesting {

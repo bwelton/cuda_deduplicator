@@ -8,4 +8,25 @@ SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 void SyncTesting::Run() {
 	TimeApplications base(_vm);
 	double time = base.Run();
+
+}
+
+void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {
+	std::vector<std::string> PluginList = PLUGIN_LIST;
+	ofstream pfile;
+	pfile.open("pluginlist.txt");
+	for (auto i : plugins) {
+		for (auto z : PluginList) {
+			if (z.find(i) != std::string::npos){
+				pfile << z << std::endl;
+				break;
+			}
+		}
+	}
+}
+
+void SyncTesting::RunWithCUPTI() {
+	std::vector<std::string> cupti_plugin = {"libCUPTIEventHandler"};
+	CreatePluginFile(cupti_plugin);
+	
 }

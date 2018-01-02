@@ -22,10 +22,16 @@
 #include <boost/program_options.hpp>
 #include "ProcessControl.h"
 #include "TimeApplications.h"
+
+#define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/libCUPTIEventHandler.so"};
+
 class SyncTesting {
 public:
 	SyncTesting(boost::program_options::variables_map vm);
 	void Run();
+	void RunWithCUPTI();
+	void CreatePluginFile(std::vector<std::string> plugins);
+	
 private:
 	boost::program_options::variables_map _vm;
 };

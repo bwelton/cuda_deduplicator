@@ -56,6 +56,10 @@ public:
 	void ReadDefinition(std::string WrapperDef);
 	void InstrimentApplication();
 	std::set<std::string> WrapperLibraries();
+
+	bool IsTerminated();
+	bool ContinueExecution();
+	bool IsStopped();
 private:
 	BPatch bpatch;
 	boost::program_options::variables_map _vm;
@@ -63,4 +67,5 @@ private:
 	bool _launched;
 	bool _insertedInstrimentation;
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapFunctions;
+	BPatch_process * _appProc;
 };

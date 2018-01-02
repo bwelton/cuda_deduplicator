@@ -24,6 +24,7 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 
 	_addrSpace = handle;
 	_launched = true;
+	_appProc = dynamic_cast<BPatch_process*>(_addrSpace);
 	return handle;
 }
 
@@ -32,7 +33,20 @@ BPatch * ProcessController::GetBPatch() {
 }
 
 void ProcessController::Run() {
+	_appProc->continueExecution();
 	bpatch.waitForStatusChange();
+}
+
+bool ProcessController::IsTerminated() {
+	return _appProc->isTerminated();
+}
+
+bool ProcessController::ContinueExecution() {
+	return _appProc->continueExecution();
+}
+
+bool ProcessController::IsStopped() {
+	return _appProc->isStopped();
 }
 
 void ProcessController::ReadDefinition(std::string WrapperDef) {

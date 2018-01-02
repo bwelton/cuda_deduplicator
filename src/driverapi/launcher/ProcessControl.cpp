@@ -39,14 +39,14 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 	// Insert Instrimentation Library into binary before launching.
 
 	bpatch.setInstrStackFrames(true);
-	BPatch_binaryEdit *app = bpatch.openBinary(app_binary, true);
+	BPatch_binaryEdit *app = bpatch.openBinary(progName[0].c_str(), true);
 	ReadDefinition(WrapperDef);
 	std::set<std::string> libs = WrapperLibraries();
 	for (auto i : libs) {
-		assert(app->loadLibrary(i.c_str()) == true);
+		assert(app->loadLibrary(i.c_str()) != NULL);
 	}
 	progName[0] = progName[0] + std::string("_withlibs");
-	if(!app->writeFile(progName[0])) {
+	if(!app->writeFile(progName[0].c_str())) {
 		std::cerr << "[PROCCTR] Could not write output binary" << std::endl;
 		exit(-1);
 	}

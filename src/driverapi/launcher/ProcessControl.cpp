@@ -163,6 +163,7 @@ std::set<std::string> ProcessController::WrapperLibraries() {
 }
 
 extern "C" void DYNINST_LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l) {
+	std::cerr << "[PROCCTR] In Load library callback" << std::endl;
 	curController->LibraryLoadCallback(thread, obj, l);
 }
 

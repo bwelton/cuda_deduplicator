@@ -9,10 +9,13 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
 
 	// Setup arguments
-	char ** argv = (char**)malloc(progName.size() * sizeof(char *));
+	char ** argv = (char**)malloc(progName.size() * sizeof(char *)+1);
 	for (int i = 0; i < progName.size(); i++) 
 		argv[i] = strdup(progName[i].c_str());
 
+	argv[progName.size()] = NULL;
+	for (int i = 0; i < progName.size(); i++)
+		std::cerr << "[PROCCTR] Launch Arguments - " << argv[i] << std::endl;
 	// Create the bpatch process
 	handle = bpatch.processCreate(argv[0],(const char **)argv);
 	assert(handle != NULL);

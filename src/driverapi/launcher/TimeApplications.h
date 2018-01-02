@@ -28,6 +28,7 @@ class TimeApplications {
 public:
 	TimeApplications(boost::program_options::variables_map vm);
 	double Run();
+	double InternalRun();
 	double RunWithInstrimentation(std::string wrapperDef);
 private:
 	boost::program_options::variables_map _vm;

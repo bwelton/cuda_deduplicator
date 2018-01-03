@@ -168,7 +168,7 @@ void ProcessController::InstrimentApplication() {
 		if (instLibSymbols.find(std::get<3>(i)) == instLibSymbols.end()) {
 			std::vector<Symbol *> tmp;
 			Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
-			symtab->getAllUndefinedSymbols(tmp);	
+			symtab->getAllSymbols(tmp);	
 			//symtab->getAllSymbolsByType(tmp, Dyninst::Symbol::ST_UNKNOWN);	
 			instLibSymbols[std::get<3>(i)] = tmp;
 		}

@@ -197,7 +197,7 @@ void ProcessController::InstrimentApplication() {
 				}
 				else 
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
-				break;
+				//break;
 			}
 		}
 		if (storedSymbol != NULL) {

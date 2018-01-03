@@ -40,12 +40,16 @@ int INTER_cuGetErrorName( CUresult error, const char * * pStr ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuInit
-int ORIGINAL_cuInit( unsigned int Flags ); //{ fprintf(stderr, "%s\n", "WE SHOULD NEVER BE HERE WHY?????";
+extern int ORIGINAL_cuInit( unsigned int Flags ); //{ fprintf(stderr, "%s\n", "WE SHOULD NEVER BE HERE WHY?????";
 
 // This is the call that will take the place of the original
 int INTER_cuInit( unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
+
+	fprintf(stderr, "Calling CUInit\n");
+	ORIGINAL_cuInit(flags);
+	fprintf(stderr, "Done CUInit\n");
 	std::vector<void **> params = { (void **)&Flags };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuInit, (void*) &ORIGINAL_cuInit, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);

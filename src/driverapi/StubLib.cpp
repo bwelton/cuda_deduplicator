@@ -4,7 +4,7 @@
 extern "C" {
 int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }
 int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }
-//int ORIGINAL_cuInit( unsigned int Flags ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }
+int ORIGINAL_cuInit( unsigned int Flags ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }
 int ORIGINAL_cuDriverGetVersion( int * driverVersion ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }
 int ORIGINAL_cuDeviceGet( CUdevice * device, int ordinal ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }
 int ORIGINAL_cuDeviceGetCount( int * count ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }

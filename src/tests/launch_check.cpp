@@ -13,7 +13,7 @@
 BOOST_AUTO_TEST_SUITE( launch_checker )
 BOOST_AUTO_TEST_CASE(checkinit) {
 	CheckInit();
-	CheckInit_DriverAPI();
+	//CheckInit_DriverAPI();
 }
 
 

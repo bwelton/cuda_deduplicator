@@ -152,7 +152,7 @@ void ProcessController::InstrimentApplication() {
 		BPatch_object * obj = i.second;
 		std::vector<Symbol *> tmp;
 		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
-		symt->getAllSymbols(tmp);
+		symt->getAllUndefinedSymbols(tmp);
 		instLibSymbols[i.first] = tmp;
 	}
 	for (auto i : _wrapFunctions) {
@@ -183,18 +183,25 @@ void ProcessController::InstrimentApplication() {
 		}
 
 		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
+		Symbol * storedSymbol = NULL;
+
 		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
 			if (print == true)
 				std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::get<4>(i)) {
+				std::cerr << "Symbol is a function " << sym->isFunction() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
+					storedSymbol = sym;
 				}
 				else 
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
-				//break;
+				break;
 			}
+		}
+		if (storedSymbol != NULL) {
+			std::cerr << "Symbol is a function " << storedSymbol->isFunction() << std::endl;
 		}
 		print = false;
 	}

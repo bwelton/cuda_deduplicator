@@ -250,26 +250,27 @@ void ProcessController::LibraryLoadCallback(BPatch_thread * thread, BPatch_objec
 	}
 }
 
-bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
-	curController = this;
-    ReadDefinition(WrapperDef);
-	//std::set<std::string> libsToLoad = WrapperLibraries();
-	// Run application until libcuda is loaded. 
-	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&DYNINST_LibraryLoadCallback);
-	return true;
-	//assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
-	// for (auto i : libsToLoad)
-	// 	LoadWrapperLibrary(i);
-	// InstrimentApplication();
-}
-
-
 // bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
-// 	// Force libcuda to be loaded
-// 	assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
+// 	curController = this;
 //     ReadDefinition(WrapperDef);
-// 	std::set<std::string> libsToLoad = WrapperLibraries();
-// 	for (auto i : libsToLoad)
-// 		LoadWrapperLibrary(i);
-// 	InstrimentApplication();
+// 	//std::set<std::string> libsToLoad = WrapperLibraries();
+// 	// Run application until libcuda is loaded. 
+// 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&DYNINST_LibraryLoadCallback);
+// 	return true;
+// 	//assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
+// 	// for (auto i : libsToLoad)
+// 	// 	LoadWrapperLibrary(i);
+// 	// InstrimentApplication();
 // }
+
+
+bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
+	// Force libcuda to be loaded
+	assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
+	assert(LoadWrapperLibrary(std::string("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/libStubLib.so")) != false);
+    ReadDefinition(WrapperDef);
+	std::set<std::string> libsToLoad = WrapperLibraries();
+	for (auto i : libsToLoad)
+		LoadWrapperLibrary(i);
+	InstrimentApplication();
+}

@@ -147,6 +147,14 @@ void ProcessController::InstrimentApplication() {
 	uint64_t wrapCount = 0;
 	uint64_t totalFunctions = 0;
 	bool print = true;
+
+	for (auto i : _loadedLibraries) {
+		BPatch_object * obj = i.second;
+		std::vector<Symbol *> tmp;
+		Dyninst::SymtabAPI * symt = Dyninst::SymtabAPI::convert(obj);
+		symtab->getAllUndefinedSymbols(tmp);
+		instLibSymbols[i.first] = tmp;
+	}
 	for (auto i : _wrapFunctions) {
 		totalFunctions += 1;
 		if (std::get<0>(i).find("wrap") == std::string::npos)
@@ -166,9 +174,10 @@ void ProcessController::InstrimentApplication() {
 		
 		// Find Hook Symbol	
 		if (instLibSymbols.find(std::get<3>(i)) == instLibSymbols.end()) {
+			assert(1 == 0);
 			std::vector<Symbol *> tmp;
 			Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
-			symtab->getAllUndefinedSymbols(tmp);	
+			//symtab->getAllUndefinedSymbols(tmp);	
 			//symtab->getAllSymbolsByType(tmp, Dyninst::Symbol::ST_UNKNOWN);	
 			instLibSymbols[std::get<3>(i)] = tmp;
 		}
@@ -194,9 +203,12 @@ void ProcessController::InstrimentApplication() {
 
 bool ProcessController::LoadWrapperLibrary(std::string libname) {
 	std::cerr << "[PROCCTR] Loading library " << libname << " into address space\n";
-	if(!_appProc->loadLibrary(libname.c_str())) {
+	BPatch_object * tmp;
+	tmp = _appProc->loadLibrary(libname.c_str());
+	if(tmp == NULL) {
 		return false;
 	}
+	_loadedLibraries[libname] = tmp;
 	return true;
 }	
 

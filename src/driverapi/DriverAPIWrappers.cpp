@@ -48,7 +48,7 @@ int INTER_cuInit( unsigned int Flags ) {
 	BUILD_FACTORY
 
 	fprintf(stderr, "Calling CUInit\n");
-	ORIGINAL_cuInit(flags);
+	ORIGINAL_cuInit(Flags);
 	fprintf(stderr, "Done CUInit\n");
 	std::vector<void **> params = { (void **)&Flags };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuInit, (void*) &ORIGINAL_cuInit, params));

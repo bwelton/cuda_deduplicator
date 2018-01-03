@@ -55,7 +55,7 @@ public:
 	bool LoadWrapperLibrary(std::string libname);
 	bool InsertInstrimentation(std::string WrapperDef);
 	void ReadDefinition(std::string WrapperDef);
-	void InstrimentApplication(BPatch_module * mod);
+	void InstrimentApplication();
 	std::set<std::string> WrapperLibraries();
 
 	bool IsTerminated();

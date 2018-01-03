@@ -183,7 +183,7 @@ void ProcessController::InstrimentApplication() {
 		}
 
 		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
-		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
+		for (Symbol * sym : instLibSymbols[std::string("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/libStubLib.so")]) {
 			if (print == true)
 				std::cerr << sym->getPrettyName() << std::endl;
 			if (sym->getPrettyName() == std::get<4>(i)) {

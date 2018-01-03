@@ -187,7 +187,7 @@ void ProcessController::InstrimentApplication() {
 			if (print == true)
 				std::cerr << sym->getPrettyName() << std::endl;
 			if (sym->getPrettyName() == std::get<4>(i)) {
-				if (_appProc->wrapFunction(orig[0], wrapfunc[0], sym) == true){
+				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
 				}

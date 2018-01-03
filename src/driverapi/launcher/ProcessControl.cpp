@@ -184,11 +184,16 @@ void ProcessController::InstrimentApplication() {
 
 		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
 		Symbol * storedSymbol = NULL;
-
+		bool firstPass = true;
 		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
 			if (print == true)
 				std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::get<4>(i)) {
+				if(firstPass){
+					firstPass = false;
+					continue;
+				}
+
 				std::cerr << "Symbol is a function " << sym->isFunction() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;

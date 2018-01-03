@@ -152,7 +152,7 @@ void ProcessController::InstrimentApplication() {
 		BPatch_object * obj = i.second;
 		std::vector<Symbol *> tmp;
 		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
-		symt->getAllUndefinedSymbols(tmp);
+		symt->getAllSymbols(tmp);
 		instLibSymbols[i.first] = tmp;
 	}
 	for (auto i : _wrapFunctions) {

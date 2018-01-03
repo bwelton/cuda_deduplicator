@@ -16,7 +16,7 @@ void CheckInit_DriverAPI() {
 	
 }
 // This "function" will be rewritten to point to cuGetErrorString
-int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr ) { }
+extern int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGetErrorString( CUresult error, const char * * pStr ) {
@@ -28,7 +28,7 @@ int INTER_cuGetErrorString( CUresult error, const char * * pStr ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuGetErrorName
-int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr ) { }
+extern int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGetErrorName( CUresult error, const char * * pStr ) {
@@ -40,7 +40,7 @@ int INTER_cuGetErrorName( CUresult error, const char * * pStr ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuInit
-extern int ORIGINAL_cuInit( unsigned int Flags ); //{ fprintf(stderr, "%s\n", "WE SHOULD NEVER BE HERE WHY?????");}
+extern int ORIGINAL_cuInit( unsigned int Flags ); //{ fprintf(stderr, "%s\n", "WE SHOULD NEVER BE HERE WHY?????";
 
 // This is the call that will take the place of the original
 int INTER_cuInit( unsigned int Flags ) {
@@ -52,7 +52,7 @@ int INTER_cuInit( unsigned int Flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDriverGetVersion
-int ORIGINAL_cuDriverGetVersion( int * driverVersion ) { }
+extern int ORIGINAL_cuDriverGetVersion( int * driverVersion ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDriverGetVersion( int * driverVersion ) {
@@ -64,7 +64,7 @@ int INTER_cuDriverGetVersion( int * driverVersion ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceGet
-int ORIGINAL_cuDeviceGet( CUdevice * device, int ordinal ) { }
+extern int ORIGINAL_cuDeviceGet( CUdevice * device, int ordinal ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGet( CUdevice * device, int ordinal ) {
@@ -76,7 +76,7 @@ int INTER_cuDeviceGet( CUdevice * device, int ordinal ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceGetCount
-int ORIGINAL_cuDeviceGetCount( int * count ) { }
+extern int ORIGINAL_cuDeviceGetCount( int * count ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetCount( int * count ) {
@@ -88,7 +88,7 @@ int INTER_cuDeviceGetCount( int * count ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceGetName
-int ORIGINAL_cuDeviceGetName( char * name, int len, CUdevice dev ) { }
+extern int ORIGINAL_cuDeviceGetName( char * name, int len, CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetName( char * name, int len, CUdevice dev ) {
@@ -100,7 +100,7 @@ int INTER_cuDeviceGetName( char * name, int len, CUdevice dev ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceTotalMem
-int ORIGINAL_cuDeviceTotalMem( size_t * bytes, CUdevice dev ) { }
+extern int ORIGINAL_cuDeviceTotalMem( size_t * bytes, CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceTotalMem( size_t * bytes, CUdevice dev ) {
@@ -112,7 +112,7 @@ int INTER_cuDeviceTotalMem( size_t * bytes, CUdevice dev ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceGetAttribute
-int ORIGINAL_cuDeviceGetAttribute( int * pi, CUdevice_attribute attrib, CUdevice dev ) { }
+extern int ORIGINAL_cuDeviceGetAttribute( int * pi, CUdevice_attribute attrib, CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetAttribute( int * pi, CUdevice_attribute attrib, CUdevice dev ) {
@@ -124,7 +124,7 @@ int INTER_cuDeviceGetAttribute( int * pi, CUdevice_attribute attrib, CUdevice de
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceGetProperties
-int ORIGINAL_cuDeviceGetProperties( CUdevprop * prop, CUdevice dev ) { }
+extern int ORIGINAL_cuDeviceGetProperties( CUdevprop * prop, CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetProperties( CUdevprop * prop, CUdevice dev ) {
@@ -136,7 +136,7 @@ int INTER_cuDeviceGetProperties( CUdevprop * prop, CUdevice dev ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceComputeCapability
-int ORIGINAL_cuDeviceComputeCapability( int * major, int * minor, CUdevice dev ) { }
+extern int ORIGINAL_cuDeviceComputeCapability( int * major, int * minor, CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceComputeCapability( int * major, int * minor, CUdevice dev ) {
@@ -148,7 +148,7 @@ int INTER_cuDeviceComputeCapability( int * major, int * minor, CUdevice dev ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDevicePrimaryCtxRetain
-int ORIGINAL_cuDevicePrimaryCtxRetain( CUcontext * pctx, CUdevice dev ) { }
+extern int ORIGINAL_cuDevicePrimaryCtxRetain( CUcontext * pctx, CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxRetain( CUcontext * pctx, CUdevice dev ) {
@@ -160,7 +160,7 @@ int INTER_cuDevicePrimaryCtxRetain( CUcontext * pctx, CUdevice dev ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDevicePrimaryCtxRelease
-int ORIGINAL_cuDevicePrimaryCtxRelease( CUdevice dev ) { }
+extern int ORIGINAL_cuDevicePrimaryCtxRelease( CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxRelease( CUdevice dev ) {
@@ -172,7 +172,7 @@ int INTER_cuDevicePrimaryCtxRelease( CUdevice dev ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDevicePrimaryCtxSetFlags
-int ORIGINAL_cuDevicePrimaryCtxSetFlags( CUdevice dev, unsigned int flags ) { }
+extern int ORIGINAL_cuDevicePrimaryCtxSetFlags( CUdevice dev, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxSetFlags( CUdevice dev, unsigned int flags ) {
@@ -184,7 +184,7 @@ int INTER_cuDevicePrimaryCtxSetFlags( CUdevice dev, unsigned int flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDevicePrimaryCtxGetState
-int ORIGINAL_cuDevicePrimaryCtxGetState( CUdevice dev, unsigned int * flags, int * active ) { }
+extern int ORIGINAL_cuDevicePrimaryCtxGetState( CUdevice dev, unsigned int * flags, int * active ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxGetState( CUdevice dev, unsigned int * flags, int * active ) {
@@ -196,7 +196,7 @@ int INTER_cuDevicePrimaryCtxGetState( CUdevice dev, unsigned int * flags, int * 
 	return ret;
 }
 // This "function" will be rewritten to point to cuDevicePrimaryCtxReset
-int ORIGINAL_cuDevicePrimaryCtxReset( CUdevice dev ) { }
+extern int ORIGINAL_cuDevicePrimaryCtxReset( CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDevicePrimaryCtxReset( CUdevice dev ) {
@@ -208,7 +208,7 @@ int INTER_cuDevicePrimaryCtxReset( CUdevice dev ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxCreate
-int ORIGINAL_cuCtxCreate( CUcontext * pctx, unsigned int flags, CUdevice dev ) { }
+extern int ORIGINAL_cuCtxCreate( CUcontext * pctx, unsigned int flags, CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxCreate( CUcontext * pctx, unsigned int flags, CUdevice dev ) {
@@ -220,7 +220,7 @@ int INTER_cuCtxCreate( CUcontext * pctx, unsigned int flags, CUdevice dev ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxDestroy
-int ORIGINAL_cuCtxDestroy( CUcontext ctx ) { }
+extern int ORIGINAL_cuCtxDestroy( CUcontext ctx ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxDestroy( CUcontext ctx ) {
@@ -232,7 +232,7 @@ int INTER_cuCtxDestroy( CUcontext ctx ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxPushCurrent
-int ORIGINAL_cuCtxPushCurrent( CUcontext ctx ) { }
+extern int ORIGINAL_cuCtxPushCurrent( CUcontext ctx ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxPushCurrent( CUcontext ctx ) {
@@ -244,7 +244,7 @@ int INTER_cuCtxPushCurrent( CUcontext ctx ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxPopCurrent
-int ORIGINAL_cuCtxPopCurrent( CUcontext * pctx ) { }
+extern int ORIGINAL_cuCtxPopCurrent( CUcontext * pctx ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxPopCurrent( CUcontext * pctx ) {
@@ -256,7 +256,7 @@ int INTER_cuCtxPopCurrent( CUcontext * pctx ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxSetCurrent
-int ORIGINAL_cuCtxSetCurrent( CUcontext ctx ) { }
+extern int ORIGINAL_cuCtxSetCurrent( CUcontext ctx ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSetCurrent( CUcontext ctx ) {
@@ -268,7 +268,7 @@ int INTER_cuCtxSetCurrent( CUcontext ctx ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxGetCurrent
-int ORIGINAL_cuCtxGetCurrent( CUcontext * pctx ) { }
+extern int ORIGINAL_cuCtxGetCurrent( CUcontext * pctx ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetCurrent( CUcontext * pctx ) {
@@ -280,7 +280,7 @@ int INTER_cuCtxGetCurrent( CUcontext * pctx ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxGetDevice
-int ORIGINAL_cuCtxGetDevice( CUdevice * device ) { }
+extern int ORIGINAL_cuCtxGetDevice( CUdevice * device ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetDevice( CUdevice * device ) {
@@ -292,7 +292,7 @@ int INTER_cuCtxGetDevice( CUdevice * device ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxGetFlags
-int ORIGINAL_cuCtxGetFlags( unsigned int * flags ) { }
+extern int ORIGINAL_cuCtxGetFlags( unsigned int * flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetFlags( unsigned int * flags ) {
@@ -304,7 +304,7 @@ int INTER_cuCtxGetFlags( unsigned int * flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxSynchronize
-int ORIGINAL_cuCtxSynchronize( void  ) { }
+extern int ORIGINAL_cuCtxSynchronize( void  ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSynchronize( void  ) {
@@ -316,7 +316,7 @@ int INTER_cuCtxSynchronize( void  ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxSetLimit
-int ORIGINAL_cuCtxSetLimit( CUlimit limit, size_t value ) { }
+extern int ORIGINAL_cuCtxSetLimit( CUlimit limit, size_t value ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSetLimit( CUlimit limit, size_t value ) {
@@ -328,7 +328,7 @@ int INTER_cuCtxSetLimit( CUlimit limit, size_t value ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxGetLimit
-int ORIGINAL_cuCtxGetLimit( size_t * pvalue, CUlimit limit ) { }
+extern int ORIGINAL_cuCtxGetLimit( size_t * pvalue, CUlimit limit ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetLimit( size_t * pvalue, CUlimit limit ) {
@@ -340,7 +340,7 @@ int INTER_cuCtxGetLimit( size_t * pvalue, CUlimit limit ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxGetCacheConfig
-int ORIGINAL_cuCtxGetCacheConfig( CUfunc_cache * pconfig ) { }
+extern int ORIGINAL_cuCtxGetCacheConfig( CUfunc_cache * pconfig ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetCacheConfig( CUfunc_cache * pconfig ) {
@@ -352,7 +352,7 @@ int INTER_cuCtxGetCacheConfig( CUfunc_cache * pconfig ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxSetCacheConfig
-int ORIGINAL_cuCtxSetCacheConfig( CUfunc_cache config ) { }
+extern int ORIGINAL_cuCtxSetCacheConfig( CUfunc_cache config ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSetCacheConfig( CUfunc_cache config ) {
@@ -364,7 +364,7 @@ int INTER_cuCtxSetCacheConfig( CUfunc_cache config ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxGetSharedMemConfig
-int ORIGINAL_cuCtxGetSharedMemConfig( CUsharedconfig * pConfig ) { }
+extern int ORIGINAL_cuCtxGetSharedMemConfig( CUsharedconfig * pConfig ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetSharedMemConfig( CUsharedconfig * pConfig ) {
@@ -376,7 +376,7 @@ int INTER_cuCtxGetSharedMemConfig( CUsharedconfig * pConfig ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxSetSharedMemConfig
-int ORIGINAL_cuCtxSetSharedMemConfig( CUsharedconfig config ) { }
+extern int ORIGINAL_cuCtxSetSharedMemConfig( CUsharedconfig config ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxSetSharedMemConfig( CUsharedconfig config ) {
@@ -388,7 +388,7 @@ int INTER_cuCtxSetSharedMemConfig( CUsharedconfig config ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxGetApiVersion
-int ORIGINAL_cuCtxGetApiVersion( CUcontext ctx, unsigned int * version ) { }
+extern int ORIGINAL_cuCtxGetApiVersion( CUcontext ctx, unsigned int * version ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetApiVersion( CUcontext ctx, unsigned int * version ) {
@@ -400,7 +400,7 @@ int INTER_cuCtxGetApiVersion( CUcontext ctx, unsigned int * version ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxGetStreamPriorityRange
-int ORIGINAL_cuCtxGetStreamPriorityRange( int * leastPriority, int * greatestPriority ) { }
+extern int ORIGINAL_cuCtxGetStreamPriorityRange( int * leastPriority, int * greatestPriority ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxGetStreamPriorityRange( int * leastPriority, int * greatestPriority ) {
@@ -412,7 +412,7 @@ int INTER_cuCtxGetStreamPriorityRange( int * leastPriority, int * greatestPriori
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxAttach
-int ORIGINAL_cuCtxAttach( CUcontext * pctx, unsigned int flags ) { }
+extern int ORIGINAL_cuCtxAttach( CUcontext * pctx, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxAttach( CUcontext * pctx, unsigned int flags ) {
@@ -424,7 +424,7 @@ int INTER_cuCtxAttach( CUcontext * pctx, unsigned int flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxDetach
-int ORIGINAL_cuCtxDetach( CUcontext ctx ) { }
+extern int ORIGINAL_cuCtxDetach( CUcontext ctx ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxDetach( CUcontext ctx ) {
@@ -436,7 +436,7 @@ int INTER_cuCtxDetach( CUcontext ctx ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuModuleLoad
-int ORIGINAL_cuModuleLoad( CUmodule * module, const char * fname ) { }
+extern int ORIGINAL_cuModuleLoad( CUmodule * module, const char * fname ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuModuleLoad( CUmodule * module, const char * fname ) {
@@ -448,7 +448,7 @@ int INTER_cuModuleLoad( CUmodule * module, const char * fname ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuModuleLoadData
-int ORIGINAL_cuModuleLoadData( CUmodule * module, const void * image ) { }
+extern int ORIGINAL_cuModuleLoadData( CUmodule * module, const void * image ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuModuleLoadData( CUmodule * module, const void * image ) {
@@ -460,7 +460,7 @@ int INTER_cuModuleLoadData( CUmodule * module, const void * image ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuModuleLoadDataEx
-int ORIGINAL_cuModuleLoadDataEx( CUmodule * module, const void * image, unsigned int numOptions, CUjit_option * options, void * * optionValues ) { }
+extern int ORIGINAL_cuModuleLoadDataEx( CUmodule * module, const void * image, unsigned int numOptions, CUjit_option * options, void * * optionValues ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuModuleLoadDataEx( CUmodule * module, const void * image, unsigned int numOptions, CUjit_option * options, void * * optionValues ) {
@@ -472,7 +472,7 @@ int INTER_cuModuleLoadDataEx( CUmodule * module, const void * image, unsigned in
 	return ret;
 }
 // This "function" will be rewritten to point to cuModuleLoadFatBinary
-int ORIGINAL_cuModuleLoadFatBinary( CUmodule * module, const void * fatCubin ) { }
+extern int ORIGINAL_cuModuleLoadFatBinary( CUmodule * module, const void * fatCubin ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuModuleLoadFatBinary( CUmodule * module, const void * fatCubin ) {
@@ -484,7 +484,7 @@ int INTER_cuModuleLoadFatBinary( CUmodule * module, const void * fatCubin ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuModuleUnload
-int ORIGINAL_cuModuleUnload( CUmodule hmod ) { }
+extern int ORIGINAL_cuModuleUnload( CUmodule hmod ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuModuleUnload( CUmodule hmod ) {
@@ -496,7 +496,7 @@ int INTER_cuModuleUnload( CUmodule hmod ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuModuleGetFunction
-int ORIGINAL_cuModuleGetFunction( CUfunction * hfunc, CUmodule hmod, const char * name ) { }
+extern int ORIGINAL_cuModuleGetFunction( CUfunction * hfunc, CUmodule hmod, const char * name ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuModuleGetFunction( CUfunction * hfunc, CUmodule hmod, const char * name ) {
@@ -508,7 +508,7 @@ int INTER_cuModuleGetFunction( CUfunction * hfunc, CUmodule hmod, const char * n
 	return ret;
 }
 // This "function" will be rewritten to point to cuModuleGetGlobal
-int ORIGINAL_cuModuleGetGlobal( CUdeviceptr * dptr, size_t * bytes, CUmodule hmod, const char * name ) { }
+extern int ORIGINAL_cuModuleGetGlobal( CUdeviceptr * dptr, size_t * bytes, CUmodule hmod, const char * name ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuModuleGetGlobal( CUdeviceptr * dptr, size_t * bytes, CUmodule hmod, const char * name ) {
@@ -520,7 +520,7 @@ int INTER_cuModuleGetGlobal( CUdeviceptr * dptr, size_t * bytes, CUmodule hmod, 
 	return ret;
 }
 // This "function" will be rewritten to point to cuModuleGetTexRef
-int ORIGINAL_cuModuleGetTexRef( CUtexref * pTexRef, CUmodule hmod, const char * name ) { }
+extern int ORIGINAL_cuModuleGetTexRef( CUtexref * pTexRef, CUmodule hmod, const char * name ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuModuleGetTexRef( CUtexref * pTexRef, CUmodule hmod, const char * name ) {
@@ -532,7 +532,7 @@ int INTER_cuModuleGetTexRef( CUtexref * pTexRef, CUmodule hmod, const char * nam
 	return ret;
 }
 // This "function" will be rewritten to point to cuModuleGetSurfRef
-int ORIGINAL_cuModuleGetSurfRef( CUsurfref * pSurfRef, CUmodule hmod, const char * name ) { }
+extern int ORIGINAL_cuModuleGetSurfRef( CUsurfref * pSurfRef, CUmodule hmod, const char * name ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuModuleGetSurfRef( CUsurfref * pSurfRef, CUmodule hmod, const char * name ) {
@@ -544,7 +544,7 @@ int INTER_cuModuleGetSurfRef( CUsurfref * pSurfRef, CUmodule hmod, const char * 
 	return ret;
 }
 // This "function" will be rewritten to point to cuLinkCreate
-int ORIGINAL_cuLinkCreate( unsigned int numOptions, CUjit_option * options, void * * optionValues, CUlinkState * stateOut ) { }
+extern int ORIGINAL_cuLinkCreate( unsigned int numOptions, CUjit_option * options, void * * optionValues, CUlinkState * stateOut ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuLinkCreate( unsigned int numOptions, CUjit_option * options, void * * optionValues, CUlinkState * stateOut ) {
@@ -556,7 +556,7 @@ int INTER_cuLinkCreate( unsigned int numOptions, CUjit_option * options, void * 
 	return ret;
 }
 // This "function" will be rewritten to point to cuLinkAddData
-int ORIGINAL_cuLinkAddData( CUlinkState state, CUjitInputType type, void * data, size_t size, const char * name, unsigned int numOptions, CUjit_option * options, void * * optionValues ) { }
+extern int ORIGINAL_cuLinkAddData( CUlinkState state, CUjitInputType type, void * data, size_t size, const char * name, unsigned int numOptions, CUjit_option * options, void * * optionValues ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuLinkAddData( CUlinkState state, CUjitInputType type, void * data, size_t size, const char * name, unsigned int numOptions, CUjit_option * options, void * * optionValues ) {
@@ -568,7 +568,7 @@ int INTER_cuLinkAddData( CUlinkState state, CUjitInputType type, void * data, si
 	return ret;
 }
 // This "function" will be rewritten to point to cuLinkAddFile
-int ORIGINAL_cuLinkAddFile( CUlinkState state, CUjitInputType type, const char * path, unsigned int numOptions, CUjit_option * options, void * * optionValues ) { }
+extern int ORIGINAL_cuLinkAddFile( CUlinkState state, CUjitInputType type, const char * path, unsigned int numOptions, CUjit_option * options, void * * optionValues ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuLinkAddFile( CUlinkState state, CUjitInputType type, const char * path, unsigned int numOptions, CUjit_option * options, void * * optionValues ) {
@@ -580,7 +580,7 @@ int INTER_cuLinkAddFile( CUlinkState state, CUjitInputType type, const char * pa
 	return ret;
 }
 // This "function" will be rewritten to point to cuLinkComplete
-int ORIGINAL_cuLinkComplete( CUlinkState state, void * * cubinOut, size_t * sizeOut ) { }
+extern int ORIGINAL_cuLinkComplete( CUlinkState state, void * * cubinOut, size_t * sizeOut ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuLinkComplete( CUlinkState state, void * * cubinOut, size_t * sizeOut ) {
@@ -592,7 +592,7 @@ int INTER_cuLinkComplete( CUlinkState state, void * * cubinOut, size_t * sizeOut
 	return ret;
 }
 // This "function" will be rewritten to point to cuLinkDestroy
-int ORIGINAL_cuLinkDestroy( CUlinkState state ) { }
+extern int ORIGINAL_cuLinkDestroy( CUlinkState state ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuLinkDestroy( CUlinkState state ) {
@@ -604,7 +604,7 @@ int INTER_cuLinkDestroy( CUlinkState state ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemGetInfo
-int ORIGINAL_cuMemGetInfo( size_t * free, size_t * total ) { }
+extern int ORIGINAL_cuMemGetInfo( size_t * free, size_t * total ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemGetInfo( size_t * free, size_t * total ) {
@@ -616,7 +616,7 @@ int INTER_cuMemGetInfo( size_t * free, size_t * total ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemAlloc
-int ORIGINAL_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) { }
+extern int ORIGINAL_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) {
@@ -629,7 +629,7 @@ int INTER_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemAllocPitch
-int ORIGINAL_cuMemAllocPitch( CUdeviceptr * dptr, size_t * pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes ) { }
+extern int ORIGINAL_cuMemAllocPitch( CUdeviceptr * dptr, size_t * pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemAllocPitch( CUdeviceptr * dptr, size_t * pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes ) {
@@ -641,7 +641,7 @@ int INTER_cuMemAllocPitch( CUdeviceptr * dptr, size_t * pPitch, size_t WidthInBy
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemFree
-int ORIGINAL_cuMemFree( CUdeviceptr dptr ) { }
+extern int ORIGINAL_cuMemFree( CUdeviceptr dptr ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemFree( CUdeviceptr dptr ) {
@@ -653,7 +653,7 @@ int INTER_cuMemFree( CUdeviceptr dptr ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemGetAddressRange
-int ORIGINAL_cuMemGetAddressRange( CUdeviceptr * pbase, size_t * psize, CUdeviceptr dptr ) { }
+extern int ORIGINAL_cuMemGetAddressRange( CUdeviceptr * pbase, size_t * psize, CUdeviceptr dptr ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemGetAddressRange( CUdeviceptr * pbase, size_t * psize, CUdeviceptr dptr ) {
@@ -665,7 +665,7 @@ int INTER_cuMemGetAddressRange( CUdeviceptr * pbase, size_t * psize, CUdeviceptr
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemAllocHost
-int ORIGINAL_cuMemAllocHost( void * * pp, size_t bytesize ) { }
+extern int ORIGINAL_cuMemAllocHost( void * * pp, size_t bytesize ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemAllocHost( void * * pp, size_t bytesize ) {
@@ -677,7 +677,7 @@ int INTER_cuMemAllocHost( void * * pp, size_t bytesize ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemFreeHost
-int ORIGINAL_cuMemFreeHost( void * p ) { }
+extern int ORIGINAL_cuMemFreeHost( void * p ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemFreeHost( void * p ) {
@@ -689,7 +689,7 @@ int INTER_cuMemFreeHost( void * p ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemHostAlloc
-int ORIGINAL_cuMemHostAlloc( void * * pp, size_t bytesize, unsigned int Flags ) { }
+extern int ORIGINAL_cuMemHostAlloc( void * * pp, size_t bytesize, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostAlloc( void * * pp, size_t bytesize, unsigned int Flags ) {
@@ -701,7 +701,7 @@ int INTER_cuMemHostAlloc( void * * pp, size_t bytesize, unsigned int Flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemHostGetDevicePointer
-int ORIGINAL_cuMemHostGetDevicePointer( CUdeviceptr * pdptr, void * p, unsigned int Flags ) { }
+extern int ORIGINAL_cuMemHostGetDevicePointer( CUdeviceptr * pdptr, void * p, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostGetDevicePointer( CUdeviceptr * pdptr, void * p, unsigned int Flags ) {
@@ -713,7 +713,7 @@ int INTER_cuMemHostGetDevicePointer( CUdeviceptr * pdptr, void * p, unsigned int
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemHostGetFlags
-int ORIGINAL_cuMemHostGetFlags( unsigned int * pFlags, void * p ) { }
+extern int ORIGINAL_cuMemHostGetFlags( unsigned int * pFlags, void * p ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostGetFlags( unsigned int * pFlags, void * p ) {
@@ -725,7 +725,7 @@ int INTER_cuMemHostGetFlags( unsigned int * pFlags, void * p ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemAllocManaged
-int ORIGINAL_cuMemAllocManaged( CUdeviceptr * dptr, size_t bytesize, unsigned int flags ) { }
+extern int ORIGINAL_cuMemAllocManaged( CUdeviceptr * dptr, size_t bytesize, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemAllocManaged( CUdeviceptr * dptr, size_t bytesize, unsigned int flags ) {
@@ -737,7 +737,7 @@ int INTER_cuMemAllocManaged( CUdeviceptr * dptr, size_t bytesize, unsigned int f
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceGetByPCIBusId
-int ORIGINAL_cuDeviceGetByPCIBusId( CUdevice * dev, const char * pciBusId ) { }
+extern int ORIGINAL_cuDeviceGetByPCIBusId( CUdevice * dev, const char * pciBusId ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetByPCIBusId( CUdevice * dev, const char * pciBusId ) {
@@ -749,7 +749,7 @@ int INTER_cuDeviceGetByPCIBusId( CUdevice * dev, const char * pciBusId ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceGetPCIBusId
-int ORIGINAL_cuDeviceGetPCIBusId( char * pciBusId, int len, CUdevice dev ) { }
+extern int ORIGINAL_cuDeviceGetPCIBusId( char * pciBusId, int len, CUdevice dev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetPCIBusId( char * pciBusId, int len, CUdevice dev ) {
@@ -761,7 +761,7 @@ int INTER_cuDeviceGetPCIBusId( char * pciBusId, int len, CUdevice dev ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuIpcGetEventHandle
-int ORIGINAL_cuIpcGetEventHandle( CUipcEventHandle * pHandle, CUevent event ) { }
+extern int ORIGINAL_cuIpcGetEventHandle( CUipcEventHandle * pHandle, CUevent event ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuIpcGetEventHandle( CUipcEventHandle * pHandle, CUevent event ) {
@@ -773,7 +773,7 @@ int INTER_cuIpcGetEventHandle( CUipcEventHandle * pHandle, CUevent event ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuIpcOpenEventHandle
-int ORIGINAL_cuIpcOpenEventHandle( CUevent * phEvent, CUipcEventHandle handle ) { }
+extern int ORIGINAL_cuIpcOpenEventHandle( CUevent * phEvent, CUipcEventHandle handle ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuIpcOpenEventHandle( CUevent * phEvent, CUipcEventHandle handle ) {
@@ -785,7 +785,7 @@ int INTER_cuIpcOpenEventHandle( CUevent * phEvent, CUipcEventHandle handle ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuIpcGetMemHandle
-int ORIGINAL_cuIpcGetMemHandle( CUipcMemHandle * pHandle, CUdeviceptr dptr ) { }
+extern int ORIGINAL_cuIpcGetMemHandle( CUipcMemHandle * pHandle, CUdeviceptr dptr ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuIpcGetMemHandle( CUipcMemHandle * pHandle, CUdeviceptr dptr ) {
@@ -797,7 +797,7 @@ int INTER_cuIpcGetMemHandle( CUipcMemHandle * pHandle, CUdeviceptr dptr ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuIpcOpenMemHandle
-int ORIGINAL_cuIpcOpenMemHandle( CUdeviceptr * pdptr, CUipcMemHandle handle, unsigned int Flags ) { }
+extern int ORIGINAL_cuIpcOpenMemHandle( CUdeviceptr * pdptr, CUipcMemHandle handle, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuIpcOpenMemHandle( CUdeviceptr * pdptr, CUipcMemHandle handle, unsigned int Flags ) {
@@ -809,7 +809,7 @@ int INTER_cuIpcOpenMemHandle( CUdeviceptr * pdptr, CUipcMemHandle handle, unsign
 	return ret;
 }
 // This "function" will be rewritten to point to cuIpcCloseMemHandle
-int ORIGINAL_cuIpcCloseMemHandle( CUdeviceptr dptr ) { }
+extern int ORIGINAL_cuIpcCloseMemHandle( CUdeviceptr dptr ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuIpcCloseMemHandle( CUdeviceptr dptr ) {
@@ -821,7 +821,7 @@ int INTER_cuIpcCloseMemHandle( CUdeviceptr dptr ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemHostRegister
-int ORIGINAL_cuMemHostRegister( void * p, size_t bytesize, unsigned int Flags ) { }
+extern int ORIGINAL_cuMemHostRegister( void * p, size_t bytesize, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostRegister( void * p, size_t bytesize, unsigned int Flags ) {
@@ -833,7 +833,7 @@ int INTER_cuMemHostRegister( void * p, size_t bytesize, unsigned int Flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemHostUnregister
-int ORIGINAL_cuMemHostUnregister( void * p ) { }
+extern int ORIGINAL_cuMemHostUnregister( void * p ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemHostUnregister( void * p ) {
@@ -845,7 +845,7 @@ int INTER_cuMemHostUnregister( void * p ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy
-int ORIGINAL_cuMemcpy( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpy( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount ) {
@@ -857,7 +857,7 @@ int INTER_cuMemcpy( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyPeer
-int ORIGINAL_cuMemcpyPeer( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyPeer( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyPeer( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount ) {
@@ -869,7 +869,7 @@ int INTER_cuMemcpyPeer( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyHtoD
-int ORIGINAL_cuMemcpyHtoD( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyHtoD( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoD( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) {
@@ -881,7 +881,7 @@ int INTER_cuMemcpyHtoD( CUdeviceptr dstDevice, const void * srcHost, size_t Byte
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoH
-int ORIGINAL_cuMemcpyDtoH( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyDtoH( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoH( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) {
@@ -893,7 +893,7 @@ int INTER_cuMemcpyDtoH( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount 
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoD
-int ORIGINAL_cuMemcpyDtoD( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyDtoD( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoD( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) {
@@ -905,7 +905,7 @@ int INTER_cuMemcpyDtoD( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t Byt
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoA
-int ORIGINAL_cuMemcpyDtoA( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyDtoA( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoA( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) {
@@ -917,7 +917,7 @@ int INTER_cuMemcpyDtoA( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevic
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyAtoD
-int ORIGINAL_cuMemcpyAtoD( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyAtoD( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoD( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
@@ -929,7 +929,7 @@ int INTER_cuMemcpyAtoD( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffse
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyHtoA
-int ORIGINAL_cuMemcpyHtoA( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyHtoA( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoA( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) {
@@ -941,7 +941,7 @@ int INTER_cuMemcpyHtoA( CUarray dstArray, size_t dstOffset, const void * srcHost
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyAtoH
-int ORIGINAL_cuMemcpyAtoH( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyAtoH( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoH( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
@@ -953,7 +953,7 @@ int INTER_cuMemcpyAtoH( void * dstHost, CUarray srcArray, size_t srcOffset, size
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyAtoA
-int ORIGINAL_cuMemcpyAtoA( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyAtoA( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoA( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
@@ -965,7 +965,7 @@ int INTER_cuMemcpyAtoA( CUarray dstArray, size_t dstOffset, CUarray srcArray, si
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy2D
-int ORIGINAL_cuMemcpy2D( const CUDA_MEMCPY2D * pCopy ) { }
+extern int ORIGINAL_cuMemcpy2D( const CUDA_MEMCPY2D * pCopy ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2D( const CUDA_MEMCPY2D * pCopy ) {
@@ -977,7 +977,7 @@ int INTER_cuMemcpy2D( const CUDA_MEMCPY2D * pCopy ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy2DUnaligned
-int ORIGINAL_cuMemcpy2DUnaligned( const CUDA_MEMCPY2D * pCopy ) { }
+extern int ORIGINAL_cuMemcpy2DUnaligned( const CUDA_MEMCPY2D * pCopy ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2DUnaligned( const CUDA_MEMCPY2D * pCopy ) {
@@ -989,7 +989,7 @@ int INTER_cuMemcpy2DUnaligned( const CUDA_MEMCPY2D * pCopy ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy3D
-int ORIGINAL_cuMemcpy3D( const CUDA_MEMCPY3D * pCopy ) { }
+extern int ORIGINAL_cuMemcpy3D( const CUDA_MEMCPY3D * pCopy ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3D( const CUDA_MEMCPY3D * pCopy ) {
@@ -1001,7 +1001,7 @@ int INTER_cuMemcpy3D( const CUDA_MEMCPY3D * pCopy ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy3DPeer
-int ORIGINAL_cuMemcpy3DPeer( const CUDA_MEMCPY3D_PEER * pCopy ) { }
+extern int ORIGINAL_cuMemcpy3DPeer( const CUDA_MEMCPY3D_PEER * pCopy ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3DPeer( const CUDA_MEMCPY3D_PEER * pCopy ) {
@@ -1013,7 +1013,7 @@ int INTER_cuMemcpy3DPeer( const CUDA_MEMCPY3D_PEER * pCopy ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyAsync
-int ORIGINAL_cuMemcpyAsync( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyAsync( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAsync( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUstream hStream ) {
@@ -1025,7 +1025,7 @@ int INTER_cuMemcpyAsync( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUs
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyPeerAsync
-int ORIGINAL_cuMemcpyPeerAsync( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyPeerAsync( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyPeerAsync( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount, CUstream hStream ) {
@@ -1037,7 +1037,7 @@ int INTER_cuMemcpyPeerAsync( CUdeviceptr dstDevice, CUcontext dstContext, CUdevi
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyHtoDAsync
-int ORIGINAL_cuMemcpyHtoDAsync( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyHtoDAsync( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoDAsync( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) {
@@ -1049,7 +1049,7 @@ int INTER_cuMemcpyHtoDAsync( CUdeviceptr dstDevice, const void * srcHost, size_t
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoHAsync
-int ORIGINAL_cuMemcpyDtoHAsync( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyDtoHAsync( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoHAsync( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
@@ -1061,7 +1061,7 @@ int INTER_cuMemcpyDtoHAsync( void * dstHost, CUdeviceptr srcDevice, size_t ByteC
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoDAsync
-int ORIGINAL_cuMemcpyDtoDAsync( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyDtoDAsync( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoDAsync( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
@@ -1073,7 +1073,7 @@ int INTER_cuMemcpyDtoDAsync( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyHtoAAsync
-int ORIGINAL_cuMemcpyHtoAAsync( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyHtoAAsync( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoAAsync( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) {
@@ -1085,7 +1085,7 @@ int INTER_cuMemcpyHtoAAsync( CUarray dstArray, size_t dstOffset, const void * sr
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyAtoHAsync
-int ORIGINAL_cuMemcpyAtoHAsync( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyAtoHAsync( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoHAsync( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) {
@@ -1097,7 +1097,7 @@ int INTER_cuMemcpyAtoHAsync( void * dstHost, CUarray srcArray, size_t srcOffset,
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy2DAsync
-int ORIGINAL_cuMemcpy2DAsync( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpy2DAsync( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2DAsync( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
@@ -1109,7 +1109,7 @@ int INTER_cuMemcpy2DAsync( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy3DAsync
-int ORIGINAL_cuMemcpy3DAsync( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpy3DAsync( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3DAsync( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
@@ -1121,7 +1121,7 @@ int INTER_cuMemcpy3DAsync( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy3DPeerAsync
-int ORIGINAL_cuMemcpy3DPeerAsync( const CUDA_MEMCPY3D_PEER * pCopy, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpy3DPeerAsync( const CUDA_MEMCPY3D_PEER * pCopy, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3DPeerAsync( const CUDA_MEMCPY3D_PEER * pCopy, CUstream hStream ) {
@@ -1133,7 +1133,7 @@ int INTER_cuMemcpy3DPeerAsync( const CUDA_MEMCPY3D_PEER * pCopy, CUstream hStrea
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD8
-int ORIGINAL_cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, size_t N ) { }
+extern int ORIGINAL_cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, size_t N ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
@@ -1145,7 +1145,7 @@ int INTER_cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD16
-int ORIGINAL_cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, size_t N ) { }
+extern int ORIGINAL_cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, size_t N ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
@@ -1157,7 +1157,7 @@ int INTER_cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD32
-int ORIGINAL_cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, size_t N ) { }
+extern int ORIGINAL_cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, size_t N ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
@@ -1169,7 +1169,7 @@ int INTER_cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD2D8
-int ORIGINAL_cuMemsetD2D8( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) { }
+extern int ORIGINAL_cuMemsetD2D8( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D8( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) {
@@ -1181,7 +1181,7 @@ int INTER_cuMemsetD2D8( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD2D16
-int ORIGINAL_cuMemsetD2D16( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) { }
+extern int ORIGINAL_cuMemsetD2D16( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D16( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) {
@@ -1193,7 +1193,7 @@ int INTER_cuMemsetD2D16( CUdeviceptr dstDevice, size_t dstPitch, unsigned short 
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD2D32
-int ORIGINAL_cuMemsetD2D32( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) { }
+extern int ORIGINAL_cuMemsetD2D32( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D32( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) {
@@ -1205,7 +1205,7 @@ int INTER_cuMemsetD2D32( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD8Async
-int ORIGINAL_cuMemsetD8Async( CUdeviceptr dstDevice, unsigned char uc, size_t N, CUstream hStream ) { }
+extern int ORIGINAL_cuMemsetD8Async( CUdeviceptr dstDevice, unsigned char uc, size_t N, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD8Async( CUdeviceptr dstDevice, unsigned char uc, size_t N, CUstream hStream ) {
@@ -1217,7 +1217,7 @@ int INTER_cuMemsetD8Async( CUdeviceptr dstDevice, unsigned char uc, size_t N, CU
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD16Async
-int ORIGINAL_cuMemsetD16Async( CUdeviceptr dstDevice, unsigned short us, size_t N, CUstream hStream ) { }
+extern int ORIGINAL_cuMemsetD16Async( CUdeviceptr dstDevice, unsigned short us, size_t N, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD16Async( CUdeviceptr dstDevice, unsigned short us, size_t N, CUstream hStream ) {
@@ -1229,7 +1229,7 @@ int INTER_cuMemsetD16Async( CUdeviceptr dstDevice, unsigned short us, size_t N, 
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD32Async
-int ORIGINAL_cuMemsetD32Async( CUdeviceptr dstDevice, unsigned int ui, size_t N, CUstream hStream ) { }
+extern int ORIGINAL_cuMemsetD32Async( CUdeviceptr dstDevice, unsigned int ui, size_t N, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD32Async( CUdeviceptr dstDevice, unsigned int ui, size_t N, CUstream hStream ) {
@@ -1241,7 +1241,7 @@ int INTER_cuMemsetD32Async( CUdeviceptr dstDevice, unsigned int ui, size_t N, CU
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD2D8Async
-int ORIGINAL_cuMemsetD2D8Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height, CUstream hStream ) { }
+extern int ORIGINAL_cuMemsetD2D8Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D8Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height, CUstream hStream ) {
@@ -1253,7 +1253,7 @@ int INTER_cuMemsetD2D8Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned ch
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD2D16Async
-int ORIGINAL_cuMemsetD2D16Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height, CUstream hStream ) { }
+extern int ORIGINAL_cuMemsetD2D16Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D16Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height, CUstream hStream ) {
@@ -1265,7 +1265,7 @@ int INTER_cuMemsetD2D16Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned s
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD2D32Async
-int ORIGINAL_cuMemsetD2D32Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height, CUstream hStream ) { }
+extern int ORIGINAL_cuMemsetD2D32Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D32Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height, CUstream hStream ) {
@@ -1277,7 +1277,7 @@ int INTER_cuMemsetD2D32Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned i
 	return ret;
 }
 // This "function" will be rewritten to point to cuArrayCreate
-int ORIGINAL_cuArrayCreate( CUarray * pHandle, const CUDA_ARRAY_DESCRIPTOR * pAllocateArray ) { }
+extern int ORIGINAL_cuArrayCreate( CUarray * pHandle, const CUDA_ARRAY_DESCRIPTOR * pAllocateArray ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuArrayCreate( CUarray * pHandle, const CUDA_ARRAY_DESCRIPTOR * pAllocateArray ) {
@@ -1289,7 +1289,7 @@ int INTER_cuArrayCreate( CUarray * pHandle, const CUDA_ARRAY_DESCRIPTOR * pAlloc
 	return ret;
 }
 // This "function" will be rewritten to point to cuArrayGetDescriptor
-int ORIGINAL_cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) { }
+extern int ORIGINAL_cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) {
@@ -1301,7 +1301,7 @@ int INTER_cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR * pArrayDescriptor, CUarra
 	return ret;
 }
 // This "function" will be rewritten to point to cuArrayDestroy
-int ORIGINAL_cuArrayDestroy( CUarray hArray ) { }
+extern int ORIGINAL_cuArrayDestroy( CUarray hArray ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuArrayDestroy( CUarray hArray ) {
@@ -1313,7 +1313,7 @@ int INTER_cuArrayDestroy( CUarray hArray ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuArray3DCreate
-int ORIGINAL_cuArray3DCreate( CUarray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pAllocateArray ) { }
+extern int ORIGINAL_cuArray3DCreate( CUarray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pAllocateArray ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuArray3DCreate( CUarray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pAllocateArray ) {
@@ -1325,7 +1325,7 @@ int INTER_cuArray3DCreate( CUarray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pA
 	return ret;
 }
 // This "function" will be rewritten to point to cuArray3DGetDescriptor
-int ORIGINAL_cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) { }
+extern int ORIGINAL_cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) {
@@ -1337,7 +1337,7 @@ int INTER_cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR * pArrayDescriptor, CU
 	return ret;
 }
 // This "function" will be rewritten to point to cuMipmappedArrayCreate
-int ORIGINAL_cuMipmappedArrayCreate( CUmipmappedArray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pMipmappedArrayDesc, unsigned int numMipmapLevels ) { }
+extern int ORIGINAL_cuMipmappedArrayCreate( CUmipmappedArray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pMipmappedArrayDesc, unsigned int numMipmapLevels ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMipmappedArrayCreate( CUmipmappedArray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pMipmappedArrayDesc, unsigned int numMipmapLevels ) {
@@ -1349,7 +1349,7 @@ int INTER_cuMipmappedArrayCreate( CUmipmappedArray * pHandle, const CUDA_ARRAY3D
 	return ret;
 }
 // This "function" will be rewritten to point to cuMipmappedArrayGetLevel
-int ORIGINAL_cuMipmappedArrayGetLevel( CUarray * pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level ) { }
+extern int ORIGINAL_cuMipmappedArrayGetLevel( CUarray * pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMipmappedArrayGetLevel( CUarray * pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level ) {
@@ -1361,7 +1361,7 @@ int INTER_cuMipmappedArrayGetLevel( CUarray * pLevelArray, CUmipmappedArray hMip
 	return ret;
 }
 // This "function" will be rewritten to point to cuMipmappedArrayDestroy
-int ORIGINAL_cuMipmappedArrayDestroy( CUmipmappedArray hMipmappedArray ) { }
+extern int ORIGINAL_cuMipmappedArrayDestroy( CUmipmappedArray hMipmappedArray ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMipmappedArrayDestroy( CUmipmappedArray hMipmappedArray ) {
@@ -1373,7 +1373,7 @@ int INTER_cuMipmappedArrayDestroy( CUmipmappedArray hMipmappedArray ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuPointerGetAttribute
-int ORIGINAL_cuPointerGetAttribute( void * data, CUpointer_attribute attribute, CUdeviceptr ptr ) { }
+extern int ORIGINAL_cuPointerGetAttribute( void * data, CUpointer_attribute attribute, CUdeviceptr ptr ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuPointerGetAttribute( void * data, CUpointer_attribute attribute, CUdeviceptr ptr ) {
@@ -1385,7 +1385,7 @@ int INTER_cuPointerGetAttribute( void * data, CUpointer_attribute attribute, CUd
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemPrefetchAsync
-int ORIGINAL_cuMemPrefetchAsync( CUdeviceptr devPtr, size_t count, CUdevice dstDevice, CUstream hStream ) { }
+extern int ORIGINAL_cuMemPrefetchAsync( CUdeviceptr devPtr, size_t count, CUdevice dstDevice, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemPrefetchAsync( CUdeviceptr devPtr, size_t count, CUdevice dstDevice, CUstream hStream ) {
@@ -1397,7 +1397,7 @@ int INTER_cuMemPrefetchAsync( CUdeviceptr devPtr, size_t count, CUdevice dstDevi
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemAdvise
-int ORIGINAL_cuMemAdvise( CUdeviceptr devPtr, size_t count, CUmem_advise advice, CUdevice device ) { }
+extern int ORIGINAL_cuMemAdvise( CUdeviceptr devPtr, size_t count, CUmem_advise advice, CUdevice device ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemAdvise( CUdeviceptr devPtr, size_t count, CUmem_advise advice, CUdevice device ) {
@@ -1409,7 +1409,7 @@ int INTER_cuMemAdvise( CUdeviceptr devPtr, size_t count, CUmem_advise advice, CU
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemRangeGetAttribute
-int ORIGINAL_cuMemRangeGetAttribute( void * data, size_t dataSize, CUmem_range_attribute attribute, CUdeviceptr devPtr, size_t count ) { }
+extern int ORIGINAL_cuMemRangeGetAttribute( void * data, size_t dataSize, CUmem_range_attribute attribute, CUdeviceptr devPtr, size_t count ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemRangeGetAttribute( void * data, size_t dataSize, CUmem_range_attribute attribute, CUdeviceptr devPtr, size_t count ) {
@@ -1421,7 +1421,7 @@ int INTER_cuMemRangeGetAttribute( void * data, size_t dataSize, CUmem_range_attr
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemRangeGetAttributes
-int ORIGINAL_cuMemRangeGetAttributes( void * * data, size_t * dataSizes, CUmem_range_attribute * attributes, size_t numAttributes, CUdeviceptr devPtr, size_t count ) { }
+extern int ORIGINAL_cuMemRangeGetAttributes( void * * data, size_t * dataSizes, CUmem_range_attribute * attributes, size_t numAttributes, CUdeviceptr devPtr, size_t count ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemRangeGetAttributes( void * * data, size_t * dataSizes, CUmem_range_attribute * attributes, size_t numAttributes, CUdeviceptr devPtr, size_t count ) {
@@ -1433,7 +1433,7 @@ int INTER_cuMemRangeGetAttributes( void * * data, size_t * dataSizes, CUmem_rang
 	return ret;
 }
 // This "function" will be rewritten to point to cuPointerSetAttribute
-int ORIGINAL_cuPointerSetAttribute( const void * value, CUpointer_attribute attribute, CUdeviceptr ptr ) { }
+extern int ORIGINAL_cuPointerSetAttribute( const void * value, CUpointer_attribute attribute, CUdeviceptr ptr ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuPointerSetAttribute( const void * value, CUpointer_attribute attribute, CUdeviceptr ptr ) {
@@ -1445,7 +1445,7 @@ int INTER_cuPointerSetAttribute( const void * value, CUpointer_attribute attribu
 	return ret;
 }
 // This "function" will be rewritten to point to cuPointerGetAttributes
-int ORIGINAL_cuPointerGetAttributes( unsigned int numAttributes, CUpointer_attribute * attributes, void * * data, CUdeviceptr ptr ) { }
+extern int ORIGINAL_cuPointerGetAttributes( unsigned int numAttributes, CUpointer_attribute * attributes, void * * data, CUdeviceptr ptr ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuPointerGetAttributes( unsigned int numAttributes, CUpointer_attribute * attributes, void * * data, CUdeviceptr ptr ) {
@@ -1457,7 +1457,7 @@ int INTER_cuPointerGetAttributes( unsigned int numAttributes, CUpointer_attribut
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamCreate
-int ORIGINAL_cuStreamCreate( CUstream * phStream, unsigned int Flags ) { }
+extern int ORIGINAL_cuStreamCreate( CUstream * phStream, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamCreate( CUstream * phStream, unsigned int Flags ) {
@@ -1469,7 +1469,7 @@ int INTER_cuStreamCreate( CUstream * phStream, unsigned int Flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamCreateWithPriority
-int ORIGINAL_cuStreamCreateWithPriority( CUstream * phStream, unsigned int flags, int priority ) { }
+extern int ORIGINAL_cuStreamCreateWithPriority( CUstream * phStream, unsigned int flags, int priority ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamCreateWithPriority( CUstream * phStream, unsigned int flags, int priority ) {
@@ -1481,7 +1481,7 @@ int INTER_cuStreamCreateWithPriority( CUstream * phStream, unsigned int flags, i
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamGetPriority
-int ORIGINAL_cuStreamGetPriority( CUstream hStream, int * priority ) { }
+extern int ORIGINAL_cuStreamGetPriority( CUstream hStream, int * priority ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamGetPriority( CUstream hStream, int * priority ) {
@@ -1493,7 +1493,7 @@ int INTER_cuStreamGetPriority( CUstream hStream, int * priority ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamGetFlags
-int ORIGINAL_cuStreamGetFlags( CUstream hStream, unsigned int * flags ) { }
+extern int ORIGINAL_cuStreamGetFlags( CUstream hStream, unsigned int * flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamGetFlags( CUstream hStream, unsigned int * flags ) {
@@ -1505,7 +1505,7 @@ int INTER_cuStreamGetFlags( CUstream hStream, unsigned int * flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamWaitEvent
-int ORIGINAL_cuStreamWaitEvent( CUstream hStream, CUevent hEvent, unsigned int Flags ) { }
+extern int ORIGINAL_cuStreamWaitEvent( CUstream hStream, CUevent hEvent, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamWaitEvent( CUstream hStream, CUevent hEvent, unsigned int Flags ) {
@@ -1517,7 +1517,7 @@ int INTER_cuStreamWaitEvent( CUstream hStream, CUevent hEvent, unsigned int Flag
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamAddCallback
-int ORIGINAL_cuStreamAddCallback( CUstream hStream, CUstreamCallback callback, void * userData, unsigned int flags ) { }
+extern int ORIGINAL_cuStreamAddCallback( CUstream hStream, CUstreamCallback callback, void * userData, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamAddCallback( CUstream hStream, CUstreamCallback callback, void * userData, unsigned int flags ) {
@@ -1529,7 +1529,7 @@ int INTER_cuStreamAddCallback( CUstream hStream, CUstreamCallback callback, void
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamAttachMemAsync
-int ORIGINAL_cuStreamAttachMemAsync( CUstream hStream, CUdeviceptr dptr, size_t length, unsigned int flags ) { }
+extern int ORIGINAL_cuStreamAttachMemAsync( CUstream hStream, CUdeviceptr dptr, size_t length, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamAttachMemAsync( CUstream hStream, CUdeviceptr dptr, size_t length, unsigned int flags ) {
@@ -1541,7 +1541,7 @@ int INTER_cuStreamAttachMemAsync( CUstream hStream, CUdeviceptr dptr, size_t len
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamQuery
-int ORIGINAL_cuStreamQuery( CUstream hStream ) { }
+extern int ORIGINAL_cuStreamQuery( CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamQuery( CUstream hStream ) {
@@ -1553,7 +1553,7 @@ int INTER_cuStreamQuery( CUstream hStream ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamSynchronize
-int ORIGINAL_cuStreamSynchronize( CUstream hStream ) { }
+extern int ORIGINAL_cuStreamSynchronize( CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamSynchronize( CUstream hStream ) {
@@ -1565,7 +1565,7 @@ int INTER_cuStreamSynchronize( CUstream hStream ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamDestroy
-int ORIGINAL_cuStreamDestroy( CUstream hStream ) { }
+extern int ORIGINAL_cuStreamDestroy( CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamDestroy( CUstream hStream ) {
@@ -1577,7 +1577,7 @@ int INTER_cuStreamDestroy( CUstream hStream ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuEventCreate
-int ORIGINAL_cuEventCreate( CUevent * phEvent, unsigned int Flags ) { }
+extern int ORIGINAL_cuEventCreate( CUevent * phEvent, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuEventCreate( CUevent * phEvent, unsigned int Flags ) {
@@ -1589,7 +1589,7 @@ int INTER_cuEventCreate( CUevent * phEvent, unsigned int Flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuEventRecord
-int ORIGINAL_cuEventRecord( CUevent hEvent, CUstream hStream ) { }
+extern int ORIGINAL_cuEventRecord( CUevent hEvent, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuEventRecord( CUevent hEvent, CUstream hStream ) {
@@ -1601,7 +1601,7 @@ int INTER_cuEventRecord( CUevent hEvent, CUstream hStream ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuEventQuery
-int ORIGINAL_cuEventQuery( CUevent hEvent ) { }
+extern int ORIGINAL_cuEventQuery( CUevent hEvent ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuEventQuery( CUevent hEvent ) {
@@ -1613,7 +1613,7 @@ int INTER_cuEventQuery( CUevent hEvent ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuEventSynchronize
-int ORIGINAL_cuEventSynchronize( CUevent hEvent ) { }
+extern int ORIGINAL_cuEventSynchronize( CUevent hEvent ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuEventSynchronize( CUevent hEvent ) {
@@ -1625,7 +1625,7 @@ int INTER_cuEventSynchronize( CUevent hEvent ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuEventDestroy
-int ORIGINAL_cuEventDestroy( CUevent hEvent ) { }
+extern int ORIGINAL_cuEventDestroy( CUevent hEvent ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuEventDestroy( CUevent hEvent ) {
@@ -1637,7 +1637,7 @@ int INTER_cuEventDestroy( CUevent hEvent ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuEventElapsedTime
-int ORIGINAL_cuEventElapsedTime( float * pMilliseconds, CUevent hStart, CUevent hEnd ) { }
+extern int ORIGINAL_cuEventElapsedTime( float * pMilliseconds, CUevent hStart, CUevent hEnd ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuEventElapsedTime( float * pMilliseconds, CUevent hStart, CUevent hEnd ) {
@@ -1649,7 +1649,7 @@ int INTER_cuEventElapsedTime( float * pMilliseconds, CUevent hStart, CUevent hEn
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamWaitValue32
-int ORIGINAL_cuStreamWaitValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) { }
+extern int ORIGINAL_cuStreamWaitValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamWaitValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) {
@@ -1661,7 +1661,7 @@ int INTER_cuStreamWaitValue32( CUstream stream, CUdeviceptr addr, cuuint32_t val
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamWriteValue32
-int ORIGINAL_cuStreamWriteValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) { }
+extern int ORIGINAL_cuStreamWriteValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamWriteValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) {
@@ -1673,7 +1673,7 @@ int INTER_cuStreamWriteValue32( CUstream stream, CUdeviceptr addr, cuuint32_t va
 	return ret;
 }
 // This "function" will be rewritten to point to cuStreamBatchMemOp
-int ORIGINAL_cuStreamBatchMemOp( CUstream stream, unsigned int count, CUstreamBatchMemOpParams * paramArray, unsigned int flags ) { }
+extern int ORIGINAL_cuStreamBatchMemOp( CUstream stream, unsigned int count, CUstreamBatchMemOpParams * paramArray, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuStreamBatchMemOp( CUstream stream, unsigned int count, CUstreamBatchMemOpParams * paramArray, unsigned int flags ) {
@@ -1685,7 +1685,7 @@ int INTER_cuStreamBatchMemOp( CUstream stream, unsigned int count, CUstreamBatch
 	return ret;
 }
 // This "function" will be rewritten to point to cuFuncGetAttribute
-int ORIGINAL_cuFuncGetAttribute( int * pi, CUfunction_attribute attrib, CUfunction hfunc ) { }
+extern int ORIGINAL_cuFuncGetAttribute( int * pi, CUfunction_attribute attrib, CUfunction hfunc ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuFuncGetAttribute( int * pi, CUfunction_attribute attrib, CUfunction hfunc ) {
@@ -1697,7 +1697,7 @@ int INTER_cuFuncGetAttribute( int * pi, CUfunction_attribute attrib, CUfunction 
 	return ret;
 }
 // This "function" will be rewritten to point to cuFuncSetCacheConfig
-int ORIGINAL_cuFuncSetCacheConfig( CUfunction hfunc, CUfunc_cache config ) { }
+extern int ORIGINAL_cuFuncSetCacheConfig( CUfunction hfunc, CUfunc_cache config ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuFuncSetCacheConfig( CUfunction hfunc, CUfunc_cache config ) {
@@ -1709,7 +1709,7 @@ int INTER_cuFuncSetCacheConfig( CUfunction hfunc, CUfunc_cache config ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuFuncSetSharedMemConfig
-int ORIGINAL_cuFuncSetSharedMemConfig( CUfunction hfunc, CUsharedconfig config ) { }
+extern int ORIGINAL_cuFuncSetSharedMemConfig( CUfunction hfunc, CUsharedconfig config ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuFuncSetSharedMemConfig( CUfunction hfunc, CUsharedconfig config ) {
@@ -1721,7 +1721,7 @@ int INTER_cuFuncSetSharedMemConfig( CUfunction hfunc, CUsharedconfig config ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuLaunchKernel
-int ORIGINAL_cuLaunchKernel( CUfunction f, unsigned int gridDimX, unsigned int gridDimY, unsigned int gridDimZ, unsigned int blockDimX, unsigned int blockDimY, unsigned int blockDimZ, unsigned int sharedMemBytes, CUstream hStream, void * * kernelParams, void * * extra ) { }
+extern int ORIGINAL_cuLaunchKernel( CUfunction f, unsigned int gridDimX, unsigned int gridDimY, unsigned int gridDimZ, unsigned int blockDimX, unsigned int blockDimY, unsigned int blockDimZ, unsigned int sharedMemBytes, CUstream hStream, void * * kernelParams, void * * extra ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuLaunchKernel( CUfunction f, unsigned int gridDimX, unsigned int gridDimY, unsigned int gridDimZ, unsigned int blockDimX, unsigned int blockDimY, unsigned int blockDimZ, unsigned int sharedMemBytes, CUstream hStream, void * * kernelParams, void * * extra ) {
@@ -1733,7 +1733,7 @@ int INTER_cuLaunchKernel( CUfunction f, unsigned int gridDimX, unsigned int grid
 	return ret;
 }
 // This "function" will be rewritten to point to cuFuncSetBlockShape
-int ORIGINAL_cuFuncSetBlockShape( CUfunction hfunc, int x, int y, int z ) { }
+extern int ORIGINAL_cuFuncSetBlockShape( CUfunction hfunc, int x, int y, int z ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuFuncSetBlockShape( CUfunction hfunc, int x, int y, int z ) {
@@ -1745,7 +1745,7 @@ int INTER_cuFuncSetBlockShape( CUfunction hfunc, int x, int y, int z ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuFuncSetSharedSize
-int ORIGINAL_cuFuncSetSharedSize( CUfunction hfunc, unsigned int bytes ) { }
+extern int ORIGINAL_cuFuncSetSharedSize( CUfunction hfunc, unsigned int bytes ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuFuncSetSharedSize( CUfunction hfunc, unsigned int bytes ) {
@@ -1757,7 +1757,7 @@ int INTER_cuFuncSetSharedSize( CUfunction hfunc, unsigned int bytes ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuParamSetSize
-int ORIGINAL_cuParamSetSize( CUfunction hfunc, unsigned int numbytes ) { }
+extern int ORIGINAL_cuParamSetSize( CUfunction hfunc, unsigned int numbytes ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuParamSetSize( CUfunction hfunc, unsigned int numbytes ) {
@@ -1769,7 +1769,7 @@ int INTER_cuParamSetSize( CUfunction hfunc, unsigned int numbytes ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuParamSeti
-int ORIGINAL_cuParamSeti( CUfunction hfunc, int offset, unsigned int value ) { }
+extern int ORIGINAL_cuParamSeti( CUfunction hfunc, int offset, unsigned int value ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuParamSeti( CUfunction hfunc, int offset, unsigned int value ) {
@@ -1781,7 +1781,7 @@ int INTER_cuParamSeti( CUfunction hfunc, int offset, unsigned int value ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuParamSetf
-int ORIGINAL_cuParamSetf( CUfunction hfunc, int offset, float value ) { }
+extern int ORIGINAL_cuParamSetf( CUfunction hfunc, int offset, float value ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuParamSetf( CUfunction hfunc, int offset, float value ) {
@@ -1793,7 +1793,7 @@ int INTER_cuParamSetf( CUfunction hfunc, int offset, float value ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuParamSetv
-int ORIGINAL_cuParamSetv( CUfunction hfunc, int offset, void * ptr, unsigned int numbytes ) { }
+extern int ORIGINAL_cuParamSetv( CUfunction hfunc, int offset, void * ptr, unsigned int numbytes ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuParamSetv( CUfunction hfunc, int offset, void * ptr, unsigned int numbytes ) {
@@ -1805,7 +1805,7 @@ int INTER_cuParamSetv( CUfunction hfunc, int offset, void * ptr, unsigned int nu
 	return ret;
 }
 // This "function" will be rewritten to point to cuLaunch
-int ORIGINAL_cuLaunch( CUfunction f ) { }
+extern int ORIGINAL_cuLaunch( CUfunction f ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuLaunch( CUfunction f ) {
@@ -1817,7 +1817,7 @@ int INTER_cuLaunch( CUfunction f ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuLaunchGrid
-int ORIGINAL_cuLaunchGrid( CUfunction f, int grid_width, int grid_height ) { }
+extern int ORIGINAL_cuLaunchGrid( CUfunction f, int grid_width, int grid_height ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuLaunchGrid( CUfunction f, int grid_width, int grid_height ) {
@@ -1829,7 +1829,7 @@ int INTER_cuLaunchGrid( CUfunction f, int grid_width, int grid_height ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuLaunchGridAsync
-int ORIGINAL_cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUstream hStream ) { }
+extern int ORIGINAL_cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUstream hStream ) {
@@ -1841,7 +1841,7 @@ int INTER_cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUst
 	return ret;
 }
 // This "function" will be rewritten to point to cuParamSetTexRef
-int ORIGINAL_cuParamSetTexRef( CUfunction hfunc, int texunit, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuParamSetTexRef( CUfunction hfunc, int texunit, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuParamSetTexRef( CUfunction hfunc, int texunit, CUtexref hTexRef ) {
@@ -1853,7 +1853,7 @@ int INTER_cuParamSetTexRef( CUfunction hfunc, int texunit, CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuOccupancyMaxActiveBlocksPerMultiprocessor
-int ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize ) { }
+extern int ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessor( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize ) {
@@ -1865,7 +1865,7 @@ int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessor( int * numBlocks, CUfuncti
 	return ret;
 }
 // This "function" will be rewritten to point to cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags
-int ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize, unsigned int flags ) { }
+extern int ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize, unsigned int flags ) {
@@ -1877,7 +1877,7 @@ int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags( int * numBlocks,
 	return ret;
 }
 // This "function" will be rewritten to point to cuOccupancyMaxPotentialBlockSize
-int ORIGINAL_cuOccupancyMaxPotentialBlockSize( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit ) { }
+extern int ORIGINAL_cuOccupancyMaxPotentialBlockSize( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuOccupancyMaxPotentialBlockSize( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit ) {
@@ -1889,7 +1889,7 @@ int INTER_cuOccupancyMaxPotentialBlockSize( int * minGridSize, int * blockSize, 
 	return ret;
 }
 // This "function" will be rewritten to point to cuOccupancyMaxPotentialBlockSizeWithFlags
-int ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit, unsigned int flags ) { }
+extern int ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuOccupancyMaxPotentialBlockSizeWithFlags( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit, unsigned int flags ) {
@@ -1901,7 +1901,7 @@ int INTER_cuOccupancyMaxPotentialBlockSizeWithFlags( int * minGridSize, int * bl
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetArray
-int ORIGINAL_cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags ) { }
+extern int ORIGINAL_cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags ) {
@@ -1913,7 +1913,7 @@ int INTER_cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetMipmappedArray
-int ORIGINAL_cuTexRefSetMipmappedArray( CUtexref hTexRef, CUmipmappedArray hMipmappedArray, unsigned int Flags ) { }
+extern int ORIGINAL_cuTexRefSetMipmappedArray( CUtexref hTexRef, CUmipmappedArray hMipmappedArray, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMipmappedArray( CUtexref hTexRef, CUmipmappedArray hMipmappedArray, unsigned int Flags ) {
@@ -1925,7 +1925,7 @@ int INTER_cuTexRefSetMipmappedArray( CUtexref hTexRef, CUmipmappedArray hMipmapp
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetAddress
-int ORIGINAL_cuTexRefSetAddress( size_t * ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, size_t bytes ) { }
+extern int ORIGINAL_cuTexRefSetAddress( size_t * ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, size_t bytes ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetAddress( size_t * ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, size_t bytes ) {
@@ -1937,7 +1937,7 @@ int INTER_cuTexRefSetAddress( size_t * ByteOffset, CUtexref hTexRef, CUdeviceptr
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetAddress2D
-int ORIGINAL_cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) { }
+extern int ORIGINAL_cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) {
@@ -1949,7 +1949,7 @@ int INTER_cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * 
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetFormat
-int ORIGINAL_cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents ) { }
+extern int ORIGINAL_cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents ) {
@@ -1961,7 +1961,7 @@ int INTER_cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPacked
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetAddressMode
-int ORIGINAL_cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am ) { }
+extern int ORIGINAL_cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am ) {
@@ -1973,7 +1973,7 @@ int INTER_cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am )
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetFilterMode
-int ORIGINAL_cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm ) { }
+extern int ORIGINAL_cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
@@ -1985,7 +1985,7 @@ int INTER_cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetMipmapFilterMode
-int ORIGINAL_cuTexRefSetMipmapFilterMode( CUtexref hTexRef, CUfilter_mode fm ) { }
+extern int ORIGINAL_cuTexRefSetMipmapFilterMode( CUtexref hTexRef, CUfilter_mode fm ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMipmapFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
@@ -1997,7 +1997,7 @@ int INTER_cuTexRefSetMipmapFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetMipmapLevelBias
-int ORIGINAL_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) { }
+extern int ORIGINAL_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) {
@@ -2009,7 +2009,7 @@ int INTER_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetMipmapLevelClamp
-int ORIGINAL_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelClamp, float maxMipmapLevelClamp ) { }
+extern int ORIGINAL_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelClamp, float maxMipmapLevelClamp ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelClamp, float maxMipmapLevelClamp ) {
@@ -2021,7 +2021,7 @@ int INTER_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelCla
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetMaxAnisotropy
-int ORIGINAL_cuTexRefSetMaxAnisotropy( CUtexref hTexRef, unsigned int maxAniso ) { }
+extern int ORIGINAL_cuTexRefSetMaxAnisotropy( CUtexref hTexRef, unsigned int maxAniso ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetMaxAnisotropy( CUtexref hTexRef, unsigned int maxAniso ) {
@@ -2033,7 +2033,7 @@ int INTER_cuTexRefSetMaxAnisotropy( CUtexref hTexRef, unsigned int maxAniso ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetBorderColor
-int ORIGINAL_cuTexRefSetBorderColor( CUtexref hTexRef, float * pBorderColor ) { }
+extern int ORIGINAL_cuTexRefSetBorderColor( CUtexref hTexRef, float * pBorderColor ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetBorderColor( CUtexref hTexRef, float * pBorderColor ) {
@@ -2045,7 +2045,7 @@ int INTER_cuTexRefSetBorderColor( CUtexref hTexRef, float * pBorderColor ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetFlags
-int ORIGINAL_cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags ) { }
+extern int ORIGINAL_cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags ) {
@@ -2057,7 +2057,7 @@ int INTER_cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetAddress
-int ORIGINAL_cuTexRefGetAddress( CUdeviceptr * pdptr, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetAddress( CUdeviceptr * pdptr, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetAddress( CUdeviceptr * pdptr, CUtexref hTexRef ) {
@@ -2069,7 +2069,7 @@ int INTER_cuTexRefGetAddress( CUdeviceptr * pdptr, CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetArray
-int ORIGINAL_cuTexRefGetArray( CUarray * phArray, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetArray( CUarray * phArray, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetArray( CUarray * phArray, CUtexref hTexRef ) {
@@ -2081,7 +2081,7 @@ int INTER_cuTexRefGetArray( CUarray * phArray, CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetMipmappedArray
-int ORIGINAL_cuTexRefGetMipmappedArray( CUmipmappedArray * phMipmappedArray, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetMipmappedArray( CUmipmappedArray * phMipmappedArray, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMipmappedArray( CUmipmappedArray * phMipmappedArray, CUtexref hTexRef ) {
@@ -2093,7 +2093,7 @@ int INTER_cuTexRefGetMipmappedArray( CUmipmappedArray * phMipmappedArray, CUtexr
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetAddressMode
-int ORIGINAL_cuTexRefGetAddressMode( CUaddress_mode * pam, CUtexref hTexRef, int dim ) { }
+extern int ORIGINAL_cuTexRefGetAddressMode( CUaddress_mode * pam, CUtexref hTexRef, int dim ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetAddressMode( CUaddress_mode * pam, CUtexref hTexRef, int dim ) {
@@ -2105,7 +2105,7 @@ int INTER_cuTexRefGetAddressMode( CUaddress_mode * pam, CUtexref hTexRef, int di
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetFilterMode
-int ORIGINAL_cuTexRefGetFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
@@ -2117,7 +2117,7 @@ int INTER_cuTexRefGetFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetFormat
-int ORIGINAL_cuTexRefGetFormat( CUarray_format * pFormat, int * pNumChannels, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetFormat( CUarray_format * pFormat, int * pNumChannels, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetFormat( CUarray_format * pFormat, int * pNumChannels, CUtexref hTexRef ) {
@@ -2129,7 +2129,7 @@ int INTER_cuTexRefGetFormat( CUarray_format * pFormat, int * pNumChannels, CUtex
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetMipmapFilterMode
-int ORIGINAL_cuTexRefGetMipmapFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetMipmapFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMipmapFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
@@ -2141,7 +2141,7 @@ int INTER_cuTexRefGetMipmapFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetMipmapLevelBias
-int ORIGINAL_cuTexRefGetMipmapLevelBias( float * pbias, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetMipmapLevelBias( float * pbias, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMipmapLevelBias( float * pbias, CUtexref hTexRef ) {
@@ -2153,7 +2153,7 @@ int INTER_cuTexRefGetMipmapLevelBias( float * pbias, CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetMipmapLevelClamp
-int ORIGINAL_cuTexRefGetMipmapLevelClamp( float * pminMipmapLevelClamp, float * pmaxMipmapLevelClamp, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetMipmapLevelClamp( float * pminMipmapLevelClamp, float * pmaxMipmapLevelClamp, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMipmapLevelClamp( float * pminMipmapLevelClamp, float * pmaxMipmapLevelClamp, CUtexref hTexRef ) {
@@ -2165,7 +2165,7 @@ int INTER_cuTexRefGetMipmapLevelClamp( float * pminMipmapLevelClamp, float * pma
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetMaxAnisotropy
-int ORIGINAL_cuTexRefGetMaxAnisotropy( int * pmaxAniso, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetMaxAnisotropy( int * pmaxAniso, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetMaxAnisotropy( int * pmaxAniso, CUtexref hTexRef ) {
@@ -2177,7 +2177,7 @@ int INTER_cuTexRefGetMaxAnisotropy( int * pmaxAniso, CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetBorderColor
-int ORIGINAL_cuTexRefGetBorderColor( float * pBorderColor, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetBorderColor( float * pBorderColor, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetBorderColor( float * pBorderColor, CUtexref hTexRef ) {
@@ -2189,7 +2189,7 @@ int INTER_cuTexRefGetBorderColor( float * pBorderColor, CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefGetFlags
-int ORIGINAL_cuTexRefGetFlags( unsigned int * pFlags, CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefGetFlags( unsigned int * pFlags, CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefGetFlags( unsigned int * pFlags, CUtexref hTexRef ) {
@@ -2201,7 +2201,7 @@ int INTER_cuTexRefGetFlags( unsigned int * pFlags, CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefCreate
-int ORIGINAL_cuTexRefCreate( CUtexref * pTexRef ) { }
+extern int ORIGINAL_cuTexRefCreate( CUtexref * pTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefCreate( CUtexref * pTexRef ) {
@@ -2213,7 +2213,7 @@ int INTER_cuTexRefCreate( CUtexref * pTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefDestroy
-int ORIGINAL_cuTexRefDestroy( CUtexref hTexRef ) { }
+extern int ORIGINAL_cuTexRefDestroy( CUtexref hTexRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefDestroy( CUtexref hTexRef ) {
@@ -2225,7 +2225,7 @@ int INTER_cuTexRefDestroy( CUtexref hTexRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuSurfRefSetArray
-int ORIGINAL_cuSurfRefSetArray( CUsurfref hSurfRef, CUarray hArray, unsigned int Flags ) { }
+extern int ORIGINAL_cuSurfRefSetArray( CUsurfref hSurfRef, CUarray hArray, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuSurfRefSetArray( CUsurfref hSurfRef, CUarray hArray, unsigned int Flags ) {
@@ -2237,7 +2237,7 @@ int INTER_cuSurfRefSetArray( CUsurfref hSurfRef, CUarray hArray, unsigned int Fl
 	return ret;
 }
 // This "function" will be rewritten to point to cuSurfRefGetArray
-int ORIGINAL_cuSurfRefGetArray( CUarray * phArray, CUsurfref hSurfRef ) { }
+extern int ORIGINAL_cuSurfRefGetArray( CUarray * phArray, CUsurfref hSurfRef ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuSurfRefGetArray( CUarray * phArray, CUsurfref hSurfRef ) {
@@ -2249,7 +2249,7 @@ int INTER_cuSurfRefGetArray( CUarray * phArray, CUsurfref hSurfRef ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexObjectCreate
-int ORIGINAL_cuTexObjectCreate( CUtexObject * pTexObject, const CUDA_RESOURCE_DESC * pResDesc, const CUDA_TEXTURE_DESC * pTexDesc, const CUDA_RESOURCE_VIEW_DESC * pResViewDesc ) { }
+extern int ORIGINAL_cuTexObjectCreate( CUtexObject * pTexObject, const CUDA_RESOURCE_DESC * pResDesc, const CUDA_TEXTURE_DESC * pTexDesc, const CUDA_RESOURCE_VIEW_DESC * pResViewDesc ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectCreate( CUtexObject * pTexObject, const CUDA_RESOURCE_DESC * pResDesc, const CUDA_TEXTURE_DESC * pTexDesc, const CUDA_RESOURCE_VIEW_DESC * pResViewDesc ) {
@@ -2261,7 +2261,7 @@ int INTER_cuTexObjectCreate( CUtexObject * pTexObject, const CUDA_RESOURCE_DESC 
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexObjectDestroy
-int ORIGINAL_cuTexObjectDestroy( CUtexObject texObject ) { }
+extern int ORIGINAL_cuTexObjectDestroy( CUtexObject texObject ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectDestroy( CUtexObject texObject ) {
@@ -2273,7 +2273,7 @@ int INTER_cuTexObjectDestroy( CUtexObject texObject ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexObjectGetResourceDesc
-int ORIGINAL_cuTexObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUtexObject texObject ) { }
+extern int ORIGINAL_cuTexObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUtexObject texObject ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUtexObject texObject ) {
@@ -2285,7 +2285,7 @@ int INTER_cuTexObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUtexObject
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexObjectGetTextureDesc
-int ORIGINAL_cuTexObjectGetTextureDesc( CUDA_TEXTURE_DESC * pTexDesc, CUtexObject texObject ) { }
+extern int ORIGINAL_cuTexObjectGetTextureDesc( CUDA_TEXTURE_DESC * pTexDesc, CUtexObject texObject ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectGetTextureDesc( CUDA_TEXTURE_DESC * pTexDesc, CUtexObject texObject ) {
@@ -2297,7 +2297,7 @@ int INTER_cuTexObjectGetTextureDesc( CUDA_TEXTURE_DESC * pTexDesc, CUtexObject t
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexObjectGetResourceViewDesc
-int ORIGINAL_cuTexObjectGetResourceViewDesc( CUDA_RESOURCE_VIEW_DESC * pResViewDesc, CUtexObject texObject ) { }
+extern int ORIGINAL_cuTexObjectGetResourceViewDesc( CUDA_RESOURCE_VIEW_DESC * pResViewDesc, CUtexObject texObject ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexObjectGetResourceViewDesc( CUDA_RESOURCE_VIEW_DESC * pResViewDesc, CUtexObject texObject ) {
@@ -2309,7 +2309,7 @@ int INTER_cuTexObjectGetResourceViewDesc( CUDA_RESOURCE_VIEW_DESC * pResViewDesc
 	return ret;
 }
 // This "function" will be rewritten to point to cuSurfObjectCreate
-int ORIGINAL_cuSurfObjectCreate( CUsurfObject * pSurfObject, const CUDA_RESOURCE_DESC * pResDesc ) { }
+extern int ORIGINAL_cuSurfObjectCreate( CUsurfObject * pSurfObject, const CUDA_RESOURCE_DESC * pResDesc ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuSurfObjectCreate( CUsurfObject * pSurfObject, const CUDA_RESOURCE_DESC * pResDesc ) {
@@ -2321,7 +2321,7 @@ int INTER_cuSurfObjectCreate( CUsurfObject * pSurfObject, const CUDA_RESOURCE_DE
 	return ret;
 }
 // This "function" will be rewritten to point to cuSurfObjectDestroy
-int ORIGINAL_cuSurfObjectDestroy( CUsurfObject surfObject ) { }
+extern int ORIGINAL_cuSurfObjectDestroy( CUsurfObject surfObject ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuSurfObjectDestroy( CUsurfObject surfObject ) {
@@ -2333,7 +2333,7 @@ int INTER_cuSurfObjectDestroy( CUsurfObject surfObject ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuSurfObjectGetResourceDesc
-int ORIGINAL_cuSurfObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUsurfObject surfObject ) { }
+extern int ORIGINAL_cuSurfObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUsurfObject surfObject ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuSurfObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUsurfObject surfObject ) {
@@ -2345,7 +2345,7 @@ int INTER_cuSurfObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUsurfObje
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceCanAccessPeer
-int ORIGINAL_cuDeviceCanAccessPeer( int * canAccessPeer, CUdevice dev, CUdevice peerDev ) { }
+extern int ORIGINAL_cuDeviceCanAccessPeer( int * canAccessPeer, CUdevice dev, CUdevice peerDev ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceCanAccessPeer( int * canAccessPeer, CUdevice dev, CUdevice peerDev ) {
@@ -2357,7 +2357,7 @@ int INTER_cuDeviceCanAccessPeer( int * canAccessPeer, CUdevice dev, CUdevice pee
 	return ret;
 }
 // This "function" will be rewritten to point to cuDeviceGetP2PAttribute
-int ORIGINAL_cuDeviceGetP2PAttribute( int * value, CUdevice_P2PAttribute attrib, CUdevice srcDevice, CUdevice dstDevice ) { }
+extern int ORIGINAL_cuDeviceGetP2PAttribute( int * value, CUdevice_P2PAttribute attrib, CUdevice srcDevice, CUdevice dstDevice ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuDeviceGetP2PAttribute( int * value, CUdevice_P2PAttribute attrib, CUdevice srcDevice, CUdevice dstDevice ) {
@@ -2369,7 +2369,7 @@ int INTER_cuDeviceGetP2PAttribute( int * value, CUdevice_P2PAttribute attrib, CU
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxEnablePeerAccess
-int ORIGINAL_cuCtxEnablePeerAccess( CUcontext peerContext, unsigned int Flags ) { }
+extern int ORIGINAL_cuCtxEnablePeerAccess( CUcontext peerContext, unsigned int Flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxEnablePeerAccess( CUcontext peerContext, unsigned int Flags ) {
@@ -2381,7 +2381,7 @@ int INTER_cuCtxEnablePeerAccess( CUcontext peerContext, unsigned int Flags ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuCtxDisablePeerAccess
-int ORIGINAL_cuCtxDisablePeerAccess( CUcontext peerContext ) { }
+extern int ORIGINAL_cuCtxDisablePeerAccess( CUcontext peerContext ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuCtxDisablePeerAccess( CUcontext peerContext ) {
@@ -2393,7 +2393,7 @@ int INTER_cuCtxDisablePeerAccess( CUcontext peerContext ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuGraphicsUnregisterResource
-int ORIGINAL_cuGraphicsUnregisterResource( CUgraphicsResource resource ) { }
+extern int ORIGINAL_cuGraphicsUnregisterResource( CUgraphicsResource resource ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsUnregisterResource( CUgraphicsResource resource ) {
@@ -2405,7 +2405,7 @@ int INTER_cuGraphicsUnregisterResource( CUgraphicsResource resource ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuGraphicsSubResourceGetMappedArray
-int ORIGINAL_cuGraphicsSubResourceGetMappedArray( CUarray * pArray, CUgraphicsResource resource, unsigned int arrayIndex, unsigned int mipLevel ) { }
+extern int ORIGINAL_cuGraphicsSubResourceGetMappedArray( CUarray * pArray, CUgraphicsResource resource, unsigned int arrayIndex, unsigned int mipLevel ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsSubResourceGetMappedArray( CUarray * pArray, CUgraphicsResource resource, unsigned int arrayIndex, unsigned int mipLevel ) {
@@ -2417,7 +2417,7 @@ int INTER_cuGraphicsSubResourceGetMappedArray( CUarray * pArray, CUgraphicsResou
 	return ret;
 }
 // This "function" will be rewritten to point to cuGraphicsResourceGetMappedMipmappedArray
-int ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray( CUmipmappedArray * pMipmappedArray, CUgraphicsResource resource ) { }
+extern int ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray( CUmipmappedArray * pMipmappedArray, CUgraphicsResource resource ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsResourceGetMappedMipmappedArray( CUmipmappedArray * pMipmappedArray, CUgraphicsResource resource ) {
@@ -2429,7 +2429,7 @@ int INTER_cuGraphicsResourceGetMappedMipmappedArray( CUmipmappedArray * pMipmapp
 	return ret;
 }
 // This "function" will be rewritten to point to cuGraphicsResourceGetMappedPointer
-int ORIGINAL_cuGraphicsResourceGetMappedPointer( CUdeviceptr * pDevPtr, size_t * pSize, CUgraphicsResource resource ) { }
+extern int ORIGINAL_cuGraphicsResourceGetMappedPointer( CUdeviceptr * pDevPtr, size_t * pSize, CUgraphicsResource resource ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsResourceGetMappedPointer( CUdeviceptr * pDevPtr, size_t * pSize, CUgraphicsResource resource ) {
@@ -2441,7 +2441,7 @@ int INTER_cuGraphicsResourceGetMappedPointer( CUdeviceptr * pDevPtr, size_t * pS
 	return ret;
 }
 // This "function" will be rewritten to point to cuGraphicsResourceSetMapFlags
-int ORIGINAL_cuGraphicsResourceSetMapFlags( CUgraphicsResource resource, unsigned int flags ) { }
+extern int ORIGINAL_cuGraphicsResourceSetMapFlags( CUgraphicsResource resource, unsigned int flags ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsResourceSetMapFlags( CUgraphicsResource resource, unsigned int flags ) {
@@ -2453,7 +2453,7 @@ int INTER_cuGraphicsResourceSetMapFlags( CUgraphicsResource resource, unsigned i
 	return ret;
 }
 // This "function" will be rewritten to point to cuGraphicsMapResources
-int ORIGINAL_cuGraphicsMapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) { }
+extern int ORIGINAL_cuGraphicsMapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsMapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) {
@@ -2465,7 +2465,7 @@ int INTER_cuGraphicsMapResources( unsigned int count, CUgraphicsResource * resou
 	return ret;
 }
 // This "function" will be rewritten to point to cuGraphicsUnmapResources
-int ORIGINAL_cuGraphicsUnmapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) { }
+extern int ORIGINAL_cuGraphicsUnmapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGraphicsUnmapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) {
@@ -2477,7 +2477,7 @@ int INTER_cuGraphicsUnmapResources( unsigned int count, CUgraphicsResource * res
 	return ret;
 }
 // This "function" will be rewritten to point to cuGetExportTable
-int ORIGINAL_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExportTableId ) { }
+extern int ORIGINAL_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExportTableId ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExportTableId ) {
@@ -2489,7 +2489,7 @@ int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExport
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetAddress2D_v2
-int ORIGINAL_cuTexRefSetAddress2D_v2( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) { }
+extern int ORIGINAL_cuTexRefSetAddress2D_v2( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuTexRefSetAddress2D_v2( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) {
@@ -2501,7 +2501,7 @@ int INTER_cuTexRefSetAddress2D_v2( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyHtoD_v2
-int ORIGINAL_cuMemcpyHtoD_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyHtoD_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoD_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) {
@@ -2513,7 +2513,7 @@ int INTER_cuMemcpyHtoD_v2( CUdeviceptr dstDevice, const void * srcHost, size_t B
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoH_v2
-int ORIGINAL_cuMemcpyDtoH_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyDtoH_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoH_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) {
@@ -2525,7 +2525,7 @@ int INTER_cuMemcpyDtoH_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCou
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoD_v2
-int ORIGINAL_cuMemcpyDtoD_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyDtoD_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoD_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) {
@@ -2537,7 +2537,7 @@ int INTER_cuMemcpyDtoD_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t 
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoA_v2
-int ORIGINAL_cuMemcpyDtoA_v2( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyDtoA_v2( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoA_v2( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) {
@@ -2549,7 +2549,7 @@ int INTER_cuMemcpyDtoA_v2( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDe
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyAtoD_v2
-int ORIGINAL_cuMemcpyAtoD_v2( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyAtoD_v2( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoD_v2( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
@@ -2561,7 +2561,7 @@ int INTER_cuMemcpyAtoD_v2( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOf
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyHtoA_v2
-int ORIGINAL_cuMemcpyHtoA_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyHtoA_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoA_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) {
@@ -2573,7 +2573,7 @@ int INTER_cuMemcpyHtoA_v2( CUarray dstArray, size_t dstOffset, const void * srcH
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyAtoH_v2
-int ORIGINAL_cuMemcpyAtoH_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyAtoH_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoH_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
@@ -2585,7 +2585,7 @@ int INTER_cuMemcpyAtoH_v2( void * dstHost, CUarray srcArray, size_t srcOffset, s
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyAtoA_v2
-int ORIGINAL_cuMemcpyAtoA_v2( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) { }
+extern int ORIGINAL_cuMemcpyAtoA_v2( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoA_v2( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
@@ -2597,7 +2597,7 @@ int INTER_cuMemcpyAtoA_v2( CUarray dstArray, size_t dstOffset, CUarray srcArray,
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyHtoAAsync_v2
-int ORIGINAL_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) {
@@ -2610,7 +2610,7 @@ int INTER_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void *
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyAtoHAsync_v2
-int ORIGINAL_cuMemcpyAtoHAsync_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyAtoHAsync_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyAtoHAsync_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) {
@@ -2622,7 +2622,7 @@ int INTER_cuMemcpyAtoHAsync_v2( void * dstHost, CUarray srcArray, size_t srcOffs
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy2D_v2
-int ORIGINAL_cuMemcpy2D_v2( const CUDA_MEMCPY2D * pCopy ) { }
+extern int ORIGINAL_cuMemcpy2D_v2( const CUDA_MEMCPY2D * pCopy ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2D_v2( const CUDA_MEMCPY2D * pCopy ) {
@@ -2634,7 +2634,7 @@ int INTER_cuMemcpy2D_v2( const CUDA_MEMCPY2D * pCopy ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy2DUnaligned_v2
-int ORIGINAL_cuMemcpy2DUnaligned_v2( const CUDA_MEMCPY2D * pCopy ) { }
+extern int ORIGINAL_cuMemcpy2DUnaligned_v2( const CUDA_MEMCPY2D * pCopy ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2DUnaligned_v2( const CUDA_MEMCPY2D * pCopy ) {
@@ -2646,7 +2646,7 @@ int INTER_cuMemcpy2DUnaligned_v2( const CUDA_MEMCPY2D * pCopy ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy3D_v2
-int ORIGINAL_cuMemcpy3D_v2( const CUDA_MEMCPY3D * pCopy ) { }
+extern int ORIGINAL_cuMemcpy3D_v2( const CUDA_MEMCPY3D * pCopy ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3D_v2( const CUDA_MEMCPY3D * pCopy ) {
@@ -2658,7 +2658,7 @@ int INTER_cuMemcpy3D_v2( const CUDA_MEMCPY3D * pCopy ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyHtoDAsync_v2
-int ORIGINAL_cuMemcpyHtoDAsync_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyHtoDAsync_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyHtoDAsync_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) {
@@ -2670,7 +2670,7 @@ int INTER_cuMemcpyHtoDAsync_v2( CUdeviceptr dstDevice, const void * srcHost, siz
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoHAsync_v2
-int ORIGINAL_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
@@ -2683,7 +2683,7 @@ int INTER_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t By
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpyDtoDAsync_v2
-int ORIGINAL_cuMemcpyDtoDAsync_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpyDtoDAsync_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpyDtoDAsync_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
@@ -2695,7 +2695,7 @@ int INTER_cuMemcpyDtoDAsync_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, si
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy2DAsync_v2
-int ORIGINAL_cuMemcpy2DAsync_v2( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpy2DAsync_v2( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy2DAsync_v2( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
@@ -2707,7 +2707,7 @@ int INTER_cuMemcpy2DAsync_v2( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemcpy3DAsync_v2
-int ORIGINAL_cuMemcpy3DAsync_v2( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) { }
+extern int ORIGINAL_cuMemcpy3DAsync_v2( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemcpy3DAsync_v2( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
@@ -2719,7 +2719,7 @@ int INTER_cuMemcpy3DAsync_v2( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD8_v2
-int ORIGINAL_cuMemsetD8_v2( CUdeviceptr dstDevice, unsigned char uc, size_t N ) { }
+extern int ORIGINAL_cuMemsetD8_v2( CUdeviceptr dstDevice, unsigned char uc, size_t N ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD8_v2( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
@@ -2731,7 +2731,7 @@ int INTER_cuMemsetD8_v2( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD16_v2
-int ORIGINAL_cuMemsetD16_v2( CUdeviceptr dstDevice, unsigned short us, size_t N ) { }
+extern int ORIGINAL_cuMemsetD16_v2( CUdeviceptr dstDevice, unsigned short us, size_t N ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD16_v2( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
@@ -2743,7 +2743,7 @@ int INTER_cuMemsetD16_v2( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD32_v2
-int ORIGINAL_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N ) { }
+extern int ORIGINAL_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
@@ -2755,7 +2755,7 @@ int INTER_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD2D8_v2
-int ORIGINAL_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) { }
+extern int ORIGINAL_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) {
@@ -2767,7 +2767,7 @@ int INTER_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD2D16_v2
-int ORIGINAL_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) { }
+extern int ORIGINAL_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) {
@@ -2779,7 +2779,7 @@ int INTER_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned sho
 	return ret;
 }
 // This "function" will be rewritten to point to cuMemsetD2D32_v2
-int ORIGINAL_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) { }
+extern int ORIGINAL_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) ;
 
 // This is the call that will take the place of the original
 int INTER_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) {

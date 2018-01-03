@@ -149,11 +149,10 @@ void ProcessController::InstrimentApplication() {
 	bool print = true;
 
 	for (auto i : _loadedLibraries) {
-		std::cerr << "[PROCCTR] Loading symbols from library - " << i.first << std::endl;
 		BPatch_object * obj = i.second;
 		std::vector<Symbol *> tmp;
 		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
-		symt->getAllSymbols(tmp);
+		symt->getAllUndefinedSymbols(tmp);
 		instLibSymbols[i.first] = tmp;
 	}
 	for (auto i : _wrapFunctions) {

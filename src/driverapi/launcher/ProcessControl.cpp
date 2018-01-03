@@ -201,7 +201,21 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 		if (storedSymbol != NULL) {
-			std::cerr << "Symbol is a function " << storedSymbol->isFunction() << std::endl;
+			BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
+			std::vector<Symbol *> tmp;
+			Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
+			symt->findSymbol(tmp, std::get<4>(i), Symbol::ST_UNKNOWN, false, false, true);
+			for (auto n : tmp)
+				std::cerr << "[POST] Symbol: " << n->getMangledName() << " is a function: " << n->isFunction() << std::endl;
+
+			// for (auto i : _loadedLibraries) {
+			// 	BPatch_object * obj = i.second;
+			// 	std::vector<Symbol *> tmp;
+			// 	Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
+			// 	symt->getAllUndefinedSymbols(tmp);
+			// 	instLibSymbols[i.first] = tmp;
+			// }			
+			// std::cerr << "Symbol is a function " << storedSymbol->isFunction() << std::endl;
 		}
 		print = false;
 	}

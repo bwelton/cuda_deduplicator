@@ -236,12 +236,20 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 		if (storedSymbol != NULL) {
-			std::vector<BPatch_function *> fm;
-			img->findFunction("cuInit_dyninst", fm);
+			std::vector<BPatch_module*> changedMods;
+			const std::vector<Dyninst::Address> newAddrs;
+			img->parseNewFunctions(changedMods, newAddrs);
+			for (auto z : changedMods) {
+				char modname[500];
+				z->getName(modname, 500);
+				std::cerr << "Module has added functions: " << modname << std::endl;
+			}
+//			std::vector<BPatch_function *> fm;
+//			img->findFunction("cuInit_dyninst", fm);
 
 			//std::vector<BPatch_function *> fm;
 			//img->findFunction("add_sym_newsymbol", fm);
-			std::cerr << "Found function add_sym_newsymbol: " << fm.size() << std::endl;
+			//std::cerr << "Found function add_sym_newsymbol: " << fm.size() << std::endl;
 
 			// std::vector<BPatch_variableExpr *> vars;
 			// img->getVariables(vars);

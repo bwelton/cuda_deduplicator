@@ -197,15 +197,15 @@ void ProcessController::InstrimentApplication() {
 
 		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
 		Symbol * storedSymbol = NULL;
-		//bool firstPass = true;
+		bool firstPass = true;
 		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
 			// if (print == true)
 			// 	std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::string(std::get<4>(i))) {
-				// if(firstPass){
-				// 	firstPass = false;
-				// 	continue;
-				// }
+				if(firstPass){
+					firstPass = false;
+					continue;
+				}
 				uint64_t ptr;
 				Symbol *newsym = new Symbol("add_sym_newsymbol",
 			      	Symbol::ST_FUNCTION,
@@ -214,6 +214,9 @@ void ProcessController::InstrimentApplication() {
 			      	sym->getOffset(),
 			      	sym->getModule(),
 				  	sym->getRegion());
+				Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
+				assert(symtab->addSymbol(newsym));
+				
 				std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
 				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
 				std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
@@ -231,7 +234,7 @@ void ProcessController::InstrimentApplication() {
 		}
 		if (storedSymbol != NULL) {
 			std::vector<BPatch_function *> fm;
-			_addrSpace->findFunction("add_sym_newsymbol", fm, true, false, true, false);
+			img->findFunction("add_sym_newsymbol", fm, true, false, true, false);
 			std::cerr << "Found function add_sym_newsymbol: " << fm.size() << std::endl;
 
 			// std::vector<BPatch_variableExpr *> vars;

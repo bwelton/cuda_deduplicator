@@ -162,7 +162,7 @@ void ProcessController::InstrimentApplication() {
 			std::cerr << "Global Variable: " << n->getName() << std::endl;
 			std::string curTmp = std::string(n->getName());
 			uint64_t ptr;
-			if (curTmp.find(std::string("ORIGINAL_cuInit")) != std::string::npos) {
+			if (curTmp.find(std::string("ORIGINAL_SOMETHING")) != std::string::npos) {
 				n->readValue((void*)&ptr, sizeof(uint64_t));
 				std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
 			}
@@ -201,7 +201,7 @@ void ProcessController::InstrimentApplication() {
 		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
 			if (print == true)
 				std::cerr << sym->getMangledName() << std::endl;
-			if (sym->getPrettyName() == std::get<4>(i)) {
+			if (sym->getPrettyName() == std::string("ORIGINAL_SOMETHING")) {
 				if(firstPass){
 					firstPass = false;
 					continue;
@@ -225,11 +225,11 @@ void ProcessController::InstrimentApplication() {
 				std::cerr << "Global Variable: " << n->getName() << std::endl;
 				std::string curTmp = std::string(n->getName());
 				uint64_t ptr;
-				if (curTmp.find(std::string("ORIGINAL_cuInit")) != std::string::npos) {
+				if (curTmp.find(std::string("ORIGINAL_SOMETHING")) != std::string::npos) {
 					n->readValue((void*)&ptr, sizeof(uint64_t));
 					std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
-					ptr = 0;
-					n->writeValue((void *)&ptr, int(sizeof(uint64_t)), false);
+					//ptr = 0;
+					//n->writeValue((void *)&ptr, int(sizeof(uint64_t)), false);
 				}
 			}
 			// BPatch_object * obj = _loadedLibraries[std::get<3>(i)];

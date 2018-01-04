@@ -197,7 +197,7 @@ void ProcessController::InstrimentApplication() {
 
 		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
 		// Symbol * storedSymbol = NULL;
-		// bool firstPass = true;
+		bool firstPass = true;
 		// void * baseAddr = orig[0]->getBaseAddr();
 		// orig[0]->relocateFunction();
 		// orig = findFuncByName(img,std::get<1>(i).c_str());

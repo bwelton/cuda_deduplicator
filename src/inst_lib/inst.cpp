@@ -332,11 +332,12 @@ int PerformRewrite(InstStorage * storage, char * outputName) {
 				bool found = false;
 				std::vector<BPatch_object *> objects;
 				appImage->getObjects(objects);
+				std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
 				for (auto mp : objects) {
 					Dyninst::SymtabAPI::Symtab *symtab =  Dyninst::SymtabAPI::convert(mp);
 					std::vector<Symbol *> all_symbols;	
 					symtab->getAllSymbols(all_symbols);
-					std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
+					
 					for (Symbol * sym : all_symbols) {
 						if (sym->getPrettyName() == wrapName) {
 							app->wrapFunction(fun, rep_funcs[0], sym);

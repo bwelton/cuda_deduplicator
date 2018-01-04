@@ -230,7 +230,10 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 		if (storedSymbol != NULL) {
-			
+			std::vector<BPatch_function *> fm;
+			_addrSpace->findFunction("add_sym_newsymbol", fm, true, false, true, false);
+			std::cerr << "Found function add_sym_newsymbol: " << fm.size() << std::endl;
+
 			// std::vector<BPatch_variableExpr *> vars;
 			// img->getVariables(vars);
 			// for (auto n : vars){

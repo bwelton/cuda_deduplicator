@@ -198,43 +198,47 @@ void ProcessController::InstrimentApplication() {
 		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
 		Symbol * storedSymbol = NULL;
 		bool firstPass = true;
-		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
-			// if (print == true)
-			// 	std::cerr << sym->getMangledName() << std::endl;
-			if (sym->getPrettyName() == std::string(std::get<4>(i))) {
-				if(firstPass){
-					firstPass = false;
-					continue;
-				}
-				uint64_t ptr;
-				Symbol *newsym = new Symbol("add_sym_newsymbol",
-			      	Symbol::ST_FUNCTION,
-			      	Symbol::SL_GLOBAL,
-			      	Symbol::SV_DEFAULT,
-			      	sym->getOffset(),
-			      	sym->getModule(),
-				  	sym->getRegion());
+		orig[0]->relocateFunction();
+		
 
-				//Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
+
+		// for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
+		// 	// if (print == true)
+		// 	// 	std::cerr << sym->getMangledName() << std::endl;
+		// 	if (sym->getPrettyName() == std::string(std::get<4>(i))) {
+		// 		if(firstPass){
+		// 			firstPass = false;
+		// 			continue;
+		// 		}
+		// 		uint64_t ptr;
+		// 		Symbol *newsym = new Symbol("add_sym_newsymbol",
+		// 	      	Symbol::ST_FUNCTION,
+		// 	      	Symbol::SL_GLOBAL,
+		// 	      	Symbol::SV_DEFAULT,
+		// 	      	sym->getOffset(),
+		// 	      	sym->getModule(),
+		// 		  	sym->getRegion());
+
+		// 		//Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
 				
-				BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
-				Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
-				assert(symt->addSymbol(newsym));
-				std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
-				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
-				std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
-				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], newsym) == true){
-					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
-					wrapCount += 1;
-					storedSymbol = newsym;
-					//newsym->readValue((void*)&ptr, sizeof(uint64_t));
-					std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
-				}
-				else 
-					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
-				//break;
-			}
-		}
+		// 		BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
+		// 		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
+		// 		assert(symt->addSymbol(newsym));
+		// 		std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
+		// 		//newsym->readValue((void*)&ptr, sizeof(uint64_t));
+		// 		std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
+		// 		if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], newsym) == true){
+		// 			std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
+		// 			wrapCount += 1;
+		// 			storedSymbol = newsym;
+		// 			//newsym->readValue((void*)&ptr, sizeof(uint64_t));
+		// 			std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
+		// 		}
+		// 		else 
+		// 			std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
+		// 		//break;
+		// 	}
+		// }
 		if (storedSymbol != NULL) {
 			std::vector<BPatch_object *> objects;
 			img->getObjects(objects);

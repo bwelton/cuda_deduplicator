@@ -199,8 +199,8 @@ void ProcessController::InstrimentApplication() {
 		Symbol * storedSymbol = NULL;
 		//bool firstPass = true;
 		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
-			if (print == true)
-				std::cerr << sym->getMangledName() << std::endl;
+			// if (print == true)
+			// 	std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::string(std::get<4>(i))) {
 				// if(firstPass){
 				// 	firstPass = false;
@@ -209,13 +209,13 @@ void ProcessController::InstrimentApplication() {
 				uint64_t ptr;
 				std::cerr << "Symbol is a function " << sym->isFunction() << std::endl;
 				//sym->readValue((void*)&ptr, sizeof(uint64_t));
-				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << std::endl;
+				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
 					storedSymbol = sym;
 					//sym->readValue((void*)&ptr, sizeof(uint64_t));
-					std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << std::endl;
+					std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				}
 				else 
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	

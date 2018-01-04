@@ -229,7 +229,7 @@ void ProcessController::InstrimentApplication() {
 					n->readValue((void*)&ptr, sizeof(uint64_t));
 					std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
 					ptr = 0;
-					n->writeValue((void *)&ptr, sizeof(uint64_t));
+					n->writeValue((void *)&ptr, int(sizeof(uint64_t)), false);
 				}
 			}
 			// BPatch_object * obj = _loadedLibraries[std::get<3>(i)];

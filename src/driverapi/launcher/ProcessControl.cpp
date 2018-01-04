@@ -198,8 +198,10 @@ void ProcessController::InstrimentApplication() {
 		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
 		Symbol * storedSymbol = NULL;
 		bool firstPass = true;
+		void * baseAddr = orig[0]->getBaseAddr();
 		orig[0]->relocateFunction();
-		
+		void * baseAddr2 = orig[0]->getBaseAddr();
+		std::cerr << "Base addresses for function: " << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << std::endl;
 
 
 		// for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {

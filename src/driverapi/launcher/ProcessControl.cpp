@@ -155,6 +155,19 @@ void ProcessController::InstrimentApplication() {
 		symt->getAllUndefinedSymbols(tmp);
 		instLibSymbols[i.first] = tmp;
 	}
+	{
+		std::vector<BPatch_variableExpr *> vars;
+		img->getVariables(vars);
+		for (auto n : vars){
+			std::cerr << "Global Variable: " << n->getName() << std::endl;
+			std::string curTmp = std::string(n->getName());
+			uint64_t ptr;
+			if (curTmp.find(std::string("ORIGINAL_cuInit")) != std::string::npos) {
+				n->readValue((void*)&ptr, sizeof(uint64_t));
+				std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
+			}
+		}
+	}
 	for (auto i : _wrapFunctions) {
 		totalFunctions += 1;
 		if (std::get<0>(i).find("wrap") == std::string::npos)
@@ -210,6 +223,12 @@ void ProcessController::InstrimentApplication() {
 			img->getVariables(vars);
 			for (auto n : vars){
 				std::cerr << "Global Variable: " << n->getName() << std::endl;
+				std::string curTmp = std::string(n->getName());
+				uint64_t ptr;
+				if (curTmp.find(std::string("ORIGINAL_cuInit")) != std::string::npos) {
+					n->readValue((void*)&ptr, sizeof(uint64_t));
+					std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
+				}
 			}
 			// BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
 			// std::vector<BPatch_function *> fm;

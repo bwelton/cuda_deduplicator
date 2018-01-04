@@ -203,7 +203,7 @@ void ProcessController::InstrimentApplication() {
 		// orig = findFuncByName(img,std::get<1>(i).c_str());
 		// void * baseAddr2 = orig[0]->getBaseAddr();
 
-		std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << std::endl;
+		//std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << std::endl;
 		// std::vector<BPatch_object *> objects;
 		// img->getObjects(objects);
 		// //std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));

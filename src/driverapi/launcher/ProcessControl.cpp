@@ -263,12 +263,12 @@ void ProcessController::InstrimentApplication() {
 		if (func1n == NULL) {
 			std::cerr << "Could not find func1 " << std::endl;
 		} else {
-			std::cerr << "FUNC1N NAME: " << func1n.getName() << std::endl;
+			std::cerr << "FUNC1N NAME: " << func1n->getName() << std::endl;
 		}
 		if (func2n ==  NULL) {
 			std::cerr << "Could not find func2" << std::endl;
 		} else {
-			std::cerr << "FUNC2N NAME: " << func2n.getName() << std::endl;
+			std::cerr << "FUNC2N NAME: " << func2n->getName() << std::endl;
 		}
 
 		if (storedSymbol != NULL) {

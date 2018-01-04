@@ -155,19 +155,19 @@ void ProcessController::InstrimentApplication() {
 		symt->getAllSymbols(tmp);
 		instLibSymbols[i.first] = tmp;
 	}
-	{
-		std::vector<BPatch_variableExpr *> vars;
-		img->getVariables(vars);
-		for (auto n : vars){
-			std::cerr << "Global Variable: " << n->getName() << std::endl;
-			std::string curTmp = std::string(n->getName());
-			uint64_t ptr;
-			if (curTmp.find(std::string("ORIGINAL_SOMETHING")) != std::string::npos) {
-				n->readValue((void*)&ptr, sizeof(uint64_t));
-				std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
-			}
-		}
-	}
+	// {
+	// 	std::vector<BPatch_variableExpr *> vars;
+	// 	img->getVariables(vars);
+	// 	for (auto n : vars){
+	// 		std::cerr << "Global Variable: " << n->getName() << std::endl;
+	// 		std::string curTmp = std::string(n->getName());
+	// 		uint64_t ptr;
+	// 		if (curTmp.find(std::string("ORIGINAL_SOMETHING")) != std::string::npos) {
+	// 			n->readValue((void*)&ptr, sizeof(uint64_t));
+	// 			std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
+	// 		}
+	// 	}
+	// }
 	for (auto i : _wrapFunctions) {
 		totalFunctions += 1;
 		if (std::get<0>(i).find("wrap") == std::string::npos)
@@ -197,21 +197,25 @@ void ProcessController::InstrimentApplication() {
 
 		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
 		Symbol * storedSymbol = NULL;
-		bool firstPass = true;
+		//bool firstPass = true;
 		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
 			if (print == true)
 				std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::string("ORIGINAL_SOMETHING")) {
-				if(firstPass){
-					firstPass = false;
-					continue;
-				}
-
+				// if(firstPass){
+				// 	firstPass = false;
+				// 	continue;
+				// }
+				uint64_t ptr;
 				std::cerr << "Symbol is a function " << sym->isFunction() << std::endl;
+				sym->readValue((void*)&ptr, sizeof(uint64_t));
+				std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
 					storedSymbol = sym;
+					sym->readValue((void*)&ptr, sizeof(uint64_t));
+					std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
 				}
 				else 
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
@@ -219,19 +223,19 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 		if (storedSymbol != NULL) {
-			std::vector<BPatch_variableExpr *> vars;
-			img->getVariables(vars);
-			for (auto n : vars){
-				std::cerr << "Global Variable: " << n->getName() << std::endl;
-				std::string curTmp = std::string(n->getName());
-				uint64_t ptr;
-				if (curTmp.find(std::string("ORIGINAL_SOMETHING")) != std::string::npos) {
-					n->readValue((void*)&ptr, sizeof(uint64_t));
-					std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
-					//ptr = 0;
-					//n->writeValue((void *)&ptr, int(sizeof(uint64_t)), false);
-				}
-			}
+			// std::vector<BPatch_variableExpr *> vars;
+			// img->getVariables(vars);
+			// for (auto n : vars){
+			// 	std::cerr << "Global Variable: " << n->getName() << std::endl;
+			// 	std::string curTmp = std::string(n->getName());
+			// 	uint64_t ptr;
+			// 	if (curTmp.find(std::string("ORIGINAL_SOMETHING")) != std::string::npos) {
+			// 		n->readValue((void*)&ptr, sizeof(uint64_t));
+			// 		std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
+			// 		//ptr = 0;
+			// 		//n->writeValue((void *)&ptr, int(sizeof(uint64_t)), false);
+			// 	}
+			// }
 			// BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
 			// std::vector<BPatch_function *> fm;
 			// _addrSpace->findFunction(std::get<4>(i).c_str(), fm, true, false, true, false);

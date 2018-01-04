@@ -207,15 +207,22 @@ void ProcessController::InstrimentApplication() {
 				// 	continue;
 				// }
 				uint64_t ptr;
-				std::cerr << "Symbol is a function " << sym->isFunction() << std::endl;
-				//sym->readValue((void*)&ptr, sizeof(uint64_t));
-				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
-				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
+				Symbol *newsym = new Symbol("add_sym_newsymbol",
+			      	Symbol::ST_FUNCTION,
+			      	Symbol::SL_GLOBAL,
+			      	Symbol::SV_DEFAULT,
+			      	sym->getOffset(),
+			      	sym->getModule(),
+				  	sym->getRegion());
+				std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
+				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
+				std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
+				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], newsym) == true){
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
-					storedSymbol = sym;
-					//sym->readValue((void*)&ptr, sizeof(uint64_t));
-					std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
+					storedSymbol = newsym;
+					//newsym->readValue((void*)&ptr, sizeof(uint64_t));
+					std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
 				}
 				else 
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
@@ -223,6 +230,7 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 		if (storedSymbol != NULL) {
+			
 			// std::vector<BPatch_variableExpr *> vars;
 			// img->getVariables(vars);
 			// for (auto n : vars){

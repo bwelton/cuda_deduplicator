@@ -236,14 +236,27 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 		if (storedSymbol != NULL) {
-			std::vector<BPatch_module*> changedMods;
-			const std::vector<Dyninst::Address> newAddrs;
-			img->parseNewFunctions(changedMods, newAddrs);
-			for (auto z : changedMods) {
-				char modname[500];
-				z->getName(modname, 500);
-				std::cerr << "Module has added functions: " << modname << std::endl;
+			std::vector<BPatch_object *> objects;
+			img->getObjects(objects);
+			std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
+			for (auto mp : objects) {
+				Dyninst::SymtabAPI::Symtab *symtab =  Dyninst::SymtabAPI::convert(mp);
+				std::vector<Symbol *> all_symbols;	
+				symtab->getAllSymbols(all_symbols);
+				for (Symbol * sym : all_symbols) {
+					if (sym->getPrettyName().find(std::string("_dyninst")) != std::string::npos) {
+						std::cerr << "DYNINST SYMBOL: " << sym->getPrettyName() << std::endl;
+					}
+				}
 			}
+			// std::vector<BPatch_module*> changedMods;
+			// const std::vector<Dyninst::Address> newAddrs;
+			// img->parseNewFunctions(changedMods, newAddrs);
+			// for (auto z : changedMods) {
+			// 	char modname[500];
+			// 	z->getName(modname, 500);
+			// 	std::cerr << "Module has added functions: " << modname << std::endl;
+			// }
 //			std::vector<BPatch_function *> fm;
 //			img->findFunction("cuInit_dyninst", fm);
 

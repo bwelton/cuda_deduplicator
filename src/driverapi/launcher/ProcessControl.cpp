@@ -214,7 +214,7 @@ void ProcessController::InstrimentApplication() {
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
 					storedSymbol = sym;
-					sym->readValue((void*)&ptr, sizeof(uint64_t));
+					//sym->readValue((void*)&ptr, sizeof(uint64_t));
 					std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << std::endl;
 				}
 				else 

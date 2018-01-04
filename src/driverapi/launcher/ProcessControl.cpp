@@ -237,7 +237,10 @@ void ProcessController::InstrimentApplication() {
 		}
 		if (storedSymbol != NULL) {
 			std::vector<BPatch_function *> fm;
-			img->findFunction("add_sym_newsymbol", fm);
+			img->findFunction("cuInit_dyninst", fm);
+
+			//std::vector<BPatch_function *> fm;
+			//img->findFunction("add_sym_newsymbol", fm);
 			std::cerr << "Found function add_sym_newsymbol: " << fm.size() << std::endl;
 
 			// std::vector<BPatch_variableExpr *> vars;

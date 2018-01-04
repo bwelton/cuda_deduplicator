@@ -214,9 +214,12 @@ void ProcessController::InstrimentApplication() {
 			      	sym->getOffset(),
 			      	sym->getModule(),
 				  	sym->getRegion());
-				Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
-				assert(symtab->addSymbol(newsym));
+
+				//Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
 				
+				BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
+				Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
+				assert(symt->addSymbol(newsym));
 				std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
 				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
 				std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
@@ -234,7 +237,7 @@ void ProcessController::InstrimentApplication() {
 		}
 		if (storedSymbol != NULL) {
 			std::vector<BPatch_function *> fm;
-			img->findFunction("add_sym_newsymbol", fm, true, false, true, false);
+			img->findFunction("add_sym_newsymbol", fm);
 			std::cerr << "Found function add_sym_newsymbol: " << fm.size() << std::endl;
 
 			// std::vector<BPatch_variableExpr *> vars;

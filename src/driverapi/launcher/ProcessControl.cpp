@@ -209,7 +209,7 @@ void ProcessController::InstrimentApplication() {
 			std::vector<BPatch_variableExpr *> vars;
 			img->getVariables(vars);
 			for (auto n : vars){
-				std::cerr << "Global Variable: " << vars.getName() << std::endl;
+				std::cerr << "Global Variable: " << n->getName() << std::endl;
 			}
 			// BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
 			// std::vector<BPatch_function *> fm;

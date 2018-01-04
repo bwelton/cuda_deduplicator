@@ -206,12 +206,20 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 		if (storedSymbol != NULL) {
-			BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
-			std::vector<Symbol *> tmp;
-			Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
-			symt->findSymbol(tmp, std::get<4>(i).c_str(), Symbol::ST_UNKNOWN, mangledName, false, false, true);
-			for (auto n : tmp)
-				std::cerr << "[POST] Symbol: " << n->getMangledName() << " is a function: " << n->isFunction() << std::endl;
+			std::vector<BPatch_variableExpr *> vars;
+			img->getVariables(vars);
+			for (auto n : vars){
+				std::cerr << "Global Variable: " << vars.getName() << std::endl;
+			}
+			// BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
+			// std::vector<BPatch_function *> fm;
+			// _addrSpace->findFunction(std::get<4>(i).c_str(), fm, true, false, true, false);
+
+			// std::vector<Symbol *> tmp;
+			// Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
+			// symt->findSymbol(tmp, std::get<4>(i).c_str(), Symbol::ST_UNKNOWN, mangledName, false, false, true);
+			// for (auto n : tmp)
+			// 	std::cerr << "[POST] Symbol: " << n->getMangledName() << " is a function: " << n->isFunction() << std::endl;
 
 			// for (auto i : _loadedLibraries) {
 			// 	BPatch_object * obj = i.second;

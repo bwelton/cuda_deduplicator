@@ -238,7 +238,7 @@ void ProcessController::InstrimentApplication() {
 		if (storedSymbol != NULL) {
 			std::vector<BPatch_object *> objects;
 			img->getObjects(objects);
-			std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
+			//std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
 			for (auto mp : objects) {
 				Dyninst::SymtabAPI::Symtab *symtab =  Dyninst::SymtabAPI::convert(mp);
 				std::vector<Symbol *> all_symbols;	

@@ -228,6 +228,8 @@ void ProcessController::InstrimentApplication() {
 				if (curTmp.find(std::string("ORIGINAL_cuInit")) != std::string::npos) {
 					n->readValue((void*)&ptr, sizeof(uint64_t));
 					std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
+					ptr = 0;
+					n->writeValue((void *)&ptr, sizeof(uint64_t));
 				}
 			}
 			// BPatch_object * obj = _loadedLibraries[std::get<3>(i)];

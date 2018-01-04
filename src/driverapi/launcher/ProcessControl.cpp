@@ -258,6 +258,19 @@ void ProcessController::InstrimentApplication() {
 		}
 		void * baseAddr2 = orig[0]->GetRelocatedAddress();
 		std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << std::endl;
+		BPatch_function * func1n = _addrSpace->findFunctionByAddr(baseAddr);
+		BPatch_function * func2n = _addrSpace->findFunctionByAddr(baseAddr2);
+		if (func1n == NULL) {
+			std::cerr << "Could not find func1 " << std::endl;
+		} else {
+			std::cerr << "FUNC1N NAME: " << func1n.getName() << std::endl;
+		}
+		if (func2n ==  NULL) {
+			std::cerr << "Could not find func2" << std::endl;
+		} else {
+			std::cerr << "FUNC2N NAME: " << func2n.getName() << std::endl;
+		}
+
 		if (storedSymbol != NULL) {
 			std::vector<BPatch_object *> objects;
 			img->getObjects(objects);

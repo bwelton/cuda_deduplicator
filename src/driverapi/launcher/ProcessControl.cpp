@@ -200,22 +200,24 @@ void ProcessController::InstrimentApplication() {
 		bool firstPass = true;
 		void * baseAddr = orig[0]->getBaseAddr();
 		orig[0]->relocateFunction();
+		orig = findFuncByName(img,std::get<1>(i).c_str());
 		void * baseAddr2 = orig[0]->getBaseAddr();
-		std::cerr << "Base addresses for function: " << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << std::endl;
-		std::vector<BPatch_object *> objects;
-		img->getObjects(objects);
-		//std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
-		for (auto mp : objects) {
-			Dyninst::SymtabAPI::Symtab *symtab =  Dyninst::SymtabAPI::convert(mp);
-			std::vector<Symbol *> all_symbols;	
-			symtab->getAllSymbols(all_symbols);
-			for (Symbol * sym : all_symbols) {
-				if (sym->getPrettyName().find(std::string("_dyninst")) != std::string::npos) {
-					std::cerr << "DYNINST SYMBOL: " << sym->getPrettyName() << std::endl;
-				}
-			}
-		}
-		
+
+		std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << std::endl;
+		// std::vector<BPatch_object *> objects;
+		// img->getObjects(objects);
+		// //std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
+		// for (auto mp : objects) {
+		// 	Dyninst::SymtabAPI::Symtab *symtab =  Dyninst::SymtabAPI::convert(mp);
+		// 	std::vector<Symbol *> all_symbols;	
+		// 	symtab->getAllSymbols(all_symbols);
+		// 	for (Symbol * sym : all_symbols) {
+		// 		if (sym->getPrettyName().find(std::string("_dyninst")) != std::string::npos) {
+		// 			std::cerr << "DYNINST SYMBOL: " << sym->getPrettyName() << std::endl;
+		// 		}
+		// 	}
+		// }
+
 
 		// for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
 		// 	// if (print == true)

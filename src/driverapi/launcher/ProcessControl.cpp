@@ -257,8 +257,10 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 		void * baseAddr2 = orig[0]->GetRelocatedAddress();
-		std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << std::endl;
+		std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << ","
+				  << std::hex << orig[0]->getBaseAddr() << std::dec << std::endl;
 		std::vector<BPatch_function *> newf = findFuncByName(img,"ORIGINAL_cuInit");		
+
 		std::cerr << "ORIGINAL_cuInit: " << newf.size() << "," << std::hex << newf[0]->getBaseAddr() << std::dec << std::endl;
 		BPatch_function * func1n = _addrSpace->findFunctionByAddr(baseAddr);
 		BPatch_function * func2n = _addrSpace->findFunctionByAddr(baseAddr2);

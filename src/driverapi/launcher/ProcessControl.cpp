@@ -223,18 +223,18 @@ void ProcessController::InstrimentApplication() {
 			// if (print == true)
 			// 	std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::string(std::get<4>(i))) {
-				if(firstPass){
-					firstPass = false;
-					continue;
-				}
+				// if(firstPass){
+				// 	firstPass = false;
+				// 	continue;
+				// }
 				uint64_t ptr;
-				Symbol *newsym = new Symbol("add_sym_newsymbol",
-			      	Symbol::ST_FUNCTION,
-			      	Symbol::SL_GLOBAL,
-			      	Symbol::SV_DEFAULT,
-			      	sym->getOffset(),
-			      	sym->getModule(),
-				  	sym->getRegion());
+				// Symbol *newsym = new Symbol("add_sym_newsymbol",
+			 //      	Symbol::ST_FUNCTION,
+			 //      	Symbol::SL_GLOBAL,
+			 //      	Symbol::SV_DEFAULT,
+			 //      	sym->getOffset(),
+			 //      	sym->getModule(),
+				//   	sym->getRegion());
 
 				//Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
 				

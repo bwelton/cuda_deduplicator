@@ -249,7 +249,7 @@ void ProcessController::InstrimentApplication() {
 					wrapCount += 1;
 					storedSymbol = newsym;
 					//newsym->readValue((void*)&ptr, sizeof(uint64_t));
-					std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
+					std::cerr << "VALUE: " << std::hex << sym->getOffset() << std::dec << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				}
 				else 
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	

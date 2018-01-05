@@ -243,13 +243,13 @@ void ProcessController::InstrimentApplication() {
 				assert(symt->addSymbol(newsym));
 				std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
 				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
-				std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
+				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
 					storedSymbol = newsym;
 					//newsym->readValue((void*)&ptr, sizeof(uint64_t));
-					std::cerr << "VALUE: " << newsym->getOffset() << "," << newsym->getPtrOffset() << "," << newsym->isVariable() << "," << newsym->getIndex() << std::endl;
+					std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				}
 				else 
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	

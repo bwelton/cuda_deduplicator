@@ -241,13 +241,13 @@ void ProcessController::InstrimentApplication() {
 				BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
 				Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
 				//assert(symt->addSymbol(newsym));
-				std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
+				//std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
 				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
 				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
-					storedSymbol = newsym;
+					storedSymbol = sym;
 					//newsym->readValue((void*)&ptr, sizeof(uint64_t));
 					std::cerr << "VALUE: " << std::hex << sym->getOffset() << std::dec << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				}

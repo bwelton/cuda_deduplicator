@@ -240,7 +240,7 @@ void ProcessController::InstrimentApplication() {
 				
 				BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
 				Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
-				assert(symt->addSymbol(newsym));
+				//assert(symt->addSymbol(newsym));
 				std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
 				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
 				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;

@@ -223,10 +223,10 @@ void ProcessController::InstrimentApplication() {
 			// if (print == true)
 			// 	std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::string(std::get<4>(i))) {
-				// if(firstPass){
-				// 	firstPass = false;
-				// 	continue;
-				// }
+				if(firstPass){
+					firstPass = false;
+					continue;
+				}
 				uint64_t ptr;
 				// Symbol *newsym = new Symbol("add_sym_newsymbol",
 			 //      	Symbol::ST_FUNCTION,
@@ -257,6 +257,16 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 		void * baseAddr2 = orig[0]->GetRelocatedAddress();
+		std::vector<BPatch_variableExpr *> vars;
+		img->getVariables(vars);
+		for (auto n : vars){
+			std::string curTmp = std::string(n->getName());
+			if (curTmp.find(std::string("testingCUINIT")) != std::string::npos) {
+				//uint64_t ptr = (uint64_t)baseAddr2;
+				n->writeValue(baseAddr2, int(sizeof(uint64_t)), false);
+				break;
+			}
+		}
 		std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << ","
 				  << std::hex << orig[0]->getBaseAddr() << std::dec << std::endl;
 		std::vector<BPatch_function *> newf = findFuncByName(img,"ORIGINAL_cuInit");		

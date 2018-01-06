@@ -42,6 +42,8 @@ int INTER_cuGetErrorName( CUresult error, const char * * pStr ) {
 // This "function" will be rewritten to point to cuInit
 extern int ORIGINAL_cuInit( unsigned int Flags ); //{ fprintf(stderr, "%s\n", "WE SHOULD NEVER BE HERE WHY?????";
 
+void * testingCUINIT;
+
 //void * ORIGINAL_SOMETHING = NULL;
 // This is the call that will take the place of the original
 int INTER_cuInit( unsigned int Flags ) {
@@ -52,12 +54,14 @@ int INTER_cuInit( unsigned int Flags ) {
 	// ORIGINAL_cuInit(Flags);
 	// fprintf(stderr, "Done CUInit\n");
 	std::vector<void **> params = { (void **)&Flags };
-	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuInit, (void*) &ORIGINAL_cuInit, params));
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuInit, (void*) testingCUINIT, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
 }
 // This "function" will be rewritten to point to cuDriverGetVersion
 extern int ORIGINAL_cuDriverGetVersion( int * driverVersion ) ;
+
+
 
 // This is the call that will take the place of the original
 int INTER_cuDriverGetVersion( int * driverVersion ) {
@@ -3039,7 +3043,7 @@ EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned int,size_t,size_t)> Bo
 extern "C" void DefineBinders() {
 	Bound_cuGetErrorString = std::bind(&ORIGINAL_cuGetErrorString,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuGetErrorName = std::bind(&ORIGINAL_cuGetErrorName,std::placeholders::_1,std::placeholders::_2);
-	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);
+	Bound_cuInit = std::bind((int(*)(unsigned int))testingCUINIT,std::placeholders::_1);
 	Bound_cuDriverGetVersion = std::bind(&ORIGINAL_cuDriverGetVersion,std::placeholders::_1);
 	Bound_cuDeviceGet = std::bind(&ORIGINAL_cuDeviceGet,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuDeviceGetCount = std::bind(&ORIGINAL_cuDeviceGetCount,std::placeholders::_1);

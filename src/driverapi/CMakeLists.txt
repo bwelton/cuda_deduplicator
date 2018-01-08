@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES(StubLib ${CMAKE_SOURCE_DIR}/src/driverapi)
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
 target_link_libraries(StubLib "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti")
 set_property(TARGET StubLib PROPERTY POSITION_INDEPENDENT_CODE ON)
+add_compile_options(-O0 -g -fno-jump-tables)
 add_dependencies(StubLib dyninst)
 install(TARGETS StubLib
         RUNTIME DESTINATION bin
@@ -16,7 +17,7 @@ install(TARGETS StubLib
         ARCHIVE DESTINATION lib/static)
 
 add_library(DriverAPIWrapper SHARED "Parameters.cpp" "DriverWrapperBase.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp" "MemoryTransfer.cpp")
-add_compile_options(-O0 -g)
+add_compile_options(-O0 -g -fno-jump-tables)
 target_link_libraries(DriverAPIWrapper ${Boost_LIBRARIES})
 target_link_libraries(DriverAPIWrapper ${DYNINST_LIBRARIES})
 target_link_libraries(DriverAPIWrapper "-lpthread")

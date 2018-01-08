@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(StubLib ${Boost_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(StubLib ${CMAKE_SOURCE_DIR}/src/driverapi)
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
 target_link_libraries(StubLib "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti")
+set_property(TARGET StubLib PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_dependencies(StubLib dyninst)
 install(TARGETS StubLib
         RUNTIME DESTINATION bin
@@ -25,6 +26,7 @@ INCLUDE_DIRECTORIES(DriverAPIWrapper ${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/inclu
 INCLUDE_DIRECTORIES(DriverAPIWrapper ${Boost_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(DriverAPIWrapper ${CMAKE_SOURCE_DIR}/src/driverapi)
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+set_property(TARGET DriverAPIWrapper PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(DriverAPIWrapper "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti")
 add_dependencies(DriverAPIWrapper dyninst)
 install(TARGETS DriverAPIWrapper

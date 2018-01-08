@@ -1,3 +1,4 @@
+add_compile_options(-O0 -g -fno-jump-tables -fPIE)
 add_library(StubLib SHARED "StubLib.cpp")
 target_link_libraries(StubLib ${Boost_LIBRARIES})
 target_link_libraries(StubLib ${DYNINST_LIBRARIES})
@@ -17,7 +18,6 @@ install(TARGETS StubLib
         ARCHIVE DESTINATION lib/static)
 
 add_library(DriverAPIWrapper SHARED "Parameters.cpp" "DriverWrapperBase.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp" "MemoryTransfer.cpp")
-add_compile_options(-O0 -g -fno-jump-tables)
 target_link_libraries(DriverAPIWrapper ${Boost_LIBRARIES})
 target_link_libraries(DriverAPIWrapper ${DYNINST_LIBRARIES})
 target_link_libraries(DriverAPIWrapper "-lpthread")

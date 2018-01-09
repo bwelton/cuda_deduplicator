@@ -262,7 +262,7 @@ void ProcessController::InstrimentApplication() {
 					for (auto mn : varvect){
 						std::vector<Symbol *> varSyms;
 						assert(true == mn->getSymbols(varSyms));
-						for (mm : varSyms)
+						for (auto mm : varSyms)
 							std::cerr << "[PROCCTR] Variable - " << mm->getPrettyName() << std::endl;
 					}
 

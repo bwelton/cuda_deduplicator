@@ -253,7 +253,8 @@ void ProcessController::InstrimentApplication() {
 
 					//std::vector<Dyninst::SymtabAPI::relocationEntry> entries = reg->getRelocations();
 					for (auto mn : entries)
-							std::cerr << "[PROCCTR] Found Relocation Entry - " << std::hex << mn.target_addr() << std::dec 
+						if(mn.name().find("ORIGINAL_cuInit") != std::string::npos)
+							std::cerr << "[PROCCTR] Found Relocation Entry - " << mn.name() << "," << std::hex << mn.target_addr() << std::dec 
 						              << "," << std::hex << mn.rel_addr() << std::dec << std::endl;
 					//}
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;

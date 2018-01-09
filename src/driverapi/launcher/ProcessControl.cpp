@@ -246,6 +246,10 @@ void ProcessController::InstrimentApplication() {
 				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
 				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
+					fprintf(stderr, "%s\n", "[PROCCTR] cuInit Information: ");
+                    fprintf(stderr, "[PROCCTR] Module Name: %s\n", sym->getModule().c_str());
+                    fprintf(stderr, "[PROCCTR] Offset: %llu getPtrOffset: %llu getLocalTOC: %llu\n", sym->getOffset(), sym->getPtrOffset(), sym->getLocalTOC());
+                    fprintf(stderr, "[PROCCTR] Region Name: %s\n", sym->getRegion()->getRegionName().c_str());
 					std::vector<Dyninst::SymtabAPI::relocationEntry> entries;
 					symt->getFuncBindingTable(entries);
 					Dyninst::SymtabAPI::Region * reg = sym->getRegion();
@@ -254,17 +258,17 @@ void ProcessController::InstrimentApplication() {
 
 					//if (reg != NULL) {
 
-					//std::vector<Dyninst::SymtabAPI::relocationEntry> entries = reg->getRelocations();
-					for (auto mn : entries)
-							std::cerr << "[PROCCTR] Found Relocation Entry - " << mn.name() << "," << std::hex << mn.target_addr() << std::dec 
-						              << "," << std::hex << mn.rel_addr() << std::dec << std::endl;
-					//}
-					for (auto mn : varvect){
-						std::vector<Symbol *> varSyms;
-						assert(true == mn->getSymbols(varSyms));
-						for (auto mm : varSyms)
-							std::cerr << "[PROCCTR] Variable - " << mm->getPrettyName() << std::endl;
-					}
+					// //std::vector<Dyninst::SymtabAPI::relocationEntry> entries = reg->getRelocations();
+					// for (auto mn : entries)
+					// 		std::cerr << "[PROCCTR] Found Relocation Entry - " << mn.name() << "," << std::hex << mn.target_addr() << std::dec 
+					// 	              << "," << std::hex << mn.rel_addr() << std::dec << std::endl;
+					// //}
+					// for (auto mn : varvect){
+					// 	std::vector<Symbol *> varSyms;
+					// 	assert(true == mn->getSymbols(varSyms));
+					// 	for (auto mm : varSyms)
+					// 		std::cerr << "[PROCCTR] Variable - " << mm->getPrettyName() << std::endl;
+					// }
 
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;

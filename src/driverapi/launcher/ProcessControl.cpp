@@ -240,19 +240,23 @@ void ProcessController::InstrimentApplication() {
 				
 				BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
 				Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
+
 				//assert(symt->addSymbol(newsym));
 				//std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
 				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
 				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
+					std::vector<Dyninst::SymtabAPI::relocationEntry> entries;
+					symt->getFuncBindingTable(entries);
 					Dyninst::SymtabAPI::Region * reg = sym->getRegion();
-					if (reg != NULL) {
-					std::vector<Dyninst::SymtabAPI::relocationEntry> entries = reg->getRelocations();
+					//if (reg != NULL) {
+
+					//std::vector<Dyninst::SymtabAPI::relocationEntry> entries = reg->getRelocations();
 					for (auto mn : entries)
 						if(mn.name().find("ORIGINAL_cuInit") != std::string::npos)
 							std::cerr << "[PROCCTR] Found Relocation Entry - " << std::hex << mn.target_addr() << std::dec 
 						              << "," << std::hex << mn.rel_addr() << std::dec << std::endl;
-					}
+					//}
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
 					storedSymbol = sym;

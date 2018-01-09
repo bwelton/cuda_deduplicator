@@ -186,7 +186,7 @@ void ProcessController::InstrimentApplication() {
 		}
 		
 		// Find Hook Symbol	
-		if (instLibSymbols.find("mysymbols") == instLibSymbols.end()) {
+		if (instLibSymbols.find(std::get<3>(i)) == instLibSymbols.end()) {
 			assert(1 == 0);
 			std::vector<Symbol *> tmp;
 			Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());

@@ -259,9 +259,13 @@ void ProcessController::InstrimentApplication() {
 							std::cerr << "[PROCCTR] Found Relocation Entry - " << mn.name() << "," << std::hex << mn.target_addr() << std::dec 
 						              << "," << std::hex << mn.rel_addr() << std::dec << std::endl;
 					//}
-					for (auto mn : varvect) 
-						std::cerr << "[PROCCTR] Variable - " << mn->getName() << std::endl;
-					
+					for (auto mn : varvect){
+						std::vector<Symbol *> varSyms;
+						assert(true == mn->getSymbols(varSyms));
+						for (mm : varSyms)
+							std::cerr << "[PROCCTR] Variable - " << mm->getPrettyName() << std::endl;
+					}
+
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
 					storedSymbol = sym;

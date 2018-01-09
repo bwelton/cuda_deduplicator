@@ -153,7 +153,7 @@ void ProcessController::InstrimentApplication() {
 		std::vector<Symbol *> tmp;
 		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
 		symt->getAllSymbols(tmp);
-		instLibSymbols[i.first] = tmp;
+		instLibSymbols["mysymbols"].insert(instLibSymbols["mysymbols"].end(),tmp.begin(),tmp.end());
 	}
 	// {
 	// 	std::vector<BPatch_variableExpr *> vars;
@@ -186,7 +186,7 @@ void ProcessController::InstrimentApplication() {
 		}
 		
 		// Find Hook Symbol	
-		if (instLibSymbols.find(std::get<3>(i)) == instLibSymbols.end()) {
+		if (instLibSymbols.find("mysymbols") == instLibSymbols.end()) {
 			assert(1 == 0);
 			std::vector<Symbol *> tmp;
 			Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
@@ -219,7 +219,7 @@ void ProcessController::InstrimentApplication() {
 		// }
 
 
-		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
+		for (Symbol * sym : instLibSymbols["mysymbols"]) {
 			// if (print == true)
 			// 	std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::string(std::get<4>(i))) {

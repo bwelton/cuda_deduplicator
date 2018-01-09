@@ -153,7 +153,7 @@ void ProcessController::InstrimentApplication() {
 		std::vector<Symbol *> tmp;
 		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
 		symt->getAllSymbols(tmp);
-		instLibSymbols["mysymbols"].insert(instLibSymbols["mysymbols"].end(),tmp.begin(),tmp.end());
+		instLibSymbols[i.first].insert(instLibSymbols[i.first].end(),tmp.begin(),tmp.end());
 	}
 	// {
 	// 	std::vector<BPatch_variableExpr *> vars;
@@ -219,7 +219,7 @@ void ProcessController::InstrimentApplication() {
 		// }
 
 
-		for (Symbol * sym : instLibSymbols["mysymbols"]) {
+		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
 			// if (print == true)
 			// 	std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::string(std::get<4>(i))) {
@@ -253,7 +253,6 @@ void ProcessController::InstrimentApplication() {
 
 					//std::vector<Dyninst::SymtabAPI::relocationEntry> entries = reg->getRelocations();
 					for (auto mn : entries)
-						if(mn.name().find("ORIGINAL_cuInit") != std::string::npos)
 							std::cerr << "[PROCCTR] Found Relocation Entry - " << std::hex << mn.target_addr() << std::dec 
 						              << "," << std::hex << mn.rel_addr() << std::dec << std::endl;
 					//}
@@ -265,7 +264,7 @@ void ProcessController::InstrimentApplication() {
 				}
 				else 
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
-				//break;
+				break;
 			}
 		}
 		void * baseAddr2 = orig[0]->GetRelocatedAddress();

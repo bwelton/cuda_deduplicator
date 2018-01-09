@@ -248,9 +248,9 @@ void ProcessController::InstrimentApplication() {
 					Dyninst::SymtabAPI::Region * reg = sym->getRegion();
 					std::vector<Dyninst::SymtabAPI::relocationEntry> entries = reg->getRelocations();
 					for (auto mn : entries)
-						if(mn->name.find("ORIGINAL_cuInit") != std::string::npos)
-							std::cerr << "[PROCCTR] Found Relocation Entry - " << std::hex << mn->target_addr() << std::dec 
-						              << "," << std::hex << mn->rel_addr() << std::dec << std::endl;
+						if(mn.name.find("ORIGINAL_cuInit") != std::string::npos)
+							std::cerr << "[PROCCTR] Found Relocation Entry - " << std::hex << mn.target_addr() << std::dec 
+						              << "," << std::hex << mn.rel_addr() << std::dec << std::endl;
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
 					wrapCount += 1;
 					storedSymbol = sym;

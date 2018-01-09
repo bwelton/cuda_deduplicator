@@ -247,7 +247,7 @@ void ProcessController::InstrimentApplication() {
 				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
 					fprintf(stderr, "%s\n", "[PROCCTR] cuInit Information: ");
-                    fprintf(stderr, "[PROCCTR] Module Name: %s\n", sym->getModule().c_str());
+                    fprintf(stderr, "[PROCCTR] Module Name: %s\n", sym->getModule()->getFile().c_str());
                     fprintf(stderr, "[PROCCTR] Offset: %llu getPtrOffset: %llu getLocalTOC: %llu\n", sym->getOffset(), sym->getPtrOffset(), sym->getLocalTOC());
                     fprintf(stderr, "[PROCCTR] Region Name: %s\n", sym->getRegion()->getRegionName().c_str());
 					std::vector<Dyninst::SymtabAPI::relocationEntry> entries;

@@ -247,7 +247,7 @@ void ProcessController::InstrimentApplication() {
 				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
 					char tmpp[500];
-					wrapfunc[0]->getModule()->getName(tmp,500);
+					wrapfunc[0]->getModule()->getName(tmpp,500);
 					std::cerr << "cuInit Module: " << tmpp << std::endl;
 					fprintf(stderr, "%s\n", "[PROCCTR] cuInit Information: ");
 					if (sym->getModule() != NULL)

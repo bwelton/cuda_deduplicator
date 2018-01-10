@@ -198,7 +198,7 @@ void ProcessController::InstrimentApplication() {
 		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
 		 Symbol * storedSymbol = NULL;
 		bool firstPass = true;
-		void * baseAddr = orig[0]->getBaseAddr();
+		// void * baseAddr = orig[0]->getBaseAddr();
 		// orig[0]->relocateFunction();
 		// orig = findFuncByName(img,std::get<1>(i).c_str());
 		// void * baseAddr2 = orig[0]->getBaseAddr();
@@ -244,22 +244,22 @@ void ProcessController::InstrimentApplication() {
 				//assert(symt->addSymbol(newsym));
 				//std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
 				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
-				std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
+				// std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
-					char tmpp[500];
-					wrapfunc[0]->getModule()->getName(tmpp,500);
-					std::cerr << "cuInit Module: " << tmpp << std::endl;
-					fprintf(stderr, "%s\n", "[PROCCTR] cuInit Information: ");
-					if (sym->getModule() != NULL)
-                    	fprintf(stderr, "[PROCCTR] Module Addr: %llu\n", sym->getModule()->addr());
-                    fprintf(stderr, "[PROCCTR] Offset: %llu getPtrOffset: %llu getLocalTOC: %llu\n", sym->getOffset(), sym->getPtrOffset(), sym->getLocalTOC());
-                    if (sym->getRegion() != NULL)
-                    	fprintf(stderr, "[PROCCTR] Region Name: %s\n", sym->getRegion()->getRegionName().c_str());
-					std::vector<Dyninst::SymtabAPI::relocationEntry> entries;
-					symt->getFuncBindingTable(entries);
-					Dyninst::SymtabAPI::Region * reg = sym->getRegion();
-					std::vector<Dyninst::SymtabAPI::Variable *> varvect;
-					symt->getAllVariables(varvect);
+					// char tmpp[500];
+					// wrapfunc[0]->getModule()->getName(tmpp,500);
+					// std::cerr << "cuInit Module: " << tmpp << std::endl;
+					// fprintf(stderr, "%s\n", "[PROCCTR] cuInit Information: ");
+					// if (sym->getModule() != NULL)
+     //                	fprintf(stderr, "[PROCCTR] Module Addr: %llu\n", sym->getModule()->addr());
+     //                fprintf(stderr, "[PROCCTR] Offset: %llu getPtrOffset: %llu getLocalTOC: %llu\n", sym->getOffset(), sym->getPtrOffset(), sym->getLocalTOC());
+     //                if (sym->getRegion() != NULL)
+     //                	fprintf(stderr, "[PROCCTR] Region Name: %s\n", sym->getRegion()->getRegionName().c_str());
+					// std::vector<Dyninst::SymtabAPI::relocationEntry> entries;
+					// symt->getFuncBindingTable(entries);
+					// Dyninst::SymtabAPI::Region * reg = sym->getRegion();
+					// std::vector<Dyninst::SymtabAPI::Variable *> varvect;
+					// symt->getAllVariables(varvect);
 
 					//if (reg != NULL) {
 
@@ -286,39 +286,39 @@ void ProcessController::InstrimentApplication() {
 				break;
 			}
 		}
-		void * baseAddr2 = orig[0]->GetRelocatedAddress();
-		std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << ","
-				  << std::hex << orig[0]->getBaseAddr() << std::dec << std::endl;
-		std::vector<BPatch_function *> newf = findFuncByName(img,"ORIGINAL_cuInit");		
+		// void * baseAddr2 = orig[0]->GetRelocatedAddress();
+		// std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << ","
+		// 		  << std::hex << orig[0]->getBaseAddr() << std::dec << std::endl;
+		// std::vector<BPatch_function *> newf = findFuncByName(img,"ORIGINAL_cuInit");		
 
-		std::cerr << "ORIGINAL_cuInit: " << newf.size() << "," << std::hex << newf[0]->getBaseAddr() << std::dec << std::endl;
-		BPatch_function * func1n = _addrSpace->findFunctionByAddr(baseAddr);
-		BPatch_function * func2n = _addrSpace->findFunctionByAddr(baseAddr2);
-		if (func1n == NULL) {
-			std::cerr << "Could not find func1 " << std::endl;
-		} else {
-			std::cerr << "FUNC1N NAME: " << func1n->getName() << std::endl;
-		}
-		if (func2n ==  NULL) {
-			std::cerr << "Could not find func2" << std::endl;
-		} else {
-			std::cerr << "FUNC2N NAME: " << func2n->getName() << std::endl;
-		}
+		// std::cerr << "ORIGINAL_cuInit: " << newf.size() << "," << std::hex << newf[0]->getBaseAddr() << std::dec << std::endl;
+		// BPatch_function * func1n = _addrSpace->findFunctionByAddr(baseAddr);
+		// BPatch_function * func2n = _addrSpace->findFunctionByAddr(baseAddr2);
+		// if (func1n == NULL) {
+		// 	std::cerr << "Could not find func1 " << std::endl;
+		// } else {
+		// 	std::cerr << "FUNC1N NAME: " << func1n->getName() << std::endl;
+		// }
+		// if (func2n ==  NULL) {
+		// 	std::cerr << "Could not find func2" << std::endl;
+		// } else {
+		// 	std::cerr << "FUNC2N NAME: " << func2n->getName() << std::endl;
+		// }
 
 		if (storedSymbol != NULL) {
-			std::vector<BPatch_object *> objects;
-			img->getObjects(objects);
-			//std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
-			for (auto mp : objects) {
-				Dyninst::SymtabAPI::Symtab *symtab =  Dyninst::SymtabAPI::convert(mp);
-				std::vector<Symbol *> all_symbols;	
-				symtab->getAllSymbols(all_symbols);
-				for (Symbol * sym : all_symbols) {
-					if (sym->getPrettyName().find(std::string("_dyninst")) != std::string::npos) {
-						std::cerr << "DYNINST SYMBOL: " << sym->getPrettyName() << std::endl;
-					}
-				}
-			}
+			// std::vector<BPatch_object *> objects;
+			// img->getObjects(objects);
+			// //std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
+			// for (auto mp : objects) {
+			// 	Dyninst::SymtabAPI::Symtab *symtab =  Dyninst::SymtabAPI::convert(mp);
+			// 	std::vector<Symbol *> all_symbols;	
+			// 	symtab->getAllSymbols(all_symbols);
+			// 	for (Symbol * sym : all_symbols) {
+			// 		if (sym->getPrettyName().find(std::string("_dyninst")) != std::string::npos) {
+			// 			std::cerr << "DYNINST SYMBOL: " << sym->getPrettyName() << std::endl;
+			// 		}
+			// 	}
+			// }
 			// std::vector<BPatch_module*> changedMods;
 			// const std::vector<Dyninst::Address> newAddrs;
 			// img->parseNewFunctions(changedMods, newAddrs);

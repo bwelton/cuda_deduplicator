@@ -1,4 +1,4 @@
-add_compile_options(-O0 -g -fno-jump-tables)
+add_compile_options(-O3 -g)
 add_library(StubLib SHARED "StubLib.cpp")
 target_link_libraries(StubLib ${Boost_LIBRARIES})
 target_link_libraries(StubLib ${DYNINST_LIBRARIES})
@@ -10,7 +10,6 @@ INCLUDE_DIRECTORIES(StubLib ${CMAKE_SOURCE_DIR}/src/driverapi)
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
 target_link_libraries(StubLib "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti")
 set_property(TARGET StubLib PROPERTY POSITION_INDEPENDENT_CODE ON)
-add_compile_options(-O0 -g -fno-jump-tables)
 add_dependencies(StubLib dyninst)
 install(TARGETS StubLib
         RUNTIME DESTINATION bin

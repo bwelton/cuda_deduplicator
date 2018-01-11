@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <cassert>
 extern "C" {
+int ORIGINAL_InternalSynchronization( void * a, void * b) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0);}
 int ORIGINAL_cuGetErrorString( CUresult error, const char * * pStr ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }
 int ORIGINAL_cuGetErrorName( CUresult error, const char * * pStr ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }
 int ORIGINAL_cuInit( unsigned int Flags ) { fprintf(stderr, "We are calling the stub wrapper function, this is wrong, exit now\n"); assert(1 == 0); }

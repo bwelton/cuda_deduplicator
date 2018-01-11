@@ -7,7 +7,7 @@ TimeCall::TimeCall(std::vector<std::string> & cmd_list) {
 	while (std::getline(infile, line)) {
 		for (int i = 0; i < cmd_list.size(); i++) {
 			if (cmd_list[i] == line){
-				_callsToMonitor.insert(i);
+				_callsToMonitor.insert((CallID)i);
 				break;
 			}
 		}

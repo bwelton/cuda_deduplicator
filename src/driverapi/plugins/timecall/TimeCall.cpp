@@ -1,6 +1,6 @@
 #include "TimeCall.h"
 std::shared_ptr<TimeCall> Worker;
-
+thread_local int exited;
 TimeCall::TimeCall(std::vector<std::string> & cmd_list) {
 	exited = 0;
 	std::ifstream infile("FuncsToTime.txt");

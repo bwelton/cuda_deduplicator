@@ -16,7 +16,7 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 
 	argv[progName.size()] = NULL;
 	for (int i = 0; i < progName.size(); i++)
-		_log.Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
+		_log->Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
 
 	// Create the bpatch process
 	handle = bpatch.processCreate(argv[0],(const char **)argv);
@@ -49,7 +49,7 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 	}
 	progName[0] = progName[0] + std::string("_withlibs");
 	if(!app->writeFile(progName[0].c_str())) {
-		_log.Write(std::string("[PROCCTR] Could not write output binary"));
+		_log->Write(std::string("[PROCCTR] Could not write output binary"));
 
 		exit(-1);
 	}
@@ -61,7 +61,7 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 
 	argv[progName.size()] = NULL;
 	for (int i = 0; i < progName.size(); i++)
-		_log.Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
+		_log->Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
 	// Create the bpatch process
 	handle = bpatch.processCreate(argv[0],(const char **)argv);
 	assert(handle != NULL);
@@ -116,10 +116,10 @@ void ProcessController::ReadDefinition(std::string WrapperDef) {
 	        tokens.push_back(item);
 	    }
 	    if (tokens.size() != 5) {
-	    	_log.Write(std::string("Token size is not 4 in wrapper def.... skipping this function"));
-	    	_log.Write(std::string("Line skipped: ") + line);
+	    	_log->Write(std::string("Token size is not 5 in wrapper def.... skipping this function"));
+	    	_log->Write(std::string("Line skipped: ") + line);
 	    } else {
-	    	_log.Write(std::string("Inserting Instrimentation Into: ") + line);
+	    	_log->Write(std::string("Inserting Instrimentation Into: ") + line);
 	    	std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::tolower);
 	    	_wrapFunctions.push_back(std::make_tuple(tokens[0],tokens[1],tokens[2],tokens[3], tokens[4]));
 	    }
@@ -136,13 +136,13 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
       return std::vector<BPatch_function *>();
   }
   ss << "Found " << funcName << " this many times " << funcs.size();
-  _log.Write(ss.str());
+  _log->Write(ss.str());
   ss.clear();
   if (funcs.size() > 1) {
     for(int i = 0; i < funcs.size(); i++ )
     {
        ss << "    " << funcs[i]->getName();
-       _log.Write(ss.str());
+       _log->Write(ss.str());
        ss.clear();
     }
   }
@@ -163,19 +163,6 @@ void ProcessController::InstrimentApplication() {
 		symt->getAllSymbols(tmp);
 		instLibSymbols[i.first].insert(instLibSymbols[i.first].end(),tmp.begin(),tmp.end());
 	}
-	// {
-	// 	std::vector<BPatch_variableExpr *> vars;
-	// 	img->getVariables(vars);
-	// 	for (auto n : vars){
-	// 		std::cerr << "Global Variable: " << n->getName() << std::endl;
-	// 		std::string curTmp = std::string(n->getName());
-	// 		uint64_t ptr;
-	// 		if (curTmp.find(std::string("ORIGINAL_SOMETHING")) != std::string::npos) {
-	// 			n->readValue((void*)&ptr, sizeof(uint64_t));
-	// 			std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
-	// 		}
-	// 	}
-	// }
 	std::stringstream ss;
 	for (auto i : _wrapFunctions) {
 		totalFunctions += 1;

@@ -49,7 +49,7 @@ using namespace SymtabAPI;
 
 class ProcessController {
 public:
-	ProcessController(boost::program_options::variables_map vm);
+	ProcessController(boost::program_options::variables_map vm, LogInfo * log );
 	BPatch_addressSpace * LaunchProcess();
 	BPatch_addressSpace * LaunchProcessInstrimenter(std::string WrapperDef);
 	BPatch * GetBPatch();

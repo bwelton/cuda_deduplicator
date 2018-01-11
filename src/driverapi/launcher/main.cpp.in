@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream> 
 #include "SyncTesting.h"
+#include "LogInfo.h"
 
 int main(int argc, char * argv[]) {
 	using namespace boost::program_options;

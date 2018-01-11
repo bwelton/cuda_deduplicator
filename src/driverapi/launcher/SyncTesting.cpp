@@ -9,7 +9,7 @@ void SyncTesting::Run() {
 	TimeApplications base(_vm);
 	double time = base.Run();
 	RunWithCUPTI();
-
+	GatherSynchronizationDelay();
 }
 
 void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {
@@ -33,5 +33,13 @@ void SyncTesting::RunWithCUPTI() {
 	TimeApplications base(_vm);
 	std::string def(WRAPPER_DEF);
 	double time = base.RunWithInstrimentation(def);
+}
 
+void SyncTesting::GatherSynchronizationDelay() {
+	std::vector<std::string> cupti_plugin;
+	CreatePluginFile(cupti_plugin);
+	TimeApplications base(_vm);
+	std::string def("");
+	base.InsertWrapperDef(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization"));
+	double time = base.RunWithInstrimentation(def);
 }

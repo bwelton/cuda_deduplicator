@@ -126,7 +126,7 @@ void ProcessController::ReadDefinition(std::string WrapperDef) {
 	}
 }
 
-std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const char * funcName) {
+std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const char * funcName, LogInfo * _log) {
   std::stringstream ss;
   /* fundFunctions returns a list of all functions with the name 'funcName' in the binary */
   BPatch_Vector<BPatch_function * >funcs;
@@ -168,14 +168,14 @@ void ProcessController::InstrimentApplication() {
 		totalFunctions += 1;
 		if (std::get<0>(i).find("wrap") == std::string::npos)
 			continue;
-		BPatch_Vector<BPatch_function *> orig = findFuncByName(img,std::get<1>(i).c_str());
+		BPatch_Vector<BPatch_function *> orig = findFuncByName(img,std::get<1>(i).c_str(), _log);
 		//std::vector<BPatch_function *> * orig2 =  mod->findFunction(std::get<1>(i).c_str(), funcs, true, false, false, false);//findFuncByName(img,std::get<1>(i).c_str());
 		//std::vector<BPatch_function *> orig = *orig2;		
 		if (orig.size() == 0) {
 			std::cerr << "[PROCCTR] Could not find function with name - " << std::get<1>(i) << std::endl;
 			continue;
 		}
-		std::vector<BPatch_function *> wrapfunc = findFuncByName(img,std::get<2>(i).c_str());
+		std::vector<BPatch_function *> wrapfunc = findFuncByName(img,std::get<2>(i).c_str(), _log);
 		if (wrapfunc.size() == 0){
 			std::cerr << "[PROCCTR] Could not find wrapper function - " << std::get<2>(i) << std::endl;
 			continue;

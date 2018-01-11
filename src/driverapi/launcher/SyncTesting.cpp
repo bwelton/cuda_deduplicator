@@ -32,7 +32,8 @@ void SyncTesting::RunWithCUPTI() {
 	CreatePluginFile(cupti_plugin);
 	TimeApplications base(_vm);
 	std::string def(WRAPPER_DEF);
-	double time = base.RunWithInstrimentation(def);
+	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
+	double time = base.RunWithInstrimentation(def, extras);
 }
 
 void SyncTesting::GatherSynchronizationDelay() {

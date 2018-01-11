@@ -48,7 +48,7 @@ public:
 			return;
 		fflush(_fd);
 	}
-	void Write(std::string & out) {
+	void Write(std::string out) {
 		if (!_enabled)
 			return;
 		{

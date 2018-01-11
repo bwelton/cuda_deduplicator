@@ -59,7 +59,7 @@ public:
 	void ReadDefinition(std::string WrapperDef);
 	void InstrimentApplication();
 	std::set<std::string> WrapperLibraries();
-
+	void InsertWrapperDef(std::string type, std::string origName, std::string wrapperFunc, std::string lib, std::string origSymbol);
 	bool IsTerminated();
 	bool ContinueExecution();
 	bool IsStopped();

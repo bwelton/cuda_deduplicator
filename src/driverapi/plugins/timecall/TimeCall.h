@@ -15,6 +15,8 @@
 #include <sys/mman.h>
 #include <signal.h>
 #include <fstream>
+#include <numeric>
+#include <chrono>
 
 extern "C" {
 	void init(std::vector<std::string> & cmd_list);

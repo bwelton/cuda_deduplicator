@@ -126,6 +126,10 @@ void ProcessController::ReadDefinition(std::string WrapperDef) {
 	}
 }
 
+void ProcessController::InsertWrapperDef(std::string type, std::string origName, std::string wrapperFunc, std::string lib, std::string origSymbol) {
+	_wrapFunctions.push_back(std::make_tuple(type, origName, wrapperFunc, lib, origSymbol));
+}
+
 std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const char * funcName, LogInfo * _log) {
   std::stringstream ss;
   /* fundFunctions returns a list of all functions with the name 'funcName' in the binary */
@@ -243,7 +247,9 @@ bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
 	// Force libcuda to be loaded
 	assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
 	assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/libStubLib.so")) != false);
-    ReadDefinition(WrapperDef);
+	if (WrapperDef != std::string(""))
+    	ReadDefinition(WrapperDef);
+
 	std::set<std::string> libsToLoad = WrapperLibraries();
 	for (auto i : libsToLoad)
 		LoadWrapperLibrary(i);

@@ -6,7 +6,8 @@ TimeApplications::TimeApplications(boost::program_options::variables_map vm) :
 }
 
 double TimeApplications::InternalRun() {
-	ProcessController proc(_vm);
+	LogInfo log(std::string(""), std::string(""), false);
+	ProcessController proc(_vm, &log);
 	proc.LaunchProcess();
 	assert(proc.ContinueExecution() == true);
 	auto start = std::chrono::high_resolution_clock::now();
@@ -27,9 +28,9 @@ double TimeApplications::Run() {
 }
 
 double TimeApplications::RunWithInstrimentation(std::string wrapperDef) {
-	ProcessController proc(_vm);
+	LogInfo log(std::string("CUPTIRun.txt"), std::string("[CUPTI]"), true);
+	ProcessController proc(_vm, &log);
 	proc.LaunchProcess();
-	//proc.LaunchProcessInstrimenter(wrapperDef);
 	proc.InsertInstrimentation(wrapperDef);
 	proc.ContinueExecution();
 	auto start = std::chrono::high_resolution_clock::now();

@@ -23,7 +23,7 @@
 #include <numeric>
 #include <chrono>
 #include "ProcessControl.h"
-
+#include "LogInfo.h"
 class TimeApplications {
 public:
 	TimeApplications(boost::program_options::variables_map vm);

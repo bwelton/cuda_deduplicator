@@ -6,6 +6,10 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/SyncTesting.h.in"
 	"${PROJECT_SOURCE_DIR}/src/driverapi/launcher/SyncTesting.h"
 )
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/Constants.h.in"
+	"${PROJECT_SOURCE_DIR}/src/driverapi/launcher/Constants.h"
+)
 add_executable(LaunchCUInstriment "main.cpp" "ProcessControl.cpp" "TimeApplications.cpp" "SyncTesting.cpp")
 target_link_libraries(LaunchCUInstriment ${DYNINST_LIBRARIES})
 target_link_libraries(LaunchCUInstriment ${Boost_LIBRARIES})

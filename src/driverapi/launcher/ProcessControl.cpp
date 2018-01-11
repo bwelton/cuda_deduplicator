@@ -1,8 +1,8 @@
 #include "ProcessControl.h"
 static BPatch bpatch;
 static ProcessController * curController;
-ProcessController::ProcessController(boost::program_options::variables_map vm) :
-	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false) {
+ProcessController::ProcessController(boost::program_options::variables_map vm, LogInfo * log) :
+	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log) {
 }
 
 BPatch_addressSpace * ProcessController::LaunchProcess() {
@@ -16,7 +16,8 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 
 	argv[progName.size()] = NULL;
 	for (int i = 0; i < progName.size(); i++)
-		std::cerr << "[PROCCTR] Launch Arguments - " << argv[i] << std::endl;
+		_log.Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
+
 	// Create the bpatch process
 	handle = bpatch.processCreate(argv[0],(const char **)argv);
 	assert(handle != NULL);
@@ -33,6 +34,7 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 }
 
 BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string WrapperDef) {
+	assert(1 == 0);
 	BPatch_addressSpace * handle = NULL;
 	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
 
@@ -47,7 +49,8 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 	}
 	progName[0] = progName[0] + std::string("_withlibs");
 	if(!app->writeFile(progName[0].c_str())) {
-		std::cerr << "[PROCCTR] Could not write output binary" << std::endl;
+		_log.Write(std::string("[PROCCTR] Could not write output binary"));
+
 		exit(-1);
 	}
 
@@ -58,7 +61,7 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 
 	argv[progName.size()] = NULL;
 	for (int i = 0; i < progName.size(); i++)
-		std::cerr << "[PROCCTR] Launch Arguments - " << argv[i] << std::endl;
+		_log.Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
 	// Create the bpatch process
 	handle = bpatch.processCreate(argv[0],(const char **)argv);
 	assert(handle != NULL);
@@ -113,10 +116,10 @@ void ProcessController::ReadDefinition(std::string WrapperDef) {
 	        tokens.push_back(item);
 	    }
 	    if (tokens.size() != 5) {
-	    	std::cerr << "[PROCCTR] Token size is not 4 in wrapper def.... skipping this function" << std::endl;
-	    	std::cerr << "[PROCCTR] Line skipped: " << line << std::endl;
+	    	_log.Write(std::string("Token size is not 4 in wrapper def.... skipping this function"));
+	    	_log.Write(std::string("Line skipped: ") + line);
 	    } else {
-	    	std::cerr << "[PROCCTR] Insserting Instrimentation Into: " << line << std::endl;
+	    	_log.Write(std::string("Inserting Instrimentation Into: ") + line);
 	    	std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::tolower);
 	    	_wrapFunctions.push_back(std::make_tuple(tokens[0],tokens[1],tokens[2],tokens[3], tokens[4]));
 	    }
@@ -124,6 +127,7 @@ void ProcessController::ReadDefinition(std::string WrapperDef) {
 }
 
 std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const char * funcName) {
+  std::stringstream ss;
   /* fundFunctions returns a list of all functions with the name 'funcName' in the binary */
   BPatch_Vector<BPatch_function * >funcs;
   if (NULL == appImage->findFunction(funcName, funcs) || !funcs.size() || NULL == funcs[0])
@@ -131,11 +135,15 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
       std::cerr << "Failed to find " << funcName <<" function in the instrumentation library" << std::endl;
       return std::vector<BPatch_function *>();
   }
-  std::cerr << "Found " << funcName << " this many times " << funcs.size() << std::endl;
+  ss << "Found " << funcName << " this many times " << funcs.size();
+  _log.Write(ss.str());
+  ss.clear();
   if (funcs.size() > 1) {
     for(int i = 0; i < funcs.size(); i++ )
     {
-        std::cerr << "    " << funcs[i]->getName() << std::endl;
+       ss << "    " << funcs[i]->getName();
+       _log.Write(ss.str());
+       ss.clear();
     }
   }
   return funcs;
@@ -168,6 +176,7 @@ void ProcessController::InstrimentApplication() {
 	// 		}
 	// 	}
 	// }
+	std::stringstream ss;
 	for (auto i : _wrapFunctions) {
 		totalFunctions += 1;
 		if (std::get<0>(i).find("wrap") == std::string::npos)
@@ -189,193 +198,44 @@ void ProcessController::InstrimentApplication() {
 		if (instLibSymbols.find(std::get<3>(i)) == instLibSymbols.end()) {
 			assert(1 == 0);
 			std::vector<Symbol *> tmp;
-			Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
-			//symtab->getAllUndefinedSymbols(tmp);	
-			//symtab->getAllSymbolsByType(tmp, Dyninst::Symbol::ST_UNKNOWN);	
+			Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());	
 			instLibSymbols[std::get<3>(i)] = tmp;
 		}
 
-		std::cerr << "[PROCCTR] Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i) << std::endl;
-		 Symbol * storedSymbol = NULL;
-		bool firstPass = true;
-		// void * baseAddr = orig[0]->getBaseAddr();
-		// orig[0]->relocateFunction();
-		// orig = findFuncByName(img,std::get<1>(i).c_str());
-		// void * baseAddr2 = orig[0]->getBaseAddr();
-
-		//std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << std::endl;
-		// std::vector<BPatch_object *> objects;
-		// img->getObjects(objects);
-		// //std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
-		// for (auto mp : objects) {
-		// 	Dyninst::SymtabAPI::Symtab *symtab =  Dyninst::SymtabAPI::convert(mp);
-		// 	std::vector<Symbol *> all_symbols;	
-		// 	symtab->getAllSymbols(all_symbols);
-		// 	for (Symbol * sym : all_symbols) {
-		// 		if (sym->getPrettyName().find(std::string("_dyninst")) != std::string::npos) {
-		// 			std::cerr << "DYNINST SYMBOL: " << sym->getPrettyName() << std::endl;
-		// 		}
-		// 	}
-		// }
-
+		ss << "Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i);
+		_log->Write(ss.str());
+		ss.clear();
 
 		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
-			// if (print == true)
-			// 	std::cerr << sym->getMangledName() << std::endl;
 			if (sym->getPrettyName() == std::string(std::get<4>(i))) {
-				// if(firstPass){
-				// 	firstPass = false;
-				// 	continue;
-				// }
 				uint64_t ptr;
-				// Symbol *newsym = new Symbol("add_sym_newsymbol",
-			 //      	Symbol::ST_FUNCTION,
-			 //      	Symbol::SL_GLOBAL,
-			 //      	Symbol::SV_DEFAULT,
-			 //      	sym->getOffset(),
-			 //      	sym->getModule(),
-				//   	sym->getRegion());
-
-				//Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());
-				
 				BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
 				Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
 
-				//assert(symt->addSymbol(newsym));
-				//std::cerr << "Symbol is a function " << newsym->isFunction() << std::endl;
-				//newsym->readValue((void*)&ptr, sizeof(uint64_t));
-				// std::cerr << "VALUE: " << sym->getOffset() << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
 				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
-					// char tmpp[500];
-					// wrapfunc[0]->getModule()->getName(tmpp,500);
-					// std::cerr << "cuInit Module: " << tmpp << std::endl;
-					// fprintf(stderr, "%s\n", "[PROCCTR] cuInit Information: ");
-					// if (sym->getModule() != NULL)
-     //                	fprintf(stderr, "[PROCCTR] Module Addr: %llu\n", sym->getModule()->addr());
-     //                fprintf(stderr, "[PROCCTR] Offset: %llu getPtrOffset: %llu getLocalTOC: %llu\n", sym->getOffset(), sym->getPtrOffset(), sym->getLocalTOC());
-     //                if (sym->getRegion() != NULL)
-     //                	fprintf(stderr, "[PROCCTR] Region Name: %s\n", sym->getRegion()->getRegionName().c_str());
-					// std::vector<Dyninst::SymtabAPI::relocationEntry> entries;
-					// symt->getFuncBindingTable(entries);
-					// Dyninst::SymtabAPI::Region * reg = sym->getRegion();
-					// std::vector<Dyninst::SymtabAPI::Variable *> varvect;
-					// symt->getAllVariables(varvect);
-
-					//if (reg != NULL) {
-
-					// //std::vector<Dyninst::SymtabAPI::relocationEntry> entries = reg->getRelocations();
-					// for (auto mn : entries)
-					// 		std::cerr << "[PROCCTR] Found Relocation Entry - " << mn.name() << "," << std::hex << mn.target_addr() << std::dec 
-					// 	              << "," << std::hex << mn.rel_addr() << std::dec << std::endl;
-					// //}
-					// for (auto mn : varvect){
-					// 	std::vector<Symbol *> varSyms;
-					// 	assert(true == mn->getSymbols(varSyms));
-					// 	for (auto mm : varSyms)
-					// 		std::cerr << "[PROCCTR] Variable - " << mm->getPrettyName() << std::endl;
-					// }
-
-					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " wrapped successful" << std::endl;
+					ss << "Function " << orig[0]->getName() << " wrapped successful";
+					_log->Write(ss.str());
+					ss.clear();
 					wrapCount += 1;
-					storedSymbol = sym;
-					//newsym->readValue((void*)&ptr, sizeof(uint64_t));
-					std::cerr << "VALUE: " << std::hex << sym->getOffset() << std::dec << "," << sym->getPtrOffset() << "," << sym->isVariable() << "," << sym->getIndex() << std::endl;
-				}
-				else 
+				} else {
 					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
+					ss << "Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
+					_log->Write(ss.str());
+					ss.clear();
+				}
 				break;
 			}
 		}
-		// void * baseAddr2 = orig[0]->GetRelocatedAddress();
-		// std::cerr << "Base addresses for function: " << orig.size() << "," << std::hex << baseAddr << std::dec << "," << std::hex << baseAddr2 << std::dec << ","
-		// 		  << std::hex << orig[0]->getBaseAddr() << std::dec << std::endl;
-		// std::vector<BPatch_function *> newf = findFuncByName(img,"ORIGINAL_cuInit");		
-
-		// std::cerr << "ORIGINAL_cuInit: " << newf.size() << "," << std::hex << newf[0]->getBaseAddr() << std::dec << std::endl;
-		// BPatch_function * func1n = _addrSpace->findFunctionByAddr(baseAddr);
-		// BPatch_function * func2n = _addrSpace->findFunctionByAddr(baseAddr2);
-		// if (func1n == NULL) {
-		// 	std::cerr << "Could not find func1 " << std::endl;
-		// } else {
-		// 	std::cerr << "FUNC1N NAME: " << func1n->getName() << std::endl;
-		// }
-		// if (func2n ==  NULL) {
-		// 	std::cerr << "Could not find func2" << std::endl;
-		// } else {
-		// 	std::cerr << "FUNC2N NAME: " << func2n->getName() << std::endl;
-		// }
-
-		if (storedSymbol != NULL) {
-			// std::vector<BPatch_object *> objects;
-			// img->getObjects(objects);
-			// //std::string wrapName = std::string(std::get<2>(storage->wrapFunctions[fname]));
-			// for (auto mp : objects) {
-			// 	Dyninst::SymtabAPI::Symtab *symtab =  Dyninst::SymtabAPI::convert(mp);
-			// 	std::vector<Symbol *> all_symbols;	
-			// 	symtab->getAllSymbols(all_symbols);
-			// 	for (Symbol * sym : all_symbols) {
-			// 		if (sym->getPrettyName().find(std::string("_dyninst")) != std::string::npos) {
-			// 			std::cerr << "DYNINST SYMBOL: " << sym->getPrettyName() << std::endl;
-			// 		}
-			// 	}
-			// }
-			// std::vector<BPatch_module*> changedMods;
-			// const std::vector<Dyninst::Address> newAddrs;
-			// img->parseNewFunctions(changedMods, newAddrs);
-			// for (auto z : changedMods) {
-			// 	char modname[500];
-			// 	z->getName(modname, 500);
-			// 	std::cerr << "Module has added functions: " << modname << std::endl;
-			// }
-//			std::vector<BPatch_function *> fm;
-//			img->findFunction("cuInit_dyninst", fm);
-
-			//std::vector<BPatch_function *> fm;
-			//img->findFunction("add_sym_newsymbol", fm);
-			//std::cerr << "Found function add_sym_newsymbol: " << fm.size() << std::endl;
-
-			// std::vector<BPatch_variableExpr *> vars;
-			// img->getVariables(vars);
-			// for (auto n : vars){
-			// 	std::cerr << "Global Variable: " << n->getName() << std::endl;
-			// 	std::string curTmp = std::string(n->getName());
-			// 	uint64_t ptr;
-			// 	if (curTmp.find(std::string("ORIGINAL_SOMETHING")) != std::string::npos) {
-			// 		n->readValue((void*)&ptr, sizeof(uint64_t));
-			// 		std::cerr << "VALUE: " << std::hex << ptr << std::dec << std::endl;
-			// 		//ptr = 0;
-			// 		//n->writeValue((void *)&ptr, int(sizeof(uint64_t)), false);
-			// 	}
-			// }
-			// BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
-			// std::vector<BPatch_function *> fm;
-			// _addrSpace->findFunction(std::get<4>(i).c_str(), fm, true, false, true, false);
-
-			// std::vector<Symbol *> tmp;
-			// Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
-			// symt->findSymbol(tmp, std::get<4>(i).c_str(), Symbol::ST_UNKNOWN, mangledName, false, false, true);
-			// for (auto n : tmp)
-			// 	std::cerr << "[POST] Symbol: " << n->getMangledName() << " is a function: " << n->isFunction() << std::endl;
-
-			// for (auto i : _loadedLibraries) {
-			// 	BPatch_object * obj = i.second;
-			// 	std::vector<Symbol *> tmp;
-			// 	Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
-			// 	symt->getAllUndefinedSymbols(tmp);
-			// 	instLibSymbols[i.first] = tmp;
-			// }			
-			// std::cerr << "Symbol is a function " << storedSymbol->isFunction() << std::endl;
-		}
-		print = false;
 	}
 	_insertedInstrimentation =  true;
 }
 
 bool ProcessController::LoadWrapperLibrary(std::string libname) {
-	std::cerr << "[PROCCTR] Loading library " << libname << " into address space\n";
+	_log->Write(std::string("Loading library ") + libname + std::string(" into address space"));
 	BPatch_object * tmp;
 	tmp = _appProc->loadLibrary(libname.c_str());
 	if(tmp == NULL) {
+		std::cerr << "[PROCCTR] Failed to load library - " << libname << " into address space!" << std::endl;
 		return false;
 	}
 	_loadedLibraries[libname] = tmp;
@@ -392,52 +252,10 @@ std::set<std::string> ProcessController::WrapperLibraries() {
 	return ret;
 }
 
-extern "C" void DYNINST_LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l) {
-	std::cerr << "[PROCCTR] In Load library callback" << std::endl;
-	curController->LibraryLoadCallback(thread, obj, l);
-}
-
-void ProcessController::LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l) {
-	BPatch_process* appProc = dynamic_cast<BPatch_process*>(_addrSpace);
-	if (_insertedInstrimentation == true)
-		return;
-	BPatch_image *image = _addrSpace->getImage();
-	BPatch_Vector<BPatch_module*> mods;
-	image->getModules(mods);
-	for (auto mod : mods) {
-		char * name = (char *) malloc(500 * sizeof(char));
-		name = mod->getName(name, 500);
-		std::string tmp = std::string(name);
-		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-		if (tmp.find(std::string("libcuda.so")) != std::string::npos) {	
-			std::cerr << "[PROCCTR] Inserting Instrimentation into libcuda.so" << std::endl;
-			_insertedInstrimentation = true;
-			std::set<std::string> libsToLoad = WrapperLibraries();
-			for (auto i : libsToLoad)
-				LoadWrapperLibrary(i);
-			InstrimentApplication();
-		}
-	}
-}
-
-// bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
-// 	curController = this;
-//     ReadDefinition(WrapperDef);
-// 	//std::set<std::string> libsToLoad = WrapperLibraries();
-// 	// Run application until libcuda is loaded. 
-// 	bpatch.registerDynLibraryCallback((BPatchDynLibraryCallback)&DYNINST_LibraryLoadCallback);
-// 	return true;
-// 	//assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
-// 	// for (auto i : libsToLoad)
-// 	// 	LoadWrapperLibrary(i);
-// 	// InstrimentApplication();
-// }
-
-
 bool ProcessController::InsertInstrimentation(std::string WrapperDef) {
 	// Force libcuda to be loaded
 	assert(LoadWrapperLibrary(std::string("libcuda.so.1")) != false);
-	assert(LoadWrapperLibrary(std::string("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/libStubLib.so")) != false);
+	assert(LoadWrapperLibrary(std::string(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/libStubLib.so"))) != false);
     ReadDefinition(WrapperDef);
 	std::set<std::string> libsToLoad = WrapperLibraries();
 	for (auto i : libsToLoad)

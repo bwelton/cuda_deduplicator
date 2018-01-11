@@ -25,7 +25,9 @@
 #include "CodeObject.h"
 #include "CFG.h"
 #include "PatchObject.h"
+#include "PatchFunction.h"
 #include "PatchMgr.h"
+#include "PatchModifier.h"
 #include "Point.h"
 #include "BPatch_object.h"
 #include "BPatch_snippet.h"
@@ -39,6 +41,8 @@
 #include "BPatch_statement.h"
 #include "dynC.h"
 #include "set"
+#include "LogInfo.h"
+#include "Constants.h"
 
 using namespace Dyninst;
 using namespace ParseAPI;
@@ -61,8 +65,9 @@ public:
 	bool IsTerminated();
 	bool ContinueExecution();
 	bool IsStopped();
-	void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
+	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
+	LogInfo * _log;
 	double _instrimentationOverhead;
 	boost::program_options::variables_map _vm;
 	BPatch_addressSpace * _addrSpace;

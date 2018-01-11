@@ -22,6 +22,7 @@
 #include <boost/program_options.hpp>
 #include <numeric>
 #include <chrono>
+#include <tuple>
 #include "ProcessControl.h"
 #include "LogInfo.h"
 class TimeApplications {
@@ -29,7 +30,7 @@ public:
 	TimeApplications(boost::program_options::variables_map vm);
 	double Run();
 	double InternalRun();
-	double RunWithInstrimentation(std::string wrapperDef);
+	double RunWithInstrimentation(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras);
 private:
 	boost::program_options::variables_map _vm;
 };

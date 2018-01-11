@@ -27,11 +27,13 @@ double TimeApplications::Run() {
 	return InternalRun();
 }
 
-double TimeApplications::RunWithInstrimentation(std::string wrapperDef) {
+double TimeApplications::RunWithInstrimentation(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras) {
 	LogInfo log(std::string("CUPTIRun.txt"), std::string("[CUPTI]"), true);
 	ProcessController proc(_vm, &log);
 	proc.LaunchProcess();
 	proc.InsertInstrimentation(wrapperDef);
+	for (auto i : extras)
+		proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));
 	proc.ContinueExecution();
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
@@ -42,5 +44,7 @@ double TimeApplications::RunWithInstrimentation(std::string wrapperDef) {
 	std::cerr << "[TIMEAPP] Application runtime with instrimentation - " << diff.count() << std::endl;
 	return diff.count();	
 }
+
+
 
 

@@ -33,7 +33,7 @@ public:
 private:
 	std::set<CallID> _callsToMonitor;
 	std::vector<std::pair<size_t, double> > _timers;
-
+	int exited;
 };
 
 #define PLUG_BUILD_FACTORY(param) \

@@ -2,6 +2,7 @@
 std::shared_ptr<TimeCall> Worker;
 
 TimeCall::TimeCall(std::vector<std::string> & cmd_list) {
+	exited = 0;
 	std::ifstream infile("FuncsToTime.txt");
 	std::string line;
 	while (std::getline(infile, line)) {
@@ -15,6 +16,7 @@ TimeCall::TimeCall(std::vector<std::string> & cmd_list) {
 }
 
 TimeCall::~TimeCall() {
+	exited = 1;
 	if(_timers.size() > 0) {
 		FILE * out = fopen("call_timers.txt","w");
 		for(auto i : _timers)

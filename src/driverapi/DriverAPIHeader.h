@@ -6,6 +6,7 @@
 #include "DriverWrapperBase.h"
 #include <vector>
 extern "C" {
+int ORIGINAL_InternalSynchronization( void * a, void * b);
 void CheckInit_DriverAPI();
 void DefineBinders();
 int ORIGINAL_cuGetErrorString( CUresult error, const char ** pStr );

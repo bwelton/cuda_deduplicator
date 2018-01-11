@@ -5,6 +5,17 @@
 #include "cuda.h"
 std::shared_ptr<DriverWrapperFactory> DriverFactory;
 extern "C" {
+
+// MANUALLY ADDED.....
+extern int ORIGINAL_InternalSynchronization( void * a, void * b);
+
+int INTER_InternalSynchronization( void * a, void * b) {
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&a,(void **)&b };	
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_InternalSynchronization, (void*) &ORIGINAL_InternalSynchronization, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
 	
 void JustGenStackTrace() {
 	BUILD_FACTORY
@@ -3036,7 +3047,12 @@ EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned char,size_t,size_t)> B
 EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned short,size_t,size_t)> Bound_cuMemsetD2D16_v2;
 EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned int,size_t,size_t)> Bound_cuMemsetD2D32_v2;
 
+// MANUALLY ADDED
+EXTERN_FLAG std::function<int(void *, void *)> Bound_InternalSynchronization;
 extern "C" void DefineBinders() {
+	//MANUALLY ADDED
+	Bound_InternalSynchronization = std::bind(&ORIGINAL_InternalSynchronization,std::placeholders::_1,std::placeholders::_2);
+	//
 	Bound_cuGetErrorString = std::bind(&ORIGINAL_cuGetErrorString,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuGetErrorName = std::bind(&ORIGINAL_cuGetErrorName,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);

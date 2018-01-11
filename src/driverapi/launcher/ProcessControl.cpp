@@ -172,7 +172,34 @@ void ProcessController::InstrimentApplication() {
 		totalFunctions += 1;
 		if (std::get<0>(i).find("wrap") == std::string::npos)
 			continue;
-		BPatch_Vector<BPatch_function *> orig = findFuncByName(img,std::get<1>(i).c_str(), _log);
+		BPatch_Vector<BPatch_function *> orig;
+		if (std::get<1>(i).find("0x") ==  std::string::npos)
+			orig = findFuncByName(img,std::get<1>(i).c_str(), _log);
+		else {
+			// This is an offset.....
+			// We must:
+			// 1. Convert the offset to an uint.
+			uint64_t offset = uint64_t(std::stoull(std::get<1>(i),0,16));
+			Dyninst::Address offsetAddress = 0;
+			bool foundCuda = false;
+			for (auto obj : _loadedLibraries){
+				if (obj.first.find(std::string("libcuda.so")) == std::string::npos)
+					continue;
+				// We have found the cuda lib....
+				// Find the function by offset within that library
+				offsetAddress = obj.second->fileOffsetToAddr(offset);
+				std::stringstream ss;
+				ss << "Found offset for function " << std::get<1>(i) << " at location " << offsetAddress;
+				_log->Write(ss.str());
+				assert(offsetAddress != 0);
+				break;
+			}	
+			_addrSpace->findFunctionsByAddr(offsetAddress, orig);
+			std::stringstream ss;
+			ss << "Found function " << std::get<1>(i) << " at location " << offsetAddress << " " << orig.size() << " number of times";
+			_log->Write(ss.str());
+			assert(orig.size() != 0);
+		}
 		//std::vector<BPatch_function *> * orig2 =  mod->findFunction(std::get<1>(i).c_str(), funcs, true, false, false, false);//findFuncByName(img,std::get<1>(i).c_str());
 		//std::vector<BPatch_function *> orig = *orig2;		
 		if (orig.size() == 0) {

@@ -53,7 +53,7 @@ public:
 			return;
 		{
 			boost::recursive_mutex::scoped_lock lock(_log_mtx);
-			fprintf(_fd, "%s %s", _header.c_str(), out.c_str());
+			fprintf(_fd, "%s %s\n", _header.c_str(), out.c_str());
 		}
 	}
 	void Write(char * fmt, ...) {

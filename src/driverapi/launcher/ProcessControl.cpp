@@ -199,7 +199,7 @@ void ProcessController::InstrimentApplication() {
 				ss << "Found offset for function " << offset << " at location " << offsetAddress;
 				_log->Write(ss.str());
 				assert(offsetAddress != 0);
-				break;
+				//break;
 			}	
 			_addrSpace->findFunctionsByAddr(offsetAddress, orig);
 			std::stringstream ss;

@@ -29,6 +29,9 @@ TimeCall::~TimeCall() {
 
 PluginReturn TimeCall::Precall(std::shared_ptr<Parameters> params) {
 	if (_callsToMonitor.find(params.get()->GetID()) != _callsToMonitor.end()) {
+		uint64_t * firstArg = ((uint64_t*)params.get()->GetParameter(0));
+		uint64_t * secondArg = ((uint64_t*)params.get()->GetParameter(1));
+		std::cerr << "Call To Sync: " << firstArg[0] << "," << secondArg[0] << std::endl;
 		auto start = std::chrono::high_resolution_clock::now();
 		params.get()->Call();
 		auto stop = std::chrono::high_resolution_clock::now();

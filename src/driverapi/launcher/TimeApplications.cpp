@@ -23,7 +23,6 @@ double TimeApplications::InternalRun() {
 
 double TimeApplications::Run() {
 	// Run this twice to get rid of dyninst overhead....
-	double ignore = InternalRun();
 	return InternalRun();
 }
 

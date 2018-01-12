@@ -35,7 +35,7 @@ public:
 	void RunWithCUPTI();
 	void GatherSynchronizationDelay();
 	void CreatePluginFile(std::vector<std::string> plugins);
-
+	void CreateFunctionTimers(std::vector<std::string> functions);
 private:
 	boost::program_options::variables_map _vm;
 };

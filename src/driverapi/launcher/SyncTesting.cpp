@@ -27,6 +27,21 @@ void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {
 	pfile.close();
 }
 
+void SyncTesting::CreateFunctionTimers(std::vector<std::string> functions) {
+	std::vector<std::string> PluginList = PLUGIN_LIST;
+	std::ofstream pfile;
+	pfile.open("FuncsToTime.txt");
+	for (auto i : plugins) {
+		for (auto z : PluginList) {
+			if (z.find(i) != std::string::npos){
+				pfile << z << std::endl;
+				break;
+			}
+		}
+	}
+	pfile.close();	
+}
+
 void SyncTesting::RunWithCUPTI() {
 	std::vector<std::string> cupti_plugin = {"libCUPTIEventHandler"};
 	CreatePluginFile(cupti_plugin);
@@ -37,7 +52,7 @@ void SyncTesting::RunWithCUPTI() {
 }
 
 void SyncTesting::GatherSynchronizationDelay() {
-	std::vector<std::string> cupti_plugin;
+	std::vector<std::string> cupti_plugin = {"libTimeCall"};
 	CreatePluginFile(cupti_plugin);
 	TimeApplications base(_vm);
 	std::string def("");

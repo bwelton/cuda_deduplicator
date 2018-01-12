@@ -9,6 +9,7 @@ TimeCall::TimeCall(std::vector<std::string> & cmd_list) {
 		for (int i = 0; i < cmd_list.size(); i++) {
 			if (cmd_list[i] == line){
 				_callsToMonitor.insert((CallID)i);
+				std::cerr << "[TimeCall] Timing - " << cmd_list[i] << std::endl;
 				break;
 			}
 		}

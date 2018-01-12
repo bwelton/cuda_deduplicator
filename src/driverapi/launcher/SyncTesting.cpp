@@ -46,7 +46,7 @@ void SyncTesting::RunWithCUPTI() {
 }
 
 void SyncTesting::GatherSynchronizationDelay() {
-	std::vector<std::string> cupti_plugin = {"libTimeCall"};
+	std::vector<std::string> cupti_plugin;// = {"libTimeCall"};
 	CreatePluginFile(cupti_plugin);
 	TimeApplications base(_vm);
 	std::string def("");

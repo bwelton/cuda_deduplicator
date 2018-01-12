@@ -189,7 +189,7 @@ void ProcessController::InstrimentApplication() {
 				// Find the function by offset within that library
 				offsetAddress = obj.second->fileOffsetToAddr(offset);
 				std::stringstream ss;
-				ss << "Found offset for function " << std::get<1>(i) << " at location " << offsetAddress;
+				ss << "Found offset for function " << offset << " at location " << offsetAddress;
 				_log->Write(ss.str());
 				assert(offsetAddress != 0);
 				break;

@@ -185,9 +185,16 @@ void ProcessController::InstrimentApplication() {
 			for (auto obj : _loadedLibraries){
 				if (obj.first.find(std::string("libcuda.so")) == std::string::npos)
 					continue;
-				// We have found the cuda lib....
-				// Find the function by offset within that library
-				offsetAddress = obj.second->fileOffsetToAddr(offset);
+				// Potentially more stable method 
+				std::vector<BPatch_module *> soModules;
+				obj.second->modules(soModules);
+				assert(soModules.size() == 1);
+				offsetAddress = soModules[0]->getLoadAddr() + offset;
+
+
+				// // We have found the cuda lib....
+				// // Find the function by offset within that library
+				// offsetAddress = obj.second->fileOffsetToAddr(offset);
 				std::stringstream ss;
 				ss << "Found offset for function " << offset << " at location " << offsetAddress;
 				_log->Write(ss.str());

@@ -65,7 +65,7 @@ extern "C" {
 			ss << "CPY," << getMemcpyKindStringC((CUpti_ActivityMemcpyKind) cpy->copyKind) << "," 
 			   << cpy->correlationId << "," << cpy->start - startTimestamp << ","  << cpy->end - startTimestamp << ","  
 			   << cpy->bytes << "," << cpy->runtimeCorrelationId << "," << cpy->contextId << "," << cpy->deviceId 
-			   << "," << cpy->streamId << std::endl;
+			   << "," << cpy->streamId;
 			std::string out = ss.str();	
 			_cupti_output->Write(out);
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_RUNTIME) {
@@ -75,7 +75,7 @@ extern "C" {
 	    	// 	return;
 	    	ss << "RR" << "," << translateRuntimeCallback(api->cbid) << "," << api->correlationId << "," 
 	    	   << api->start - startTimestamp << "," << api->end - startTimestamp << "," 
-	    	   << api->processId << "," << api->threadId << std::endl;
+	    	   << api->processId << "," << api->threadId;
 	 		std::string out = ss.str();	
 			_cupti_output->Write(out);
 	    } else if (record->kind == CUPTI_ACTIVITY_KIND_DRIVER) {
@@ -83,7 +83,7 @@ extern "C" {
 	    	std::stringstream ss;
 	    	ss << "DR" << "," << translateDriverCallback(api->cbid) << "," << api->correlationId 
 	    	   << ","  << api->start - startTimestamp << "," << api->end - startTimestamp << "," 
-	    	   << api->processId << "," << api->threadId << std::endl;
+	    	   << api->processId << "," << api->threadId;
 	 		std::string out = ss.str();	
 			_cupti_output->Write(out);	    	
 		} else if (record->kind == CUPTI_ACTIVITY_KIND_EXTERNAL_CORRELATION) {
@@ -101,7 +101,7 @@ extern "C" {
 	    	else if (api->externalKind == CUPTI_ACTIVITY_KIND_SYNCHRONIZATION)
 	    		kindNamePos = 4;
 	    	ss << "ExtCorr," << api->correlationId << "," << api->externalId << "," 
-	    	   << kindNames[kindNamePos] << std::endl;
+	    	   << kindNames[kindNamePos];
 	 		std::string out = ss.str();	
 			_cupti_output->Write(out);
 		} else if (record->kind == CUPTI_ACTIVITY_KIND_SYNCHRONIZATION) {
@@ -109,11 +109,11 @@ extern "C" {
 			std::stringstream ss;
 			ss << "SYNC," << api->correlationId << "," << api->start - startTimestamp << "," 
 			   << api->end - startTimestamp << "," << api->cudaEventId << "," << api->contextId << "," 
-			   << api->streamId << std::endl;
+			   << api->streamId;
 	 		std::string out = ss.str();	
 			_cupti_output->Write(out);
 		} else {
-			std::cerr << "unknown record: " << record->kind << std::endl;
+			std::cerr << "unknown record: " << record->kind;
 		}
 
 	}
@@ -130,7 +130,7 @@ extern "C" {
 				} else {
 					const char * errorStr;
 					cuptiGetResultString(status, &errorStr); 
-					std::cerr << "Error in CUPTI " << status << " " << errorStr << std::endl;
+					std::cerr << "Error in CUPTI " << status << " " << errorStr;
 					break;
 				} 
 			} while (1);

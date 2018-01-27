@@ -106,6 +106,50 @@ uint32_t MemoryTransfer::GetHash(void * ptr, size_t size){
 	return XXHash32::hash(ptr, size, 0);
 }
 
+int MemoryTransfer::GetStream() {
+	if (_transfer == false)
+		return 0;
+	CallID thiscall = _params->GetID();
+
+	switch(thiscall) {
+		// Synch Transfers on Default Stream, Return 0. Double check this is a complete list.
+		case ID_cuMemcpyDtoH:
+		case ID_cuMemcpyHtoD:
+		case ID_cuMemcpyDtoH_v2:
+		case ID_cuMemcpyHtoD_v2:
+		case ID_cuMemcpyDtoD:
+		case ID_cuMemcpyDtoD_v2:
+		case ID_cuMemcpyAtoD_v2:
+		case ID_cuMemcpyAtoD:
+		case ID_cuMemcpyAtoH_v2:
+		case ID_cuMemcpyHtoA_v2:
+		case ID_cuMemcpyAtoH:
+		case ID_cuMemcpyHtoA:
+		case ID_cuMemcpy:
+			WRITE_DEBUG(_params->GetName() << " triggered default stream.")
+			return 0;
+		// Return the fourth parameter with the stream id.
+		case ID_cuMemcpyHtoDAsync:
+		case ID_cuMemcpyDtoHAsync:
+		case ID_cuMemcpyDtoDAsync:
+		case ID_cuMemcpyHtoDAsync_v2:
+		case ID_cuMemcpyDtoHAsync_v2:
+		case ID_cuMemcpyDtoDAsync_v2:		
+			WRITE_DEBUG(_params->GetName() << " async call DtoH or HtoD with id " << ((size_t*)_params->GetParameter(3))[0])
+			return int(((size_t*)_params->GetParameter(3))[0]);
+		// If an array transfer is detected, retrun the 5th parameter 
+		case ID_cuMemcpyAtoHAsync_v2:
+		case ID_cuMemcpyHtoAAsync_v2:
+		case ID_cuMemcpyAtoHAsync:
+		case ID_cuMemcpyHtoAAsync:
+			WRITE_DEBUG(_params->GetName() << " async call AtoH or HtoA with id " << ((size_t*)_params->GetParameter(4))[0])
+			return int(((size_t*)_params->GetParameter(3))[0]);
+		default:
+			WRITE_DEBUG(_params->GetName() << " - Could not find any stream for this call!")
+			return -1;
+	}
+}
+
 uint32_t MemoryTransfer::GetHashAtLocation(void * dstPtr, size_t tSize, CUmemorytype location) {
 	void * data;
 	bool mallocd = false;

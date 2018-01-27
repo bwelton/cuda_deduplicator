@@ -80,7 +80,7 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 	   << "\tCPU Starting Address = 0x" << std::hex << tmp.begin << std::dec 
 	   << "\n\tTransfer Size = " << tmp.size 
 	   << "\n\tStream = " << tmp.stream << std::endl;
-	_sync_log.Write(ss.str());
+	_sync_log.get()->Write(ss.str());
 #endif
 }
 
@@ -173,7 +173,7 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
 		// Stash its value in TLS
-		prevCall = p;
+		prevCall = params;
 		// If this is a memory transfer, we must store its information.
 		MemoryTransfer * mem = p->GetMemtrans();
 		if (mem->IsTransfer() == true){

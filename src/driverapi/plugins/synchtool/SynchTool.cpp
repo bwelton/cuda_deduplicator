@@ -180,7 +180,7 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 			// Disable hash checking for performance.  
 			mem->SetHashGeneration(false);
 			mem->PreTransfer();
-			GetLiveTransfer(p);
+			GetLiveTransfer(params);
 		} else if (p->GetID() == ID_cuMemAllocManaged){
 			// This is a unified memory address allocation, for now
 			// we assume that these are always live

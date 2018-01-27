@@ -46,7 +46,7 @@ bool MemoryTransfer::IsSupportedTransfer() {
 }
 
 MemoryTransfer::MemoryTransfer(Parameters *params) :
-	_params(params), _arrayTransfer(false), _supported(-1), _transfer(false), _origData(0), _transferedData(0) {
+	_params(params), _arrayTransfer(false), _supported(-1), _transfer(false), _origData(0), _transferedData(0), _checkHash(true) {
 	if (CallIsTransfer(params->GetID()))
 		_transfer = true;
 	else
@@ -188,6 +188,10 @@ uint32_t MemoryTransfer::GetSourceDataArray( void * dstPtr, size_t tSize, size_t
 	return hashv;
 }
 
+void MemoryTransfer::SetHashGeneration(bool s) {
+	_checkHash = s;
+
+}
 
 void MemoryTransfer::PrecallHandleStandard() {
 	// This function is designed to get data from the 
@@ -229,7 +233,10 @@ void MemoryTransfer::PrecallHandleStandard() {
 		assert(1 == 0);
 	}
 	_transferSize = ((size_t*)_params->GetParameter(2))[0];
-	_origData = GetHashAtLocation(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
+	if (_checkHash == true)
+		_origData = GetHashAtLocation(*((void**)_params->GetParameter(0)), _transferSize, _dstType);
+	else 
+		_origData = 0; 	
 	WRITE_DEBUG(_params->GetName() << " has a size of " << _transferSize << " and is overwriting data with a hash of " << std::hex << _origData << std::dec )
 }
 

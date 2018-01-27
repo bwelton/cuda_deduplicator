@@ -14,6 +14,9 @@
 #include <errno.h>
 #include <sys/mman.h>
 #include <signal.h>
+#include <sstream>
+
+#define SYNCH_DEBUG 1
 
 extern "C" {
 	void init(std::vector<std::string> & cmd_list);
@@ -27,6 +30,7 @@ struct MemoryRange {
 	uint64_t size; 
 	uint64_t transferID;
 	uint64_t unifiedMemory;
+	int stream;
 };
 
 class SynchTool {
@@ -38,8 +42,8 @@ public:
 	void UnifiedAllocation(std::shared_ptr<Parameters> params);
 	void GetLiveTransfer(std::shared_ptr<Parameters> params);
 	void MemoryFree(std::shared_ptr<Parameters> params);
-	void SignalToParent();
-	void ClearExisting();
+	void SignalToParent(uint64_t stream);
+	void ClearExisting(uint64_t stream);
 	uint64_t * SeralizeMemRanges(size_t & size);
 	void UnprotectMemory();
 	void MemProtectAddrs();

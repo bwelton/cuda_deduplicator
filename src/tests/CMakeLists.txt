@@ -86,6 +86,21 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS PerfEstimateCheck
         RUNTIME DESTINATION tests)
 
+
+add_executable(DumpFunctionNames "DumpFunctionNames.cpp")
+target_link_libraries(DumpFunctionNames ${Boost_LIBRARIES})
+target_link_libraries(DumpFunctionNames "-lpthread")
+target_link_libraries(DumpFunctionNames "-L/opt/cray/nvidia/default/lib64 -lcuda")
+target_link_libraries(DumpFunctionNames "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+INCLUDE_DIRECTORIES(DumpFunctionNames ${CUDA_TOOLKIT_ROOT_DIR}/include)
+INCLUDE_DIRECTORIES(DumpFunctionNames ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(DumpFunctionNames "${CMAKE_SOURCE_DIR}/src/common")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
+install(TARGETS DumpFunctionNames
+        RUNTIME DESTINATION tests)
+
 # add_executable(HostToDev "artifacts/HostToDevice.cpp")
 # target_link_libraries(HostToDev "-lpthread")
 # target_link_libraries(HostToDev "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")

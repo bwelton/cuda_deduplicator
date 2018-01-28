@@ -8,8 +8,9 @@ SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 void SyncTesting::Run() {
 	TimeApplications base(_vm);
 	double time = base.Run();
-	RunWithCUPTI();
-	GatherSynchronizationDelay();
+	//RunWithCUPTI();
+	GatherSynchronizationCalls();
+	//GatherSynchronizationDelay();
 }
 
 void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {
@@ -25,6 +26,16 @@ void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {
 		}
 	}
 	pfile.close();
+}
+
+void SyncTesting::GatherSynchronizationCalls() {
+	std::vector<std::string> pluginNames = {"libSynchTool"};
+	CreatePluginFile(pluginNames);
+	std::string def(WRAPPER_DEF);
+	TimeApplications base(_vm);
+	// Discard Time, we dont care about it here, we only want the names of the funcitons that
+	// synchronize. 
+	double time = base.RunWithInstrimentation(def, extras);
 }
 
 void SyncTesting::CreateFunctionTimers(std::vector<std::string> functions) {

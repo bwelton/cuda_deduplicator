@@ -58,6 +58,8 @@ private:
 	boost::recursive_mutex _sync_mtx;
 	// std::shared_ptr<LogInfo> _timeline_log;
 	std::map<uint32_t, uint64_t> _pastTransfers;
+	std::set<CallID> _callsContainingSynch;
+	std::vector<std::string> _cmd_list;
 	// uint64_t _count; 
 	// bool _enabled;
 };

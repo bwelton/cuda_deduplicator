@@ -2,7 +2,6 @@
 #include "HelperFunctions.h"
 #include <stdlib.h>
 
-
 std::shared_ptr<SynchTool> Worker;
 thread_local std::shared_ptr<Parameters> prevCall;
 int exited = 0;
@@ -29,12 +28,17 @@ extern "C" {
 }
 
 SynchTool::SynchTool(std::vector<std::string> & cmd_list) {
+	_cmd_list = cmd_list;
 	exited = 0;
 	_sync_log.reset(new LogInfo(fopen("synch_log.out", "w")));
 }
 
 SynchTool::~SynchTool() {
 	exited = 1;
+	FILE * fdes = fopen("synchronous_calls.txt","w");
+	for (auto i : _callsContainingSynch)
+		fprintf(fdes, "%s\n", _cmd_list[(int)i].c_str());
+	fclose(fdes);
 	_sync_log.get()->Flush();
 	_sync_log.reset();
 }
@@ -188,21 +192,28 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 	} else {
 		// This is a synchronization, Signal to Dyninst to begin load store instrimentation. 
 		uint64_t stream = 0;
-		if (prevCall.get()->GetID() == ID_cuStreamSynchronize) {
-			std::tuple<PT_cuStreamSynchronize> pvalues = GetParams<PT_cuStreamSynchronize>(prevCall);
-			stream = uint64_t(std::get<0>(pvalues)[0]);
-		} else {
-			MemoryTransfer * mem = prevCall.get()->GetMemtrans();
-			if (mem->IsTransfer() == true)
-				stream = uint64_t(mem->GetStream());
+		if (prevCall.get() != NULL) {
+			if (prevCall.get()->GetID() == ID_cuStreamSynchronize) {
+				std::tuple<PT_cuStreamSynchronize> pvalues = GetParams<PT_cuStreamSynchronize>(prevCall);
+				stream = uint64_t(std::get<0>(pvalues)[0]);
+			} else {
+				MemoryTransfer * mem = prevCall.get()->GetMemtrans();
+				if (mem->IsTransfer() == true)
+					stream = uint64_t(mem->GetStream());
+			}
+			// Record calls which performed synchronizations.
+			_callsContainingSynch.insert(prevCall.get()->GetID());
 		}
 		SignalToParent(stream);
+		//prevCall.reset();
 	}
 
 	return NO_ACTION;
 }
 
 PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
+	if (params.get()->GetID() != ID_cuStreamSynchronize)
+		prevCall.reset();
 	// SetThreadLocals();
 	// Parameters * p = params.get();
 	// CallID ident = p->GetID();

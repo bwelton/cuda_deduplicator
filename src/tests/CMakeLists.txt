@@ -95,6 +95,7 @@ target_link_libraries(DumpFunctionNames "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcuda
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
 INCLUDE_DIRECTORIES(DumpFunctionNames ${CUDA_TOOLKIT_ROOT_DIR}/include)
 INCLUDE_DIRECTORIES(DumpFunctionNames ${Boost_INCLUDE_DIRS})
+target_link_libraries(DumpFunctionNames ${DYNINST_LIBRARIES})
 INCLUDE_DIRECTORIES(DumpFunctionNames "${CMAKE_SOURCE_DIR}/src/common")
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 

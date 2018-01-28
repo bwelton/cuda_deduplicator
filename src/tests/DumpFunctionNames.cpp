@@ -56,11 +56,17 @@ using namespace SymtabAPI;
 int main(const int argc, const char * argv[]){
 	BPatch patch;
 	BPatch_binaryEdit *app = patch.openBinary(argv[1], true);
+	std::ofstream pfile;
+	pfile.open(argv[2]);	
 	BPatch_image * img = app->getImage();
 	std::vector<BPatch_function *> funcs;
 	img->getProcedures(funcs, false);
 	for (auto i : funcs) {
-		if (i->getName().find(std::string("cu")) != std::string::npos)
-			std::cerr << i->getName() << std::endl;
+		if (i->getName().find(std::string("cu")) != std::string::npos) { 
+			if (i->getName().find(std::string("__")) != std::string::npos){
+				pfile << "0x" << std::hex << i->getBaseAddr() << std::dec << " " << i->getName() << " 0x" << std::hex << i->getFootprint() << std::dec << std::endl;		
+			}
+		}
 	}
+	pfile.close();
 }

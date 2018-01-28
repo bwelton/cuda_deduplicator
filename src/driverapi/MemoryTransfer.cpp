@@ -143,7 +143,7 @@ int MemoryTransfer::GetStream() {
 		case ID_cuMemcpyAtoHAsync:
 		case ID_cuMemcpyHtoAAsync:
 			WRITE_DEBUG(_params->GetName() << " async call AtoH or HtoA with id " << ((size_t*)_params->GetParameter(4))[0])
-			return int(((size_t*)_params->GetParameter(3))[0]);
+			return int(((size_t*)_params->GetParameter(4))[0]);
 		default:
 			WRITE_DEBUG(_params->GetName() << " - Could not find any stream for this call!")
 			return -1;

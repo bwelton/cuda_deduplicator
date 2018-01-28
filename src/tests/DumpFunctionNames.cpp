@@ -55,7 +55,7 @@ using namespace SymtabAPI;
 
 int main(const int argc, const char * argv[]){
 	BPatch patch;
-	BPatch_binaryEdit *app = bpatch.openBinary(argv[1], true);
+	BPatch_binaryEdit *app = patch.openBinary(argv[1], true);
 	BPatch_image * img = app->getImage();
 	std::vector<BPatch_function *> funcs;
 	img->getProcedures(funcs, false);

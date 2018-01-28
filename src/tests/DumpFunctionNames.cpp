@@ -63,7 +63,7 @@ int main(const int argc, const char * argv[]){
 	img->getProcedures(funcs, false);
 	for (auto i : funcs) {
 		if (i->getName().find(std::string("cu")) != std::string::npos) { 
-			if (i->getName().find(std::string("__")) != std::string::npos){
+			if (i->getName().find(std::string("__")) == std::string::npos){
 				pfile << "0x" << std::hex << i->getBaseAddr() << std::dec << " " << i->getName() << " 0x" << std::hex << i->getFootprint() << std::dec << std::endl;		
 			}
 		}

@@ -207,7 +207,7 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 		#ifdef SYNCH_DEBUG
 		std::stringstream ss;
 		ss << "[SynchTool] Captured Synchronization" << std::endl;
-		_sync_log.Write(ss.str());
+		_sync_log.get()->Write(ss.str());
 		#endif
 		SignalToParent(stream);
 		//prevCall.reset();

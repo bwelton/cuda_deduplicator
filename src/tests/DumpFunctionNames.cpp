@@ -60,6 +60,7 @@ int main(const int argc, const char * argv[]){
 	std::vector<BPatch_function *> funcs;
 	img->getProcedures(funcs, false);
 	for (auto i : funcs) {
-		std::cerr << i->getName() << std::endl;
+		if (i->getName().find(std::string("cu")) != std::string::npos)
+			std::cerr << i->getName() << std::endl;
 	}
 }

@@ -35,6 +35,7 @@ void SyncTesting::GatherSynchronizationCalls() {
 	TimeApplications base(_vm);
 	// Discard Time, we dont care about it here, we only want the names of the funcitons that
 	// synchronize. 
+	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	double time = base.RunWithInstrimentation(def, extras);
 }
 

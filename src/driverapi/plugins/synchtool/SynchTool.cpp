@@ -204,6 +204,11 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 			// Record calls which performed synchronizations.
 			_callsContainingSynch.insert(prevCall.get()->GetID());
 		}
+		#ifdef SYNCH_DEBUG
+		std::stringstream ss;
+		ss << "[SynchTool] Captured Synchronization" << std::endl;
+		_sync_log.Write(ss.str());
+		#endif
 		SignalToParent(stream);
 		//prevCall.reset();
 	}

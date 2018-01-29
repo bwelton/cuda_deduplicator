@@ -83,7 +83,7 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 	ss << "[SynchTool] Adding Memory Transfer - " << params.get()->GetName() << " with the following info\n" 
 	   << "\tCPU Starting Address = 0x" << std::hex << tmp.begin << std::dec 
 	   << "\n\tTransfer Size = " << tmp.size 
-	   << "\n\tStream = " << tmp.stream << std::endl;
+	   << "\n\tStream = " << tmp.stream;
 	_sync_log.get()->Write(ss.str());
 #endif
 }
@@ -206,7 +206,7 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 		}
 		#ifdef SYNCH_DEBUG
 		std::stringstream ss;
-		ss << "[SynchTool] Captured Synchronization" << std::endl;
+		ss << "[SynchTool] Captured Synchronization";
 		_sync_log.get()->Write(ss.str());
 		#endif
 		SignalToParent(stream);

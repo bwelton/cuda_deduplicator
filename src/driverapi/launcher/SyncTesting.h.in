@@ -38,6 +38,7 @@ public:
 	void CreateFunctionTimers(std::vector<std::string> functions);
 	void GatherSynchronizationCalls();
 	void ReadSynchronizationCalls();
+	void ReadDefinition(std::string WrapperDef);
 private:
 	std::set<std::string> _syncCalls; 
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapperDefFunctions;

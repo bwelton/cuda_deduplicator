@@ -37,6 +37,7 @@ public:
 	void CreatePluginFile(std::vector<std::string> plugins);
 	void CreateFunctionTimers(std::vector<std::string> functions);
 	void GatherSynchronizationCalls();
+	void ReadSynchronizationCalls();
 private:
 	std::set<std::string> _syncCalls; 
 	boost::program_options::variables_map _vm;

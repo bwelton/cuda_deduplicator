@@ -40,5 +40,6 @@ public:
 	void ReadSynchronizationCalls();
 private:
 	std::set<std::string> _syncCalls; 
+	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapperDefFunctions;
 	boost::program_options::variables_map _vm;
 };

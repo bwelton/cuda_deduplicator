@@ -14,7 +14,28 @@ void SyncTesting::Run() {
 	for(auto i : _syncCalls) {
 		std::cerr << "\t" << i << std::endl;
 	}
-	//GatherSynchronizationDelay();
+	GatherSynchronizationDelay();
+}
+
+void SyncTesting::ReadDefinition(std::string WrapperDef) {
+	std::ifstream f;
+	std::string line;
+	f.open(WrapperDef.c_str(),std::ifstream::in);
+	while (std::getline(f, line)) {
+	    std::stringstream ss(line);
+	    std::vector<std::string> tokens;
+	    std::string item;
+	    while (std::getline(ss, item, ',')) {
+	        tokens.push_back(item);
+	    }
+	    if (tokens.size() != 5) {
+	    	std::cerr << std::string("Token size is not 5 in wrapper def.... skipping this function\n");
+	    	std::cerr << std::string("Line skipped: ")  << line << std::endl;
+	    } else {
+	    	std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::tolower);
+	    	_wrapperDefFunctions.push_back(std::make_tuple(tokens[0],tokens[1],tokens[2],tokens[3], tokens[4]));
+	    }
+	}
 }
 
 void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {

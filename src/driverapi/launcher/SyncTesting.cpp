@@ -93,6 +93,7 @@ void SyncTesting::RunWithCUPTI() {
 
 void SyncTesting::GatherSynchronizationDelay() {
 	std::vector<std::string> cupti_plugin = {"libTimeCall"};
+    std::vector<std::string> funcsToTime = {"InternalSynchronization"};
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	ReadDefinition(std::string(WRAPPER_DEF));
 	std::set<std::string> check;
@@ -104,6 +105,7 @@ void SyncTesting::GatherSynchronizationDelay() {
 			std::transform(tmp2.begin(), tmp2.end(), tmp2.begin(), ::tolower);
 			if (tmp == tmp2) {
 				extras.push_back(i);
+				funcsToTime.push_back(std::get<1>(i));
 				check.insert(z);
 				break;
 			}
@@ -111,8 +113,6 @@ void SyncTesting::GatherSynchronizationDelay() {
 	}
 	if (check.size() != _syncCalls.size())
 		std::cerr << "POTENTIAL ERROR - Sync calls do not match timing calls!" << std::endl;
-
-//	std::vector<std::string> funcsToTime = {"InternalSynchronization"};
 	CreatePluginFile(cupti_plugin);
 	CreateFunctionTimers(funcsToTime);
 	TimeApplications base(_vm);

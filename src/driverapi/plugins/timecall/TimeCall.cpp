@@ -21,7 +21,7 @@ TimeCall::~TimeCall() {
 	if(_timers.size() > 0) {
 		FILE * out = fopen("call_timers.txt","w");
 		for(auto i : _timers)
-			fprintf(out, "%llu,%f\n",i.first, i.second);
+			fprintf(out, "%s,%llu,%f\n",std::get<0>(i), std::get<1>(i), std::get<2>(i));
 		fclose(out);
 		_timers.clear();
 	}
@@ -29,15 +29,15 @@ TimeCall::~TimeCall() {
 
 PluginReturn TimeCall::Precall(std::shared_ptr<Parameters> params) {
 	if (_callsToMonitor.find(params.get()->GetID()) != _callsToMonitor.end()) {
-		uint64_t * firstArg = ((uint64_t*)params.get()->GetParameter(0));
-		uint64_t * secondArg = ((uint64_t*)params.get()->GetParameter(1));
-		uint64_t * thirdArg = ((uint64_t*)params.get()->GetParameter(2));
-		std::cerr << "Call To Sync: " << firstArg[0] << "," << secondArg[0] << "," << thirdArg[0] << std::endl;
+		// uint64_t * firstArg = ((uint64_t*)params.get()->GetParameter(0));
+		// uint64_t * secondArg = ((uint64_t*)params.get()->GetParameter(1));
+		// uint64_t * thirdArg = ((uint64_t*)params.get()->GetParameter(2));
+		// std::cerr << "Call To Sync: " << firstArg[0] << "," << secondArg[0] << "," << thirdArg[0] << std::endl;
 		auto start = std::chrono::high_resolution_clock::now();
 		params.get()->Call();
 		auto stop = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> diff = stop-start;
-		_timers.push_back(std::make_pair(params.get()->GetInstID(), diff.count()));
+		_timers.push_back(std::make_tuple(params.get()->GetName(), params.get()->GetInstID(), diff.count()));
 		return PERFORMED_ACTION;
 	}
 	return NO_ACTION;

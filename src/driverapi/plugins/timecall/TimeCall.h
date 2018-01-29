@@ -32,7 +32,7 @@ public:
 	PluginReturn Postcall(std::shared_ptr<Parameters> params);
 private:
 	std::set<CallID> _callsToMonitor;
-	std::vector<std::pair<size_t, double> > _timers;
+	std::vector<std::tuple<const char *,size_t, double> > _timers;
 };
 
 #define PLUG_BUILD_FACTORY(param) \

@@ -93,12 +93,30 @@ void SyncTesting::RunWithCUPTI() {
 
 void SyncTesting::GatherSynchronizationDelay() {
 	std::vector<std::string> cupti_plugin = {"libTimeCall"};
-	std::vector<std::string> funcsToTime = {"InternalSynchronization"};
+	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
+	ReadDefinition(std::string(WRAPPER_DEF));
+	std::set<std::string> check;
+	for (auto i : _wrapperDefFunctions) {
+		std::string tmp = std::get<1>(i);
+		std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+		for (auto z : _syncCalls) {
+			std::string tmp2 = z;
+			std::transform(tmp2.begin(), tmp2.end(), tmp2.begin(), ::tolower);
+			if (tmp == tmp2) {
+				extras.push_back(i);
+				check.insert(z);
+				break;
+			}
+		}
+	}
+	if (check.size() != _syncCalls.size())
+		std::cerr << "POTENTIAL ERROR - Sync calls do not match timing calls!" << std::endl;
+
+//	std::vector<std::string> funcsToTime = {"InternalSynchronization"};
 	CreatePluginFile(cupti_plugin);
 	CreateFunctionTimers(funcsToTime);
 	TimeApplications base(_vm);
 	std::string def("");
-	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 	double time = base.RunWithInstrimentation(def, extras);
 }

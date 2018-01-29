@@ -8,7 +8,7 @@ SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 void SyncTesting::Run() {
 	TimeApplications base(_vm);
 	double time = base.Run();
-	//RunWithCUPTI();
+	RunWithCUPTI();
 	GatherSynchronizationCalls();
 	//GatherSynchronizationDelay();
 }
@@ -33,8 +33,6 @@ void SyncTesting::GatherSynchronizationCalls() {
 	CreatePluginFile(pluginNames);
 	std::string def(WRAPPER_DEF);
 	TimeApplications base(_vm);
-	// Discard Time, we dont care about it here, we only want the names of the funcitons that
-	// synchronize. 
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 	double time = base.RunWithInstrimentation(def, extras);

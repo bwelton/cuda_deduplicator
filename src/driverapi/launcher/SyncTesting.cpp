@@ -10,6 +10,10 @@ void SyncTesting::Run() {
 	double time = base.Run();
 	RunWithCUPTI();
 	GatherSynchronizationCalls();
+	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
+	for(auto i : _syncCalls) {
+		std::cerr << "\t" << i << std::endl;
+	}
 	//GatherSynchronizationDelay();
 }
 
@@ -28,6 +32,15 @@ void SyncTesting::CreatePluginFile(std::vector<std::string> plugins) {
 	pfile.close();
 }
 
+void SyncTesting::ReadSynchronizationCalls() {
+  std::ifstream ifs ("synchronous_calls.txt", std::ifstream::in);
+  std::string line;
+  while (std::getline(ifs, line)) {
+  	_syncCalls.insert(line);
+  }
+  ifs.close();
+}
+
 void SyncTesting::GatherSynchronizationCalls() {
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);
@@ -36,6 +49,7 @@ void SyncTesting::GatherSynchronizationCalls() {
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 	double time = base.RunWithInstrimentation(def, extras);
+	ReadSynchronizationCalls();
 }
 
 void SyncTesting::CreateFunctionTimers(std::vector<std::string> functions) {

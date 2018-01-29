@@ -109,6 +109,13 @@ void SyncTesting::GatherSynchronizationDelay() {
 				check.insert(z);
 				break;
 			}
+			tmp2 = tmp2 + std::string("_v2");
+			if (tmp == tmp2) {
+				extras.push_back(i);
+				funcsToTime.push_back(std::get<1>(i));
+				check.insert(z);
+				break;
+			}			
 		}
 	}
 	if (check.size() != _syncCalls.size())

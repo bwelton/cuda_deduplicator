@@ -47,6 +47,13 @@ using namespace ParseAPI;
 using namespace PatchAPI;
 using namespace SymtabAPI;
 
+struct StackPoint {
+	std::string fname;
+	std::string libname;
+	uint64_t point; 
+	bool empty;
+};
+
 class ProcessController {
 public:
 	ProcessController(boost::program_options::variables_map vm, LogInfo * log );
@@ -64,6 +71,8 @@ public:
 	bool ContinueExecution();
 	bool IsStopped();
 	void InsertBreakpoints(std::vector<std::string> functionNames);
+	std::map<uint64_t, std::vector<StackPoint> > GetThreadStacks();
+	
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
 	LogInfo * _log;

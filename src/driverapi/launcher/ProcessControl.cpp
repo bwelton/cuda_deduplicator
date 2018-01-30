@@ -33,6 +33,37 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	return handle;
 }
 
+std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks() {
+	std::map<uint64_t, std::vector<StackPoint> > ret;
+	BPatch_Vector<BPatch_thread *> threads;
+	_appProc->getThreads(threads);
+	for(auto i : threads){
+		BPatch_Vector<BPatch_frame> frames;
+		i->getCallStack(frames);
+		uint64_t threadTid = i->getTid();
+		for (auto frame : frames) {
+			StackPoint sp;
+			BPatch_function * func = frame.findFunction();
+			BPatch_point * point = frame.getPoint();
+			if (func == NULL && point == NULL) {
+				sp.empty = true;
+			} else if (func == NULL && point != NULL) {
+				sp.point = (uint64_t)point->getAddress();
+	   		    sp.empty = false;
+			} else {
+				sp.fname = func->getName();
+				assert(func->getModule() != NULL);
+				const char * libname = func->getModule()->libraryName();
+				if (libname != NULL)
+					sp.libname = std::string(libname);
+				sp.empty = false;
+			}
+			ret[threadTid].push_back(sp);
+		}
+	}
+	return ret;
+}
+
 BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string WrapperDef) {
 	assert(1 == 0);
 	BPatch_addressSpace * handle = NULL;

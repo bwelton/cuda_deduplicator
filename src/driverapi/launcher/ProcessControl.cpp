@@ -52,7 +52,10 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 	   		    sp.empty = false;
 			} else {
 				sp.fname = func->getName();
-				sp.point = (uint64_t)point->getAddress();
+				if (point != NULL)
+					sp.point = (uint64_t)point->getAddress();
+				else 
+					sp.point = 0;
 				assert(func->getModule() != NULL);
 				const char * libname = func->getModule()->libraryName();
 				if (libname != NULL)

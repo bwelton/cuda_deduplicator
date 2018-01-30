@@ -47,7 +47,8 @@ double TimeApplications::RunWithInstrimentation(std::string wrapperDef, std::vec
 double TimeApplications::RunWithBreakpoints(std::string wrapperDef, 
 											std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras,
 											std::vector<std::string> breakFunctions,
-											std::vector<std::string> libLoads) {
+											std::vector<std::string> libLoads,
+											std::function<void(ProcessController *)> cb) {
 	LogInfo log(std::string("BreakpointRun.txt"), std::string("[BPRun]"), true);
 	ProcessController proc(_vm, &log);
 	proc.LaunchProcess();
@@ -64,6 +65,7 @@ double TimeApplications::RunWithBreakpoints(std::string wrapperDef,
 		proc.Run();
 		if (proc.IsStopped()){
 			std::cerr << "[TIMEAPP] Breakpoint has been hit" << std::endl;
+
 			proc.ContinueExecution();
 		}
 	}

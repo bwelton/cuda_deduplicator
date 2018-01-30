@@ -78,6 +78,20 @@ void SyncTesting::GatherSynchronizationCalls() {
 
 // }
 
+void SyncTesting::HandleBreakpoint(ProcessController * p) {
+	std::map<uint64_t, std::vector<StackPoint> > stacks = p->GetThreadStacks();
+	for (auto i : stacks) {
+		std::cerr << "Stack for thread - " << i.first << std::endl;
+		for (auto z : i.second) {
+			if (z.empty == true)
+				std::cerr << "Unknown Frame" << std::endl;
+			else {
+				std::cerr << z.fname << "," << z.libname << "," << z.point << std::endl;
+			} 
+		}
+	}
+}
+
 void SyncTesting::InstrumentProgram() {
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	std::vector<std::string> pluginLoads;
@@ -94,7 +108,7 @@ void SyncTesting::InstrumentProgram() {
 	TimeApplications base(_vm);
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
-	double time = base.RunWithBreakpoints(def, extras, breakpointNames,pluginLoads);
+	double time = base.RunWithBreakpoints(def, extras, breakpointNames,pluginLoads, std::bind(&SyncTesting::HandleBreakpoint, this, std::placeholders::_1));
 	//ReadSynchronizationCalls();
 }
 

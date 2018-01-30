@@ -32,6 +32,7 @@ class SyncTesting {
 public:
 	SyncTesting(boost::program_options::variables_map vm);
 	void Run();
+	void HandleBreakpoint(ProcessController * p);
 	void RunWithCUPTI();
 	void GatherSynchronizationDelay();
 	void CreatePluginFile(std::vector<std::string> plugins);

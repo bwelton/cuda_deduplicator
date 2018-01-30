@@ -81,12 +81,13 @@ void SyncTesting::GatherSynchronizationCalls() {
 void SyncTesting::InstrumentProgram() {
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	std::vector<std::string> breakpointNames = {"SYNCH_SIGNAL_DYNINST"};
+	std::vector<std::string> pluginLoads = {PLUGIN_DIRECTORY "/libSynchTool.so"};
 	CreatePluginFile(pluginNames);
 	std::string def("");
 	TimeApplications base(_vm);
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
-	double time = base.RunWithBreakpoints(def, extras, breakpointNames);
+	double time = base.RunWithBreakpoints(def, extras, breakpointNames,pluginLoads);
 	//ReadSynchronizationCalls();
 }
 

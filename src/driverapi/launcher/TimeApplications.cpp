@@ -46,13 +46,17 @@ double TimeApplications::RunWithInstrimentation(std::string wrapperDef, std::vec
 
 double TimeApplications::RunWithBreakpoints(std::string wrapperDef, 
 											std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras,
-											std::vector<std::string> breakFunctions) {
+											std::vector<std::string> breakFunctions,
+											std::vector<std::string> libLoads) {
 	LogInfo log(std::string("BreakpointRun.txt"), std::string("[BPRun]"), true);
 	ProcessController proc(_vm, &log);
 	proc.LaunchProcess();
 	for (auto i : extras)
 		proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));
 	proc.InsertInstrimentation(wrapperDef);
+	for (auto i : libLoads) 
+		proc.LoadWrapperLibrary(i);
+
 	proc.InsertBreakpoints(breakFunctions);
 	proc.ContinueExecution();
 	auto start = std::chrono::high_resolution_clock::now();

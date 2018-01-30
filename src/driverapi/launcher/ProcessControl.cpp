@@ -255,6 +255,26 @@ void ProcessController::InstrimentApplication() {
 	_insertedInstrimentation =  true;
 }
 
+void ProcessController::InsertBreakpoints(std::vector<std::string> functionNames) {
+	BPatch_image * img = _addrSpace->getImage();
+	BPatch_breakPointExpr bp;
+	BPatch_Vector<BPatch_point *> points;
+	for (auto i : functionNames) {
+		std::vector<BPatch_function *> wrapfunc = findFuncByName(img,i.c_str(), _log);
+		assert(wrapfunc.size() != 0);
+		BPatch_Vector<BPatch_point *> * entry_points;
+		entry_points = wrapfunc[0]->findPoint(BPatch_entry);
+		std::stringstream ss;
+		ss << "Inserting breakpoint at function: " << i;
+		_log->Write(ss.str());
+		points.insert(points.end(), entry_points->begin(), entry_points->end());
+	}	
+	if(!_addrSpace->insertSnippet(bp, points)) {
+		fprintf(stderr, "%s\n", "InsertFailed");
+		exit(-1);
+	}
+}
+
 bool ProcessController::LoadWrapperLibrary(std::string libname) {
 	_log->Write(std::string("Loading library ") + libname + std::string(" into address space"));
 	BPatch_object * tmp;

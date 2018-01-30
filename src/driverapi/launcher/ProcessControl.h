@@ -63,6 +63,7 @@ public:
 	bool IsTerminated();
 	bool ContinueExecution();
 	bool IsStopped();
+	void InsertBreakpoints(std::vector<std::string> functionNames);
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
 	LogInfo * _log;

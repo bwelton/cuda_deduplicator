@@ -65,7 +65,7 @@ double TimeApplications::RunWithBreakpoints(std::string wrapperDef,
 		proc.Run();
 		if (proc.IsStopped()){
 			std::cerr << "[TIMEAPP] Breakpoint has been hit" << std::endl;
-
+			cb(&proc);
 			proc.ContinueExecution();
 		}
 	}

@@ -31,6 +31,9 @@ public:
 	double Run();
 	double InternalRun();
 	double RunWithInstrimentation(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras);
+	double RunWithBreakpoints(std::string wrapperDef, 
+											std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras,
+											std::vector<std::string> breakFunctions);
 private:
 	boost::program_options::variables_map _vm;
 };

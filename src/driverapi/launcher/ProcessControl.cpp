@@ -260,7 +260,7 @@ void ProcessController::InsertBreakpoints(std::vector<std::string> functionNames
 	BPatch_breakPointExpr bp;
 	BPatch_Vector<BPatch_point *> points;
 	for (auto i : functionNames) {
-		std::vector<BPatch_function *> wrapfunc; = findFuncByName(img,i.c_str(), _log);
+		std::vector<BPatch_function *> wrapfunc; //= findFuncByName(img,i.c_str(), _log);
 		for (auto z : _loadedLibraries) {
 			z.second->findFunction(i, wrapfunc, false);
 			if (wrapfunc.size() > 0) 

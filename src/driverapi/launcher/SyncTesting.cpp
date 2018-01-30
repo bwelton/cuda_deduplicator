@@ -80,8 +80,15 @@ void SyncTesting::GatherSynchronizationCalls() {
 
 void SyncTesting::InstrumentProgram() {
 	std::vector<std::string> pluginNames = {"libSynchTool"};
+	std::vector<std::string> pluginLoads;
+	std::vector<std::string> PluginList = PLUGIN_LIST;
 	std::vector<std::string> breakpointNames = {"SYNCH_SIGNAL_DYNINST"};
-	std::vector<std::string> pluginLoads = {PLUGIN_DIRECTORY "/libSynchTool.so"};
+	for (auto i : PluginList) {
+		if (i.find("libSynchTool") != std::string::npos){
+			pluginLoads.push_back(i);
+			break;
+		}
+	}
 	CreatePluginFile(pluginNames);
 	std::string def("");
 	TimeApplications base(_vm);

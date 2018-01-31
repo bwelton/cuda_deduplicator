@@ -52,7 +52,18 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 	   		    sp.empty = false;
 			} else {
 				sp.fname = func->getName();
+				// Get the symbol for the source line.
+				BPatch_module * funcMod = func->getModule();
+				if (funcMod != NULL){
+					uint64_t modOffset = (uint64_t) frame.getPC() - (uint64_t) funcMod->getBaseAddr();
+					SymtabAPI::Module * symMod = SymtabAPI::convert(funcMod);
+					std::vector<SymtabAPI::LineNoTuple> sourceLines;
+					symMod->getSourceLines(sourceLines, modOffset);
+					for (auto x : sourceLines)
+						std::cerr << std::get<0>(x) << "," << std::get<1>(x) << std::endl;
+				}
 				std::cerr << frame.getPC() << std::endl;
+
 				if (point != NULL)
 					sp.point = (uint64_t)point->getAddress();
 				else 

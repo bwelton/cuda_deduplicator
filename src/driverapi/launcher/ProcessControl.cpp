@@ -52,7 +52,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 	   		    sp.empty = false;
 			} else {
 				sp.fname = func->getName();
-				std::cerr << point->getPC() << std::endl;
+				std::cerr << frame.getPC() << std::endl;
 				if (point != NULL)
 					sp.point = (uint64_t)point->getAddress();
 				else 

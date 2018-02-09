@@ -64,10 +64,10 @@ struct StackPoint {
 namespace std {
 	template<> struct less<StackPoint> {
 		bool operator() (const StackPoint& lhs, const StackPoint& rhs) {
-			return lhs.GetKey() < rhs.GetKey();
-		}
-	}
-}
+			return lhs.framePtr < rhs.framePtr;
+		};
+	};
+};
 
 
 class ProcessController {

@@ -81,13 +81,24 @@ void SyncTesting::GatherSynchronizationCalls() {
 void SyncTesting::HandleBreakpoint(ProcessController * p) {
 	std::map<uint64_t, std::vector<StackPoint> > stacks = p->GetThreadStacks();
 	for (auto i : stacks) {
-		std::cerr << "Stack for thread - " << i.first << std::endl;
-		for (auto z : i.second) {
-			if (z.empty == true)
-				std::cerr << "Unknown Frame" << std::endl;
-			else {
-				std::cerr << z.fname << "," << z.libname << "," << z.libOffset << std::endl;
-			} 
+		bool containsLibcuda = false;
+		for (auto z : i.second) 
+			if(z.libname.find("libcuda.so") != std::string::npos) {
+				containsLibcuda = true;
+				break;
+			}
+		if (containsLibcuda == true) {
+			std::stringstream ss;
+			for (auto z : i.second) {
+				if(_stackKeys.find(z) != _stackKeys.end())
+					_stackKeys.insert(z);
+				ss << std::hex << z.framePtr << std::dec << std::endl;
+			}
+			if (_storedStacks.find(ss.str()) == _storedStacks.end())
+				_storedStacks[ss.str()] = 1;
+			else
+				_storedStacks[ss.str()] += 1;
+
 		}
 	}
 }

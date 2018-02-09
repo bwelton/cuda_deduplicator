@@ -86,7 +86,7 @@ void SyncTesting::HandleBreakpoint(ProcessController * p) {
 			if (z.empty == true)
 				std::cerr << "Unknown Frame" << std::endl;
 			else {
-				std::cerr << z.fname << "," << z.libname << "," << z.point << std::endl;
+				std::cerr << z.fname << "," << z.libname << "," << z.libOffset << std::endl;
 			} 
 		}
 	}

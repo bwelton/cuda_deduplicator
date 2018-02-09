@@ -50,9 +50,25 @@ using namespace SymtabAPI;
 struct StackPoint {
 	std::string fname;
 	std::string libname;
-	uint64_t point; 
+	uint64_t libOffset;
+	uint64_t framePtr;
 	bool empty;
+	StackPoint() : empty(true), libOffset(0), framePtr(0), fname(std::string("")), libname(std::string("")) {
+
+	};
+	uint64_t GetKey() {
+		return framePtr;
+	};
 };
+
+namespace std {
+	template<> struct less<StackPoint> {
+		bool operator() (const StackPoint& lhs, const StackPoint& rhs) {
+			return lhs.GetKey() < rhs.GetKey();
+		}
+	}
+}
+
 
 class ProcessController {
 public:

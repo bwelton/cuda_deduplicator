@@ -90,7 +90,7 @@ void SyncTesting::HandleBreakpoint(ProcessController * p) {
 		if (containsLibcuda == true) {
 			std::stringstream ss;
 			for (auto z : i.second) {
-				if(_stackKeys.find(z) != _stackKeys.end())
+				if(_stackKeys.find(z) == _stackKeys.end())
 					_stackKeys.insert(z);
 				ss << std::hex << z.framePtr << std::dec << std::endl;
 			}
@@ -98,7 +98,6 @@ void SyncTesting::HandleBreakpoint(ProcessController * p) {
 				_storedStacks[ss.str()] = 1;
 			else
 				_storedStacks[ss.str()] += 1;
-
 		}
 	}
 }

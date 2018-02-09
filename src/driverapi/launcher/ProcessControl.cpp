@@ -114,6 +114,56 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 	return handle;
 }
 
+void ProcessController::InsertLoadStores() {
+	// BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
+	std::vector<BPatch_snippet*> recordArgs;
+	std::vector<BPatch_module *> local_mods;
+	std::vector<BPatch_function *> callFunc;
+
+	BPatch_image * img = _addrSpace->getImage();
+	BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
+	BPatch_snippet * instAddr = new BPatch_originalAddressExpr();
+
+	recordArgs.push_back(loadAddr);
+	recordArgs.push_back(instAddr);
+
+	img->findFunction("SYNC_RECORD_MEM_ACCESS", callFunc);
+	assert(callFunc.size() > 0);
+
+	BPatch_funcCallExpr recordAddrCall(*(callFunc[0]), recordArgs);
+
+	img->getModules(local_mods);
+	for (auto x : local_mods) {
+		std::string libname = x->libraryName();
+		bool noInst = false;
+		for (auto y : _loadedLibraries) {
+			if (y.first.find(libname) != std::string::npos){
+				noInst = true;
+				break;
+			}
+		}
+		if (noInst)
+			continue;
+
+		std::vector<BPatch_function *> inst_funcs;
+
+		std::set<BPatch_opCode> axs;
+		axs.insert(BPatch_opLoad);
+		axs.insert(BPatch_opStore);
+		std::vector<BPatch_point*> points; 
+		x->getProcedures(inst_funcs);
+
+		// Gather the set of points to instrument 
+		for (auto y : inst_funcs) {
+			std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
+			std::vector<BPatch_point*> * tmp = y->findPoint(axs);
+			points.push_back(points.end(), tmp->begin(), tmp->end());
+		}	
+		assert(_addrSpace->insertSnippet(recordAddrCall,&points));
+	}
+}
+
+
 BPatch * ProcessController::GetBPatch() {
 	return &bpatch;
 }

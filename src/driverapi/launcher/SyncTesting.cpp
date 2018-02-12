@@ -16,6 +16,7 @@ void SyncTesting::Run() {
 	}
 	GatherSynchronizationDelay();
 	InstrumentProgram();
+	RunWithLoadStoreAnalysis();
 }
 
 void SyncTesting::ReadDefinition(std::string WrapperDef) {
@@ -72,6 +73,17 @@ void SyncTesting::GatherSynchronizationCalls() {
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 	double time = base.RunWithInstrimentation(def, extras);
 	ReadSynchronizationCalls();
+}
+
+void SyncTesting::RunWithLoadStoreAnalysis() {
+	std::vector<std::string> pluginNames = {"libSynchTool"};
+	CreatePluginFile(pluginNames);
+	std::string def("");
+	TimeApplications base(_vm);
+	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
+	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
+	double time = base.RunWithLoadStore(def, extras);
+	//ReadSynchronizationCalls();
 }
 
 // void SyncTesting::HandleSynchronizationBreakpoint(ProcessController & p) {

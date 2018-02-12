@@ -76,4 +76,22 @@ double TimeApplications::RunWithBreakpoints(std::string wrapperDef,
 }
 
 
+double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras) {
+	LogInfo log(std::string("LoadStoreRun.txt"), std::string("[LSRUN]"), true);
+	ProcessController proc(_vm, &log);
+	proc.LaunchProcess();
+	proc.InsertLoadStores();
+	for (auto i : extras)
+		proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));
+	proc.InsertInstrimentation(wrapperDef);
+	proc.ContinueExecution();
+	auto start = std::chrono::high_resolution_clock::now();
+	while (!proc.IsTerminated()){
+		proc.Run();
+	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> diff = stop-start;
+	std::cerr << "[TIMEAPP] Application runtime with instrimentation - " << diff.count() << std::endl;
+	return diff.count();	
+}
 

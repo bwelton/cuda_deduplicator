@@ -157,7 +157,7 @@ void ProcessController::InsertLoadStores() {
 		for (auto y : inst_funcs) {
 			std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
 			std::vector<BPatch_point*> * tmp = y->findPoint(axs);
-			points.push_back(points.end(), tmp->begin(), tmp->end());
+			points.insert(points.end(), tmp->begin(), tmp->end());
 		}	
 		assert(_addrSpace->insertSnippet(recordAddrCall,&points));
 	}

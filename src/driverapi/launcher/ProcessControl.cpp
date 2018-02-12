@@ -116,7 +116,7 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 
 void ProcessController::InsertLoadStores() {
 	// BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
-	assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/libSynchTool.so")) != false);
+	assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("plugins/lib/libSynchTool.so")) != false);
 	std::vector<BPatch_snippet*> recordArgs;
 	std::vector<BPatch_module *> local_mods;
 	std::vector<BPatch_function *> callFunc;

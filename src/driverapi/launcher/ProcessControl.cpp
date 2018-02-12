@@ -144,6 +144,7 @@ void ProcessController::InsertLoadStores() {
 		}
 		if (noInst)
 			continue;
+		std::cerr << "Inserting Load/Store Instrimentation into Module : " << libname << std::endl;
 
 		std::vector<BPatch_function *> inst_funcs;
 
@@ -159,7 +160,7 @@ void ProcessController::InsertLoadStores() {
 			std::vector<BPatch_point*> * tmp = y->findPoint(axs);
 			points.insert(points.end(), tmp->begin(), tmp->end());
 		}	
-		assert(_addrSpace->insertSnippet(recordAddrCall,&points));
+		assert(_addrSpace->insertSnippet(recordAddrCall,points));
 	}
 }
 

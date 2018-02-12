@@ -135,7 +135,11 @@ void ProcessController::InsertLoadStores() {
 
 	img->getModules(local_mods);
 	for (auto x : local_mods) {
-		std::string libname = x->libraryName();
+		std::string libname;
+		if(x->libraryName() == NULL) 
+			libname = std::string("");
+		else
+			libname = std::string(x->libraryName());
 		bool noInst = false;
 		for (auto y : _loadedLibraries) {
 			if (y.first.find(libname) != std::string::npos){

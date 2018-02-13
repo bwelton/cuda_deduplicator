@@ -173,6 +173,7 @@ void ProcessController::InsertLoadStores() {
 
 	// Get all the objects.
 	std::vector<BPatch_object *> imgObjects;
+	std::vector<BPatch_object *> instObjects;
 	std::vector<BPatch_object::Region> skipRegions;
 	img->getObjects(imgObjects);
 	for (auto x : imgObjects) {
@@ -193,10 +194,19 @@ void ProcessController::InsertLoadStores() {
 				x->regions(tmpRegion);
 				skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
 		}
+		if (IsApplicationCode(x)){
+			imgObjects.push_back(x);
+		} else {
+			std::vector<BPatch_object::Region> tmpRegion;
+			x->regions(tmpRegion);
+			skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
+		}
 	}
 
+	std::cerr << "We have identified " << imgObjects.size() << " number of objects that need to be instrimented" << std::endl;
+
 	for (auto x : all_functions) {
-		if (InRegionCheck(skipRegions, x->getBaseAddr())){
+		if (InRegionCheck(skipRegions, x->getBaseAddr()) || In){
 			std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 			continue;
 		}

@@ -73,6 +73,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string WrapperDef) {
 	assert(1 == 0);
 	BPatch_addressSpace * handle = NULL;
+
 	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
 
 	// Insert Instrimentation Library into binary before launching.
@@ -117,6 +118,7 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 void ProcessController::InsertLoadStores() {
 	// BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
 	assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
+	_appProc->stopExecution();
 	std::vector<BPatch_snippet*> recordArgs;
 	std::vector<BPatch_module *> local_mods;
 	std::vector<BPatch_function *> callFunc;

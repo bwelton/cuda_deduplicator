@@ -81,15 +81,16 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	ProcessController proc(_vm, &log);
 	proc.LaunchProcess();
 	// proc.InsertLoadStores();
+	for (auto i : libLoads) 
+		proc.LoadWrapperLibrary(i);
+	proc.InsertLoadStores();
 	for (auto i : extras)
 		proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));
 	proc.InsertInstrimentation(wrapperDef);
-	for (auto i : libLoads) 
-		proc.LoadWrapperLibrary(i);
-
+	
 	std::vector<std::string> bpoints;
 	bpoints.push_back(std::string("SYNCH_SIGNAL_DYNINST"));
-	proc.InsertLoadStores();
+
 	proc.InsertBreakpoints(bpoints);
 	proc.ContinueExecution();
 	bool inserted = true;

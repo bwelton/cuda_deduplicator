@@ -169,7 +169,7 @@ void ProcessController::InsertLoadStores() {
 			std::vector<BPatch_point*> * tmp = y->findPoint(axs);
 			points.insert(points.end(), tmp->begin(), tmp->end());
 		}
-		if (points.size() => 1)
+		if (points.size() >= 1)
 			assert(_addrSpace->insertSnippet(recordAddrCall,points));
 	}
 }

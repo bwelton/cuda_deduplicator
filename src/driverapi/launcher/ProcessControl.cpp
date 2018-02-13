@@ -135,7 +135,7 @@ void ProcessController::InsertLoadStores() {
 
 	BPatch_funcCallExpr recordAddrCall(*(callFunc[0]), recordArgs);
 
-	img->getModules(local_mods, true);
+	img->getModules(local_mods);
 	for (auto x : local_mods) {
 		std::string libname;
 		if(x->libraryName() == NULL) 
@@ -163,7 +163,7 @@ void ProcessController::InsertLoadStores() {
 		axs.insert(BPatch_opLoad);
 		axs.insert(BPatch_opStore);
 		std::vector<BPatch_point*> points; 
-		x->getProcedures(inst_funcs);
+		x->getProcedures(inst_funcs, true);
 
 		// Gather the set of points to instrument 
 		for (auto y : inst_funcs) {

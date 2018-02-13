@@ -77,12 +77,20 @@ void SyncTesting::GatherSynchronizationCalls() {
 
 void SyncTesting::RunWithLoadStoreAnalysis() {
 	std::vector<std::string> pluginNames = {"libSynchTool"};
+	std::vector<std::string> pluginLoads;
+	std::vector<std::string> PluginList = PLUGIN_LIST;
+	for (auto i : PluginList) {
+		if (i.find("libSynchTool") != std::string::npos){
+			pluginLoads.push_back(i);
+			break;
+		}
+	}	
 	CreatePluginFile(pluginNames);
 	std::string def("");
 	TimeApplications base(_vm);
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
-	double time = base.RunWithLoadStore(def, extras);
+	double time = base.RunWithLoadStore(def, extras, pluginLoads);
 	//ReadSynchronizationCalls();
 }
 

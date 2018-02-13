@@ -76,7 +76,7 @@ double TimeApplications::RunWithBreakpoints(std::string wrapperDef,
 }
 
 
-double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras) {
+double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras, std::vector<std::string> libLoads) {
 	LogInfo log(std::string("LoadStoreRun.txt"), std::string("[LSRUN]"), true);
 	ProcessController proc(_vm, &log);
 	proc.LaunchProcess();

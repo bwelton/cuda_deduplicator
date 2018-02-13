@@ -89,14 +89,15 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 
 	std::vector<std::string> bpoints;
 	bpoints.push_back(std::string("SYNCH_SIGNAL_DYNINST"));
+	proc.InsertLoadStores();
 	proc.InsertBreakpoints(bpoints);
 	proc.ContinueExecution();
-	bool inserted = false;
+	bool inserted = true;
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
 		proc.Run();
 		if (proc.IsStopped() && inserted == false) {
-			proc.InsertLoadStores();
+	
 			inserted = true;
 			proc.ContinueExecution();
 		}

@@ -142,10 +142,13 @@ void ProcessController::InsertLoadStores() {
 			libname = std::string(x->libraryName());
 		bool noInst = false;
 		for (auto y : _loadedLibraries) {
-			if (y.first.find(libname) != std::string::npos){
+			if (y.first.find(libname) != std::string::npos ||
+				libname.find("cuda_deduplicator") != std::string::npos ||
+				libname.find("libcuda.so") != std::string::npos ||
+				libname.find("dyninst") != std::string::npos){
 				noInst = true;
 				break;
-			}
+			} 
 		}
 		if (noInst)
 			continue;

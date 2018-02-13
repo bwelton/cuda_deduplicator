@@ -145,7 +145,8 @@ void ProcessController::InsertLoadStores() {
 			if (y.first.find(libname) != std::string::npos ||
 				libname.find("cuda_deduplicator") != std::string::npos ||
 				libname.find("libcuda.so") != std::string::npos ||
-				libname.find("dyninst") != std::string::npos){
+				libname.find("dyninst") != std::string::npos ||
+				libname.find("libDriverAPIWrapper.so") != std::string::npos){
 				noInst = true;
 				break;
 			} 
@@ -167,8 +168,9 @@ void ProcessController::InsertLoadStores() {
 			std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
 			std::vector<BPatch_point*> * tmp = y->findPoint(axs);
 			points.insert(points.end(), tmp->begin(), tmp->end());
-		}	
-		assert(_addrSpace->insertSnippet(recordAddrCall,points));
+		}
+		if (points.size() => 1)
+			assert(_addrSpace->insertSnippet(recordAddrCall,points));
 	}
 }
 

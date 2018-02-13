@@ -140,11 +140,11 @@ void ProcessController::InsertLoadStores() {
 
 	// Get all the objects.
 	std::vector<BPatch_object *> imgObjects;
-	std::vector<Region> skipRegions;
+	std::vector<BPatch_object::Region> skipRegions;
 	img->getObjects(imgObjects);
 	for (auto x : imgObjects) {
 		std::string libname = x->name();
-		std::string pathname = x->pathname();
+		std::string pathname = x->pathName();
 		std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
 		std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);
 
@@ -156,7 +156,7 @@ void ProcessController::InsertLoadStores() {
 			pathname.find("libcuda.so") != std::string::npos ||
 			pathname.find("dyninst") != std::string::npos ||
 			pathname.find("libdriverapiwrapper.so") != std::string::npos) {
-				std::vector<Region> tmpRegion;
+				std::vector<BPatch_object::Region> tmpRegion;
 				x->regions(tmpRegion);
 				skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
 			}

@@ -118,10 +118,11 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 void ProcessController::InsertLoadStores() {
 	// BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
 	// assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
-	_appProc->stopExecution();
+	//_appProc->stopExecution();
 	std::vector<BPatch_snippet*> recordArgs;
-	std::vector<BPatch_module *> local_mods;
+	std::vector<BPatch_function *> all_functions;
 	std::vector<BPatch_function *> callFunc;
+	std::vector<BPatch_point*> points; 
 
 	BPatch_image * img = _addrSpace->getImage();
 	BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
@@ -134,46 +135,56 @@ void ProcessController::InsertLoadStores() {
 	assert(callFunc.size() > 0);
 
 	BPatch_funcCallExpr recordAddrCall(*(callFunc[0]), recordArgs);
+	
+	img->getProcedures(all_functions);
+	for (auto x : all_functions) {
+		if (x->isSharedLib()) {
+			// We might be one of the shared libs we do not want to instrument. 
+			BPatch_module * mod = x->getModule();
+			assert(mod != NULL);
 
-	img->getModules(local_mods);
-	for (auto x : local_mods) {
-		std::string libname;
-		if(x->libraryName() == NULL) 
-			libname = std::string("");
-		else
-			libname = std::string(x->libraryName());
-		bool noInst = false;
-		for (auto y : _loadedLibraries) {
-			if (y.first.find(libname) != std::string::npos ||
-				libname.find("cuda_deduplicator") != std::string::npos ||
-				libname.find("libcuda.so") != std::string::npos ||
-				libname.find("dyninst") != std::string::npos ||
-				libname.find("libDriverAPIWrapper.so") != std::string::npos){
-				noInst = true;
-				break;
-			} 
 		}
-		if (noInst)
-			continue;
-		std::cerr << "Inserting Load/Store Instrimentation into Module : " << libname << std::endl;
-
-		std::vector<BPatch_function *> inst_funcs;
-
-		std::set<BPatch_opCode> axs;
-		axs.insert(BPatch_opLoad);
-		axs.insert(BPatch_opStore);
-		std::vector<BPatch_point*> points; 
-		x->getProcedures(inst_funcs);
-
-		// Gather the set of points to instrument 
-		for (auto y : inst_funcs) {
-			std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
-			std::vector<BPatch_point*> * tmp = y->findPoint(axs);
-			points.insert(points.end(), tmp->begin(), tmp->end());
-		}
-		if (points.size() >= 1)
-			assert(_addrSpace->insertSnippet(recordAddrCall,points));
 	}
+
+
+	// for (auto x : local_mods) {
+	// 	std::string libname;
+	// 	if(x->libraryName() == NULL) 
+	// 		libname = std::string("");
+	// 	else
+	// 		libname = std::string(x->libraryName());
+	// 	bool noInst = false;
+	// 	for (auto y : _loadedLibraries) {
+	// 		if (y.first.find(libname) != std::string::npos ||
+	// 			libname.find("cuda_deduplicator") != std::string::npos ||
+	// 			libname.find("libcuda.so") != std::string::npos ||
+	// 			libname.find("dyninst") != std::string::npos ||
+	// 			libname.find("libDriverAPIWrapper.so") != std::string::npos){
+	// 			noInst = true;
+	// 			break;
+	// 		} 
+	// 	}
+	// 	if (noInst)
+	// 		continue;
+	// 	std::cerr << "Inserting Load/Store Instrimentation into Module : " << libname << std::endl;
+
+	// 	std::vector<BPatch_function *> inst_funcs;
+
+	// 	std::set<BPatch_opCode> axs;
+	// 	axs.insert(BPatch_opLoad);
+	// 	axs.insert(BPatch_opStore);
+
+	// 	x->getProcedures(inst_funcs);
+
+	// 	// Gather the set of points to instrument 
+	// 	for (auto y : inst_funcs) {
+	// 		std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
+	// 		std::vector<BPatch_point*> * tmp = y->findPoint(axs);
+	// 		points.insert(points.end(), tmp->begin(), tmp->end());
+	// 	}
+	// }
+	// if (points.size() >= 1)
+	// 	assert(_addrSpace->insertSnippet(recordAddrCall,points));
 }
 
 

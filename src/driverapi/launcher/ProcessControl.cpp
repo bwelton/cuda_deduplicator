@@ -137,12 +137,35 @@ void ProcessController::InsertLoadStores() {
 	BPatch_funcCallExpr recordAddrCall(*(callFunc[0]), recordArgs);
 	
 	img->getProcedures(all_functions);
+
+	// Get all the objects.
+	std::vector<BPatch_object *> imgObjects;
+	std::vector<Region> skipRegions;
+	img->getObjects(imgObjects);
+	for (auto x : imgObjects) {
+		std::string libname = x->name();
+		std::string pathname = x->pathname();
+		std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
+		std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);
+
+		if (libname.find("cuda_deduplicator") != std::string::npos ||
+			libname.find("libcuda.so") != std::string::npos ||
+			libname.find("dyninst") != std::string::npos ||
+			libname.find("libdriverapiwrapper.so") != std::string::npos ||
+			pathname.find("cuda_deduplicator") != std::string::npos ||
+			pathname.find("libcuda.so") != std::string::npos ||
+			pathname.find("dyninst") != std::string::npos ||
+			pathname.find("libdriverapiwrapper.so") != std::string::npos) {
+				std::vector<Region> tmpRegion;
+				x->regions(tmpRegion);
+				skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
+			}
+	}
+
 	for (auto x : all_functions) {
 		if (x->isSharedLib()) {
 			// We might be one of the shared libs we do not want to instrument. 
 			BPatch_module * mod = x->getModule();
-			assert(mod != NULL);
-
 		}
 	}
 
@@ -155,11 +178,11 @@ void ProcessController::InsertLoadStores() {
 	// 		libname = std::string(x->libraryName());
 	// 	bool noInst = false;
 	// 	for (auto y : _loadedLibraries) {
-	// 		if (y.first.find(libname) != std::string::npos ||
-	// 			libname.find("cuda_deduplicator") != std::string::npos ||
-	// 			libname.find("libcuda.so") != std::string::npos ||
-	// 			libname.find("dyninst") != std::string::npos ||
-	// 			libname.find("libDriverAPIWrapper.so") != std::string::npos){
+			// if (y.first.find(libname) != std::string::npos ||
+			// 	libname.find("cuda_deduplicator") != std::string::npos ||
+			// 	libname.find("libcuda.so") != std::string::npos ||
+			// 	libname.find("dyninst") != std::string::npos ||
+			// 	libname.find("libDriverAPIWrapper.so") != std::string::npos){
 	// 			noInst = true;
 	// 			break;
 	// 		} 

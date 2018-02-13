@@ -182,9 +182,10 @@ void ProcessController::InsertLoadStores() {
 		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
 		points.insert(points.end(), tmp->begin(), tmp->end());
 		std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
+		if (points.size() >= 1)
+			assert(_addrSpace->insertSnippet(recordAddrCall,points));
+		points.clear();
 	}
-	if (points.size() >= 1)
-		assert(_addrSpace->insertSnippet(recordAddrCall,points));
 
 	// for (auto x : local_mods) {
 	// 	std::string libname;

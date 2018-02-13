@@ -206,7 +206,7 @@ void ProcessController::InsertLoadStores() {
 	std::cerr << "We have identified " << imgObjects.size() << " number of objects that need to be instrimented" << std::endl;
 
 	for (auto x : all_functions) {
-		if (InRegionCheck(skipRegions, x->getBaseAddr()) || In){
+		if (InRegionCheck(skipRegions, x->getBaseAddr())){
 			std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 			continue;
 		}

@@ -134,6 +134,8 @@ bool ProcessController::IsApplicationCode(BPatch_object * obj) {
 		libname.find("dyninst") != std::string::npos ||
 		libname.find("libdriverapiwrapper.so") != std::string::npos ||
 		pathname.find("cuda_deduplicator") != std::string::npos ||
+		pathname.find("cudadedup") != std::string::npos ||
+		pathname.find("boost") != std::string::npos ||
 		pathname.find("libcuda.so") != std::string::npos ||
 		pathname.find("dyninst") != std::string::npos ||
 		pathname.find("libdriverapiwrapper.so") != std::string::npos ||

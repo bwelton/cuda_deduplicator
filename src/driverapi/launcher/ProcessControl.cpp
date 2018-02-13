@@ -167,7 +167,7 @@ void ProcessController::InsertLoadStores() {
 
 		// Gather the set of points to instrument 
 		for (auto y : inst_funcs) {
-			if (y->getName().find("main") != std::string::npos)
+			if (y->getName().find("main") == std::string::npos)
 				continue;
 			std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
 			std::vector<BPatch_point*> * tmp = y->findPoint(axs);

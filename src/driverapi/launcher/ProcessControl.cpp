@@ -179,8 +179,8 @@ void ProcessController::InsertLoadStores() {
 			std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 			continue;
 		}
-		if (x->getName().find("__GI___tdelete") == std::string::npos) 
-			continue;
+		// if (x->getName().find("__GI___tdelete") == std::string::npos) 
+		// 	continue;
 		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
 		points.insert(points.end(), tmp->begin(), tmp->end());
 		std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;

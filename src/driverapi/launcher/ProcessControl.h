@@ -78,6 +78,7 @@ public:
 	BPatch * GetBPatch();
 	void Run();
 	void InsertLoadStores();
+	bool IsApplicationCode(BPatch_object * obj);
 	bool LoadWrapperLibrary(std::string libname);
 	bool InsertInstrimentation(std::string WrapperDef);
 	void ReadDefinition(std::string WrapperDef);

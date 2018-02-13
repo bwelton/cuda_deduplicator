@@ -123,8 +123,29 @@ bool InRegionCheck(std::vector<BPatch_object::Region> & regions, void * addr) {
 	return false;
 }
 
+bool ProcessController::IsApplicationCode(BPatch_object * obj) {
+	std::string libname = obj->name();
+	std::string pathname = obj->pathName();
+	std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
+	std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);	
+
+	if (libname.find("cuda_deduplicator") != std::string::npos ||
+		libname.find("libcuda.so") != std::string::npos ||
+		libname.find("dyninst") != std::string::npos ||
+		libname.find("libdriverapiwrapper.so") != std::string::npos ||
+		pathname.find("cuda_deduplicator") != std::string::npos ||
+		pathname.find("libcuda.so") != std::string::npos ||
+		pathname.find("dyninst") != std::string::npos ||
+		pathname.find("libdriverapiwrapper.so") != std::string::npos ||
+		pathname.find("nobackup") == std::string::npos) {
+		return false;
+	}
+	return true;
+}
+
+
 void ProcessController::InsertLoadStores() {
-	// BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
+    // BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
 	// assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
 	//_appProc->stopExecution();
 	std::vector<BPatch_snippet*> recordArgs;
@@ -171,7 +192,7 @@ void ProcessController::InsertLoadStores() {
 				std::vector<BPatch_object::Region> tmpRegion;
 				x->regions(tmpRegion);
 				skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
-			}
+		}
 	}
 
 	for (auto x : all_functions) {
@@ -186,7 +207,8 @@ void ProcessController::InsertLoadStores() {
 		std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
 
 		if (points.size() >= 1)
-			assert(_addrSpace->insertSnippet(recordAddrCall,points));
+			if (_addrSpace->insertSnippet(recordAddrCall,points) == NULL) 
+				std::cerr << "could not insert snippet" << std::endl;
 		points.clear();
 	}
 

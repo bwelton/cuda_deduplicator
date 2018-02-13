@@ -117,7 +117,7 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 
 void ProcessController::InsertLoadStores() {
 	// BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
-	assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
+	// assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
 	_appProc->stopExecution();
 	std::vector<BPatch_snippet*> recordArgs;
 	std::vector<BPatch_module *> local_mods;
@@ -163,18 +163,16 @@ void ProcessController::InsertLoadStores() {
 		axs.insert(BPatch_opLoad);
 		axs.insert(BPatch_opStore);
 		std::vector<BPatch_point*> points; 
-		x->getProcedures(inst_funcs, true);
+		x->getProcedures(inst_funcs);
 
 		// Gather the set of points to instrument 
 		for (auto y : inst_funcs) {
-			if (y->getName().find("main") == std::string::npos)
-				continue;
 			std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
-			// std::vector<BPatch_point*> * tmp = y->findPoint(axs);
-			// points.insert(points.end(), tmp->begin(), tmp->end());
+			std::vector<BPatch_point*> * tmp = y->findPoint(axs);
+			points.insert(points.end(), tmp->begin(), tmp->end());
 		}
-		// if (points.size() >= 1)
-		// 	assert(_addrSpace->insertSnippet(recordAddrCall,points));
+		if (points.size() >= 1)
+			assert(_addrSpace->insertSnippet(recordAddrCall,points));
 	}
 }
 

@@ -80,14 +80,27 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	LogInfo log(std::string("LoadStoreRun.txt"), std::string("[LSRUN]"), true);
 	ProcessController proc(_vm, &log);
 	proc.LaunchProcess();
-	proc.InsertLoadStores();
+	// proc.InsertLoadStores();
 	for (auto i : extras)
 		proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));
 	proc.InsertInstrimentation(wrapperDef);
+
+	std::vector<std::string> bpoints;
+	bpoints.push_back(std::string("SYNCH_SIGNAL_DYNINST"));
+	proc.InsertBreakpoints(bpoints);
 	proc.ContinueExecution();
+	bool inserted = false;
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
 		proc.Run();
+		if (proc.IsStopped() && inserted == false) {
+			proc.InsertLoadStores();
+			inserted = true;
+			proc.ContinueExecution();
+		}
+		else if (proc.IsStopped()) 
+			proc.ContinueExecution();
+
 	}
 	auto stop = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> diff = stop-start;

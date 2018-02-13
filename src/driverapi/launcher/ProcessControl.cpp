@@ -171,8 +171,11 @@ void ProcessController::InsertLoadStores() {
 	}
 
 	for (auto x : all_functions) {
-		if (InRegionCheck(skipRegions, x->getBaseAddr()))
+		if (InRegionCheck(skipRegions, x->getBaseAddr())){
+			std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 			continue;
+		}
+
 		std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
 	}
 

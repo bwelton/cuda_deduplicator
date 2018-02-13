@@ -170,11 +170,11 @@ void ProcessController::InsertLoadStores() {
 			if (y->getName().find("main") == std::string::npos)
 				continue;
 			std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
-			std::vector<BPatch_point*> * tmp = y->findPoint(axs);
-			points.insert(points.end(), tmp->begin(), tmp->end());
+			// std::vector<BPatch_point*> * tmp = y->findPoint(axs);
+			// points.insert(points.end(), tmp->begin(), tmp->end());
 		}
-		if (points.size() >= 1)
-			assert(_addrSpace->insertSnippet(recordAddrCall,points));
+		// if (points.size() >= 1)
+		// 	assert(_addrSpace->insertSnippet(recordAddrCall,points));
 	}
 }
 

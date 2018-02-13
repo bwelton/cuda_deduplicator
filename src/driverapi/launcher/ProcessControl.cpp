@@ -146,6 +146,10 @@ void ProcessController::InsertLoadStores() {
 	
 	img->getProcedures(all_functions);
 
+	std::set<BPatch_opCode> axs;
+	axs.insert(BPatch_opLoad);
+	axs.insert(BPatch_opStore);
+
 	// Get all the objects.
 	std::vector<BPatch_object *> imgObjects;
 	std::vector<BPatch_object::Region> skipRegions;
@@ -175,10 +179,12 @@ void ProcessController::InsertLoadStores() {
 			std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 			continue;
 		}
-
+		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
+		points.insert(points.end(), tmp->begin(), tmp->end());
 		std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
 	}
-
+	if (points.size() >= 1)
+		assert(_addrSpace->insertSnippet(recordAddrCall,points));
 
 	// for (auto x : local_mods) {
 	// 	std::string libname;
@@ -203,9 +209,6 @@ void ProcessController::InsertLoadStores() {
 
 	// 	std::vector<BPatch_function *> inst_funcs;
 
-	// 	std::set<BPatch_opCode> axs;
-	// 	axs.insert(BPatch_opLoad);
-	// 	axs.insert(BPatch_opStore);
 
 	// 	x->getProcedures(inst_funcs);
 

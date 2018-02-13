@@ -115,6 +115,14 @@ BPatch_addressSpace * ProcessController::LaunchProcessInstrimenter(std::string W
 	return handle;
 }
 
+bool InRegionCheck(std::vector<BPatch_object::Region> & regions, void * addr) {
+	for (auto i : regions) {
+		if ((uint64_t)addr > (uint64_t)i.base && (uint64_t)addr < ((uint64_t)i.base + i.size))
+			return true;
+	}
+	return false;
+}
+
 void ProcessController::InsertLoadStores() {
 	// BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
 	// assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
@@ -163,10 +171,9 @@ void ProcessController::InsertLoadStores() {
 	}
 
 	for (auto x : all_functions) {
-		if (x->isSharedLib()) {
-			// We might be one of the shared libs we do not want to instrument. 
-			BPatch_module * mod = x->getModule();
-		}
+		if (InRegionCheck(skipRegions, x->getBaseAddr()))
+			continue;
+		std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
 	}
 
 

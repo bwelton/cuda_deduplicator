@@ -128,7 +128,7 @@ bool ProcessController::IsApplicationCode(BPatch_object * obj) {
 	std::string pathname = obj->pathName();
 	std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
 	std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);	
-
+	std::cerr << "Pathname of object: " << pathname << std::endl;
 	if (libname.find("cuda_deduplicator") != std::string::npos ||
 		libname.find("libcuda.so") != std::string::npos ||
 		libname.find("dyninst") != std::string::npos ||

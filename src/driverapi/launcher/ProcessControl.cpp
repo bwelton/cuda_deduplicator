@@ -135,7 +135,7 @@ void ProcessController::InsertLoadStores() {
 
 	BPatch_funcCallExpr recordAddrCall(*(callFunc[0]), recordArgs);
 
-	img->getModules(local_mods);
+	img->getModules(local_mods, true);
 	for (auto x : local_mods) {
 		std::string libname;
 		if(x->libraryName() == NULL) 

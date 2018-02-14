@@ -249,7 +249,7 @@ void ProcessController::InsertLoadStores() {
 
 	for (auto x : all_functions) {
 		if (InRegionCheck(skipRegions, x->getBaseAddr())){
-			std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
+			//std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 			continue;
 		}
 		funcsToInstriment.push(x);
@@ -262,13 +262,13 @@ void ProcessController::InsertLoadStores() {
 		if (InRegionCheck(neverInstriment, x->getBaseAddr())){
 			if(alreadyInstrimented.find(funcBaseAddr) == alreadyInstrimented.end())
 				alreadyInstrimented.insert(funcBaseAddr);
-			std::cerr << "System library function being skipped : " << x->getName() << std::endl;
+			//std::cerr << "System library function being skipped : " << x->getName() << std::endl;
 			continue;
 		}
 		bool skipMe = false;
 		for (auto z : functionsToSkip) {
 			if (z == x->getName() || x->getName().find("cudart::") != std::string::npos) {
-				std::cerr << "Skipped function for compatability purposes: " << x->getName() << std::endl;
+				//std::cerr << "Skipped function for compatability purposes: " << x->getName() << std::endl;
 				skipMe = true;
 			}
 

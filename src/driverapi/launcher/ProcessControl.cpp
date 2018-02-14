@@ -146,7 +146,8 @@ void ProcessController::InsertLoadStores() {
 	// revisitied.
 	std::vector<std::string> systemNeverInstrument = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libc-2.23.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
 	// Functions to never instriment
-	// std::vector<std::string> functions
+	std::vector<std::string> functionsToSkip = {"_fini","atexit","__libc_csu_init", "__libc_csu_fini","__static_initialization_and_destruction_0","_start", "_init"};
+
 
 
     // BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
@@ -239,7 +240,7 @@ void ProcessController::InsertLoadStores() {
 
 	_addrSpace->beginInsertionSet();
 	uint64_t curId = 0;
-	std::set<BPatch_function *> alreadyInstrimented;
+	std::set<uint64_t> alreadyInstrimented;
 	std::queue<BPatch_function *> funcsToInstriment;
 
 	for (auto x : all_functions) {
@@ -252,22 +253,33 @@ void ProcessController::InsertLoadStores() {
 
 	while (funcsToInstriment.empty() == false) {
 		BPatch_function * x = funcsToInstriment.front();
+		uint64_t funcBaseAddr = (uint64_t) x->getBaseAddr();
 		funcsToInstriment.pop();
 		if (InRegionCheck(neverInstriment, x->getBaseAddr())){
-			if(alreadyInstrimented.find(x) == alreadyInstrimented.end())
-				alreadyInstrimented.insert(x);
+			if(alreadyInstrimented.find(funcBaseAddr) == alreadyInstrimented.end())
+				alreadyInstrimented.insert(funcBaseAddr);
 			std::cerr << "System library function being skipped : " << x->getName() << std::endl;
 			continue;
 		}
+		bool skipMe = false;
+		for (auto z : functionsToSkip) {
+			if (z == x->getName()){
+				std::cerr << "Skipped function for compatability purposes: " << x->getName() << std::endl;
+				skipMe = true;
+			}
+
+		}
+		if (skipMe)
+			continue;
 
 		// if (InRegionCheck(skipRegions, x->getBaseAddr())){
 		// 	std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 		// 	continue;
 		// }
 		// Already inserted instrimentation into this funciton;
-		if (alreadyInstrimented.find(x) != alreadyInstrimented.end())
+		if (alreadyInstrimented.find(funcBaseAddr) != alreadyInstrimented.end())
 			continue;
-		alreadyInstrimented.insert(x);
+		alreadyInstrimented.insert(funcBaseAddr);
 		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
 		std::vector<BPatch_snippet*> testArgs;
 		testArgs.push_back(new BPatch_constExpr(curId));
@@ -296,8 +308,8 @@ void ProcessController::InsertLoadStores() {
 			for (auto y : *funcCalls) {
 				BPatch_function * calledFunction = y->getCalledFunction();
 				if (calledFunction != NULL){
-					if (alreadyInstrimented.find(calledFunction) == alreadyInstrimented.end())
-						funcsToInstriment.push(calledFunction);
+					if (alreadyInstrimented.find((uint64_t)calledFunction->getBaseAddr()) == alreadyInstrimented.end())
+						funcsToInstriment.push((uint64_t)calledFunction->getBaseAddr());
 				}
 			}
 		} else {

@@ -150,22 +150,25 @@ void ProcessController::InsertLoadStores() {
     // BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
 	// assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
 	//_appProc->stopExecution();
+	_idToFunction.clear();
 	std::vector<BPatch_snippet*> recordArgs;
-	std::vector<BPatch_function *> all_functions;
-	std::vector<BPatch_function *> callFunc;
-	std::vector<BPatch_point*> points; 
-
-	BPatch_image * img = _addrSpace->getImage();
 	BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
 	BPatch_snippet * instAddr = new BPatch_originalAddressExpr();
-
 	recordArgs.push_back(loadAddr);
 	recordArgs.push_back(instAddr);
 
-	img->findFunction("SYNC_RECORD_MEM_ACCESS", callFunc);
-	assert(callFunc.size() > 0);
 
+	std::vector<BPatch_function *> all_functions;
+	std::vector<BPatch_function *> callFunc;
+	std::vector<BPatch_function *> tracerCall;
+	std::vector<BPatch_point*> points; 
+
+	BPatch_image * img = _addrSpace->getImage();
+	img->findFunction("SYNC_RECORD_MEM_ACCESS", callFunc);
+	img->findFunction("SYNC_RECORD_FUNCTION_ENTRY", tracerCall);
 	BPatch_funcCallExpr recordAddrCall(*(callFunc[0]), recordArgs);
+	assert(callFunc.size() > 0);
+	assert(tracerCall.size() > 0);
 	
 	img->getProcedures(all_functions);
 
@@ -209,13 +212,22 @@ void ProcessController::InsertLoadStores() {
 
 	std::cerr << "We have identified " << imgObjects.size() << " number of objects that need to be instrimented" << std::endl;
 
+
+	_addrSpace->beginInsertionSet();
+	uint64_t curId = 0;
 	for (auto x : all_functions) {
 		if (InRegionCheck(skipRegions, x->getBaseAddr())){
 			std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 			continue;
 		}
-		// if (x->getName().find("__GI___tdelete") == std::string::npos) 
-		// 	continue;
+		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
+		std::vector<BPatch_snippet*> testArgs;
+		testArgs.push_back(new BPatch_constExpr(curId));
+		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
+		curId += 1;
+		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
+			std::cerr << "could not insert func entry snippet" << std::endl;		
+
 		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
 		points.insert(points.end(), tmp->begin(), tmp->end());
 		std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
@@ -225,7 +237,7 @@ void ProcessController::InsertLoadStores() {
 				std::cerr << "could not insert snippet" << std::endl;
 		points.clear();
 	}
-
+	_addrSpace->finalizeInsertionSet(false);
 	// for (auto x : local_mods) {
 	// 	std::string libname;
 	// 	if(x->libraryName() == NULL) 

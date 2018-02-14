@@ -103,4 +103,5 @@ private:
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapFunctions;
 	BPatch_process * _appProc;
 	std::map<std::string, BPatch_object *> _loadedLibraries;
+	std::map<uint64_t, std::string> _idToFunction;
 };

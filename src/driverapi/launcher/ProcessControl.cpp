@@ -215,27 +215,55 @@ void ProcessController::InsertLoadStores() {
 
 	_addrSpace->beginInsertionSet();
 	uint64_t curId = 0;
+	std::set<BPatch_function *> alreadyInstrimented;
+	std::queue<BPatch_function *> funcsToInstriment;
+
 	for (auto x : all_functions) {
 		if (InRegionCheck(skipRegions, x->getBaseAddr())){
 			std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 			continue;
 		}
+		funcsToInstriment.push(x)
+	}
+
+	while (funcsToInstriment.empty() == false) {
+		BPatch_function * x = funcsToInstriment.front();
+		funcsToInstriment.pop();
+		// if (InRegionCheck(skipRegions, x->getBaseAddr())){
+		// 	std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
+		// 	continue;
+		// }
+		// Already inserted instrimentation into this funciton;
+		if (alreadyInstrimented.find(x) != alreadyInstrimented.end())
+			continue;
+		alreadyInstrimented.push_back(x);
 		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
 		std::vector<BPatch_snippet*> testArgs;
 		testArgs.push_back(new BPatch_constExpr(curId));
 		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
 		curId += 1;
 		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
-			std::cerr << "could not insert func entry snippet" << std::endl;		
+			std::cerr << "could not insert func entry snippet" << std::endl;
 
+
+		// Find all load/store's in this funciton.
 		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
 		points.insert(points.end(), tmp->begin(), tmp->end());
 		std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
-
 		if (points.size() >= 1)
 			if (_addrSpace->insertSnippet(recordAddrCall,points) == NULL) 
 				std::cerr << "could not insert snippet" << std::endl;
 		points.clear();
+
+		// For every function we call, add it to the list of functions (if its not already instrimented)
+		std::vector<BPatch_point*> * funcCalls = x->findPoint(BPatch_locSubroutine);
+		for (auto y : *funcCalls) {
+			BPatch_function * calledFunction = y->getCalledFunction();
+			if (calledFunction != NULL){
+				if (alreadyInstrimented.find(calledFunction) == alreadyInstrimented.end())
+					funcsToInstriment.push(calledFunction);
+			}
+		}
 	}
 	_addrSpace->finalizeInsertionSet(false);
 	// for (auto x : local_mods) {

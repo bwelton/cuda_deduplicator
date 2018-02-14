@@ -145,6 +145,10 @@ bool ProcessController::IsApplicationCode(BPatch_object * obj) {
 	return true;
 }
 
+bool SkipFunctions(std::string functionName)
+{}
+
+
 
 void ProcessController::InsertLoadStores() {
     // BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 

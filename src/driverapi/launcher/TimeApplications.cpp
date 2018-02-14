@@ -125,7 +125,6 @@ void TimeApplications::IdentifyDyninstBugs(std::string wrapperDef, std::vector<s
 "__printf_fp",
 "__printf_fphex",
 "__GI___strerror_r",
-"read_int",
 "detach_arena.part.0",
 "malloc_consolidate",
 "sysmalloc",

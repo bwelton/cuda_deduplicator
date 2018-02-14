@@ -181,7 +181,6 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 		if (x->getName() != funcName)
 			continue;
 
-		alreadyInstrimented.insert(funcBaseAddr);
 		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
 		std::vector<BPatch_snippet*> testArgs;
 		testArgs.push_back(new BPatch_constExpr(curId));

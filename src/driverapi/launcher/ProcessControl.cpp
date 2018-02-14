@@ -288,6 +288,7 @@ void ProcessController::InsertLoadStores() {
 		std::vector<BPatch_snippet*> testArgs;
 		testArgs.push_back(new BPatch_constExpr(curId));
 		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
+		std::cerr << x->getName() << "," << curId << std::endl;
 		curId += 1;
 		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
 			std::cerr << "could not insert func entry snippet" << std::endl;

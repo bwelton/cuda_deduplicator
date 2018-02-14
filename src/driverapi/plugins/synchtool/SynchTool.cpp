@@ -25,7 +25,7 @@ extern "C" {
 	}
 
 	void SYNC_RECORD_FUNCTION_ENTRY(uint64_t id) {
-		// std::cerr << "At function entry: " << id << std::endl;
+		std::cerr << "At function entry: " << id << std::endl;
 	}
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t progCounter) {

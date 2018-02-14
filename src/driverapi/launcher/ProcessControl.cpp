@@ -366,6 +366,15 @@ void ProcessController::Run() {
 	bpatch.waitForStatusChange();
 }
 
+void ProcessController::RunWithTimeout(int timeout) {
+	//_appProc->continueExecution();
+	sleep(timeout);
+	std::vector<BPatch_process *> * procs = bpatch.getProcesses();
+	for (auto i : *procs)
+		i->stopExecution();
+
+	//bpatch.waitForStatusChange();
+}
 bool ProcessController::IsTerminated() {
 	if (_terminated == true)
 		return _terminated;

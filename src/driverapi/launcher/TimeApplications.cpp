@@ -93,7 +93,7 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	bpoints.push_back(std::string("SYNC_RECORD_MEM_ACCESS"));
 	bpoints.push_back(std::string("SYNC_RECORD_FUNCTION_ENTRY"));
 
-	proc.InsertBreakpoints(bpoints);
+	//proc.InsertBreakpoints(bpoints);
 	proc.ContinueExecution();
 	bool inserted = true;
 	auto start = std::chrono::high_resolution_clock::now();

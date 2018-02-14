@@ -98,13 +98,9 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	bool inserted = true;
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
-		proc.Run();
+		proc.RunWithTimeout(4);
 
-		if (proc.IsStopped() && inserted == false) {
-			inserted = true;
-			proc.ContinueExecution();
-		}
-		else if (proc.IsStopped()) {
+		if (proc.IsStopped()) {
 			std::cerr << "Hit breakpoint" << std::endl;
 			std::map<uint64_t, std::vector<StackPoint> > stackmap = proc.GetThreadStacks();
 			for (auto i : stackmap) {

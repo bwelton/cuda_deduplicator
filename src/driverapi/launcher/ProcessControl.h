@@ -79,6 +79,7 @@ public:
 	BPatch_addressSpace * LaunchProcessInstrimenter(std::string WrapperDef);
 	BPatch * GetBPatch();
 	void Run();
+	void RunWithTimeout(int timeout);
 	void InsertLoadStores();
 	bool IsObjectInList(std::vector<std::string> li, BPatch_object * obj);
 	bool LoadWrapperLibrary(std::string libname);

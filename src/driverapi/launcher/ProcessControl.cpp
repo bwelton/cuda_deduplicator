@@ -38,7 +38,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 	BPatch_Vector<BPatch_thread *> threads;
 	_appProc->getThreads(threads);
 	for(auto i : threads){
-		i->stopExecution();
+		i->getProcess()->stopExecution();
 		BPatch_Vector<BPatch_frame> frames;
 		i->getCallStack(frames);
 		uint64_t threadTid = i->getTid();

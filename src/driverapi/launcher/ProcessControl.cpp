@@ -248,12 +248,16 @@ void ProcessController::InsertLoadStores() {
 
 		// Find all load/store's in this funciton.
 		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
-		points.insert(points.end(), tmp->begin(), tmp->end());
-		std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
-		if (points.size() >= 1)
-			if (_addrSpace->insertSnippet(recordAddrCall,points) == NULL) 
-				std::cerr << "could not insert snippet" << std::endl;
-		points.clear();
+		if (tmp != NULL){
+			points.insert(points.end(), tmp->begin(), tmp->end());
+			std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
+			if (points.size() >= 1)
+				if (_addrSpace->insertSnippet(recordAddrCall,points) == NULL) 
+					std::cerr << "could not insert snippet" << std::endl;
+			points.clear();
+		} else {
+			std::cerr << "Could not find any load/stores for function : " << x->getName() << std::endl;
+		}
 
 		// For every function we call, add it to the list of functions (if its not already instrimented)
 		std::vector<BPatch_point*> * funcCalls = x->findPoint(BPatch_locSubroutine);

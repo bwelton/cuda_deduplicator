@@ -89,7 +89,7 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	proc.InsertInstrimentation(wrapperDef);
 	
 	std::vector<std::string> bpoints;
-	bpoints.push_back(std::string("SYNCH_SIGNAL_DYNINST"));
+	bpoints.push_back(std::string("SYNCH_SIGNAL_DYNINST"), std::string("SYNC_RECORD_MEM_ACCESS"),std::string("SYNC_RECORD_FUNCTION_ENTRY"));
 
 	proc.InsertBreakpoints(bpoints);
 	proc.ContinueExecution();
@@ -98,12 +98,17 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	while (!proc.IsTerminated()){
 		proc.Run();
 		if (proc.IsStopped() && inserted == false) {
-	
 			inserted = true;
 			proc.ContinueExecution();
 		}
-		else if (proc.IsStopped()) 
+		else if (proc.IsStopped()) {
+			std::cerr << "Hit breakpoint" << std::endl;
 			proc.ContinueExecution();
+			std::map<uint64_t, std::vector<StackPoint> > stackmap = proc.GetThreadStacks();
+			for (auto i : stackmap) {
+				std::cerr << "Stack length: " << i.second.size() << std::endl;
+			}
+		}
 
 	}
 	auto stop = std::chrono::high_resolution_clock::now();

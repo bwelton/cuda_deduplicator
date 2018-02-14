@@ -19,6 +19,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <mutex>
+#include <queue>
 #include <boost/program_options.hpp>
 
 // Dyninst includes
@@ -41,6 +42,7 @@
 #include "set"
 #include "LogInfo.h"
 #include "Constants.h"
+
 
 using namespace Dyninst;
 using namespace ParseAPI;

@@ -123,34 +123,29 @@ bool InRegionCheck(std::vector<BPatch_object::Region> & regions, void * addr) {
 	return false;
 }
 
-bool ProcessController::IsApplicationCode(BPatch_object * obj) {
+bool ProcessController::IsObjectInList(std::vector<std::string> li, BPatch_object * obj) {
 	std::string libname = obj->name();
 	std::string pathname = obj->pathName();
 	std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
 	std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);	
-	std::cerr << "Pathname of object: " << pathname << std::endl;
-	if (libname.find("cuda_deduplicator") != std::string::npos ||
-		libname.find("libcuda.so") != std::string::npos ||
-		libname.find("dyninst") != std::string::npos ||
-		libname.find("libdriverapiwrapper.so") != std::string::npos ||
-		pathname.find("cuda_deduplicator") != std::string::npos ||
-		pathname.find("cudadedup") != std::string::npos ||
-		pathname.find("boost") != std::string::npos ||
-		pathname.find("libcuda.so") != std::string::npos ||
-		pathname.find("dyninst") != std::string::npos ||
-		pathname.find("libdriverapiwrapper.so") != std::string::npos ||
-		pathname.find("nobackup") == std::string::npos) {
-		return false;
-	}
-	return true;
+	for (auto x : li)
+		if (pathname.find(x) != std::string::npos || libname.find(x) != std::string::npos)
+			return true;
+	return false;
 }
 
-bool SkipFunctions(std::string functionName)
-{}
 
-
+bool ProcessController::IsFunctionInList(std::vector<std::string> li, std::string functionName) {
+	return false;
+}
 
 void ProcessController::InsertLoadStores() {
+	// Ignore these directories on first pass of instrimentation. These will be instrimented only if called by the application.
+	std::vector<std::string> systemLibs = {"cuda_deduplicator", "cudadedup", "dyninst", "boost", "/usr/", "/lib/", "libcuda.so"};
+	// NEVER instriment these libraries, could/do cause issues and provide no benefit to us. libpthread may need to be
+	// revisitied.
+	std::vector<std::string> systemNeverInstrument = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so"};
+
     // BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
 	// assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
 	//_appProc->stopExecution();
@@ -180,38 +175,60 @@ void ProcessController::InsertLoadStores() {
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);
 
-	// Get all the objects.
 	std::vector<BPatch_object *> imgObjects;
 	std::vector<BPatch_object *> instObjects;
+
+	// Objects that should not be added to the initial function search list
 	std::vector<BPatch_object::Region> skipRegions;
+	// Objects that should NEVER be instrimented. 
+	std::vector<BPatch_object::Region> neverInstriment;
 	img->getObjects(imgObjects);
 	for (auto x : imgObjects) {
-		std::string libname = x->name();
-		std::string pathname = x->pathName();
-		std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
-		std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);
+		bool appObject = true;
+		std::vector<BPatch_object::Region> tmpRegion;
+		x->regions(tmpRegion);
 
-		if (libname.find("cuda_deduplicator") != std::string::npos ||
-			libname.find("libcuda.so") != std::string::npos ||
-			libname.find("dyninst") != std::string::npos ||
-			libname.find("libdriverapiwrapper.so") != std::string::npos ||
-			pathname.find("cuda_deduplicator") != std::string::npos ||
-			pathname.find("libcuda.so") != std::string::npos ||
-			pathname.find("cudadedup") != std::string::npos ||
-			pathname.find("boost") != std::string::npos ||
-			pathname.find("dyninst") != std::string::npos ||
-			pathname.find("libdriverapiwrapper.so") != std::string::npos) {
-				std::vector<BPatch_object::Region> tmpRegion;
-				x->regions(tmpRegion);
-				skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
-		}
-		if (IsApplicationCode(x)){
-			imgObjects.push_back(x);
-		} else {
-			std::vector<BPatch_object::Region> tmpRegion;
-			x->regions(tmpRegion);
+		if (IsObjectInList(systemLibs, x) == true){
+			// System lib, do not start instrimentation at this lib.
 			skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
+			appObject = false;
 		}
+		if (IsObjectInList(systemNeverInstrument, x) == true) {
+			neverInstriment.insert(neverInstriment.end(), tmpRegion.begin(), tmpRegion.end());
+			appObject = false;
+		}	
+		if(appObject)
+			imgObjects.push_back(x);
+
+		// std::string libname = x->name();
+		// std::string pathname = x->pathName();
+		// std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
+		// std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);
+		// if (libname.find("cuda_deduplicator") != std::string::npos ||
+		// 	libname.find("libcuda.so") != std::string::npos ||
+		// 	libname.find("dyninst") != std::string::npos ||
+		// 	libname.find("libdriverapiwrapper.so") != std::string::npos ||
+		// 	pathname.find("cuda_deduplicator") != std::string::npos ||
+		// 	pathname.find("libcuda.so") != std::string::npos ||
+		// 	pathname.find("cudadedup") != std::string::npos ||
+		// 	pathname.find("boost") != std::string::npos ||
+		// 	pathname.find("dyninst") != std::string::npos ||
+		// 	pathname.find("libdriverapiwrapper.so") != std::string::npos) {
+		// 		std::vector<BPatch_object::Region> tmpRegion;
+		// 		x->regions(tmpRegion);
+		// 		skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
+		// }
+		// // Never instriment any function in these libraries
+		// if(pathname.find("libdl") != std::string::npos || 
+
+
+		// if (IsApplicationCode(x)){
+		// 	imgObjects.push_back(x);
+		// } else {
+		// 	std::vector<BPatch_object::Region> tmpRegion;
+		// 	x->regions(tmpRegion);
+		// 	skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
+		// }
 	}
 
 	std::cerr << "We have identified " << imgObjects.size() << " number of objects that need to be instrimented" << std::endl;
@@ -233,6 +250,11 @@ void ProcessController::InsertLoadStores() {
 	while (funcsToInstriment.empty() == false) {
 		BPatch_function * x = funcsToInstriment.front();
 		funcsToInstriment.pop();
+		if (InRegionCheck(neverInstriment, x->getBaseAddr())){
+			std::cerr << "System library function being skipped : " << x->getName() << std::endl;
+			continue;
+		}
+
 		// if (InRegionCheck(skipRegions, x->getBaseAddr())){
 		// 	std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 		// 	continue;

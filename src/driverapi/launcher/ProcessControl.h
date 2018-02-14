@@ -80,8 +80,9 @@ public:
 	BPatch * GetBPatch();
 	void Run();
 	void InsertLoadStores();
-	bool IsApplicationCode(BPatch_object * obj);
+	bool IsObjectInList(std::vector<std::string> li, BPatch_object * obj);
 	bool LoadWrapperLibrary(std::string libname);
+	bool IsFunctionInList(std::vector<std::string> li, std::string functionName);
 	bool InsertInstrimentation(std::string WrapperDef);
 	void ReadDefinition(std::string WrapperDef);
 	void InstrimentApplication();

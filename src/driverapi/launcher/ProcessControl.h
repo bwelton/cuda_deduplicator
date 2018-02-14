@@ -81,6 +81,7 @@ public:
 	void Run();
 	void RunWithTimeout(int timeout);
 	void InsertLoadStores();
+	void InsertLoadStoreSingle(std::string funcName);
 	bool IsObjectInList(std::vector<std::string> li, BPatch_object * obj);
 	bool LoadWrapperLibrary(std::string libname);
 	bool IsFunctionInList(std::vector<std::string> li, std::string functionName);

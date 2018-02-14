@@ -143,6 +143,71 @@ bool ProcessController::IsFunctionInList(std::vector<std::string> li, std::strin
 	return false;
 }
 
+
+void ProcessController::InsertLoadStoreSingle(std::string funcName) {
+    // BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
+	// assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
+	//_appProc->stopExecution();
+	_idToFunction.clear();
+	std::vector<BPatch_snippet*> recordArgs;
+	BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
+	BPatch_snippet * instAddr = new BPatch_originalAddressExpr();
+	recordArgs.push_back(loadAddr);
+	recordArgs.push_back(instAddr);
+
+
+	std::vector<BPatch_function *> all_functions;
+	std::vector<BPatch_function *> callFunc;
+	std::vector<BPatch_function *> tracerCall;
+	std::vector<BPatch_point*> points; 
+
+	BPatch_image * img = _addrSpace->getImage();
+	img->findFunction("SYNC_RECORD_MEM_ACCESS", callFunc);
+	img->findFunction("SYNC_RECORD_FUNCTION_ENTRY", tracerCall);
+	BPatch_funcCallExpr recordAddrCall(*(callFunc[0]), recordArgs);
+	assert(callFunc.size() > 0);
+	assert(tracerCall.size() > 0);
+	
+	img->getProcedures(all_functions);
+
+	std::set<BPatch_opCode> axs;
+	axs.insert(BPatch_opLoad);
+	axs.insert(BPatch_opStore);
+
+	_addrSpace->beginInsertionSet();
+	uint64_t curId = 0;
+
+	for (auto x : all_functions) {
+		if (x->getName() != funcName)
+			continue;
+
+		alreadyInstrimented.insert(funcBaseAddr);
+		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
+		std::vector<BPatch_snippet*> testArgs;
+		testArgs.push_back(new BPatch_constExpr(curId));
+		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
+		std::cerr << x->getName() << "," << curId << std::endl;
+		curId += 1;
+		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
+			std::cerr << "could not insert func entry snippet" << std::endl;
+
+		// Find all load/store's in this funciton.
+		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
+		if (tmp != NULL){
+			points.insert(points.end(), tmp->begin(), tmp->end());
+			std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
+			if (points.size() >= 1)
+				if (_addrSpace->insertSnippet(recordAddrCall,points) == NULL) 
+					std::cerr << "could not insert snippet" << std::endl;
+			points.clear();
+		} else {
+			std::cerr << "Could not find any load/stores for function : " << x->getName() << std::endl;
+		}
+	}
+	std::cerr << "Finalizing insertion set" << std::endl;
+	_addrSpace->finalizeInsertionSet(false);	
+}
+
 void ProcessController::InsertLoadStores() {
 	// Ignore these directories on first pass of instrimentation. These will be instrimented only if called by the application.
 	std::vector<std::string> systemLibs = {"cuda_deduplicator", "cudadedup", "dyninst", "boost", "/usr/", "/lib/", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};

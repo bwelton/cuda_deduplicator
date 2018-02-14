@@ -218,7 +218,6 @@ void TimeApplications::IdentifyDyninstBugs(std::string wrapperDef, std::vector<s
 "printf_positional",
 "__btowc",
 "__mbsrtowcs",
-"read_int",
 "_i18n_number_rewrite",
 "group_number",
 "_IO_wsetb",

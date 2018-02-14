@@ -261,12 +261,16 @@ void ProcessController::InsertLoadStores() {
 
 		// For every function we call, add it to the list of functions (if its not already instrimented)
 		std::vector<BPatch_point*> * funcCalls = x->findPoint(BPatch_locSubroutine);
-		for (auto y : *funcCalls) {
-			BPatch_function * calledFunction = y->getCalledFunction();
-			if (calledFunction != NULL){
-				if (alreadyInstrimented.find(calledFunction) == alreadyInstrimented.end())
-					funcsToInstriment.push(calledFunction);
+		if (funcCalls != NULL) {
+			for (auto y : *funcCalls) {
+				BPatch_function * calledFunction = y->getCalledFunction();
+				if (calledFunction != NULL){
+					if (alreadyInstrimented.find(calledFunction) == alreadyInstrimented.end())
+						funcsToInstriment.push(calledFunction);
+				}
 			}
+		} else {
+			std::cerr << "Could not find any function calls in : " << x->getName() << std::endl;
 		}
 	}
 	_addrSpace->finalizeInsertionSet(false);

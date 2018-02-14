@@ -29,6 +29,7 @@ extern "C" {
 	}
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t progCounter) {
+
 		// std::cerr << "Address: " << std::hex << addr << std::dec << " read at location: " << std::hex 
 		//           << progCounter << std::dec << std::endl;
 	}

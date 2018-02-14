@@ -144,7 +144,10 @@ void ProcessController::InsertLoadStores() {
 	std::vector<std::string> systemLibs = {"cuda_deduplicator", "cudadedup", "dyninst", "boost", "/usr/", "/lib/", "libcuda.so"};
 	// NEVER instriment these libraries, could/do cause issues and provide no benefit to us. libpthread may need to be
 	// revisitied.
-	std::vector<std::string> systemNeverInstrument = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libc-2.23.so"};
+	std::vector<std::string> systemNeverInstrument = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libc-2.23.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+	// Functions to never instriment
+	// std::vector<std::string> functions
+
 
     // BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
 	// assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
@@ -251,6 +254,8 @@ void ProcessController::InsertLoadStores() {
 		BPatch_function * x = funcsToInstriment.front();
 		funcsToInstriment.pop();
 		if (InRegionCheck(neverInstriment, x->getBaseAddr())){
+			if(alreadyInstrimented.find(x) == alreadyInstrimented.end())
+				alreadyInstrimented.insert(x);
 			std::cerr << "System library function being skipped : " << x->getName() << std::endl;
 			continue;
 		}

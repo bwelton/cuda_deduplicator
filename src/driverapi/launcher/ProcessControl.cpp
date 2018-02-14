@@ -309,7 +309,7 @@ void ProcessController::InsertLoadStores() {
 				BPatch_function * calledFunction = y->getCalledFunction();
 				if (calledFunction != NULL){
 					if (alreadyInstrimented.find((uint64_t)calledFunction->getBaseAddr()) == alreadyInstrimented.end())
-						funcsToInstriment.push((uint64_t)calledFunction->getBaseAddr());
+						funcsToInstriment.push(calledFunction);
 				}
 			}
 		} else {

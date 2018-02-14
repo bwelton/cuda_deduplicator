@@ -223,7 +223,7 @@ void ProcessController::InsertLoadStores() {
 			std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 			continue;
 		}
-		funcsToInstriment.push(x)
+		funcsToInstriment.push(x);
 	}
 
 	while (funcsToInstriment.empty() == false) {
@@ -236,7 +236,7 @@ void ProcessController::InsertLoadStores() {
 		// Already inserted instrimentation into this funciton;
 		if (alreadyInstrimented.find(x) != alreadyInstrimented.end())
 			continue;
-		alreadyInstrimented.push_back(x);
+		alreadyInstrimented.insert(x);
 		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
 		std::vector<BPatch_snippet*> testArgs;
 		testArgs.push_back(new BPatch_constExpr(curId));

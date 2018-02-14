@@ -273,6 +273,7 @@ void ProcessController::InsertLoadStores() {
 			std::cerr << "Could not find any function calls in : " << x->getName() << std::endl;
 		}
 	}
+	std::cerr << "Finalizing insertion set" << std::endl;
 	_addrSpace->finalizeInsertionSet(false);
 	// for (auto x : local_mods) {
 	// 	std::string libname;

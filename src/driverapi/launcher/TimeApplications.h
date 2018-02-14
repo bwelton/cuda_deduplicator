@@ -37,7 +37,7 @@ public:
 											std::vector<std::string> libLoads,
 											std::function<void(ProcessController *)> cb);
 	double RunWithLoadStore(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras, std::vector<std::string> libLoads);
-
+	void IdentifyDyninstBugs(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras, std::vector<std::string> libLoads);
 private:
 	boost::program_options::variables_map _vm;
 };

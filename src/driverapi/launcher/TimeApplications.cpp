@@ -97,7 +97,6 @@ void TimeApplications::IdentifyDyninstBugs(std::string wrapperDef, std::vector<s
 "arena_get2.part.3",
 "arena_get_retry",
 "__malloc_assert",
-"__run_exit_handlers",
 "__random",
 "__GI_strlen",
 "__overflow",

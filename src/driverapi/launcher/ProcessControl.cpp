@@ -267,7 +267,7 @@ void ProcessController::InsertLoadStores() {
 		}
 		bool skipMe = false;
 		for (auto z : functionsToSkip) {
-			if (z == x->getName()){
+			if (z == x->getName() || x->getName().find("cudart::") != std::string::npos) {
 				std::cerr << "Skipped function for compatability purposes: " << x->getName() << std::endl;
 				skipMe = true;
 			}

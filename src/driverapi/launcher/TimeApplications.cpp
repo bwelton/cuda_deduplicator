@@ -444,10 +444,9 @@ void TimeApplications::IdentifyDyninstBugs(std::string wrapperDef, std::vector<s
 	    if (badCall == true){
 	    	std::stringstream ss;
 	    	ss << n;
-	    	outLog.get()->Write(ss.str());
+	    	outLog.Write(ss.str());
 	    	std::cerr << n << " has failed" << std::endl;
 	    }
-		return diff.count();			
 	}
 
 }

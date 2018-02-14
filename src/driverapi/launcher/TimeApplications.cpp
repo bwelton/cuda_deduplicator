@@ -89,7 +89,9 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	proc.InsertInstrimentation(wrapperDef);
 	
 	std::vector<std::string> bpoints;
-	bpoints.push_back(std::string("SYNCH_SIGNAL_DYNINST"), std::string("SYNC_RECORD_MEM_ACCESS"),std::string("SYNC_RECORD_FUNCTION_ENTRY"));
+	bpoints.push_back(std::string("SYNCH_SIGNAL_DYNINST"));
+	bpoints.push_back(std::string("SYNC_RECORD_MEM_ACCESS"));
+	bpoints.push_back(std::string("SYNC_RECORD_FUNCTION_ENTRY"));
 
 	proc.InsertBreakpoints(bpoints);
 	proc.ContinueExecution();

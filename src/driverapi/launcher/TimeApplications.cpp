@@ -84,9 +84,9 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	for (auto i : libLoads) 
 		proc.LoadWrapperLibrary(i);
 	proc.InsertLoadStores();
-	for (auto i : extras)
-		proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));
-	proc.InsertInstrimentation(wrapperDef);
+	// for (auto i : extras)
+	// 	proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));
+	// proc.InsertInstrimentation(wrapperDef);
 	
 	std::vector<std::string> bpoints;
 	bpoints.push_back(std::string("SYNCH_SIGNAL_DYNINST"));
@@ -99,6 +99,7 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
 		proc.Run();
+
 		if (proc.IsStopped() && inserted == false) {
 			inserted = true;
 			proc.ContinueExecution();

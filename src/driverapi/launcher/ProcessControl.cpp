@@ -150,7 +150,7 @@ void ProcessController::InsertLoadStores() {
 	// revisitied.
 	std::vector<std::string> systemNeverInstrument = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libc-2.23.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
 	// Functions to never instriment
-	std::vector<std::string> functionsToSkip = {"_fini","atexit","__libc_csu_init", "__libc_csu_fini","__static_initialization_and_destruction_0","_start", "_init", "cudart::cuosInitializeCriticalSection","cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc","cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch"};
+	std::vector<std::string> functionsToSkip = {"_fini","atexit","__libc_csu_init", "__libc_csu_fini","__static_initialization_and_destruction_0","_start", "_init", "cudart::cuosInitializeCriticalSection","cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc","cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3"};
 
 
 

@@ -150,7 +150,13 @@ void ProcessController::InsertLoadStores() {
 	// revisitied.
 	std::vector<std::string> systemNeverInstrument = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
 	// Functions to never instriment
-	std::vector<std::string> functionsToSkip = {"_fini","atexit","__libc_csu_init", "__libc_csu_fini","__static_initialization_and_destruction_0","_start", "_init", "cudart::cuosInitializeCriticalSection","cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc","cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3"};
+	std::vector<std::string> functionsToSkip = {"_fini","atexit",
+	"__libc_csu_init", "__libc_csu_fini",
+	"__static_initialization_and_destruction_0","_start", 
+	"_init", "cudart::cuosInitializeCriticalSection",
+	"cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc",
+	"cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3",
+	"__printf","__GI_fprintf","_IO_vfprintf_internal","buffered_vfprintf","printf_positional","__printf_fp","__printf_fphex","__fxprintf","__GI___printf_fp_l","vfwprintf","__GI___asprintf","buffered_vfprintf","printf_positional","_IO_vasprintf","__snprintf","vsnprintf"};
 
 
 
@@ -267,9 +273,10 @@ void ProcessController::InsertLoadStores() {
 		}
 		bool skipMe = false;
 		for (auto z : functionsToSkip) {
-			if (z == x->getName() || x->getName().find("cudart::") != std::string::npos) {
+			if (z == x->getName() || x->getName().find("cudart::") != std::string::npos || x->getName().find("cudaLaunch") != std::string::npos) {
 				//std::cerr << "Skipped function for compatability purposes: " << x->getName() << std::endl;
 				skipMe = true;
+				break;
 			}
 
 		}

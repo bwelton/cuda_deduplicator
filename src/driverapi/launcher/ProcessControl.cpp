@@ -37,6 +37,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 	std::map<uint64_t, std::vector<StackPoint> > ret;
 	BPatch_Vector<BPatch_thread *> threads;
 	_appProc->getThreads(threads);
+	std::cerr << "Got " << threads.size() << " threads" << std::endl;
 	for(auto i : threads){
 		i->getProcess()->stopExecution();
 		BPatch_Vector<BPatch_frame> frames;

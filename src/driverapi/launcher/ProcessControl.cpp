@@ -141,7 +141,7 @@ bool ProcessController::IsFunctionInList(std::vector<std::string> li, std::strin
 
 void ProcessController::InsertLoadStores() {
 	// Ignore these directories on first pass of instrimentation. These will be instrimented only if called by the application.
-	std::vector<std::string> systemLibs = {"cuda_deduplicator", "cudadedup", "dyninst", "boost", "/usr/", "/lib/", "libcuda.so",,"libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+	std::vector<std::string> systemLibs = {"cuda_deduplicator", "cudadedup", "dyninst", "boost", "/usr/", "/lib/", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
 	// NEVER instriment these libraries, could/do cause issues and provide no benefit to us. libpthread may need to be
 	// revisitied.
 	std::vector<std::string> systemNeverInstrument = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libc-2.23.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};

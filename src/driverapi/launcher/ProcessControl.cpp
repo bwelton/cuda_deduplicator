@@ -129,6 +129,7 @@ bool InRegionCheck(std::vector<BPatch_object::Region> & regions, void * addr) {
 bool ProcessController::IsObjectInList(std::vector<std::string> li, BPatch_object * obj) {
 	std::string libname = obj->name();
 	std::string pathname = obj->pathName();
+	std::cerr << "My Pathname: " << pathname << std::endl;
 	std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
 	std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);	
 	for (auto x : li)

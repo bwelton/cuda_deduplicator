@@ -105,11 +105,11 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 		}
 		else if (proc.IsStopped()) {
 			std::cerr << "Hit breakpoint" << std::endl;
-			proc.ContinueExecution();
 			std::map<uint64_t, std::vector<StackPoint> > stackmap = proc.GetThreadStacks();
 			for (auto i : stackmap) {
 				std::cerr << "Stack length: " << i.second.size() << std::endl;
 			}
+			proc.ContinueExecution();
 		}
 
 	}

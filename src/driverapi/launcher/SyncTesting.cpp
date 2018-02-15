@@ -8,14 +8,14 @@ SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 void SyncTesting::Run() {
 	TimeApplications base(_vm);
 	double time = base.Run();
-	RunWithCUPTI();
-	GatherSynchronizationCalls();
+	//RunWithCUPTI();
+	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
 	for(auto i : _syncCalls) {
 		std::cerr << "\t" << i << std::endl;
 	}
-	GatherSynchronizationDelay();
-	InstrumentProgram();
+	// GatherSynchronizationDelay();
+	// InstrumentProgram();
 	RunWithLoadStoreAnalysis();
 }
 

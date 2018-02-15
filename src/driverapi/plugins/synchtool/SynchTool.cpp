@@ -7,6 +7,7 @@ thread_local std::shared_ptr<Parameters> prevCall;
 int exited = 0;
 thread_local pid_t my_thread_id = -1; 
 thread_local int my_process_id = -1;
+uint64_t testingInteger = 0;
 
 extern "C" {
 	__attribute__ ((noinline)) void SYNCH_SIGNAL_DYNINST(void * memoryRanges, size_t bsize) {

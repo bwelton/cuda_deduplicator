@@ -170,6 +170,15 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS GenStacktraceThirdParty
         RUNTIME DESTINATION tests)
 
+add_executable(SmallModify "SmallModify.cpp")
+target_link_libraries(SmallModify ${Boost_LIBRARIES})
+target_link_libraries(SmallModify "-lpthread")
+target_link_libraries(SmallModify ${DYNINST_LIBRARIES})
+INCLUDE_DIRECTORIES(SmallModify ${Boost_INCLUDE_DIRS})
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+install(TARGETS SmallModify
+        RUNTIME DESTINATION tests)
+
 add_executable(GetCalledFuncs "GetCalledFuncs.cpp")
 target_link_libraries(GetCalledFuncs ${Boost_LIBRARIES})
 target_link_libraries(GetCalledFuncs "-lpthread")

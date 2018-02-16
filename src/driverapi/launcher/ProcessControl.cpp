@@ -182,16 +182,16 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 	for (auto x : all_functions) {
 		if (x->getName() != funcName)
 			continue;
+//		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
+//		std::vector<BPatch_snippet*> testArgs;
+//		BPatch_arithExpr addOne(BPatch_assign, *intCounter, BPatch_arithExpr(BPatch_plus, *intCounter, BPatch_constExpr(1)));
 		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
 		std::vector<BPatch_snippet*> testArgs;
-		BPatch_arithExpr addOne(BPatch_assign, *intCounter, BPatch_arithExpr(BPatch_plus, *intCounter, BPatch_constExpr(1)));
-		// std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
-		// std::vector<BPatch_snippet*> testArgs;
-		// testArgs.push_back(new BPatch_constExpr(curId));
-		// BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
+		testArgs.push_back(new BPatch_constExpr(curId));
+		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
 		std::cerr << x->getName() << "," << curId << std::endl;
 		// curId += 1;
-		if (_addrSpace->insertSnippet(addOne,*funcEntry) == NULL) 
+		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
 			std::cerr << "could not insert func entry snippet" << std::endl;
 
 		// // Find all load/store's in this funciton.

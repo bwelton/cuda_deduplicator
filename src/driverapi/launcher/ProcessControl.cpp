@@ -189,7 +189,7 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 		std::vector<BPatch_snippet*> testArgs;
 		testArgs.push_back(new BPatch_constExpr(curId));
 		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
-		std::cerr << x->getName() << "," << curId << std::endl;
+		std::cerr << x->getName() << "," << curId << "," << std::hex << (uint64_t) x->getBaseAddr() << std::dec << std::endl;
 		// curId += 1;
 		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
 			std::cerr << "could not insert func entry snippet" << std::endl;

@@ -10,6 +10,7 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 	Setup();
 
+	std::stringstream ss;
 	// Parameters for Record Memory Function
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
@@ -62,7 +63,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 		if (IsNeverInstriment(x, funcRegion)) {
 			continue;
 		}
-
+		std::cerr << "Inserting instrimentation into function - " << x->getName() << std::endl;
 		// Insert function tracing
 		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
 		std::vector<BPatch_snippet*> testArgs;
@@ -72,6 +73,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
 			std::cerr << "could not insert func entry snippet" << std::endl;
 		_funcId += 1;		
+
 
 		// Insert load store instrimentation
 		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
@@ -100,10 +102,10 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 		} else {
 			std::cerr << "Could not find any function calls in : " << x->getName() << std::endl;
 		}		
-
-		
 	}
 
+	if (finalize)
+		Finalize();
 }
 
 bool LoadStoreInst::IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg) {
@@ -218,6 +220,6 @@ StringVector & LoadStoreInst::GetSkipFunctions() {
 StringVector & LoadStoreInst::GetNeverInstrimentLibs() {
 	// Get the names of libraries to NEVER instriment. These include our libraries
 	// and things such as libpthread. 
-	static StringVector ret = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+	static StringVector ret = {"libdl-2.23.so","libc.so.6","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
 	return ret;
 }

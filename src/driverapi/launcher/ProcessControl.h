@@ -43,6 +43,7 @@
 #include "LogInfo.h"
 #include "Constants.h"
 
+#include "LoadStoreInst.h"
 
 using namespace Dyninst;
 using namespace ParseAPI;
@@ -98,6 +99,7 @@ public:
 	
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
+	LoadStoreInst * _loadStore;
 	LogInfo * _log;
 	double _instrimentationOverhead;
 	boost::program_options::variables_map _vm;

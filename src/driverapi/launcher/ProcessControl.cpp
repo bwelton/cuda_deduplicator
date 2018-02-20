@@ -30,6 +30,7 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	_addrSpace = handle;
 	_launched = true;
 	_appProc = dynamic_cast<BPatch_process*>(_addrSpace);
+	_loadStore = new LoadStoreInst(_addrSpace, _addrSpace->getImage());
 	return handle;
 }
 
@@ -212,227 +213,228 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 }
 
 void ProcessController::InsertLoadStores() {
+	_loadStore->InstrimentAllModules(true);
 	// Ignore these directories on first pass of instrimentation. These will be instrimented only if called by the application.
-	std::vector<std::string> systemLibs = {"cuda_deduplicator", "cudadedup", "dyninst", "boost", "/usr/", "/lib/", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
-	// NEVER instriment these libraries, could/do cause issues and provide no benefit to us. libpthread may need to be
-	// revisitied.
-	std::vector<std::string> systemNeverInstrument = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
-	// Functions to never instriment
-	std::vector<std::string> functionsToSkip = {"_fini","atexit",
-	"__libc_csu_init", "__libc_csu_fini",
-	"__static_initialization_and_destruction_0","_start", 
-	"_init", "cudart::cuosInitializeCriticalSection",
-	"cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc",
-	"cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3",
-	"__printf","__GI_fprintf","_IO_vfprintf_internal","buffered_vfprintf","printf_positional","__printf_fp","__printf_fphex","__fxprintf","__GI___printf_fp_l","vfwprintf","__GI___asprintf","buffered_vfprintf","printf_positional","_IO_vasprintf","__snprintf","vsnprintf",
-    "__GI___libc_malloc","_int_malloc","__malloc_assert","malloc_consolidate","sysmalloc","malloc_printerr"};
+	// std::vector<std::string> systemLibs = {"cuda_deduplicator", "cudadedup", "dyninst", "boost", "/usr/", "/lib/", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+	// // NEVER instriment these libraries, could/do cause issues and provide no benefit to us. libpthread may need to be
+	// // revisitied.
+	// std::vector<std::string> systemNeverInstrument = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+	// // Functions to never instriment
+	// std::vector<std::string> functionsToSkip = {"_fini","atexit",
+	// "__libc_csu_init", "__libc_csu_fini",
+	// "__static_initialization_and_destruction_0","_start", 
+	// "_init", "cudart::cuosInitializeCriticalSection",
+	// "cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc",
+	// "cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3",
+	// "__printf","__GI_fprintf","_IO_vfprintf_internal","buffered_vfprintf","printf_positional","__printf_fp","__printf_fphex","__fxprintf","__GI___printf_fp_l","vfwprintf","__GI___asprintf","buffered_vfprintf","printf_positional","_IO_vasprintf","__snprintf","vsnprintf",
+ //    "__GI___libc_malloc","_int_malloc","__malloc_assert","malloc_consolidate","sysmalloc","malloc_printerr"};
 
 
 
-    // BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
-	// assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
-	//_appProc->stopExecution();
-	_idToFunction.clear();
-	std::vector<BPatch_snippet*> recordArgs;
-	BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
-	BPatch_snippet * instAddr = new BPatch_originalAddressExpr();
-	recordArgs.push_back(loadAddr);
-	recordArgs.push_back(instAddr);
+ //    // BPatch_effectiveAddressExpr,BPatch_originalAddressExpr, 
+	// // assert(LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so")) != false);
+	// //_appProc->stopExecution();
+	// _idToFunction.clear();
+	// std::vector<BPatch_snippet*> recordArgs;
+	// BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
+	// BPatch_snippet * instAddr = new BPatch_originalAddressExpr();
+	// recordArgs.push_back(loadAddr);
+	// recordArgs.push_back(instAddr);
 
 
-	std::vector<BPatch_function *> all_functions;
-	std::vector<BPatch_function *> callFunc;
-	std::vector<BPatch_function *> tracerCall;
-	std::vector<BPatch_point*> points; 
+	// std::vector<BPatch_function *> all_functions;
+	// std::vector<BPatch_function *> callFunc;
+	// std::vector<BPatch_function *> tracerCall;
+	// std::vector<BPatch_point*> points; 
 
-	BPatch_image * img = _addrSpace->getImage();
-	img->findFunction("SYNC_RECORD_MEM_ACCESS", callFunc);
-	img->findFunction("SYNC_RECORD_FUNCTION_ENTRY", tracerCall);
-	BPatch_funcCallExpr recordAddrCall(*(callFunc[0]), recordArgs);
-	assert(callFunc.size() > 0);
-	assert(tracerCall.size() > 0);
+	// BPatch_image * img = _addrSpace->getImage();
+	// img->findFunction("SYNC_RECORD_MEM_ACCESS", callFunc);
+	// img->findFunction("SYNC_RECORD_FUNCTION_ENTRY", tracerCall);
+	// BPatch_funcCallExpr recordAddrCall(*(callFunc[0]), recordArgs);
+	// assert(callFunc.size() > 0);
+	// assert(tracerCall.size() > 0);
 	
-	img->getProcedures(all_functions);
+	// img->getProcedures(all_functions);
 
-	std::set<BPatch_opCode> axs;
-	axs.insert(BPatch_opLoad);
-	axs.insert(BPatch_opStore);
+	// std::set<BPatch_opCode> axs;
+	// axs.insert(BPatch_opLoad);
+	// axs.insert(BPatch_opStore);
 
-	std::vector<BPatch_object *> imgObjects;
-	std::vector<BPatch_object *> instObjects;
+	// std::vector<BPatch_object *> imgObjects;
+	// std::vector<BPatch_object *> instObjects;
 
-	// Objects that should not be added to the initial function search list
-	std::vector<BPatch_object::Region> skipRegions;
-	// Objects that should NEVER be instrimented. 
-	std::vector<BPatch_object::Region> neverInstriment;
-	img->getObjects(imgObjects);
-	for (auto x : imgObjects) {
-		bool appObject = true;
-		std::vector<BPatch_object::Region> tmpRegion;
-		x->regions(tmpRegion);
+	// // Objects that should not be added to the initial function search list
+	// std::vector<BPatch_object::Region> skipRegions;
+	// // Objects that should NEVER be instrimented. 
+	// std::vector<BPatch_object::Region> neverInstriment;
+	// img->getObjects(imgObjects);
+	// for (auto x : imgObjects) {
+	// 	bool appObject = true;
+	// 	std::vector<BPatch_object::Region> tmpRegion;
+	// 	x->regions(tmpRegion);
 
-		if (IsObjectInList(systemLibs, x) == true){
-			// System lib, do not start instrimentation at this lib.
-			skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
-			appObject = false;
-		}
-		if (IsObjectInList(systemNeverInstrument, x) == true) {
-			neverInstriment.insert(neverInstriment.end(), tmpRegion.begin(), tmpRegion.end());
-			appObject = false;
-		}	
-		if(appObject)
-			imgObjects.push_back(x);
-
-		// std::string libname = x->name();
-		// std::string pathname = x->pathName();
-		// std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
-		// std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);
-		// if (libname.find("cuda_deduplicator") != std::string::npos ||
-		// 	libname.find("libcuda.so") != std::string::npos ||
-		// 	libname.find("dyninst") != std::string::npos ||
-		// 	libname.find("libdriverapiwrapper.so") != std::string::npos ||
-		// 	pathname.find("cuda_deduplicator") != std::string::npos ||
-		// 	pathname.find("libcuda.so") != std::string::npos ||
-		// 	pathname.find("cudadedup") != std::string::npos ||
-		// 	pathname.find("boost") != std::string::npos ||
-		// 	pathname.find("dyninst") != std::string::npos ||
-		// 	pathname.find("libdriverapiwrapper.so") != std::string::npos) {
-		// 		std::vector<BPatch_object::Region> tmpRegion;
-		// 		x->regions(tmpRegion);
-		// 		skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
-		// }
-		// // Never instriment any function in these libraries
-		// if(pathname.find("libdl") != std::string::npos || 
-
-
-		// if (IsApplicationCode(x)){
-		// 	imgObjects.push_back(x);
-		// } else {
-		// 	std::vector<BPatch_object::Region> tmpRegion;
-		// 	x->regions(tmpRegion);
-		// 	skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
-		// }
-	}
-
-	std::cerr << "We have identified " << imgObjects.size() << " number of objects that need to be instrimented" << std::endl;
-
-
-	_addrSpace->beginInsertionSet();
-	uint64_t curId = 0;
-	std::set<uint64_t> alreadyInstrimented;
-	std::queue<BPatch_function *> funcsToInstriment;
-
-	for (auto x : all_functions) {
-		if (InRegionCheck(skipRegions, x->getBaseAddr())){
-			//std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
-			continue;
-		}
-		funcsToInstriment.push(x);
-	}
-
-	while (funcsToInstriment.empty() == false) {
-		BPatch_function * x = funcsToInstriment.front();
-		uint64_t funcBaseAddr = (uint64_t) x->getBaseAddr();
-		funcsToInstriment.pop();
-		if (InRegionCheck(neverInstriment, x->getBaseAddr())){
-			if(alreadyInstrimented.find(funcBaseAddr) == alreadyInstrimented.end())
-				alreadyInstrimented.insert(funcBaseAddr);
-			//std::cerr << "System library function being skipped : " << x->getName() << std::endl;
-			continue;
-		}
-		bool skipMe = false;
-		for (auto z : functionsToSkip) {
-			if (z == x->getName() || x->getName().find("cudart::") != std::string::npos || x->getName().find("cudaLaunch") != std::string::npos) {
-				//std::cerr << "Skipped function for compatability purposes: " << x->getName() << std::endl;
-				skipMe = true;
-				break;
-			}
-
-		}
-		if (skipMe)
-			continue;
-
-		// if (InRegionCheck(skipRegions, x->getBaseAddr())){
-		// 	std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
-		// 	continue;
-		// }
-		// Already inserted instrimentation into this funciton;
-		if (alreadyInstrimented.find(funcBaseAddr) != alreadyInstrimented.end())
-			continue;
-		alreadyInstrimented.insert(funcBaseAddr);
-		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
-		std::vector<BPatch_snippet*> testArgs;
-		testArgs.push_back(new BPatch_constExpr(curId));
-		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
-		std::cerr << x->getName() << "," << curId << std::endl;
-		curId += 1;
-		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
-			std::cerr << "could not insert func entry snippet" << std::endl;
-
-
-		// Find all load/store's in this funciton.
-		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
-		if (tmp != NULL){
-			points.insert(points.end(), tmp->begin(), tmp->end());
-			std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
-			if (points.size() >= 1)
-				if (_addrSpace->insertSnippet(recordAddrCall,points) == NULL) 
-					std::cerr << "could not insert snippet" << std::endl;
-			points.clear();
-		} else {
-			std::cerr << "Could not find any load/stores for function : " << x->getName() << std::endl;
-		}
-
-		// For every function we call, add it to the list of functions (if its not already instrimented)
-		std::vector<BPatch_point*> * funcCalls = x->findPoint(BPatch_locSubroutine);
-		if (funcCalls != NULL) {
-			for (auto y : *funcCalls) {
-				BPatch_function * calledFunction = y->getCalledFunction();
-				if (calledFunction != NULL){
-					if (alreadyInstrimented.find((uint64_t)calledFunction->getBaseAddr()) == alreadyInstrimented.end())
-						funcsToInstriment.push(calledFunction);
-				}
-			}
-		} else {
-			std::cerr << "Could not find any function calls in : " << x->getName() << std::endl;
-		}
-	}
-	std::cerr << "Finalizing insertion set" << std::endl;
-	_addrSpace->finalizeInsertionSet(false);
-	// for (auto x : local_mods) {
-	// 	std::string libname;
-	// 	if(x->libraryName() == NULL) 
-	// 		libname = std::string("");
-	// 	else
-	// 		libname = std::string(x->libraryName());
-	// 	bool noInst = false;
-	// 	for (auto y : _loadedLibraries) {
-			// if (y.first.find(libname) != std::string::npos ||
-			// 	libname.find("cuda_deduplicator") != std::string::npos ||
-			// 	libname.find("libcuda.so") != std::string::npos ||
-			// 	libname.find("dyninst") != std::string::npos ||
-			// 	libname.find("libDriverAPIWrapper.so") != std::string::npos){
-	// 			noInst = true;
-	// 			break;
-	// 		} 
+	// 	if (IsObjectInList(systemLibs, x) == true){
+	// 		// System lib, do not start instrimentation at this lib.
+	// 		skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
+	// 		appObject = false;
 	// 	}
-	// 	if (noInst)
+	// 	if (IsObjectInList(systemNeverInstrument, x) == true) {
+	// 		neverInstriment.insert(neverInstriment.end(), tmpRegion.begin(), tmpRegion.end());
+	// 		appObject = false;
+	// 	}	
+	// 	if(appObject)
+	// 		imgObjects.push_back(x);
+
+	// 	// std::string libname = x->name();
+	// 	// std::string pathname = x->pathName();
+	// 	// std::transform(libname.begin(), libname.end(), libname.begin(), ::tolower);
+	// 	// std::transform(pathname.begin(), pathname.end(), pathname.begin(), ::tolower);
+	// 	// if (libname.find("cuda_deduplicator") != std::string::npos ||
+	// 	// 	libname.find("libcuda.so") != std::string::npos ||
+	// 	// 	libname.find("dyninst") != std::string::npos ||
+	// 	// 	libname.find("libdriverapiwrapper.so") != std::string::npos ||
+	// 	// 	pathname.find("cuda_deduplicator") != std::string::npos ||
+	// 	// 	pathname.find("libcuda.so") != std::string::npos ||
+	// 	// 	pathname.find("cudadedup") != std::string::npos ||
+	// 	// 	pathname.find("boost") != std::string::npos ||
+	// 	// 	pathname.find("dyninst") != std::string::npos ||
+	// 	// 	pathname.find("libdriverapiwrapper.so") != std::string::npos) {
+	// 	// 		std::vector<BPatch_object::Region> tmpRegion;
+	// 	// 		x->regions(tmpRegion);
+	// 	// 		skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
+	// 	// }
+	// 	// // Never instriment any function in these libraries
+	// 	// if(pathname.find("libdl") != std::string::npos || 
+
+
+	// 	// if (IsApplicationCode(x)){
+	// 	// 	imgObjects.push_back(x);
+	// 	// } else {
+	// 	// 	std::vector<BPatch_object::Region> tmpRegion;
+	// 	// 	x->regions(tmpRegion);
+	// 	// 	skipRegions.insert(skipRegions.end(), tmpRegion.begin(), tmpRegion.end());
+	// 	// }
+	// }
+
+	// std::cerr << "We have identified " << imgObjects.size() << " number of objects that need to be instrimented" << std::endl;
+
+
+	// _addrSpace->beginInsertionSet();
+	// uint64_t curId = 0;
+	// std::set<uint64_t> alreadyInstrimented;
+	// std::queue<BPatch_function *> funcsToInstriment;
+
+	// for (auto x : all_functions) {
+	// 	if (InRegionCheck(skipRegions, x->getBaseAddr())){
+	// 		//std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
 	// 		continue;
-	// 	std::cerr << "Inserting Load/Store Instrimentation into Module : " << libname << std::endl;
+	// 	}
+	// 	funcsToInstriment.push(x);
+	// }
 
-	// 	std::vector<BPatch_function *> inst_funcs;
+	// while (funcsToInstriment.empty() == false) {
+	// 	BPatch_function * x = funcsToInstriment.front();
+	// 	uint64_t funcBaseAddr = (uint64_t) x->getBaseAddr();
+	// 	funcsToInstriment.pop();
+	// 	if (InRegionCheck(neverInstriment, x->getBaseAddr())){
+	// 		if(alreadyInstrimented.find(funcBaseAddr) == alreadyInstrimented.end())
+	// 			alreadyInstrimented.insert(funcBaseAddr);
+	// 		//std::cerr << "System library function being skipped : " << x->getName() << std::endl;
+	// 		continue;
+	// 	}
+	// 	bool skipMe = false;
+	// 	for (auto z : functionsToSkip) {
+	// 		if (z == x->getName() || x->getName().find("cudart::") != std::string::npos || x->getName().find("cudaLaunch") != std::string::npos) {
+	// 			//std::cerr << "Skipped function for compatability purposes: " << x->getName() << std::endl;
+	// 			skipMe = true;
+	// 			break;
+	// 		}
+
+	// 	}
+	// 	if (skipMe)
+	// 		continue;
+
+	// 	// if (InRegionCheck(skipRegions, x->getBaseAddr())){
+	// 	// 	std::cerr << "Function passed for Instrimentation: " << x->getName() << std::endl;
+	// 	// 	continue;
+	// 	// }
+	// 	// Already inserted instrimentation into this funciton;
+	// 	if (alreadyInstrimented.find(funcBaseAddr) != alreadyInstrimented.end())
+	// 		continue;
+	// 	alreadyInstrimented.insert(funcBaseAddr);
+	// 	std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
+	// 	std::vector<BPatch_snippet*> testArgs;
+	// 	testArgs.push_back(new BPatch_constExpr(curId));
+	// 	BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
+	// 	std::cerr << x->getName() << "," << curId << std::endl;
+	// 	curId += 1;
+	// 	if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
+	// 		std::cerr << "could not insert func entry snippet" << std::endl;
 
 
-	// 	x->getProcedures(inst_funcs);
-
-	// 	// Gather the set of points to instrument 
-	// 	for (auto y : inst_funcs) {
-	// 		std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
-	// 		std::vector<BPatch_point*> * tmp = y->findPoint(axs);
+	// 	// Find all load/store's in this funciton.
+	// 	std::vector<BPatch_point*> * tmp = x->findPoint(axs);
+	// 	if (tmp != NULL){
 	// 		points.insert(points.end(), tmp->begin(), tmp->end());
+	// 		std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
+	// 		if (points.size() >= 1)
+	// 			if (_addrSpace->insertSnippet(recordAddrCall,points) == NULL) 
+	// 				std::cerr << "could not insert snippet" << std::endl;
+	// 		points.clear();
+	// 	} else {
+	// 		std::cerr << "Could not find any load/stores for function : " << x->getName() << std::endl;
+	// 	}
+
+	// 	// For every function we call, add it to the list of functions (if its not already instrimented)
+	// 	std::vector<BPatch_point*> * funcCalls = x->findPoint(BPatch_locSubroutine);
+	// 	if (funcCalls != NULL) {
+	// 		for (auto y : *funcCalls) {
+	// 			BPatch_function * calledFunction = y->getCalledFunction();
+	// 			if (calledFunction != NULL){
+	// 				if (alreadyInstrimented.find((uint64_t)calledFunction->getBaseAddr()) == alreadyInstrimented.end())
+	// 					funcsToInstriment.push(calledFunction);
+	// 			}
+	// 		}
+	// 	} else {
+	// 		std::cerr << "Could not find any function calls in : " << x->getName() << std::endl;
 	// 	}
 	// }
-	// if (points.size() >= 1)
+	// std::cerr << "Finalizing insertion set" << std::endl;
+	// _addrSpace->finalizeInsertionSet(false);
+	// // for (auto x : local_mods) {
+	// // 	std::string libname;
+	// // 	if(x->libraryName() == NULL) 
+	// // 		libname = std::string("");
+	// // 	else
+	// // 		libname = std::string(x->libraryName());
+	// // 	bool noInst = false;
+	// // 	for (auto y : _loadedLibraries) {
+	// 		// if (y.first.find(libname) != std::string::npos ||
+	// 		// 	libname.find("cuda_deduplicator") != std::string::npos ||
+	// 		// 	libname.find("libcuda.so") != std::string::npos ||
+	// 		// 	libname.find("dyninst") != std::string::npos ||
+	// 		// 	libname.find("libDriverAPIWrapper.so") != std::string::npos){
+	// // 			noInst = true;
+	// // 			break;
+	// // 		} 
+	// // 	}
+	// // 	if (noInst)
+	// // 		continue;
+	// // 	std::cerr << "Inserting Load/Store Instrimentation into Module : " << libname << std::endl;
+
+	// // 	std::vector<BPatch_function *> inst_funcs;
+
+
+	// // 	x->getProcedures(inst_funcs);
+
+	// // 	// Gather the set of points to instrument 
+	// // 	for (auto y : inst_funcs) {
+	// // 		std::cerr << "Inserting Load/Store Instrimentation into : " << y->getName() << std::endl;
+	// // 		std::vector<BPatch_point*> * tmp = y->findPoint(axs);
+	// // 		points.insert(points.end(), tmp->begin(), tmp->end());
+	// // 	}
+	// // }
+	// // if (points.size() >= 1)
 	// 	assert(_addrSpace->insertSnippet(recordAddrCall,points));
 }
 

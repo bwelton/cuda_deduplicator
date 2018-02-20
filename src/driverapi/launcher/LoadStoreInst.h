@@ -74,9 +74,9 @@ private:
 	BPatch_object::Region FindRegion(BPatch_function * func);
 	void IdentifyRegions();
 	void Setup();
-	StringVector GetSkipPaths();
-	StringVector GetSkipFunctions();
-	StringVector GetNeverInstrimentLibs();
+	StringVector & GetSkipPaths();
+	StringVector & GetSkipFunctions();
+	StringVector & GetNeverInstrimentLibs();
 
 	BPatch_image * _img;
 	BPatch_addressSpace * _addrSpace;

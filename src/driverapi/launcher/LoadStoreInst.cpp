@@ -106,6 +106,8 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 
 	if (finalize)
 		Finalize();
+
+	return true;
 }
 
 bool LoadStoreInst::IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg) {

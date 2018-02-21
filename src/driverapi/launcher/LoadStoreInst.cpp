@@ -222,7 +222,7 @@ StringVector & LoadStoreInst::GetSkipPaths() {
 }
 
 StringVector & LoadStoreInst::SkipExact() {
-	static StringVector ret = {"__random","_IO_setb"};
+	static StringVector ret = {"__random","_IO_new_do_write","_IO_setb"};
 	return ret;
 }
 

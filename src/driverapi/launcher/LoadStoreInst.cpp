@@ -210,7 +210,7 @@ StringVector & LoadStoreInst::GetSkipFunctions() {
 	// These functions include application init (_init), dlopen/dlsym, etc. 
 	static StringVector ret = {"_fini","atexit",
 	"__libc_csu_init", "__libc_csu_fini","malloc","printf","fwrite","strlen","abort","assert","strnlen","new_heap","fflush",
-	"__static_initialization_and_destruction_0","_start", 
+	"__static_initialization_and_destruction_0","_start", "__GI___backtrace","__GI___libc_secure_getenv","__GI_exit","cudart","_IO_puts","__new_fopen","fopen","_Unwind_Resume","__run_exit_handlers","free","open",
 	"_init", "cudart::cuosInitializeCriticalSection","cudart::", "cudaLaunch",
 	"cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc",
 	"cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3",

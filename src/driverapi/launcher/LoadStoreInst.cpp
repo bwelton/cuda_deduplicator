@@ -209,7 +209,7 @@ StringVector & LoadStoreInst::GetSkipFunctions() {
 	// Returns a list of functions to never instriment. 
 	// These functions include application init (_init), dlopen/dlsym, etc. 
 	static StringVector ret = {"_fini","atexit",
-	"__libc_csu_init", "__libc_csu_fini",
+	"__libc_csu_init", "__libc_csu_fini","malloc","printf","fwrite","strlen","abort","assert","strnlen","new_heap","fflush",
 	"__static_initialization_and_destruction_0","_start", 
 	"_init", "cudart::cuosInitializeCriticalSection","cudart::", "cudaLaunch",
 	"cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc",
@@ -222,6 +222,6 @@ StringVector & LoadStoreInst::GetSkipFunctions() {
 StringVector & LoadStoreInst::GetNeverInstrimentLibs() {
 	// Get the names of libraries to NEVER instriment. These include our libraries
 	// and things such as libpthread. 
-	static StringVector ret = {"libdl-2.23.so","libc.so.6","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+	static StringVector ret = {"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
 	return ret;
 }

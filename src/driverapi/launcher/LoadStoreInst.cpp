@@ -52,7 +52,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 	axs.insert(BPatch_opStore);
 
 	while (funcsToInstriment.empty() == false) {
-		if (_funcId > 285)
+		if (_funcId > 281)
 			break;
 		BPatch_function * x = funcsToInstriment.front();
 		funcsToInstriment.pop();
@@ -222,7 +222,7 @@ StringVector & LoadStoreInst::GetSkipPaths() {
 }
 
 StringVector & LoadStoreInst::SkipExact() {
-	static StringVector ret = {"__random","_IO_new_do_write","_IO_setb"};
+	static StringVector ret = {"__random"};
 	return ret;
 }
 

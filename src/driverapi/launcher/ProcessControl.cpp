@@ -6,6 +6,7 @@ ProcessController::ProcessController(boost::program_options::variables_map vm, L
 }
 
 BPatch_addressSpace * ProcessController::LaunchProcess() {
+	_binaryEdit = false;
 	BPatch_addressSpace * handle = NULL;
 	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
 
@@ -30,6 +31,37 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	_addrSpace = handle;
 	_launched = true;
 	_appProc = dynamic_cast<BPatch_process*>(_addrSpace);
+	_loadStore = new LoadStoreInst(_addrSpace, _addrSpace->getImage());
+	return handle;
+}
+
+BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string outputName) {
+	_binaryEdit = true;
+
+	BPatch_addressSpace * handle = NULL;
+	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
+
+	// Setup arguments
+	char ** argv = (char**)malloc(progName.size() * sizeof(char *)+1);
+	for (int i = 0; i < progName.size(); i++) 
+		argv[i] = strdup(progName[i].c_str());
+
+	argv[progName.size()] = NULL;
+	for (int i = 0; i < progName.size(); i++)
+		_log->Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
+
+	// Create the bpatch process
+	BPatch_binaryEdit * app = bpatch.openBinary(argv[0], true);
+	assert(app != NULL);
+
+	// Free temporary argv
+	for (int i = 0; i < progName.size(); i++)
+		free(argv[i]);
+	free(argv);
+
+	_addrSpace = app->getAS()[0];
+	_launched = true;
+	_appProc =  NULL;//dynamic_cast<BPatch_process*>(_addrSpace);
 	_loadStore = new LoadStoreInst(_addrSpace, _addrSpace->getImage());
 	return handle;
 }

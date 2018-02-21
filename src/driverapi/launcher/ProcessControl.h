@@ -96,7 +96,7 @@ public:
 	bool IsStopped();
 	void InsertBreakpoints(std::vector<std::string> functionNames);
 	std::map<uint64_t, std::vector<StackPoint> > GetThreadStacks();
-	
+	BPatch_addressSpace * GenerateDebugBinary(std::string outputName);
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
 	LoadStoreInst * _loadStore;
@@ -111,4 +111,6 @@ private:
 	BPatch_process * _appProc;
 	std::map<std::string, BPatch_object *> _loadedLibraries;
 	std::map<uint64_t, std::string> _idToFunction;
+	bool _binaryEdit;
+	BPatch_binaryEdit * _appBE;
 };

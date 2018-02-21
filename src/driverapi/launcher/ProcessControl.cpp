@@ -51,7 +51,7 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 		_log->Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
 
 	// Create the bpatch process
-	BPatch_binaryEdit * app = bpatch.openBinary(bin.c_str(), true);
+	BPatch_addressSpace * app = bpatch.openBinary(bin.c_str(), true);
 	assert(app != NULL);
 
 	// Free temporary argv
@@ -59,17 +59,17 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 		free(argv[i]);
 	free(argv);
 
-	_addrSpace = app->getImage()->getAddressSpace();
+	_addrSpace = add;
 	_launched = true;
 	_appProc =  NULL;//dynamic_cast<BPatch_process*>(_addrSpace);
 	_loadStore = new LoadStoreInst(_addrSpace, app->getImage());
-	_appBE = app;
+	//_appBE = app;
 	return handle;
 }
 
 void ProcessController::WriteOutput(std::string outputName){
 	assert(_binaryEdit == true);
-	if(!_appBE->writeFile(outputName.c_str()))
+	if(!_addrSpace->writeFile(outputName.c_str()))
 		std::cerr << "Could not generate output binary" << std::endl;
 }
 
@@ -485,7 +485,7 @@ bool ProcessController::LoadWrapperLibrary(std::string libname) {
 	if (_binaryEdit == false)
 		tmp = _appProc->loadLibrary(libname.c_str());
 	else
-		tmp = _appBE->loadLibrary(libname.c_str());
+		tmp = _addrSpace->loadLibrary(libname.c_str());
 	if(tmp == NULL) {
 		std::cerr << "[PROCCTR] Failed to load library - " << libname << " into address space!" << std::endl;
 		return false;

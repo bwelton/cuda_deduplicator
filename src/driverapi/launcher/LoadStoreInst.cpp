@@ -52,7 +52,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 	axs.insert(BPatch_opStore);
 
 	while (funcsToInstriment.empty() == false) {
-		if (_funcId > 280)
+		if (_funcId > 290)
 			break;
 		BPatch_function * x = funcsToInstriment.front();
 		funcsToInstriment.pop();
@@ -60,7 +60,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 
 		if (IsSkipExact(x))
 			alreadyInstrimented.insert((uint64_t)x->getBaseAddr());
-		
+
 		if (alreadyInstrimented.find((uint64_t)x->getBaseAddr()) != alreadyInstrimented.end())
 			continue;
 		

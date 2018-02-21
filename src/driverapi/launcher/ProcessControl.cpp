@@ -59,7 +59,7 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 		free(argv[i]);
 	free(argv);
 
-	_addrSpace = add;
+	_addrSpace = app;
 	_launched = true;
 	_appProc =  NULL;//dynamic_cast<BPatch_process*>(_addrSpace);
 	_loadStore = new LoadStoreInst(_addrSpace, app->getImage());

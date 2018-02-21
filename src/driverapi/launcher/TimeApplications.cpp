@@ -451,8 +451,8 @@ void TimeApplications::IdentifyDyninstBugs(std::string wrapperDef, std::vector<s
 }
 
 double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras, std::vector<std::string> libLoads) {
-	IdentifyDyninstBugs(wrapperDef, extras, libLoads);
-	return 0.0;
+	// IdentifyDyninstBugs(wrapperDef, extras, libLoads);
+	// return 0.0;
 	LogInfo log(std::string("LoadStoreRun.txt"), std::string("[LSRUN]"), true);
 	
 

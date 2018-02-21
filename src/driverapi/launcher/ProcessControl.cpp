@@ -35,7 +35,7 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	return handle;
 }
 
-BPatch_addressSpace * ProcessController::GenerateDebugBinary() {
+BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 	_binaryEdit = true;
 
 	BPatch_addressSpace * handle = NULL;
@@ -51,7 +51,7 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary() {
 		_log->Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
 
 	// Create the bpatch process
-	BPatch_binaryEdit * app = bpatch.openBinary(argv[0], true);
+	BPatch_binaryEdit * app = bpatch.openBinary(bin.c_str(), true);
 	assert(app != NULL);
 
 	// Free temporary argv

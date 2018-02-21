@@ -84,7 +84,7 @@ void TimeApplications::IdentifyDyninstBugs(std::string wrapperDef, std::vector<s
 		remove("run_done.txt");
 		LogInfo log(std::string("LoadStoreRun.txt"), std::string("[LSRUN]"), true);
 		ProcessController proc(_vm, &log);
-		proc.LaunchProcess();
+		proc.GenerateDebugBinary();
 		// proc.InsertLoadStores();
 		for (auto i : libLoads) 
 			proc.LoadWrapperLibrary(i);

@@ -196,17 +196,17 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 			std::cerr << "could not insert func entry snippet" << std::endl;
 
 		// // Find all load/store's in this funciton.
-		// std::vector<BPatch_point*> * tmp = x->findPoint(axs);
-		// if (tmp != NULL){
-		// 	points.insert(points.end(), tmp->begin(), tmp->end());
-		// 	std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
-		// 	if (points.size() >= 1)
-		// 		if (_addrSpace->insertSnippet(recordAddrCall,points) == NULL) 
-		// 			std::cerr << "could not insert snippet" << std::endl;
-		// 	points.clear();
-		// } else {
-		// 	std::cerr << "Could not find any load/stores for function : " << x->getName() << std::endl;
-		// }
+		std::vector<BPatch_point*> * tmp = x->findPoint(axs);
+		if (tmp != NULL){
+			points.insert(points.end(), tmp->begin(), tmp->end());
+			std::cerr << "Inserting Load/Store Instrimentation into : " << x->getName() << std::endl;
+			if (points.size() >= 1)
+				if (_addrSpace->insertSnippet(recordAddrCall,points) == NULL) 
+					std::cerr << "could not insert snippet" << std::endl;
+			points.clear();
+		} else {
+			std::cerr << "Could not find any load/stores for function : " << x->getName() << std::endl;
+		}
 	}
 	std::cerr << "Finalizing insertion set" << std::endl;
 	_addrSpace->finalizeInsertionSet(false);	

@@ -89,7 +89,7 @@ void TimeApplications::IdentifyDyninstBugs(std::string wrapperDef, std::vector<s
 		for (auto i : libLoads) 
 			proc.LoadWrapperLibrary(i);
 		proc.InsertLoadStoreSingle(std::string("__random"));
-		proc.InsertLoadStoreSingle(std::string(n));
+		//proc.InsertLoadStoreSingle(std::string(n));
 
 		// for (auto i : extras)
 		// 	proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));

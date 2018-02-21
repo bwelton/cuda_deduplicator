@@ -58,11 +58,13 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string outputN
 	for (int i = 0; i < progName.size(); i++)
 		free(argv[i]);
 	free(argv);
-
-	_addrSpace = app->getAS()[0];
+	std::vector<BPatch_addressSpace *> tmpAddrs;
+	app->getAS(tmpAddrs);
+	_addrSpace = tmpAddrs[0];
 	_launched = true;
 	_appProc =  NULL;//dynamic_cast<BPatch_process*>(_addrSpace);
-	_loadStore = new LoadStoreInst(_addrSpace, _addrSpace->getImage());
+	_loadStore = new LoadStoreInst(_addrSpace, app->getImage());
+	_appBE = app;
 	return handle;
 }
 
@@ -477,12 +479,15 @@ BPatch * ProcessController::GetBPatch() {
 
 void ProcessController::Run() {
 	//_appProc->continueExecution();
-	
+	if (_binaryEdit)
+		return;
 	bpatch.waitForStatusChange();
 }
 
 void ProcessController::RunWithTimeout(int timeout) {
 	//_appProc->continueExecution();
+	if (_binaryEdit)
+		return;
 	sleep(timeout);
 	std::vector<BPatch_process *> * procs = bpatch.getProcesses();
 	for (auto i : *procs)
@@ -491,6 +496,8 @@ void ProcessController::RunWithTimeout(int timeout) {
 	//bpatch.waitForStatusChange();
 }
 bool ProcessController::IsTerminated() {
+	if (_binaryEdit)
+		return true;
 	if (_terminated == true)
 		return _terminated;
 	else 
@@ -499,10 +506,14 @@ bool ProcessController::IsTerminated() {
 }
 
 bool ProcessController::ContinueExecution() {
+	if (_binaryEdit)
+		return false;
 	return _appProc->continueExecution();
 }
 
 bool ProcessController::IsStopped() {
+	if (_binaryEdit)
+		return true;
 	return _appProc->isStopped();
 }
 

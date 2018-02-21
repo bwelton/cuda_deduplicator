@@ -52,7 +52,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 	axs.insert(BPatch_opStore);
 
 	while (funcsToInstriment.empty() == false) {
-		if (_funcId > 280)
+		if (_funcId > 278)
 			break;
 		BPatch_function * x = funcsToInstriment.front();
 		funcsToInstriment.pop();

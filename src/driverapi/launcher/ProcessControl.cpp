@@ -69,7 +69,7 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 
 void ProcessController::WriteOutput(std::string outputName){
 	assert(_binaryEdit == true);
-	if(!_addrSpace->writeFile(outputName.c_str()))
+	if(!_appBE->writeFile(outputName.c_str()))
 		std::cerr << "Could not generate output binary" << std::endl;
 }
 

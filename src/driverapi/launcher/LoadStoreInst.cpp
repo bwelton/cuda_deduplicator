@@ -52,11 +52,15 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 	axs.insert(BPatch_opStore);
 
 	while (funcsToInstriment.empty() == false) {
-		if (_funcId > 278)
+		if (_funcId > 280)
 			break;
 		BPatch_function * x = funcsToInstriment.front();
 		funcsToInstriment.pop();
 
+
+		if (IsSkipExact(x))
+			alreadyInstrimented.insert((uint64_t)x->getBaseAddr());
+		
 		if (alreadyInstrimented.find((uint64_t)x->getBaseAddr()) != alreadyInstrimented.end())
 			continue;
 		
@@ -136,6 +140,16 @@ bool LoadStoreInst::IsNeverInstriment(BPatch_function * func, BPatch_object::Reg
 	return false;
 }
 
+bool LoadStoreInst::IsSkipExact(BPatch_function * func) {
+	std::string funcName = func->getName();
+	StringVector n = SkipExact();
+	for (auto i : n) {
+		if (funcName == i)
+			return true;
+	}
+	return false;
+}
+
 BPatch_object::Region LoadStoreInst::FindRegion(BPatch_function * func) {
 	uint64_t funcBase = (uint64_t)func->getBaseAddr();
 	for (auto i : _regionToLibname) {
@@ -205,6 +219,11 @@ StringVector & LoadStoreInst::GetSkipPaths() {
 	static StringVector ret = {"cuda_deduplicator", "cudadedup", "dyninst", "boost", "/usr/", "/lib/", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
 	return ret;
 
+}
+
+StringVector & LoadStoreInst::SkipExact() {
+	static StringVector ret = {"__random"};
+	return ret;
 }
 
 StringVector & LoadStoreInst::GetSkipFunctions() {

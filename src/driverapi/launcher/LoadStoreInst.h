@@ -71,12 +71,14 @@ public:
 private:
 	bool IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg);
 	bool IsNeverInstriment(BPatch_function * func, BPatch_object::Region reg);
+	bool IsSkipExact(BPatch_function * func);
 	BPatch_object::Region FindRegion(BPatch_function * func);
 	void IdentifyRegions();
 	void Setup();
 	StringVector & GetSkipPaths();
 	StringVector & GetSkipFunctions();
 	StringVector & GetNeverInstrimentLibs();
+	StringVector & SkipExact();
 
 	BPatch_image * _img;
 	BPatch_addressSpace * _addrSpace;

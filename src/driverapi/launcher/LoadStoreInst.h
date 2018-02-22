@@ -64,7 +64,7 @@ namespace std
 class LoadStoreInst {
 public: 
 	LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img);
-	bool InstrimentAllModules(bool finalize) ;
+	bool InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil);
 	bool InstrimentNewModule(BPatch_object * obj, bool finalize);
 	void Finalize();
 	void BeginInsertionSet();

@@ -251,8 +251,8 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 	_addrSpace->finalizeInsertionSet(false);	
 }
 
-void ProcessController::InsertLoadStores() {
-	_loadStore->InstrimentAllModules(true);
+void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil) {
+	_loadStore->InstrimentAllModules(true, skips, instUntil);
 }
 
 

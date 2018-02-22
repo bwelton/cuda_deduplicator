@@ -7,7 +7,7 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 }
 
 
-bool LoadStoreInst::InstrimentAllModules(bool finalize) {
+bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil) {
 	Setup();
 
 	std::stringstream ss;
@@ -52,7 +52,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 	axs.insert(BPatch_opStore);
 
 	while (funcsToInstriment.empty() == false) {
-		if (_funcId > 280)
+		if (_funcId == instUntil && instUntil != 0)
 			break;
 		BPatch_function * x = funcsToInstriment.front();
 		funcsToInstriment.pop();
@@ -69,6 +69,12 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 		if (IsNeverInstriment(x, funcRegion)) {
 			continue;
 		}
+
+		if (std::find(skips.begin(), skips.end(), _funcId) != skips.end()){
+			_funcId+= 1;
+			continue;
+		}
+
 		std::cerr << "Inserting instrimentation into function - " << x->getName() << std::endl;
 		// Insert function tracing
 		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
@@ -109,7 +115,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize) {
 			std::cerr << "Could not find any function calls in : " << x->getName() << std::endl;
 		}		
 	}
-
+	instUntil = _funcId;
 	if (finalize)
 		Finalize();
 

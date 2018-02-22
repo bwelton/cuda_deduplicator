@@ -611,6 +611,6 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	    }
 	    curPos++;
 	}
-	return diff.count();	
+	return 0.0;
 }
 

@@ -558,6 +558,7 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 	std::vector<uint64_t> funskips;
 	while (curPos < total_functions) {
 		uint64_t tmpMe = curPos + 1;
+		LogInfo log(std::string("LoadStoreRun.txt"), std::string("[LSRUN]"), true);
 		ProcessController proc(_vm, &log);
 
 		proc.LaunchProcess();

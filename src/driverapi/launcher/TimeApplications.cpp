@@ -554,7 +554,7 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 
 	// Experimental remove later.
 	LogInfo outLog(std::string("IdsOfNonWorkers.txt"), std::string("[NonWorking]"), true);
-	uint64_t curPos = 0;
+	uint64_t curPos = 260;
 	std::vector<uint64_t> funskips;
 	while (curPos < total_functions) {
 		uint64_t tmpMe = curPos + 1;

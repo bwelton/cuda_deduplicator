@@ -3,7 +3,7 @@
 SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 	_vm(vm) {
 	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
-	_programName = std::string(basename((const char *)progName[0].c_str()));
+	_programName = std::string(basename((char *)progName[0].c_str()));
 
 }
 

@@ -2,12 +2,19 @@
 
 SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 	_vm(vm) {
+	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
+	_programName = std::string(basename(progName[0].c_str()));
 
 }
 
 void SyncTesting::Run() {
 	TimeApplications base(_vm);
+	std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
+	std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
+	base.RedirectOutToFile(_programName + std::string(".base.out"));
 	double time = base.Run();
+	base.ReturnToTerminal();
+	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	//RunWithCUPTI();
 	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
@@ -16,7 +23,7 @@ void SyncTesting::Run() {
 	}
 	// GatherSynchronizationDelay();
 	// InstrumentProgram();
-	RunWithLoadStoreAnalysis();
+	// RunWithLoadStoreAnalysis();
 }
 
 void SyncTesting::ReadDefinition(std::string WrapperDef) {

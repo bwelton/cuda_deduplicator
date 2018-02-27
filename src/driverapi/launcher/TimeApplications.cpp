@@ -2,9 +2,26 @@
 
 TimeApplications::TimeApplications(boost::program_options::variables_map vm) :
 	_vm(vm) {
+		terminal_stdout = dup(fileno(stdout));
+		terminal_stderr = dup(fileno(stderr));
 
 }
 
+TimeApplications::~TimeApplications() {
+	close(terminal_stderr);
+	close(terminal_stdout);	
+}
+
+void TimeApplications::RedirectOutToFile(std::string filename) {
+	remove(filename.c_str());
+	freopen(filename.c_str(),"w",stdout);
+	dup2(fileno(stdout), fileno(stderr));
+}
+
+void TimeApplications::ReturnToTerminal() {
+	dup2(terminal_stdout, fileno(stdout));
+	dup2(terminal_stderr, fileno(stderr));
+}
 double TimeApplications::InternalRun() {
 	LogInfo log(std::string(""), std::string(""), false);
 	ProcessController proc(_vm, &log);

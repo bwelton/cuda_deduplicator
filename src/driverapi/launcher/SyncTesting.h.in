@@ -46,7 +46,7 @@ private:
 	std::set<std::string> _syncCalls; 
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapperDefFunctions;
 	boost::program_options::variables_map _vm;
-
+	std::string _programName;
 	std::set<StackPoint> _stackKeys;
 	std::map<std::string, uint64_t> _storedStacks;
 };

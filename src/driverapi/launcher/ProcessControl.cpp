@@ -84,7 +84,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 		i->getCallStack(frames);
 		uint64_t threadTid = i->getTid();
 		for (auto frame : frames) {
-			std::cerr << "adding frame " << std::endl;
+			//std::cerr << "adding frame " << std::endl;
 			StackPoint sp;
 			BPatch_function * func = frame.findFunction();
 			BPatch_point * point = frame.getPoint();
@@ -103,6 +103,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 				sp.framePtr = (uint64_t)frame.getPC();
 				assert(func->getModule() != NULL);
 				const char * libname = func->getModule()->libraryName();
+				std::cerr << "Library Name: " << libname << std::endl;
 				if (libname != NULL)
 					sp.libname = std::string(libname);
 				sp.empty = false;

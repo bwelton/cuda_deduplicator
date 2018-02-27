@@ -117,7 +117,7 @@ void SyncTesting::HandleBreakpoint(ProcessController * p) {
 	for (auto i : stacks) {
 		bool containsLibcuda = false;
 		for (auto z : i.second) 
-			if(z.libname.find("libcuda.so") != std::string::npos) {
+			if(z.libname.find("libSynchTool.so") != std::string::npos) {
 				containsLibcuda = true;
 				break;
 			}

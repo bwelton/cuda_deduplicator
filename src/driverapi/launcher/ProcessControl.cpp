@@ -102,10 +102,10 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 				}
 				sp.framePtr = (uint64_t)frame.getPC();
 				assert(func->getModule() != NULL);
-				const char * libname = func->getModule()->libraryName();
-				std::cerr << "Library Name: " << libname << std::endl;
-				if (libname != NULL)
-					sp.libname = std::string(libname);
+				sp.libname = func->getModule()->getObject()->pathName() + std::string("/") + func->getModule()->getObject()->name();
+				std::cerr << "Library Name: " << sp.libname  << std::endl;
+				// if (libname != NULL)
+				// 	sp.libname = std::string(libname);
 				sp.empty = false;
 			}
 			ret[threadTid].push_back(sp);

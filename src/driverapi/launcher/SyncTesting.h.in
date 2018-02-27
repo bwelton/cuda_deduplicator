@@ -23,6 +23,7 @@
 #include <boost/program_options.hpp>
 #include "ProcessControl.h"
 #include "TimeApplications.h"
+#include "PerformanceModel.h"
 
 #define DRIVER_LIBRARY "@CMAKE_INSTALL_PREFIX@/lib/libDriverAPIWrapper.so"
 #define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeCall.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libSynchTool.so"};
@@ -48,5 +49,6 @@ private:
 	boost::program_options::variables_map _vm;
 	std::string _programName;
 	std::set<StackPoint> _stackKeys;
+	PerformanceModel _model;
 	std::map<std::string, uint64_t> _storedStacks;
 };

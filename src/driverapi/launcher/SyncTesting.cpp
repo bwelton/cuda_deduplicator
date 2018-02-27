@@ -14,6 +14,7 @@ void SyncTesting::Run() {
 	base.RedirectOutToFile(_programName + std::string(".base.out"));
 	double time = base.Run();
 	base.ReturnToTerminal();
+	_model.AddExecutionTime(time);
 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	//RunWithCUPTI();
 	//GatherSynchronizationCalls();

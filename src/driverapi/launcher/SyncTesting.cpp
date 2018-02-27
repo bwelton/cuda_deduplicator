@@ -17,6 +17,12 @@ void SyncTesting::Run() {
 	_model.AddExecutionTime(time);
 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	//RunWithCUPTI();
+
+	// Find out what user called functions actually contain a synchronization.
+	// This also captures secret entries into libcuda with synchronizations and relates them back
+	// to user level calls. 
+	InstrumentProgram();
+
 	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
 	for(auto i : _syncCalls) {
@@ -146,7 +152,9 @@ void SyncTesting::InstrumentProgram() {
 	TimeApplications base(_vm);
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
+	base.RedirectOutToFile(_programName + std::string(".breakpoint.out"));
 	double time = base.RunWithBreakpoints(def, extras, breakpointNames,pluginLoads, std::bind(&SyncTesting::HandleBreakpoint, this, std::placeholders::_1));
+	base.ReturnToTerminal();
 	//ReadSynchronizationCalls();
 }
 
@@ -165,7 +173,9 @@ void SyncTesting::RunWithCUPTI() {
 	TimeApplications base(_vm);
 	std::string def(WRAPPER_DEF);
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
+	base.RedirectOutToFile(_programName + std::string(".cupti.out"));
 	double time = base.RunWithInstrimentation(def, extras);
+	base.ReturnToTerminal();
 }
 
 void SyncTesting::GatherSynchronizationDelay() {

@@ -2,9 +2,9 @@
 
 SymbolLookup::SymbolLookup(std::string filename) {
 	bool err = Symtab::openFile(_obj, filename);
-	if (err == true)
+	if (err == false)
 		std::cerr << "Could not open file - " << filename << std::endl;
-	assert(err != true);
+	assert(err != false);
 }
 
 SymbolLookup::~SymbolLookup() {

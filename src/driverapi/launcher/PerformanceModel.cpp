@@ -53,7 +53,7 @@ void PerformanceModel::ExtractLineInfo() {
 	for(auto i : _lineInfo) {
 		std::cerr << "Stack with Synchronization" << std::endl;
 		for (auto z : i.second){
-			std::cerr << z.filename << "," << z.lineNum << std::endl;
+			std::cerr << z.first << "," << z.second.filename << "," << z.second.lineNum << std::endl;
 		}
 	}
 #endif

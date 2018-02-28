@@ -23,6 +23,7 @@ void SyncTesting::Run() {
 	// to user level calls. 
 	InstrumentProgram();
 
+	_model.ExtractLineInfo();
 	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
 	for(auto i : _syncCalls) {

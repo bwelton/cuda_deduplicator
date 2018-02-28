@@ -41,6 +41,12 @@ void PerformanceModel::ExtractLineInfo() {
 		_lineInfo[i.first] = std::vector<std::pair<std::string, LineInfo> >();
 		for(auto z : i.second) {
 			// Convert to line info and add  to _lineInfo
+			if (symbolInfo.find(z.libname) == symbolInfo.end())
+				continue;
+			std::pair<std::string, LineInfo> tmp;
+			symbolInfo[z.libname]->GetInfoAtLocation(z.libOffset, tmp);
+			_lineInfo[i.first].push_back(tmp);
 		}
 	}
+	
 }

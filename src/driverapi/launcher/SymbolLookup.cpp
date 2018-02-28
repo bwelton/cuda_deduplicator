@@ -1,5 +1,5 @@
 #include "SymbolLookup.h"
-
+#define DEBUG_SYMBOLLOOKUP 1
 SymbolLookup::SymbolLookup(std::string filename) {
 	bool err = Symtab::openFile(_obj, filename);
 	if (err == false){
@@ -24,10 +24,14 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 	}
 	std::vector<Symbol *> ret = _obj->findSymbolByOffset(offset);
 	if (ret.size() == 0) {
+#ifdef DEBUG_SYMBOLLOOKUP
+		std::cerr << "Did not return a symbol" << std::cerr;
+#endif
 		return false;
 	}
-	if (ret[0]->isFunction() == false)
+	if (ret[0]->isFunction() == false){
 		return false;
+	}
 	lines.first = ret[0]->getPrettyName();
 	std::vector<Dyninst::SymtabAPI::Statement::Ptr> lineNumbers;
 	_obj->getSourceLines(lineNumbers, offset);

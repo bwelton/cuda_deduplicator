@@ -100,7 +100,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 				// Get the symbol for the source line.
 				BPatch_module * funcMod = func->getModule();
 				if (funcMod != NULL){
-					sp.libOffset = (uint64_t) frame.getPC() - (uint64_t) funcMod->getBaseAddr();
+					sp.libOffset = (uint64_t) frame.getPC();// - (uint64_t) funcMod->getBaseAddr();
 				}
 				sp.framePtr = (uint64_t)frame.getPC();
 				assert(func->getModule() != NULL);

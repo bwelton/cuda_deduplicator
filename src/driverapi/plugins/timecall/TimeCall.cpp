@@ -46,8 +46,9 @@ PluginReturn TimeCall::Precall(std::shared_ptr<Parameters> params) {
 PluginReturn TimeCall::Postcall(std::shared_ptr<Parameters> params) {
 	return NO_ACTION;
 }
-thread_local std::chrono::high_resolution_clock::time_point startTimer;
-thread_local std::chrono::high_resolution_clock::time_point endTimer;
+
+thread_local std::vector<std::pair<std::string, std::chrono::high_resolution_clock::time_point> > TimingPairs; 
+
 thread_local int alreadyStarted = 0;
 std::shared_ptr<LogInfo> _timingLog;
 
@@ -58,23 +59,26 @@ void TIMER_SIMPLE_TIME_START(const char * callName) {
 		alreadyStarted = 0;
 		_timingLog.reset(new LogInfo(fopen("callDelay.out", "w")));
 	}
-	if (alreadyStarted != 0){
-		std::cerr << "ERROR, TIMER ALREADY STARTED - SUGGESTS LOOP" << std::endl;
-		assert(alreadyStarted == 0);
-	}
-	startTimer = std::chrono::high_resolution_clock::now();
-	alreadyStarted = 1;
+	TimingPairs.push_back(std::make_pair(std::string(callName),std::chrono::high_resolution_clock::now()));
 }
+
 void TIMER_SIMPLE_TIME_STOP(const char * callName) {
-	if (alreadyStarted != 1){
-		std::cerr << "TIMING FUNCTION CALLED WITHOUT STARTED TIMER" << std::endl;
-		assert(alreadyStarted == 1);
+	std::chrono::high_resolution_clock::time_point endTimer = std::chrono::high_resolution_clock::now();
+	std::string tmp = std::string(callName);
+	int found = -1;
+	for (int i = TimingPairs.size(); i >= 0; i = i - 1) {
+		if (TimingPairs[i].first == tmp){
+			found = i;
+			break;
+		}
 	}
-	endTimer = std::chrono::high_resolution_clock::now();
-	alreadyStarted = 0;
+	if (found == -1) {
+		std::cerr << "Could not find starting time for call " << tmp << std::endl;
+		assert(found != -1);
+	}
 	std::chrono::duration<double> diff = endTimer-startTimer;
 	std::stringstream ss;
-	ss << callName << "," << diff << std::endl;
+	ss << callName << "," << diff.count() << std::endl;
 	LogInfo.Write(ss.str());
 }
 

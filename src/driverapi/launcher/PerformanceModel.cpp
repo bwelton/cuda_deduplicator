@@ -26,13 +26,13 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 }
 
 void PerformanceModel::ExtractLineInfo() {
-	std::map<std::string, SymbolLookup> symbolInfo;
+	std::map<std::string, std::shared_ptr<SymbolLookup> > symbolInfo;
 	
 	// Open all symtabs for functions found on the stack. 
 	for (auto i : _stackPoints) {
 		for (auto z : i.second){
 			if (symbolInfo.find(z.libname) == symbolInfo.end())
-				symbolInfo[z.libname] = SymbolLookup(z.libname);
+				symbolInfo[z.libname] = std::shared_ptr<SymbolLookup>(new SymbolLookup(z.libname));
 		}	
 	}
 

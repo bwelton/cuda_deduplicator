@@ -61,5 +61,40 @@ void PerformanceModel::ExtractLineInfo() {
 		}
 	}
 #endif
+	ProcessStacks();
 }
 
+
+void PerformanceModel::ProcessStacks() {
+	std::vector<std::string> cudaLibs = {"libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so"};
+	// Find first user CUDA call and the parent who made the call.
+	for (auto i : _stackPoints) {
+		std::string parentCall;
+		std::string cudaCall;
+		for (int z = 0;  z < i.second.size(); z++){
+			bool found = false;
+			for (auto n : cudaLibs){
+				if (i.second[z].libname.find(n) != std::string::npos){
+					found = true;
+					break;
+				}
+			}
+			if (found != true) {
+				if (_lineInfo[i.first][z].find("_ZN6cudart") != std::string::npos)
+					found = true;
+			}
+
+			if (found == true) {
+				cudaCall = _lineInfo[i.first][z];
+				break;
+			}
+			else 
+				parentCall = _lineInfo[i.first][z];
+		}
+		_callPair[i.first] = std::make_pair(parentCall,cudaCall);
+	}
+#ifdef DEBUG_MODEL
+	for (auto i : _callPair)
+		std::cerr << "Synch at " << i.second.first << "," << i.second.second << std::endl;
+#endif
+}

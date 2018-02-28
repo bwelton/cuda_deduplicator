@@ -40,7 +40,7 @@ void PerformanceModel::ExtractLineInfo() {
 	for (auto i : _stackPoints) {
 		_lineInfo[i.first] = std::vector<std::pair<std::string, LineInfo> >();
 		for(auto z : i.second) {
-
+			// Convert to line info and add  to _lineInfo
 		}
 	}
 }

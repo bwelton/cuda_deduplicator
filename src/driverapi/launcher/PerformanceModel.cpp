@@ -80,16 +80,16 @@ void PerformanceModel::ProcessStacks() {
 				}
 			}
 			if (found != true) {
-				if (_lineInfo[i.first][z].find("_ZN6cudart") != std::string::npos)
+				if (_lineInfo[i.first][z].first.find("_ZN6cudart") != std::string::npos)
 					found = true;
 			}
 
 			if (found == true) {
-				cudaCall = _lineInfo[i.first][z];
+				cudaCall = _lineInfo[i.first][z].first;
 				break;
 			}
 			else 
-				parentCall = _lineInfo[i.first][z];
+				parentCall = _lineInfo[i.first][z].first;
 		}
 		_callPair[i.first] = std::make_pair(parentCall,cudaCall);
 	}

@@ -16,7 +16,7 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 	}
 	if (ret[0]->isFunction() == false)
 		return false;
-	lines.first = ret[0]->getFunction()->getName();
+	lines.first = ret[0]->getPrettyName();
 	std::vector<Dyninst::SymtabAPI::Statement::Ptr> lineNumbers;
 	_obj->getSourceLines(lineNumbers, offset);
 	if (lineNumbers.size() > 0) {

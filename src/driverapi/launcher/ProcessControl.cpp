@@ -86,6 +86,8 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 		for (auto frame : frames) {
 			//std::cerr << "adding frame " << std::endl;
 			StackPoint sp;
+			if (frame.getFrameType() != BPatch_frameNormal)
+				continue;
 			BPatch_function * func = frame.findFunction();
 			BPatch_point * point = frame.getPoint();
 			if (func == NULL && point == NULL) {

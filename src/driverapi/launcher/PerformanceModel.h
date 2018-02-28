@@ -37,6 +37,6 @@ private:
 	std::map<uint64_t, std::vector<StackPoint> > _stackPoints;
 	std::map<uint64_t, std::vector<std::pair<std::string, LineInfo> > > _lineInfo;
 
-	std::map<uint64_t, std::pair<std::string, std::string> > _callPair;
+	std::map<uint64_t, std::tuple<std::string, std::string, std::string> > _callPair;
 
 };

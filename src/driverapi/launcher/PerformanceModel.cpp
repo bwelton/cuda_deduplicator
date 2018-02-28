@@ -69,6 +69,7 @@ void PerformanceModel::ProcessStacks() {
 	std::vector<std::string> cudaLibs = {"libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so"};
 	// Find first user CUDA call and the parent who made the call.
 	for (auto i : _stackPoints) {
+		std::string parentParentCall;
 		std::string parentCall;
 		std::string cudaCall;
 		for (int z = i.second.size() - 1;  z > 0; z = z - 1){
@@ -88,13 +89,15 @@ void PerformanceModel::ProcessStacks() {
 				cudaCall = _lineInfo[i.first][z].first;
 				break;
 			}
-			else 
+			else {
+				parentParentCall = parentCall;
 				parentCall = _lineInfo[i.first][z].first;
+			}
 		}
-		_callPair[i.first] = std::make_pair(parentCall,cudaCall);
+		_callPair[i.first] = std::make_tuple(parentParentCall,parentCall,cudaCall);
 	}
 #ifdef DEBUG_MODEL
 	for (auto i : _callPair)
-		std::cerr << "Synch at " << i.second.first << "," << i.second.second << std::endl;
+		std::cerr << "Synch at " << std::get<0>(i.second) << "," << std::get<1>(i.second) << "," << std::get<2>(i.second) << std::endl;
 #endif
 }

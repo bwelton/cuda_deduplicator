@@ -48,5 +48,5 @@ void PerformanceModel::ExtractLineInfo() {
 			_lineInfo[i.first].push_back(tmp);
 		}
 	}
-	
+
 }

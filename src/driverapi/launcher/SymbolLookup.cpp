@@ -19,7 +19,8 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 		LineInfo tmp;
 		tmp.filename = std::string("UNKNOWN");
 		tmp.lineNum = 0;
-		return std::make_pair(std::string("UNKNOWN"), tmp);
+		lines = std::make_pair(std::string("UNKNOWN"), tmp);
+		return false;
 	}
 	std::vector<Symbol *> ret = _obj->findSymbolByOffset(offset);
 	if (ret.size() == 0) {

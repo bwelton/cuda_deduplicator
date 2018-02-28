@@ -25,7 +25,7 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 	std::vector<Symbol *> ret = _obj->findSymbolByOffset(offset);
 	if (ret.size() == 0) {
 #ifdef DEBUG_SYMBOLLOOKUP
-		std::cerr << "Did not return a symbol" << std::cerr;
+		std::cerr << "Did not return a symbol" << std::endl;
 #endif
 		return false;
 	}

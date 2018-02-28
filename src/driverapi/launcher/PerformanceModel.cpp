@@ -1,5 +1,6 @@
 #include "PerformanceModel.h"
 
+#define DEBUG_MODEL 1
 PerformanceModel::PerformanceModel() : _fastestExecTime(std::numeric_limits<double>::max()) {
 
 }
@@ -48,5 +49,13 @@ void PerformanceModel::ExtractLineInfo() {
 			_lineInfo[i.first].push_back(tmp);
 		}
 	}
-
+#ifdef DEBUG_MODEL
+	for(auto i : _lineInfo) {
+		std::cerr << "Stack with Synchronization" << std::endl;
+		for (auto z : i.second){
+			std::cerr << z.filename << "," << z.lineNum << std::endl;
+		}
+	}
+#endif
 }
+

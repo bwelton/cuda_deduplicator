@@ -31,7 +31,7 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 #endif		
 		return false;
 	}
-	lines.first = func->getPrettyName();
+	lines.first = func->getName();
 	lines.second.filename = func->getModule()->fullName();
 	lines.second.lineNum = 0;
 	if (ret.size() == 0) {

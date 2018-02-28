@@ -42,7 +42,7 @@
 #include "set"
 #include "LogInfo.h"
 #include "Constants.h"
-
+#include "Function.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;

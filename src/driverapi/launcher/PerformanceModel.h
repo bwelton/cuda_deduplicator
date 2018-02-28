@@ -27,7 +27,7 @@ public:
 	PerformanceModel();
 	void AddExecutionTime(double secs);
 	void AddStack(std::vector<StackPoint> stack);
-
+	void ExtractLineInfo();
 private:
 	double _fastestExecTime;
 	std::vector<uint64_t> _stackOrder;

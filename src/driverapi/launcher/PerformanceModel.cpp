@@ -22,6 +22,18 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 		_stackCount[hash] = 0;
 	_stackCount[hash] += 1;
 	if (_stackPoints.find(hash) == _stackPoints.end())
-		_stackPoints[hash] = stack;
+		_stackPoints[hash] = stack;	
+}
+
+void PerformanceModel::ExtractLineInfo() {
+	std::map<std::string, SymbolLookup> symbolInfo;
 	
+	// Open all symtabs for functions found on the stack. 
+	for (auto i : _stackPoints) {
+		for (auto z : i.second){
+			if (symbolInfo.find(z.libname) == symbolInfo.end())
+				symbolInfo[z.libname](z.libname);
+		}	
+	}
+
 }

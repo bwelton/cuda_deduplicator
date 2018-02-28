@@ -44,12 +44,13 @@ void PerformanceModel::ExtractLineInfo() {
 			// Convert to line info and add  to _lineInfo
 			if (symbolInfo.find(z.libname) == symbolInfo.end())
 				continue;
-#ifdef DEBUG_MODEL
-			std::cerr << "Looking up " << z.libOffset << " in " << z.libname << std::endl;
-#endif
 			std::pair<std::string, LineInfo> tmp;
 			symbolInfo[z.libname]->GetInfoAtLocation(z.libOffset, tmp);
 			_lineInfo[i.first].push_back(tmp);
+#ifdef DEBUG_MODEL
+			std::cerr << "Looking up " << z.libOffset << " in " << z.libname << std::endl;
+			std::cerr << "Returned Function Name: " << tmp.first << std::endl;
+#endif
 		}
 	}
 #ifdef DEBUG_MODEL

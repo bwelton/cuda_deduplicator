@@ -122,6 +122,7 @@ void SyncTesting::HandleBreakpoint(ProcessController * p) {
 				break;
 			}
 		if (containsLibcuda == true) {
+			_model.AddStack(i);
 			std::stringstream ss;
 			for (auto z : i.second) {
 				if(_stackKeys.find(z) == _stackKeys.end())

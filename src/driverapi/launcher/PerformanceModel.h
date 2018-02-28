@@ -21,13 +21,16 @@
 #include <mutex>
 #include <fstream>
 #include <boost/program_options.hpp>
-
+#include "ProcessControl.h"
 class PerformanceModel {
 public:
 	PerformanceModel();
 	void AddExecutionTime(double secs);
+	void AddStack(std::vector<StackPoint> stack);
 
 private:
 	double _fastestExecTime;
-
+	std::vector<uint64_t> _stackOrder;
+	std::map<uint64_t, uint64_t> _stackCount;
+	std::map<uint64_t, std::vector<StackPoint> > _stackPoints;
 };

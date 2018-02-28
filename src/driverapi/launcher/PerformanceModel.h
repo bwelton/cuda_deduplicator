@@ -34,5 +34,5 @@ private:
 	std::vector<uint64_t> _stackOrder;
 	std::map<uint64_t, uint64_t> _stackCount;
 	std::map<uint64_t, std::vector<StackPoint> > _stackPoints;
-	std::map<uint64_t, std::pair<std::string, LineInfo> > _lineInfo;
+	std::map<uint64_t, std::vector<std::pair<std::string, LineInfo> > > _lineInfo;
 };

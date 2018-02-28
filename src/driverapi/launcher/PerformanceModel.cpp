@@ -32,8 +32,15 @@ void PerformanceModel::ExtractLineInfo() {
 	for (auto i : _stackPoints) {
 		for (auto z : i.second){
 			if (symbolInfo.find(z.libname) == symbolInfo.end())
-				symbolInfo[z.libname](z.libname);
+				symbolInfo[z.libname] = SymbolLookup(z.libname);
 		}	
 	}
 
+	// Decode line info for every stack
+	for (auto i : _stackPoints) {
+		_lineInfo[i.first] = std::vector<std::pair<std::string, LineInfo> >();
+		for(auto z : i.second) {
+
+		}
+	}
 }

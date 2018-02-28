@@ -76,10 +76,11 @@ void TIMER_SIMPLE_TIME_STOP(const char * callName) {
 		std::cerr << "Could not find starting time for call " << tmp << std::endl;
 		assert(found != -1);
 	}
-	std::chrono::duration<double> diff = endTimer-startTimer;
+	std::chrono::duration<double> diff = endTimer-TimingPairs[found].second;
 	std::stringstream ss;
 	ss << callName << "," << diff.count() << std::endl;
 	LogInfo.Write(ss.str());
+	TimingPairs.erase(TimingPairs.begin() + found);
 }
 
 void init(std::vector<std::string> & cmd_list) {

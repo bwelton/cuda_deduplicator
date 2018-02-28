@@ -24,6 +24,9 @@ void SyncTesting::Run() {
 	InstrumentProgram();
 
 	_model.ExtractLineInfo();
+	std::vector<StackPoint> timingList;
+	_model.GetTimingList(timingList);
+	
 	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
 	for(auto i : _syncCalls) {

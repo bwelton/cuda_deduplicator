@@ -53,10 +53,12 @@ using namespace SymtabAPI;
 struct StackPoint {
 	std::string fname;
 	std::string libname;
+	std::string funcName;
 	uint64_t libOffset;
+	uint64_t funcOffset;
 	uint64_t framePtr;
 	bool empty;
-	StackPoint() : empty(true), libOffset(0), framePtr(0), fname(std::string("")), libname(std::string("")) {
+	StackPoint() : empty(true), libOffset(0), framePtr(0), funcOffset(0), fname(std::string("")), libname(std::string("")) {
 
 	};
 	uint64_t GetKey() {

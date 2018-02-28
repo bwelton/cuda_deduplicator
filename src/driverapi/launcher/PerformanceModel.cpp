@@ -102,3 +102,26 @@ void PerformanceModel::ProcessStacks() {
 		std::cerr << "Synch at " << std::get<0>(i.second) << "," << std::get<1>(i.second) << "," << std::get<2>(i.second) << std::endl;
 #endif
 }
+
+void PerformanceModel::GetTimingList(std::vector<StackPoint> & timingList) {
+	std::set<uint64_t> alreadyPresent;
+	for (auto i : _stackPoints) {
+		StackPoint found;
+		for (int z = i.second.size() - 1;  z > 0; z = z - 1) {
+			if (i.second[z].libname.find("libcuda.so") != std::string::npos){
+				found = i.second[z];
+				found.funcName = _lineInfo[i.first][z].first;
+				break;
+			}
+		}
+		assert(found.funcOffset != 0);
+		if (alreadyPresent.find(found.funcOffset) == alreadyPresent.end()){
+			timingList.push_back(found);
+			alreadyPresent.insert(found.funcOffset);
+		}
+	}
+#ifdef DEBUG_MODEL
+	for (auto i : timingList)
+		std::cerr << "Inserting timing info into - " << i.funcName << std::endl;
+#endif
+}

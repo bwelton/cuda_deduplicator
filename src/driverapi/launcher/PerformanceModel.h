@@ -30,6 +30,7 @@ public:
 	void AddStack(std::vector<StackPoint> stack);
 	void ExtractLineInfo();
 	void ProcessStacks();
+	void GetTimingList(std::vector<StackPoint> & timingList);
 private:
 	double _fastestExecTime;
 	std::vector<uint64_t> _stackOrder;

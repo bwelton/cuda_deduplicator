@@ -2,16 +2,25 @@
 
 SymbolLookup::SymbolLookup(std::string filename) {
 	bool err = Symtab::openFile(_obj, filename);
-	if (err == false)
+	if (err == false){
 		std::cerr << "Could not open file - " << filename << std::endl;
-	assert(err != false);
+		_obj = NULL;
+	}
+	//assert(err != false);
 }
 
 SymbolLookup::~SymbolLookup() {
-	Symtab::closeSymtab(_obj);
+	if (_obj != NULL)
+		Symtab::closeSymtab(_obj);
 }
 
 bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, LineInfo> & lines) {
+	if (_obj == NULL) {
+		LineInfo tmp;
+		tmp.filename = std::string("UNKNOWN");
+		tmp.lineNum = 0;
+		return std::make_pair(std::string("UNKNOWN"), tmp);
+	}
 	std::vector<Symbol *> ret = _obj->findSymbolByOffset(offset);
 	if (ret.size() == 0) {
 		return false;

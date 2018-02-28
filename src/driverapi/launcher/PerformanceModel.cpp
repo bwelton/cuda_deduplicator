@@ -71,7 +71,7 @@ void PerformanceModel::ProcessStacks() {
 	for (auto i : _stackPoints) {
 		std::string parentCall;
 		std::string cudaCall;
-		for (int z = 0;  z < i.second.size(); z++){
+		for (int z = i.second.size() - 1;  z > 0; z = z - 1){
 			bool found = false;
 			for (auto n : cudaLibs){
 				if (i.second[z].libname.find(n) != std::string::npos){

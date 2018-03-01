@@ -36,7 +36,7 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 	lines.second.lineNum = 0;
 	if (ret.size() == 0) {
 #ifdef DEBUG_SYMBOLLOOKUP
-		std::cerr << "Did not return a symbol" << std::endl;
+		// std::cerr << "Did not return a symbol" << std::endl;
 #endif
 		return false;
 	}

@@ -95,6 +95,29 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 	std::map<std::string, BPatch_object *> objs;
 	GetModules(objs);
 	_addrSpace->beginInsertionSet();
+	// Insert timer to add one every time a syncrhonization is called
+	{
+		BPatch_object * libcudaObj = NULL;
+		for (auto z : objs) {
+			if (z.first.find("libcuda.so") != std::string::npos){
+				libcudaObj = z.second;
+				break;
+			}
+		}
+		assert(libcudaObj != NULL);
+		BPatch_function * syncFunction = NULL;
+		syncFunction = img->findFunction(libcudaObj->fileOffsetToAddr(INTERNAL_SYNC_C));
+		assert(syncFunction != NULL);
+		std::vector<BPatch_function *> addFunction;
+		img->findFunction("TIMER_SIMPLE_COUNT_ADD_ONE", addFunction);
+		assert(addFunction.size() > 0);
+		std::vector<BPatch_point*> * funcEntry = syncFunction->findPoint(BPatch_locEntry);
+		std::vector<BPatch_snippet*> testArgs;
+		BPatch_funcCallExpr recordFuncEntry(*(addFunction[0]), testArgs);
+		assert(_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
+	}
+
+	// Insert Entry/Exit calls for synchronous functions
 	for (auto i : points) {
 		BPatch_object * curObj = NULL;
 		for (auto z : objs) {

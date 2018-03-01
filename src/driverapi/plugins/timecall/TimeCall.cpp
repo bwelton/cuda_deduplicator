@@ -54,7 +54,7 @@ std::shared_ptr<LogInfo> _timingLog;
 
 extern "C"{
 
-void TIMER_SIMPLE_COUNT_ADD_ONE(const char * callName) {
+void TIMER_SIMPLE_COUNT_ADD_ONE() {
 	TimingCount[TimingCount.size() - 1] += 1;
 }
 

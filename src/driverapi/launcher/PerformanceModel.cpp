@@ -54,9 +54,14 @@ void PerformanceModel::CaptureSyncTime() {
   				std::cerr << i.libCudaCallname << " NOT FOUND IN EXISTING LINE INFO FROM PREVIOUS RUNS! " << std::endl;
   				assert(found == true);
   			}
+
   			count -= 1;
+ #ifdef DEBUG_MODEL
+  			std::cerr << "Found " << i.libCudaCallname << " with " << count << " calls remaining" << std::endl;
+ #endif
+
   			if (count == 0) {
-  				orderPos = n;
+  				orderPos = n+1;
   				break;
   			}
   		}

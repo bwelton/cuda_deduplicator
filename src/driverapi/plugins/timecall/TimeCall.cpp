@@ -48,7 +48,7 @@ PluginReturn TimeCall::Postcall(std::shared_ptr<Parameters> params) {
 }
 
 thread_local std::vector<std::pair<std::string, std::chrono::high_resolution_clock::time_point> > TimingPairs; 
-thread_local std::vector<uint64_t> > TimingCount; 
+thread_local std::vector<uint64_t> TimingCount; 
 thread_local int alreadyStarted = 0;
 std::shared_ptr<LogInfo> _timingLog;
 

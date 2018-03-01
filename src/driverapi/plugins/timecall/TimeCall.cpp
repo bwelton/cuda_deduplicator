@@ -55,7 +55,11 @@ std::shared_ptr<LogInfo> _timingLog;
 extern "C"{
 
 void TIMER_SIMPLE_COUNT_ADD_ONE() {
-	TimingCount[TimingCount.size() - 1] += 1;
+	if (TimingCount.size() > 0)
+		TimingCount[TimingCount.size() - 1] += 1;
+	else {
+		std::cerr << "Timing error, trying to add one to an unknown synchronization!" << std::endl;
+	}
 }
 
 void TIMER_SIMPLE_TIME_START(const char * callName) {

@@ -26,7 +26,7 @@ void PerformanceModel::CaptureSyncTime() {
   		assert(params.size() == 3);
   		if (params[0][0] == ' ')
   			params[0].erase(0,1);
-  		std::cerr << params[0] << "," << params[1] << "," << params[2] << std::endl;
+  		//std::cerr << params[0] << "," << params[1] << "," << params[2] << std::endl;
   		_callPoints.push_back(CallPoint(params[0], std::stod(params[2]), uint64_t(std::stoi(params[1]))));
   	}
 #ifdef DEBUG_MODEL
@@ -162,8 +162,8 @@ void PerformanceModel::ProcessStacks() {
 		_callPair[i.first] = std::make_tuple(parentParentCall,parentCall,cudaCall);
 	}
 #ifdef DEBUG_MODEL
-	//for (auto i : _callPair)
-	//	std::cerr << "Synch at " << std::get<0>(i.second) << "," << std::get<1>(i.second) << "," << std::get<2>(i.second) << std::endl;
+	for (auto i : _callPair)
+		std::cerr << "Synch at " << std::get<0>(i.second) << "," << std::get<1>(i.second) << "," << std::get<2>(i.second) << std::endl;
 #endif
 
 }

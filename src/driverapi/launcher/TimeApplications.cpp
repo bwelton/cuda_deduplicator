@@ -38,6 +38,24 @@ double TimeApplications::InternalRun() {
 	return diff.count();	
 }
 
+
+double TimeApplications::InternalRunWithTiming(std::vector<StackPoint> points) {
+	LogInfo log(std::string(""), std::string(""), false);
+	ProcessController proc(_vm, &log);
+	proc.LaunchProcess();
+	proc.InsertInstrimentation(std::string(""));
+	proc.InsertTimers(points);
+	assert(proc.ContinueExecution() == true);
+	auto start = std::chrono::high_resolution_clock::now();
+	while (!proc.IsTerminated()){
+		proc.Run();
+		assert(proc.ContinueExecution() == true);
+	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> diff = stop-start;
+	std::cerr << "[TIMEAPP] Application runtime without instrimentation - " << diff.count() << std::endl;
+	return diff.count();	
+}
 double TimeApplications::Run() {
 	// Run this twice to get rid of dyninst overhead....
 	return InternalRun();

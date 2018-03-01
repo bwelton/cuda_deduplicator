@@ -8,25 +8,41 @@ SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 }
 
 void SyncTesting::Run() {
-	TimeApplications base(_vm);
-	std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
-	std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
-	base.RedirectOutToFile(_programName + std::string(".base.out"));
-	double time = base.Run();
-	base.ReturnToTerminal();
-	_model.AddExecutionTime(time);
-	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	double time;
+	{
+		TimeApplications base(_vm);
+		std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
+		std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".base.out"));
+		time = base.Run();
+		base.ReturnToTerminal();
+		_model.AddExecutionTime(time);
+		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	}
+	
+	
 	//RunWithCUPTI();
 
 	// Find out what user called functions actually contain a synchronization.
 	// This also captures secret entries into libcuda with synchronizations and relates them back
 	// to user level calls. 
 	InstrumentProgram();
-
 	_model.ExtractLineInfo();
 	std::vector<StackPoint> timingList;
 	_model.GetTimingList(timingList);
-	
+
+	// Get timing for these functions
+	{
+		TimeApplications base(_vm);
+		std::cerr << "Running " << _programName << " with timing information enabled" << std::endl;
+		std::cerr << "Saving application output to file : " << _programName << ".time.out" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".time.out"));		
+		double mytime = base.InternalRunWithTiming(timingList);
+		base.ReturnToTerminal();
+		_model.AddExecutionTime(mytime);	
+		std::cerr << "Application executed with runtime of - " << mytime << "s" << std::endl;	
+	}
+
 	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
 	for(auto i : _syncCalls) {

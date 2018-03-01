@@ -34,6 +34,7 @@ public:
 	~TimeApplications();
 	double Run();
 	double InternalRun();
+	double InternalRunWithTiming(std::vector<StackPoint> points);
 	double RunWithInstrimentation(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras);
 	double RunWithBreakpoints(std::string wrapperDef, 
 											std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras,

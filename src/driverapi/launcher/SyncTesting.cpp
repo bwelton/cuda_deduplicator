@@ -43,6 +43,10 @@ void SyncTesting::Run() {
 		std::cerr << "Application executed with runtime of - " << mytime << "s" << std::endl;	
 	}
 
+	// Check that our timing run matches the synchronizations identified.
+	// If so, this program is very likely deterministic given the same inputs in relation to cuda calls.
+	_model.CaptureSyncTime();
+	
 	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
 	for(auto i : _syncCalls) {

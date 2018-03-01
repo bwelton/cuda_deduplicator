@@ -57,9 +57,10 @@ struct StackPoint {
 	uint64_t libOffset;
 	uint64_t funcOffset;
 	uint64_t framePtr;
+	bool inMain;
 	bool empty;
 	StackPoint() : empty(true), libOffset(0), framePtr(0), funcOffset(0), fname(std::string("")), libname(std::string("")) {
-
+		inMain = false;
 	};
 	uint64_t GetKey() {
 		return framePtr;
@@ -83,6 +84,8 @@ public:
 	BPatch * GetBPatch();
 	void Run();
 	void RunWithTimeout(int timeout);
+	void InsertTimers(std::vector<StackPoint> points);
+	void GetModules(std::map<std::string, BPatch_object *> & objs);
 	void InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil);
 	void InsertLoadStoreSingle(std::string funcName);
 	bool IsObjectInList(std::vector<std::string> li, BPatch_object * obj);
@@ -100,6 +103,7 @@ public:
 	std::map<uint64_t, std::vector<StackPoint> > GetThreadStacks();
 	BPatch_addressSpace * GenerateDebugBinary(std::string bin);
 	void WriteOutput(std::string outputName);
+	void GetModules(std::map<std::string, BPatch_object *> & objs);
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
 	LoadStoreInst * _loadStore;

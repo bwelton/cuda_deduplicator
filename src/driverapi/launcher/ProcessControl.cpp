@@ -73,6 +73,67 @@ void ProcessController::WriteOutput(std::string outputName){
 		std::cerr << "Could not generate output binary" << std::endl;
 }
 
+void ProcessController::GetModules(std::map<std::string, BPatch_object *> & objs){
+	std::vector<BPatch_object *> objects;
+	BPatch_image * img = _addrSpace->getImage();
+	img->getObjects(objects);
+	for (auto i : objects) {
+		objs[i->pathName()] = i;
+	}
+}
+
+void ProcessController::InsertTimers(std::vector<StackPoint> points) {
+	// Load the timing plugin
+	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeCall.so"));
+	std::vector<BPatch_function *> startFunc;
+	std::vector<BPatch_function *> stopFunc;
+	BPatch_image * img = _addrSpace->getImage();
+	img->findFunction("TIMER_SIMPLE_TIME_START", startFunc);
+	img->findFunction("TIMER_SIMPLE_TIME_STOP", stopFunc);
+	assert(startFunc.size() > 0);
+	assert(stopFunc.size() > 0);
+	std::map<std::string, BPatch_object *> objs;
+	GetModules(objs);
+	_addrSpace->beginInsertionSet();
+	for (auto i : points) {
+		BPatch_object * curObj = NULL;
+		for (auto z : objs) {
+			if (i.libname == z.first){
+				curObj = z.second;
+				break;
+			}
+		}
+		if (curObj == NULL) {
+			std::cerr << "Could not find - " << i.libname << " resorting to manual insertion" << std::endl;
+			LoadWrapperLibrary(i.libname);
+			objs[i.libname] = _loadedLibraries[i.libname];
+			curObj = objs[i.libname];
+		}
+
+		BPatch_function * instFunc = NULL;
+		if (i.inMain)
+			instFunc = img->findFunction(i.funcOffset);
+		else{
+			assert(curObj->fileOffsetToAddr(i.funcOffset) != -1);
+			instFunc = img->findFunction(curObj->fileOffsetToAddr(i.funcOffset));
+		}
+		assert(instFunc != NULL);
+		assert(instFunc->getName() == i.fname);
+		std::cerr << "Inserting timing Instrimentation into - " << instFunc->getName() << std::endl;
+		std::vector<BPatch_point*> * funcEntry = instFunc->findPoint(BPatch_locEntry);
+		std::vector<BPatch_point*> * funcExit = instFunc->findPoint(BPatch_locExit);
+
+		std::vector<BPatch_snippet*> testArgs;
+		testArgs.push_back(new BPatch_constExpr(i.funcName.c_str()));
+		BPatch_funcCallExpr recordFuncEntry(*(startFunc[0]), testArgs);
+		BPatch_funcCallExpr recordFuncExit(*(stopFunc[0]), testArgs);
+		assert(_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
+		assert(_addrSpace->insertSnippet(recordFuncExit,*funcExit) != NULL); 
+	}
+	_addrSpace->finalizeInsertionSet(false);	
+}
+
+
 std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks() {
 	std::map<uint64_t, std::vector<StackPoint> > ret;
 	BPatch_Vector<BPatch_thread *> threads;
@@ -98,6 +159,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 			} else {
 				sp.fname = func->getName();
 				// Get the symbol for the source line.
+				// This may need to be switched to bpatch_object
 				BPatch_module * funcMod = func->getModule();
 				if (funcMod != NULL){
 					if (funcMod->isSharedLib()){
@@ -107,6 +169,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 					else{
 						sp.funcOffset = (uint64_t) func->getBaseAddr();
 						sp.libOffset = (uint64_t) frame.getPC();
+						sp.inMain = true;
 					}
 				}
 				sp.framePtr = (uint64_t)frame.getPC();

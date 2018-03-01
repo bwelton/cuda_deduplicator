@@ -26,7 +26,7 @@ void PerformanceModel::CaptureSyncTime() {
   		assert(params.size() == 3);
   		if (params[0][0] == ' ')
   			params[0].erase(0,1);
-  		//std::cerr << params[0] << "," << params[1] << "," << params[2] << std::endl;
+  		std::cerr << params[0] << "," << params[1] << "," << params[2] << std::endl;
   		_callPoints.push_back(CallPoint(params[0], uint64_t(std::stoi(params[2])), ::atof(params[1].c_str())));
   	}
 #ifdef DEBUG_MODEL

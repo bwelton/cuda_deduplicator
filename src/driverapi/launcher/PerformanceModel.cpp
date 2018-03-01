@@ -35,8 +35,37 @@ void PerformanceModel::CaptureSyncTime() {
 #endif
 
   	// Check against the total number of syncs we have captured and their stack traces
-  	// Both ordering and 
-
+  	uint64_t orderPos = 0;
+  	for (auto i : _callPoints) {
+  		int count = i.syncCount;
+  		for (int n = orderPos; n < _stackOrder.size(); n++) {
+  			bool found = false;
+  			// Search the line info of this stack ordering for the call 
+  			for (auto m : _lineInfo[_stackOrder[n]]) {
+  				if (m.first == i.libCudaCallname) {
+  					found = true;
+  					break;
+  				}
+  			}
+  			
+  			// If we cant find the callname in the stacks, our stack ordering DOES NOT match the timing data
+  			// this run is useless.
+  			if (found == false){
+  				std::cerr << i.libCudaCallname << " NOT FOUND IN EXISTING LINE INFO FROM PREVIOUS RUNS! " << std::endl;
+  				assert(found == true);
+  			}
+  			count -= 1;
+  			if (count == 0) {
+  				orderPos = n;
+  				break;
+  			}
+  		}
+  		if (count > 0) {
+  			std::cerr << "Stacks do not align between timing and synchronization run, exiting now!" << std::endl;
+  			assert(count == 0);
+  		}
+  	}
+  	std::cerr << "Timing data matches previous run, continuing profiling" << std::endl;
 }
 
 void PerformanceModel::AddStack(std::vector<StackPoint> stack) {

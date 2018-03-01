@@ -44,6 +44,7 @@ public:
 	void AddStack(std::vector<StackPoint> stack);
 	void ExtractLineInfo();
 	void ProcessStacks();
+	void CaptureSyncTime();
 	void GetTimingList(std::vector<StackPoint> & timingList);
 private:
 	double _fastestExecTime;

@@ -12,6 +12,33 @@ void PerformanceModel::AddExecutionTime(double secs) {
 	}
 }
 
+void PerformanceModel::CaptureSyncTime() {
+	std::ifstream ifs ("callDelay.out", std::ifstream::in);
+	std::string line;
+  	while (std::getline(ifs, line)) {
+  		std::vector<std::string> params;
+  		std::stringstream ss(line);
+  		while(ss.good()){
+  			std::string substr;
+  			getline( ss, substr, ',' );
+  			params.push_back(substr);
+  		}
+  		assert(params.size() == 3);
+  		if (params[0][0] == ' ')
+  			params[0].erase(0,1);
+  		_callPoints.push_back(params[0], std::stod(params[1]), uint64_t(std::stoi(params[2])));
+  	}
+#ifdef DEBUG_MODEL
+  	std::cerr << "Call info read from callDelay file" << std::endl;
+  	for (auto i : _callPoints)
+  		std::cerr << i.libCudaCallname << "," << i.time << "," << i.syncCount << std::endl;
+#endif
+
+  	// Check against the total number of syncs we have captured and their stack traces
+  	// Both ordering and 
+
+}
+
 void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 	std::stringstream ss;
 	_totalSyncs+=1;
@@ -50,18 +77,18 @@ void PerformanceModel::ExtractLineInfo() {
 			symbolInfo[z.libname]->GetInfoAtLocation(z.libOffset, tmp);
 			_lineInfo[i.first].push_back(tmp);
 #ifdef DEBUG_MODEL
-			std::cerr << "Looking up " << z.libOffset << " in " << z.libname << std::endl;
-			std::cerr << "Returned Function Name: " << tmp.first << std::endl;
+			// std::cerr << "Looking up " << z.libOffset << " in " << z.libname << std::endl;
+			// std::cerr << "Returned Function Name: " << tmp.first << std::endl;
 #endif
 		}
 	}
 #ifdef DEBUG_MODEL
-	for(auto i : _lineInfo) {
-		std::cerr << "Stack with Synchronization" << std::endl;
-		for (auto z : i.second){
-			std::cerr << z.first << "," << z.second.filename << "," << z.second.lineNum << std::endl;
-		}
-	}
+	// for(auto i : _lineInfo) {
+	// 	std::cerr << "Stack with Synchronization" << std::endl;
+	// 	for (auto z : i.second){
+	// 		std::cerr << z.first << "," << z.second.filename << "," << z.second.lineNum << std::endl;
+	// 	}
+	// }
 #endif
 	std::cerr << "Synchronization Count: " << _totalSyncs << std::endl;
 	ProcessStacks();
@@ -100,8 +127,8 @@ void PerformanceModel::ProcessStacks() {
 		_callPair[i.first] = std::make_tuple(parentParentCall,parentCall,cudaCall);
 	}
 #ifdef DEBUG_MODEL
-	for (auto i : _callPair)
-		std::cerr << "Synch at " << std::get<0>(i.second) << "," << std::get<1>(i.second) << "," << std::get<2>(i.second) << std::endl;
+	//for (auto i : _callPair)
+	//	std::cerr << "Synch at " << std::get<0>(i.second) << "," << std::get<1>(i.second) << "," << std::get<2>(i.second) << std::endl;
 #endif
 
 }
@@ -124,7 +151,7 @@ void PerformanceModel::GetTimingList(std::vector<StackPoint> & timingList) {
 		}
 	}
 #ifdef DEBUG_MODEL
-	for (auto i : timingList)
-		std::cerr << "Inserting timing info into - " << i.funcName << std::endl;
+	//for (auto i : timingList)
+	//	std::cerr << "Inserting timing info into - " << i.funcName << std::endl;
 #endif
 }

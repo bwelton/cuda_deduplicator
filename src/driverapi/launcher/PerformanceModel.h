@@ -23,6 +23,20 @@
 #include <boost/program_options.hpp>
 #include "ProcessControl.h"
 #include "SymbolLookup.h"
+
+struct CallPoint {
+	std::string libCudaCallname;
+	std::vector<uint64_t> callStacks;
+	double time;
+	// Number of times this specific call synchronizes
+	uint64_t syncCount;
+	CallPoint(std::string name, uint64_t count, double t) {
+		time = t;
+		syncCount = count;
+		libCudaCallname = name;
+	}
+};
+
 class PerformanceModel {
 public:
 	PerformanceModel();
@@ -35,10 +49,11 @@ private:
 	double _fastestExecTime;
 	uint64_t _totalSyncs;
 	std::vector<uint64_t> _stackOrder;
+	std::vector<CallPoint> _callPoints;
 	std::map<uint64_t, uint64_t> _stackCount;
 	std::map<uint64_t, std::vector<StackPoint> > _stackPoints;
-	std::map<uint64_t, std::vector<std::pair<std::string, LineInfo> > > _lineInfo;
 
+	std::map<uint64_t, std::vector<std::pair<std::string, LineInfo> > > _lineInfo;
 	std::map<uint64_t, std::tuple<std::string, std::string, std::string> > _callPair;
 
 };

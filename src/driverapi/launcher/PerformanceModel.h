@@ -33,6 +33,7 @@ public:
 	void GetTimingList(std::vector<StackPoint> & timingList);
 private:
 	double _fastestExecTime;
+	uint64_t _totalSyncs;
 	std::vector<uint64_t> _stackOrder;
 	std::map<uint64_t, uint64_t> _stackCount;
 	std::map<uint64_t, std::vector<StackPoint> > _stackPoints;

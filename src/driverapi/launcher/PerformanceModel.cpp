@@ -1,7 +1,7 @@
 #include "PerformanceModel.h"
 
 #define DEBUG_MODEL 1
-PerformanceModel::PerformanceModel() : _fastestExecTime(std::numeric_limits<double>::max()) {
+PerformanceModel::PerformanceModel() : _fastestExecTime(std::numeric_limits<double>::max()), _totalSyncs(0) {
 
 }
 
@@ -14,6 +14,7 @@ void PerformanceModel::AddExecutionTime(double secs) {
 
 void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 	std::stringstream ss;
+	_totalSyncs+=1;
 	for (auto z : stack) {
 		ss << z.framePtr << std::endl;
 	}
@@ -62,6 +63,7 @@ void PerformanceModel::ExtractLineInfo() {
 		}
 	}
 #endif
+	std::cerr << "Synchronization Count: " << _totalSyncs << std::endl;
 	ProcessStacks();
 }
 
@@ -101,6 +103,7 @@ void PerformanceModel::ProcessStacks() {
 	for (auto i : _callPair)
 		std::cerr << "Synch at " << std::get<0>(i.second) << "," << std::get<1>(i.second) << "," << std::get<2>(i.second) << std::endl;
 #endif
+
 }
 
 void PerformanceModel::GetTimingList(std::vector<StackPoint> & timingList) {

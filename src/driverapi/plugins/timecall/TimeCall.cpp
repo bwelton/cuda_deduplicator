@@ -48,17 +48,22 @@ PluginReturn TimeCall::Postcall(std::shared_ptr<Parameters> params) {
 }
 
 thread_local std::vector<std::pair<std::string, std::chrono::high_resolution_clock::time_point> > TimingPairs; 
-
+thread_local std::vector<uint64_t> > TimingCount; 
 thread_local int alreadyStarted = 0;
 std::shared_ptr<LogInfo> _timingLog;
 
 extern "C"{
+
+void TIMER_SIMPLE_COUNT_ADD_ONE(const char * callName) {
+	TimingCount[TimingCount.size() - 1] += 1;
+}
 
 void TIMER_SIMPLE_TIME_START(const char * callName) {
 	if (_timingLog.get() == NULL) {
 		alreadyStarted = 0;
 		_timingLog.reset(new LogInfo(fopen("callDelay.out", "w")));
 	}
+	TimingCount.push_back(0);
 	TimingPairs.push_back(std::make_pair(std::string(callName),std::chrono::high_resolution_clock::now()));
 }
 
@@ -78,8 +83,9 @@ void TIMER_SIMPLE_TIME_STOP(const char * callName) {
 	}
 	std::chrono::duration<double> diff = endTimer-TimingPairs[found].second;
 	std::stringstream ss;
-	ss << callName << "," << diff.count();
+	ss << callName << "," << diff.count() << "," << TimingCount[TimingCount.size() - 1];
 	_timingLog->Write(ss.str());
+	TimingCount.pop_back();
 	TimingPairs.erase(TimingPairs.begin() + found);
 }
 

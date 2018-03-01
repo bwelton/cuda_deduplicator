@@ -26,7 +26,8 @@ void PerformanceModel::CaptureSyncTime() {
   		assert(params.size() == 3);
   		if (params[0][0] == ' ')
   			params[0].erase(0,1);
-  		_callPoints.push_back(CallPoint(params[0], std::stod(params[1]), uint64_t(std::stoi(params[2]))));
+  		std::cerr << params[0] << "," << params[1] << "," << params[2] << std::endl;
+  		_callPoints.push_back(CallPoint(params[0], std::stod(params[2]), uint64_t(std::stoi(params[1]))));
   	}
 #ifdef DEBUG_MODEL
   	std::cerr << "Call info read from callDelay file" << std::endl;

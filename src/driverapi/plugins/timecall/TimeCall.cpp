@@ -87,8 +87,10 @@ void TIMER_SIMPLE_TIME_STOP(const char * callName) {
 	}
 	std::chrono::duration<double> diff = endTimer-TimingPairs[found].second;
 	std::stringstream ss;
-	ss << callName << "," << diff.count() << "," << TimingCount[TimingCount.size() - 1];
-	_timingLog->Write(ss.str());
+	if (TimingCount[TimingCount.size() - 1] > 0){
+		ss << callName << "," << diff.count() << "," << TimingCount[TimingCount.size() - 1];
+		_timingLog->Write(ss.str());
+	}
 	TimingCount.pop_back();
 	TimingPairs.erase(TimingPairs.begin() + found);
 }

@@ -68,7 +68,7 @@ void TIMER_SIMPLE_TIME_START(const char * callName) {
 		_timingLog.reset(new LogInfo(fopen("callDelay.out", "w")));
 	}
 	if (TimingCount.size() > 0)
-		std::cerr << "We are already tracking a previous synchronization" << std::cerr;
+		std::cerr << "We are already tracking a previous synchronization" << std::endl;
 	TimingCount.push_back(0);
 	TimingPairs.push_back(std::make_pair(std::string(callName),std::chrono::high_resolution_clock::now()));
 }

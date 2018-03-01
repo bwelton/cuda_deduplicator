@@ -85,7 +85,6 @@ public:
 	void Run();
 	void RunWithTimeout(int timeout);
 	void InsertTimers(std::vector<StackPoint> points);
-	void GetModules(std::map<std::string, BPatch_object *> & objs);
 	void InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil);
 	void InsertLoadStoreSingle(std::string funcName);
 	bool IsObjectInList(std::vector<std::string> li, BPatch_object * obj);

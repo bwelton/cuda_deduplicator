@@ -46,7 +46,7 @@ void SyncTesting::Run() {
 	// Check that our timing run matches the synchronizations identified.
 	// If so, this program is very likely deterministic given the same inputs in relation to cuda calls.
 	_model.CaptureSyncTime();
-	
+
 	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
 	for(auto i : _syncCalls) {
@@ -162,6 +162,8 @@ void SyncTesting::HandleBreakpoint(ProcessController * p) {
 }
 
 void SyncTesting::InstrumentProgram() {
+	// This is going to be off by one for the first synchronization call.....
+
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	std::vector<std::string> pluginLoads;
 	std::vector<std::string> PluginList = PLUGIN_LIST;

@@ -29,6 +29,8 @@ void PerformanceModel::CaptureSyncTime() {
   		std::cerr << params[0] << "," << params[1] << "," << params[2] << std::endl;
   		_callPoints.push_back(CallPoint(params[0], uint64_t(std::stoi(params[2])), ::atof(params[1].c_str())));
   	}
+  	// Temporary fix for failure to capture first synchronization.
+  	_callPoints[0].syncCount = _callPoints[0].syncCount - 1;
 #ifdef DEBUG_MODEL
   	std::cerr << "Call info read from callDelay file" << std::endl;
   	for (auto i : _callPoints)

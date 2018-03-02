@@ -85,7 +85,7 @@ public:
 	void Run();
 	void RunWithTimeout(int timeout);
 	void InsertTimers(std::vector<StackPoint> points);
-	void InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil);
+	void InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points);
 	void InsertLoadStoreSingle(std::string funcName);
 	bool IsObjectInList(std::vector<std::string> li, BPatch_object * obj);
 	bool LoadWrapperLibrary(std::string libname);

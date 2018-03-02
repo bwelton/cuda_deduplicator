@@ -347,8 +347,19 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 	_addrSpace->finalizeInsertionSet(false);	
 }
 
-void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil) {
-	_loadStore->InstrimentAllModules(true, skips, instUntil);
+void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points) {
+	std::vector<std::string> synchFunctions;
+	std::vector<std::string> wrappedFunctionNames;
+	for (auto i : _wrapFunctions)
+		wrappedFunctionNames.push_back(std::get<1>(i));
+
+	for (auto i : points) {
+		synchFunctions.push_back(i.funcName);
+		synchFunctions.push_back(i.fname);
+	}
+
+	_loadStore->SetWrappedFunctions(wrappedFunctionNames);
+	_loadStore->InstrimentAllModules(true, skips, instUntil, synchFunctions);
 }
 
 
@@ -460,6 +471,7 @@ void ProcessController::InstrimentApplication() {
 		symt->getAllSymbols(tmp);
 		instLibSymbols[i.first].insert(instLibSymbols[i.first].end(),tmp.begin(),tmp.end());
 	}
+	_addrSpace->beginInsertionSet();
 	std::stringstream ss;
 	for (auto i : _wrapFunctions) {
 		totalFunctions += 1;
@@ -545,6 +557,7 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 	}
+	_addrSpace->finalizeInsertionSet(false);
 	_insertedInstrimentation =  true;
 }
 

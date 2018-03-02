@@ -6,8 +6,12 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 
 }
 
+bool LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFunctions ) {
+	_wrappedFunctions = wrappedFunctions
+}
 
-bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil) {
+
+bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions) {
 	Setup();
 
 	std::stringstream ss;
@@ -114,6 +118,14 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 		} else {
 			std::cerr << "Could not find any function calls in : " << x->getName() << std::endl;
 		}		
+	}
+
+	// Add Wappers to Sync Functions if they exist:
+
+	for (auto i : syncFunctions){
+		if(_wrappedFunctions.find(i) != _wrappedFunctions.end())
+			continue;
+		std::cerr << "We need to wrap function - " << i << std::endl;
 	}
 	instUntil = _funcId;
 	if (finalize)

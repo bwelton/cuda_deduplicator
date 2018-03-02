@@ -47,6 +47,26 @@ void SyncTesting::Run() {
 	// If so, this program is very likely deterministic given the same inputs in relation to cuda calls.
 	_model.CaptureSyncTime();
 
+
+	// Load Store Instrimentation.
+	// What needs to be captured:
+	// 		Function Entry for each function that Synchronizes* 
+	//      Function Exit for each function that Synchronizes*
+	//          Capture only target functions which we dont know.
+	//      Synchronization Call
+	//      Memory Allocations and Transfers
+	//      Load Stores elsewhere
+	// 
+	{	
+		std::vector<std::string> pluginNames = {"libSynchTool"};
+		CreatePluginFile(pluginNames);
+		std::string def(WRAPPER_DEF);
+		TimeApplications base(_vm);
+		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
+		//extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
+		double time = base.RunWithInstrimentation(def, extras, timingList);
+	}
+
 	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
 	for(auto i : _syncCalls) {

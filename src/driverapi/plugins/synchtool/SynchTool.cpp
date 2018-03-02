@@ -25,7 +25,19 @@ extern "C" {
 		SYNCH_FIRST_FAULT();
 	}
 
+	void HIDDEN_SYNC_CALL_ENTRY(const char * name) {
+
+	}
+
+	void HIDDEN_SYNC_CALL_EXIT(const char * name) {
+
+	}
+
 	void SYNC_RECORD_FUNCTION_ENTRY(uint64_t id) {
+//		std::cerr << "At function entry: " << id << std::endl;
+	}
+
+	void SYNC_RECORD_FUNCTION_EXIT(uint64_t id) {
 //		std::cerr << "At function entry: " << id << std::endl;
 	}
 

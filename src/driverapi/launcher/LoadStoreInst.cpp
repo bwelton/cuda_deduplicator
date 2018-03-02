@@ -7,7 +7,7 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 }
 
 void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFunctions ) {
-	_wrappedFunctions = wrappedFunctions
+	_wrappedFunctions = wrappedFunctions;
 }
 
 

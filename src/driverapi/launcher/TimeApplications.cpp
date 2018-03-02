@@ -261,7 +261,7 @@ double TimeApplications::RunWithLoadStore(std::string wrapperDef, std::vector<st
 		ProcessController proc(_vm, &log);
 
 		proc.LaunchProcess();
-		proc.InsertLoadStores();
+		//proc.InsertLoadStores();
 		for (auto i : libLoads) 
 			proc.LoadWrapperLibrary(i);
 		std::vector<uint64_t> skips;

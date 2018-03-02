@@ -253,7 +253,7 @@ StringVector & LoadStoreInst::GetSkipPaths() {
 }
 
 StringVector & LoadStoreInst::SkipExact() {
-	static StringVector ret = {"__random","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
+	static StringVector ret = {"__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
 	return ret;
 }
 

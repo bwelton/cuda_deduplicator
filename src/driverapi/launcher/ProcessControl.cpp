@@ -348,6 +348,7 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 }
 
 void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points) {
+	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so"));
 	std::vector<std::string> synchFunctions;
 	std::vector<std::string> wrappedFunctionNames;
 	for (auto i : _wrapFunctions)

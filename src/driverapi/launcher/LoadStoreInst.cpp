@@ -81,7 +81,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 
 		std::cerr << "Inserting instrimentation into function - " << x->getName() << std::endl;
 		// Insert function tracing
-		{
+		//{
 			std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
 			std::vector<BPatch_snippet*> testArgs;
 			testArgs.push_back(new BPatch_constExpr(_funcId));
@@ -89,7 +89,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 			std::cerr << x->getName() << "," << _funcId << std::endl;
 			if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
 				std::cerr << "could not insert func entry snippet" << std::endl;
-		}
+		//}
 		{
 			// std::vector<BPatch_point*> * FuncExit = x->findPoint(BPatch_locExit);
 			// std::vector<BPatch_snippet*> testArgs;

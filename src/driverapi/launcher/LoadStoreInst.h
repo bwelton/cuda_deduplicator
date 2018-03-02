@@ -84,7 +84,7 @@ private:
 	BPatch_image * _img;
 	BPatch_addressSpace * _addrSpace;
 	bool _started;
-	std::vector<std::string> _wrappedFunctions
+	std::vector<std::string> _wrappedFunctions;
 	uint64_t _funcId;
 	std::map<uint64_t, std::string> _idToFunction;
 

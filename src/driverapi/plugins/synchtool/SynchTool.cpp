@@ -8,7 +8,7 @@ int exited = 0;
 thread_local pid_t my_thread_id = -1; 
 thread_local int my_process_id = -1;
 uint64_t testingInteger = 0;
-
+thread_local std::vector<uint64_t> _currentStack;
 extern "C" {
 	__attribute__ ((noinline)) void SYNCH_SIGNAL_DYNINST(void * memoryRanges, size_t bsize) {
 		// Do nothing here, this just delivers a pointer to dyninst to do its magic
@@ -25,19 +25,24 @@ extern "C" {
 		SYNCH_FIRST_FAULT();
 	}
 
-	void HIDDEN_SYNC_CALL_ENTRY(const char * name) {
+	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
 
 	}
 
-	void HIDDEN_SYNC_CALL_EXIT(const char * name) {
+	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
 
 	}
 
 	void SYNC_RECORD_FUNCTION_ENTRY(uint64_t id) {
+		_currentStack.push_back(id);
 //		std::cerr << "At function entry: " << id << std::endl;
 	}
 
 	void SYNC_RECORD_FUNCTION_EXIT(uint64_t id) {
+		if (_currentStack.back() != id)
+			std::cerr << "ERROR! For some reason function Exit != top of entry stack" << std::endl;
+		else
+			_currentStack.pop_back();
 //		std::cerr << "At function entry: " << id << std::endl;
 	}
 

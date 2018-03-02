@@ -90,6 +90,7 @@ private:
 
 	BPatch_function * _recordMemAccess;
 	BPatch_function * _tracerFunction;
+	BPatch_function * _endFuncCall;
 
 	std::map<BPatch_object::Region, std::pair<std::string,std::string> > _regionToLibname;
 };

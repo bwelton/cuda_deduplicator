@@ -81,13 +81,25 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 
 		std::cerr << "Inserting instrimentation into function - " << x->getName() << std::endl;
 		// Insert function tracing
-		std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
-		std::vector<BPatch_snippet*> testArgs;
-		testArgs.push_back(new BPatch_constExpr(_funcId));
-		BPatch_funcCallExpr recordFuncEntry(*_tracerFunction, testArgs);
-		std::cerr << x->getName() << "," << _funcId << std::endl;
-		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
-			std::cerr << "could not insert func entry snippet" << std::endl;
+		{
+			std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
+			std::vector<BPatch_snippet*> testArgs;
+			testArgs.push_back(new BPatch_constExpr(_funcId));
+			BPatch_funcCallExpr recordFuncEntry(*_tracerFunction, testArgs);
+			std::cerr << x->getName() << "," << _funcId << std::endl;
+			if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
+				std::cerr << "could not insert func entry snippet" << std::endl;
+		}
+		{
+			std::vector<BPatch_point*> * FuncExit = x->findPoint(BPatch_locExit);
+			std::vector<BPatch_snippet*> testArgs;
+			testArgs.push_back(new BPatch_constExpr(_funcId));
+			BPatch_funcCallExpr recordFuncExit(*_endFuncCall, testArgs);
+			//std::cerr << x->getName() << "," << _funcId << std::endl;
+			if (_addrSpace->insertSnippet(recordFuncExit,*FuncExit) == NULL) 
+				std::cerr << "could not insert func exit snippet" << std::endl;
+		}
+		_idToFunction[_funcId] = std::string(x->getName());
 		_funcId += 1;		
 
 
@@ -198,16 +210,17 @@ void LoadStoreInst::Setup() {
 	// Finds all functions we need to hook into in the binary.
 	std::vector<BPatch_function *> callFunc;
 	std::vector<BPatch_function *> tracerCall;
-	
+	std::vector<BPatch_function *> endFuncCall;
 	_img->findFunction("SYNC_RECORD_MEM_ACCESS", callFunc);
 	_img->findFunction("SYNC_RECORD_FUNCTION_ENTRY", tracerCall);	
+	_img->findFunction("SYNC_RECORD_FUNCTION_EXIT", endFuncCall);	
 	
 	assert(callFunc.size() > 0);
 	assert(tracerCall.size() > 0);
-	
+	assert(endFuncCall.size() > 0);
+	_endFuncCall = endFuncCall[0];
 	_recordMemAccess = callFunc[0];
 	_tracerFunction = tracerCall[0];
-
 }
 
 

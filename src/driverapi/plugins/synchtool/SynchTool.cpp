@@ -39,8 +39,10 @@ extern "C" {
 	}
 
 	void SYNC_RECORD_FUNCTION_EXIT(uint64_t id) {
-		if (_currentStack.back() != id)
+		if (_currentStack.back() != id){
 			std::cerr << "ERROR! For some reason function Exit != top of entry stack" << std::endl;
+			std::cerr << "This entry: " << id << " Top of stack: " << _currentStack.back() << std::endl;
+		}
 		else
 			_currentStack.pop_back();
 //		std::cerr << "At function entry: " << id << std::endl;

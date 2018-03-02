@@ -103,6 +103,7 @@ public:
 	BPatch_addressSpace * GenerateDebugBinary(std::string bin);
 	void WriteOutput(std::string outputName);
 	void GetModules(std::map<std::string, BPatch_object *> & objs);
+	void DontFinalize();
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
 	LoadStoreInst * _loadStore;
@@ -119,4 +120,5 @@ private:
 	std::map<uint64_t, std::string> _idToFunction;
 	bool _binaryEdit;
 	BPatch_binaryEdit * _appBE;
+	bool _dontFin;
 };

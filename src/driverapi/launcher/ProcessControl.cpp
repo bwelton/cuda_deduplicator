@@ -2,7 +2,7 @@
 static BPatch bpatch;
 static ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm, LogInfo * log) :
-	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log) {
+	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false) {
 }
 
 BPatch_addressSpace * ProcessController::LaunchProcess() {
@@ -458,6 +458,10 @@ std::vector<BPatch_function *> findFuncByName(BPatch_image * appImage, const cha
   return funcs;
 }
 
+void ProcessController::DontFinalize() {
+	_dontFin = true;
+}
+
 void ProcessController::InstrimentApplication() {
 	BPatch_image * img = _addrSpace->getImage();
 	std::map<std::string, std::vector<Symbol *> > instLibSymbols;
@@ -558,7 +562,8 @@ void ProcessController::InstrimentApplication() {
 			}
 		}
 	}
-	_addrSpace->finalizeInsertionSet(false);
+	if (!_dontFin)
+		_addrSpace->finalizeInsertionSet(false);
 	_insertedInstrimentation =  true;
 }
 

@@ -83,6 +83,7 @@ double TimeApplications::RunWithLSInstrimentation(std::string wrapperDef, std::v
 				std::vector<StackPoint> & points) {
 	LogInfo log(std::string("InstRun.txt"), std::string("[InstRun]"), true);
 	ProcessController proc(_vm, &log);
+	proc.DontFinalize();
 	proc.LaunchProcess();
 	for (auto i : extras)
 		proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));

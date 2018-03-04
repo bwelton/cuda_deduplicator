@@ -140,8 +140,8 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 			continue;
 		
 		// We already wrapped this function
-		if (funcsWrapped.find(i) != funcsWrapped.end())
-			continue;
+		// if (funcsWrapped.find(i) != funcsWrapped.end())
+		// 	continue;
 
 		// We need to perform the wrapping of this function here. 
 		// This wrapping is entry/exit function notification only since we do not know
@@ -158,6 +158,10 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 		std::cerr << "Inserting enter/exit instrimentation into sync call " << i << std::endl;
 
 		BPatch_function * x = funcList[0];
+		if (funcsWrapped.find((uint64_t)x->getBaseAddr()) != funcsWrapped.end()) {
+			std::cerr << "Already inserted instrimentation for func " << i << std::endl;
+			continue;
+		}
 		funcsWrapped.insert((uint64_t)x->getBaseAddr());
 		{
 			std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);

@@ -132,7 +132,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 		}		
 	}
 
-	std::set<std::string> funcsWrapped;
+	std::set<uint64_t> funcsWrapped;
 	// Add Wappers to Sync Functions if they exist:
 	for (auto i : syncFunctions){
 		// Function is part of the public CUDA API. Do not rewrap.
@@ -158,6 +158,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 		std::cerr << "Inserting enter/exit instrimentation into sync call " << i << std::endl;
 
 		BPatch_function * x = funcList[0];
+		funcsWrapped.insert((uint64_t)x->getBaseAddr());
 		{
 			std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
 			std::vector<BPatch_snippet*> testArgs;

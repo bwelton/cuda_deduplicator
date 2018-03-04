@@ -149,7 +149,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 
 		// Find the function if we can...
 		std::vector<BPatch_function *> funcList;
-		_img->findFunction(i.c_str(), funcList);`
+		_img->findFunction(i.c_str(), funcList);
 		if (funcList.size() == 0){
 			std::cerr << "Could not find the function " << i << " in the image" << std::endl;
 			continue;

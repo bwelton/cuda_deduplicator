@@ -132,12 +132,29 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 		}		
 	}
 
+	std::set<std::string> funcsWrapped;
 	// Add Wappers to Sync Functions if they exist:
-
 	for (auto i : syncFunctions){
+		// Function is part of the public CUDA API. Do not rewrap.
 		if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),i ) != _wrappedFunctions.end())
 			continue;
-		std::cerr << "We need to wrap function - " << i << std::endl;
+		
+		// We already wrapped this function
+		if (funcsWrapped.find(i) != funcsWrapped.end())
+			continue;
+
+		// We need to perform the wrapping of this function here. 
+		// This wrapping is entry/exit function notification only since we do not know
+		// parameter counts/types for this function. 
+
+		// Find the function if we can...
+		std::vector<BPatch_function *> funcList;
+		_img->findFunction(i.c_str(), funcList);
+		if (funcList.size() == 0){
+			std::cerr << "Could not find the function " << i << " in the image" << std::endl;
+			continue;
+		}
+
 	}
 	instUntil = _funcId;
 	if (finalize)
@@ -211,16 +228,26 @@ void LoadStoreInst::Setup() {
 	std::vector<BPatch_function *> callFunc;
 	std::vector<BPatch_function *> tracerCall;
 	std::vector<BPatch_function *> endFuncCall;
+	std::vector<BPatch_function *> enterSyncCall;
+	std::vector<BPatch_function *> exitSyncCall;
+
 	_img->findFunction("SYNC_RECORD_MEM_ACCESS", callFunc);
 	_img->findFunction("SYNC_RECORD_FUNCTION_ENTRY", tracerCall);	
 	_img->findFunction("SYNC_RECORD_FUNCTION_EXIT", endFuncCall);	
-	
+	_img->findFunction("HIDDEN_SYNC_CALL_ENTRY", enterSyncCall);	
+	_img->findFunction("HIDDEN_SYNC_CALL_EXIT", exitSyncCall);	
+
 	assert(callFunc.size() > 0);
 	assert(tracerCall.size() > 0);
 	assert(endFuncCall.size() > 0);
+	assert(enterSyncCall.size() > 0);
+	assert(exitSyncCall.size() > 0);
+
 	_endFuncCall = endFuncCall[0];
 	_recordMemAccess = callFunc[0];
 	_tracerFunction = tracerCall[0];
+	_enterSync = enterSyncCall[0];
+	_exitSync = exitSyncCall[0];
 }
 
 

@@ -149,11 +149,34 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 
 		// Find the function if we can...
 		std::vector<BPatch_function *> funcList;
-		_img->findFunction(i.c_str(), funcList);
+		_img->findFunction(i.c_str(), funcList);`
 		if (funcList.size() == 0){
 			std::cerr << "Could not find the function " << i << " in the image" << std::endl;
 			continue;
 		}
+		assert(funcList.size() == 1);
+		std::cerr << "Inserting enter/exit instrimentation into sync call " << i << std::endl;
+
+		BPatch_function * x = funcList[0];
+		{
+			std::vector<BPatch_point*> * funcEntry = x->findPoint(BPatch_locEntry);
+			std::vector<BPatch_snippet*> testArgs;
+			testArgs.push_back(new BPatch_constExpr(_funcId));
+			BPatch_funcCallExpr recordFuncEntry(*_enterSync, testArgs);
+			std::cerr << x->getName() << "," << _funcId << std::endl;
+			if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
+				std::cerr << "could not insert func entry snippet" << std::endl;
+		}
+		{
+			std::vector<BPatch_point*> * FuncExit = x->findPoint(BPatch_locExit);
+			std::vector<BPatch_snippet*> testArgs;
+			testArgs.push_back(new BPatch_constExpr(_funcId));
+			BPatch_funcCallExpr recordFuncExit(*_exitSync, testArgs);
+			//std::cerr << x->getName() << "," << _funcId << std::endl;
+			if (_addrSpace->insertSnippet(recordFuncExit,*FuncExit) == NULL) 
+				std::cerr << "could not insert func exit snippet" << std::endl;
+		}		
+		std::cerr << "Instrimentation inserted into " << i << std::endl;
 
 	}
 	instUntil = _funcId;

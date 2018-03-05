@@ -8,7 +8,7 @@ thread_local int my_process_id = -1;
 thread_local std::vector<uint64_t> _currentStack;
 thread_local bool _stackSync = false;
 thread_local bool _inTrackedCall = false;
-
+thread_local bool _
 std::shared_ptr<SynchTool> Worker;
 int exited = 0;
 uint64_t testingInteger = 0;
@@ -266,6 +266,7 @@ void SynchTool::RecordSynchronization() {
 
 	std::stringstream ss;
 	ss << "[SynchTool] Captured Synchronization";
+	std::cerr << ss.str() << std::endl;
 	_sync_log.get()->Write(ss.str());
 	SignalToParent(0);
 	_stackSync = false;

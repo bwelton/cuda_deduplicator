@@ -206,6 +206,20 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 			std::cerr << "could not insert func entry snippet" << std::endl;
 	}
 
+	// Find exit call and insert a breakpoint at that location, 
+	
+	{
+		BPatch_breakPointExpr bp;
+		std::vector<BPatch_function *> funcList;
+		_img->findFunction("exit", funcList);
+		assert(funcList.size() > 0)
+		assert(funcList.size() == 1);
+		BPatch_Vector<BPatch_point *> * entry_points;
+		entry_points = funcList[0]->findPoint(BPatch_entry);
+		_addrSpace->insertSnippet(bp, *entry_points);
+	}
+
+
 	instUntil = _funcId;
 	if (finalize)
 		Finalize();

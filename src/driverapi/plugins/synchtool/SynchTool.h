@@ -31,6 +31,12 @@ struct MemoryRange {
 	uint64_t transferID;
 	uint64_t unifiedMemory;
 	int stream;
+
+	bool IsInRange(uint64_t addr) {
+		if (addr >= begin && addr <= end)
+			return true;
+		return false;
+	}
 };
 
 class SynchTool {

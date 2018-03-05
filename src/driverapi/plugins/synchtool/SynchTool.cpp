@@ -69,7 +69,15 @@ extern "C" {
 
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t progCounter) {
-
+		if (_startCapture) {
+			for (auto i : _MemRanges){
+				if (i.IsInRange(addr)){
+					_startCapture = false;
+					std::cerr << "First use identified after synchronization - " << std::hex << addr << std::dec << std::endl;
+					break;
+				}
+			}
+		}
 		// std::cerr << "Address: " << std::hex << addr << std::dec << " read at location: " << std::hex 
 		//           << progCounter << std::dec << std::endl;
 	}

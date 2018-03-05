@@ -2,7 +2,7 @@
 
 LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img) :
 	_addrSpace(addrSpace), _img(img), _started(false), _funcId(0) {
-	
+	_runOneTime = false;	
 
 }
 
@@ -13,7 +13,7 @@ void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFuncti
 
 bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions) {
 	Setup();
-
+	_runOneTime = true;
 	std::stringstream ss;
 	// Parameters for Record Memory Function
 	std::vector<BPatch_snippet*> recordArgs;
@@ -206,13 +206,12 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 			std::cerr << "could not insert func entry snippet" << std::endl;
 	}
 
-	// Find exit call and insert a breakpoint at that location, 
-	
+	// Find exit call and insert a breakpoint at that location,
 	{
 		BPatch_breakPointExpr bp;
 		std::vector<BPatch_function *> funcList;
 		_img->findFunction("exit", funcList);
-		assert(funcList.size() > 0)
+		assert(funcList.size() > 0);
 		assert(funcList.size() == 1);
 		BPatch_Vector<BPatch_point *> * entry_points;
 		entry_points = funcList[0]->findPoint(BPatch_entry);
@@ -225,6 +224,10 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 		Finalize();
 
 	return true;
+}
+
+bool LoadStoreInst::RunOneTimeCode() {
+	return false;
 }
 
 bool LoadStoreInst::IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg) {

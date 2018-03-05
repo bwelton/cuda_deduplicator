@@ -69,6 +69,7 @@ public:
 	bool InstrimentNewModule(BPatch_object * obj, bool finalize);
 	void Finalize();
 	void BeginInsertionSet();
+	bool RunOneTimeCode();
 	void SetWrappedFunctions(std::vector<std::string> & wrappedFunctions);
 private:
 	bool IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg);
@@ -85,6 +86,7 @@ private:
 	BPatch_image * _img;
 	BPatch_addressSpace * _addrSpace;
 	bool _started;
+	bool _runOneTime;
 	std::vector<std::string> _wrappedFunctions;
 	uint64_t _funcId;
 	std::map<uint64_t, std::string> _idToFunction;

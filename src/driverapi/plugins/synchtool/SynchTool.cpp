@@ -253,6 +253,10 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 	if (params.get()->GetID() != ID_cuStreamSynchronize)
 		prevCall.reset();
+	if (_stackSync == true){
+		_stackSync = false;
+		std::cerr << "We have synchronized in this call - " << params.get()->GetName() << std::endl;
+
 	// SetThreadLocals();
 	// Parameters * p = params.get();
 	// CallID ident = p->GetID();
@@ -267,6 +271,7 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 	// 	SignalToParent();	
 	// }
 	// return NO_ACTION;
+	}
 }
 
 extern "C"{

@@ -7,6 +7,7 @@ thread_local pid_t my_thread_id = -1;
 thread_local int my_process_id = -1;
 thread_local std::vector<uint64_t> _currentStack;
 thread_local bool _stackSync = false;
+thread_local bool _inTrackedCall = false;
 
 std::shared_ptr<SynchTool> Worker;
 int exited = 0;
@@ -50,11 +51,16 @@ extern "C" {
 	}
 
 	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
-		SYNC_RECORD_FUNCTION_ENTRY(id);
+		if (_inTrackedCall == false) {
+			SYNC_RECORD_FUNCTION_ENTRY(id); 
+		}
 	}
 
 	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
-		SYNC_RECORD_FUNCTION_EXIT(id);
+		if (_inTrackedCall == false) {
+			PLUG_FACTORY_PTR->RecordSynchronization();
+			SYNC_RECORD_FUNCTION_EXIT(id);
+		}
 	}
 
 
@@ -212,6 +218,7 @@ void SynchTool::SignalToParent(uint64_t stream) {
 
 
 PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
+	_inTrackedCall = true;
 	Parameters * p = params.get();
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
@@ -265,6 +272,7 @@ void SynchTool::RecordSynchronization() {
 }
 
 PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
+	_inTrackedCall = false;
 	if (_stackSync == true){
 		_stackSync = false;
 		std::cerr << "We have synchronized in this call - " << params.get()->GetName() << std::endl;

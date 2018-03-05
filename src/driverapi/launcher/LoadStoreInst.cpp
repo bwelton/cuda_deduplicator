@@ -139,10 +139,6 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 		if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),i ) != _wrappedFunctions.end())
 			continue;
 		
-		// We already wrapped this function
-		// if (funcsWrapped.find(i) != funcsWrapped.end())
-		// 	continue;
-
 		// We need to perform the wrapping of this function here. 
 		// This wrapping is entry/exit function notification only since we do not know
 		// parameter counts/types for this function. 
@@ -158,6 +154,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 		std::cerr << "Inserting enter/exit instrimentation into sync call " << i << std::endl;
 
 		BPatch_function * x = funcList[0];
+		// We already wrapped this function
 		if (funcsWrapped.find((uint64_t)x->getBaseAddr()) != funcsWrapped.end()) {
 			std::cerr << "Already inserted instrimentation for func " << i << std::endl;
 			continue;
@@ -182,8 +179,33 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 				std::cerr << "could not insert func exit snippet" << std::endl;
 		}		
 		std::cerr << "Instrimentation inserted into " << i << std::endl;
-
+		_funcId += 1;
 	}
+
+	// Final step is to mark the synchronization function
+	uint64_t sync_offset = INTERNAL_SYNC_LS;
+	BPatch_function * cudaSync = NULL;
+	Dyninst::Address offsetAddress = 0;
+	std::vector<BPatch_object *> imgObjs;
+	_img->getObjects(imgObjs);
+	for (auto i : imgObjs){
+		if (i->name().find("libcuda.so") == std::string::npos)
+			continue;
+		// Found libcuda
+		offsetAddress = i->fileOffsetToAddr(sync_offset);
+		cudaSync = _img->findFunction(offsetAddress);
+		break;
+	}
+	assert(cudaSync != NULL);
+	{
+		std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
+		std::vector<BPatch_snippet*> testArgs;
+		BPatch_funcCallExpr recordFuncEntry(*_syncLibNotify, testArgs);
+		std::cerr << "Adding Sync Notifyer" << std::endl;
+		if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
+			std::cerr << "could not insert func entry snippet" << std::endl;
+	}
+
 	instUntil = _funcId;
 	if (finalize)
 		Finalize();
@@ -258,24 +280,28 @@ void LoadStoreInst::Setup() {
 	std::vector<BPatch_function *> endFuncCall;
 	std::vector<BPatch_function *> enterSyncCall;
 	std::vector<BPatch_function *> exitSyncCall;
+	std::vector<BPatch_function *> syncCall;
 
 	_img->findFunction("SYNC_RECORD_MEM_ACCESS", callFunc);
 	_img->findFunction("SYNC_RECORD_FUNCTION_ENTRY", tracerCall);	
 	_img->findFunction("SYNC_RECORD_FUNCTION_EXIT", endFuncCall);	
 	_img->findFunction("HIDDEN_SYNC_CALL_ENTRY", enterSyncCall);	
 	_img->findFunction("HIDDEN_SYNC_CALL_EXIT", exitSyncCall);	
+	_img->findFunction("SYNC_RECORD_SYNC_CALL", syncCall);	
 
 	assert(callFunc.size() > 0);
 	assert(tracerCall.size() > 0);
 	assert(endFuncCall.size() > 0);
 	assert(enterSyncCall.size() > 0);
 	assert(exitSyncCall.size() > 0);
+	assert(syncCall.size() > 0);
 
 	_endFuncCall = endFuncCall[0];
 	_recordMemAccess = callFunc[0];
 	_tracerFunction = tracerCall[0];
 	_enterSync = enterSyncCall[0];
 	_exitSync = exitSyncCall[0];
+	_syncLibNotify = syncCall[0];
 }
 
 

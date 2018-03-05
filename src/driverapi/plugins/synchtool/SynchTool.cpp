@@ -25,6 +25,10 @@ extern "C" {
 		SYNCH_FIRST_FAULT();
 	}
 
+
+	void SYNC_RECORD_SYNC_CALL() {
+		
+	}
 	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
 
 	}

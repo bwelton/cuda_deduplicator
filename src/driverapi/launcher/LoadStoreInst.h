@@ -50,6 +50,7 @@ using namespace SymtabAPI;
 
 #define StringVector std::vector<std::string>
 
+#define INTERNAL_SYNC_LS 0x2864C0
 namespace std
 {
     template<> struct less<BPatch_object::Region>
@@ -93,6 +94,7 @@ private:
 	BPatch_function * _endFuncCall;
 	BPatch_function * _enterSync;
 	BPatch_function * _exitSync;
+	BPatch_function * _syncLibNotify;
 
 	std::map<BPatch_object::Region, std::pair<std::string,std::string> > _regionToLibname;
 };

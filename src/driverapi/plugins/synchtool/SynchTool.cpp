@@ -176,8 +176,9 @@ void SynchTool::UnprotectMemory() {
 }
 
 uint64_t * SynchTool::SeralizeMemRanges(size_t & size) {
+	_MemoryRanges.clear();
 	for (auto i : _ranges)
-		_MemoryRanges = i.second;
+		_MemoryRanges.push_back(i.second);
 	uint64_t * mem = (uint64_t*)malloc(_ranges.size() * 6 * sizeof(uint64_t));
 	size_t pos = 0;
 	for (auto i : _ranges) {

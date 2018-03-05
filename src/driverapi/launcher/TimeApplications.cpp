@@ -95,6 +95,9 @@ double TimeApplications::RunWithLSInstrimentation(std::string wrapperDef, std::v
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){
 		proc.Run();
+		if (proc.IsStopped()){
+			proc.ContinueExecution();
+		}
 	}
 	auto stop = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> diff = stop-start;

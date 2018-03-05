@@ -9,6 +9,7 @@ thread_local std::vector<uint64_t> _currentStack;
 thread_local bool _stackSync = false;
 thread_local bool _inTrackedCall = false;
 thread_local bool _startCapture = true;
+
 std::shared_ptr<SynchTool> Worker;
 int exited = 0;
 uint64_t testingInteger = 0;
@@ -263,7 +264,7 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 }
 
 void SynchTool::RecordSynchronization() {
-
+	_startCapture = true;
 	std::stringstream ss;
 	ss << "[SynchTool] Captured Synchronization";
 	std::cerr << ss.str() << std::endl;

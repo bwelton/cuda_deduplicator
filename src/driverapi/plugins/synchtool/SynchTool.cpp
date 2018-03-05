@@ -34,14 +34,6 @@ extern "C" {
 		_stackSync = true;
 	}
 
-	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
-		SYNC_RECORD_FUNCTION_ENTRY(id);
-	}
-
-	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
-		SYNC_RECORD_FUNCTION_EXIT(id);
-	}
-
 	void SYNC_RECORD_FUNCTION_ENTRY(uint64_t id) {
 		_currentStack.push_back(id);
 //		std::cerr << "At function entry: " << id << std::endl;
@@ -56,6 +48,16 @@ extern "C" {
 			_currentStack.pop_back();
 //		std::cerr << "At function entry: " << id << std::endl;
 	}
+	
+	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
+		SYNC_RECORD_FUNCTION_ENTRY(id);
+	}
+
+	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
+		SYNC_RECORD_FUNCTION_EXIT(id);
+	}
+
+
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t progCounter) {
 
@@ -205,7 +207,7 @@ void SynchTool::SignalToParent(uint64_t stream) {
 	SYNCH_SIGNAL_DYNINST(mem, size);
 	free(mem);
 	//MemProtectAddrs();
-	ClearExisting(stream);
+	ClearExisting(0);
 }
 
 
@@ -255,9 +257,11 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 
 void SynchTool::RecordSynchronization() {
 
-
-
-
+	std::stringstream ss;
+	ss << "[SynchTool] Captured Synchronization";
+	_sync_log.get()->Write(ss.str());
+	SignalToParent(stream);
+	_stackSync = false;
 }
 
 PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {

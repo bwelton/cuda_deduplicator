@@ -8,8 +8,7 @@ thread_local int my_process_id = -1;
 thread_local std::vector<uint64_t> _currentStack;
 thread_local bool _stackSync = false;
 thread_local bool _inTrackedCall = false;
-thread_local std::vector<MemoryRange> _MemoryRanges;
-thread_local bool _checkMems =  false;
+
 std::shared_ptr<SynchTool> Worker;
 int exited = 0;
 uint64_t testingInteger = 0;
@@ -18,7 +17,6 @@ uint64_t testingInteger = 0;
 extern "C" {
 	__attribute__ ((noinline)) void SYNCH_SIGNAL_DYNINST(void * memoryRanges, size_t bsize) {
 		// Do nothing here, this just delivers a pointer to dyninst to do its magic
-		//_checkMems = true;
 	}
 
 	__attribute__ ((noinline)) void SYNCH_FIRST_FAULT() {
@@ -176,9 +174,6 @@ void SynchTool::UnprotectMemory() {
 }
 
 uint64_t * SynchTool::SeralizeMemRanges(size_t & size) {
-	_MemoryRanges.clear();
-	for (auto i : _ranges)
-		_MemoryRanges.push_back(i.second);
 	uint64_t * mem = (uint64_t*)malloc(_ranges.size() * 6 * sizeof(uint64_t));
 	size_t pos = 0;
 	for (auto i : _ranges) {
@@ -216,8 +211,7 @@ void SynchTool::SignalToParent(uint64_t stream) {
 	size_t size;
 	uint64_t * mem = SeralizeMemRanges(size);
 	SYNCH_SIGNAL_DYNINST(mem, size);
-	if (mem != NULL)
-		free(mem);
+	free(mem);
 	//MemProtectAddrs();
 	ClearExisting(0);
 }
@@ -243,25 +237,25 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 		}
 	} else {
 		// This is a synchronization, Signal to Dyninst to begin load store instrimentation. 
-		// uint64_t stream = 0;
-		// if (prevCall.get() != NULL) {
-		// 	if (prevCall.get()->GetID() == ID_cuStreamSynchronize) {
-		// 		std::tuple<PT_cuStreamSynchronize> pvalues = GetParams<PT_cuStreamSynchronize>(prevCall);
-		// 		stream = uint64_t(std::get<0>(pvalues)[0]);
-		// 	} else {
-		// 		MemoryTransfer * mem = prevCall.get()->GetMemtrans();
-		// 		if (mem->IsTransfer() == true)
-		// 			stream = uint64_t(mem->GetStream());
-		// 	}
-		// 	// Record calls which performed synchronizations.
-		// 	_callsContainingSynch.insert(prevCall.get()->GetID());
-		// }
-		// #ifdef SYNCH_DEBUG
-		// std::stringstream ss;
-		// ss << "[SynchTool] Captured Synchronization";
-		// _sync_log.get()->Write(ss.str());
-		// #endif
-		// SignalToParent(stream);
+		uint64_t stream = 0;
+		if (prevCall.get() != NULL) {
+			if (prevCall.get()->GetID() == ID_cuStreamSynchronize) {
+				std::tuple<PT_cuStreamSynchronize> pvalues = GetParams<PT_cuStreamSynchronize>(prevCall);
+				stream = uint64_t(std::get<0>(pvalues)[0]);
+			} else {
+				MemoryTransfer * mem = prevCall.get()->GetMemtrans();
+				if (mem->IsTransfer() == true)
+					stream = uint64_t(mem->GetStream());
+			}
+			// Record calls which performed synchronizations.
+			_callsContainingSynch.insert(prevCall.get()->GetID());
+		}
+		#ifdef SYNCH_DEBUG
+		std::stringstream ss;
+		ss << "[SynchTool] Captured Synchronization";
+		_sync_log.get()->Write(ss.str());
+		#endif
+		SignalToParent(stream);
 		//prevCall.reset();
 	}
 

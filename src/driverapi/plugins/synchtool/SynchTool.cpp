@@ -11,7 +11,7 @@ thread_local bool _inTrackedCall = false;
 thread_local bool _startCapture = true;
 thread_local uint64_t _SyncCount = 0;
 thread_local std::vector<MemoryRange> _MemRanges; 
-
+thread_local std::vector<std::pair<uint64_t, uint64_t> > _SynchResults;
 
 std::shared_ptr<SynchTool> Worker;
 int exited = 0;
@@ -25,6 +25,13 @@ extern "C" {
 
 	__attribute__ ((noinline)) void SYNCH_FIRST_FAULT() {
 
+	}
+
+	__attribute__((noinline)) void WRITE_SYNCRONIZATIONS() {
+		FILE * fdes = fopen("syncResults.txt","w");
+		for (auto i : _SynchResults)
+			fprintf(fdes, "%llu,%llu\n", i.first,i.second);
+		fclose(fdes);
 	}
 
 	static void sync_mem_handler(int sig, siginfo_t *si, void *unused)
@@ -73,6 +80,7 @@ extern "C" {
 		if (_startCapture) {
 			for (auto i : _MemRanges){
 				if (i.IsInRange(addr)){
+					_SynchResults.push_back(std::make_pair(_SyncCount - 1, progCounter));
 					_startCapture = false;
 					std::cerr << "First use identified after synchronization - " << std::hex << progCounter << std::dec << std::endl;
 					break;

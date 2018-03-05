@@ -18,7 +18,7 @@ uint64_t testingInteger = 0;
 extern "C" {
 	__attribute__ ((noinline)) void SYNCH_SIGNAL_DYNINST(void * memoryRanges, size_t bsize) {
 		// Do nothing here, this just delivers a pointer to dyninst to do its magic
-		_checkMems = true;
+		//_checkMems = true;
 	}
 
 	__attribute__ ((noinline)) void SYNCH_FIRST_FAULT() {

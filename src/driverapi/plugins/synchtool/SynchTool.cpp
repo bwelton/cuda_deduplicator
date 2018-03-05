@@ -290,7 +290,7 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 	if (_stackSync == true){
 		_stackSync = false;
 		std::cerr << "We have synchronized in this call - " << params.get()->GetName() << std::endl;
-
+		RecordSynchronization(0);
 	// SetThreadLocals();
 	// Parameters * p = params.get();
 	// CallID ident = p->GetID();

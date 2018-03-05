@@ -9,6 +9,8 @@ thread_local pid_t my_thread_id = -1;
 thread_local int my_process_id = -1;
 uint64_t testingInteger = 0;
 thread_local std::vector<uint64_t> _currentStack;
+thread_local bool _stackSync = false;
+
 extern "C" {
 	__attribute__ ((noinline)) void SYNCH_SIGNAL_DYNINST(void * memoryRanges, size_t bsize) {
 		// Do nothing here, this just delivers a pointer to dyninst to do its magic
@@ -27,7 +29,7 @@ extern "C" {
 
 
 	void SYNC_RECORD_SYNC_CALL() {
-		
+		_stackSync = true;
 	}
 	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
 

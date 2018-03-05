@@ -9,6 +9,8 @@ thread_local std::vector<uint64_t> _currentStack;
 thread_local bool _stackSync = false;
 thread_local bool _inTrackedCall = false;
 thread_local bool _startCapture = true;
+thread_local std::vector<MemoryRange> _MemRanges; 
+
 
 std::shared_ptr<SynchTool> Worker;
 int exited = 0;
@@ -59,7 +61,7 @@ extern "C" {
 
 	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
 		if (_inTrackedCall == false) {
-			PLUG_FACTORY_PTR->RecordSynchronization();
+			PLUG_FACTORY_PTR->RecordSynchronization(id);
 			SYNC_RECORD_FUNCTION_EXIT(id);
 		}
 	}
@@ -177,7 +179,9 @@ void SynchTool::UnprotectMemory() {
 uint64_t * SynchTool::SeralizeMemRanges(size_t & size) {
 	uint64_t * mem = (uint64_t*)malloc(_ranges.size() * 6 * sizeof(uint64_t));
 	size_t pos = 0;
+	_MemRanges.clear();
 	for (auto i : _ranges) {
+		_MemRanges.push_back(i.second);
 		mem[pos] = i.second.begin;
 		mem[pos + 1] = i.second.end;
 		mem[pos + 2] = i.second.size;
@@ -263,10 +267,10 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 	return NO_ACTION;
 }
 
-void SynchTool::RecordSynchronization() {
+void SynchTool::RecordSynchronization(uint64_t id) {
 	_startCapture = true;
 	std::stringstream ss;
-	ss << "[SynchTool] Captured Synchronization";
+	ss << "[SynchTool] Captured Synchronization " << id;
 	std::cerr << ss.str() << std::endl;
 	_sync_log.get()->Write(ss.str());
 	SignalToParent(0);

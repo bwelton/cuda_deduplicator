@@ -48,7 +48,7 @@ public:
 	void UnprotectMemory();
 	void MemProtectAddrs();
 	void SetThreadLocals();
-	void RecordSynchronization();
+	void RecordSynchronization(uint64_t id);
 private:
 	std::shared_ptr<LogInfo> _sync_log;
 	std::map<uint64_t, MemoryRange> _ranges;

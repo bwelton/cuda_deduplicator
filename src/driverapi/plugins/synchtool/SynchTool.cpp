@@ -74,7 +74,7 @@ extern "C" {
 			for (auto i : _MemRanges){
 				if (i.IsInRange(addr)){
 					_startCapture = false;
-					std::cerr << "First use identified after synchronization - " << std::hex << addr << std::dec << std::endl;
+					std::cerr << "First use identified after synchronization - " << std::hex << progCounter << std::dec << std::endl;
 					break;
 				}
 			}

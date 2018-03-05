@@ -48,7 +48,7 @@ extern "C" {
 			_currentStack.pop_back();
 //		std::cerr << "At function entry: " << id << std::endl;
 	}
-	
+
 	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
 		SYNC_RECORD_FUNCTION_ENTRY(id);
 	}
@@ -260,7 +260,7 @@ void SynchTool::RecordSynchronization() {
 	std::stringstream ss;
 	ss << "[SynchTool] Captured Synchronization";
 	_sync_log.get()->Write(ss.str());
-	SignalToParent(stream);
+	SignalToParent(0);
 	_stackSync = false;
 }
 

@@ -9,6 +9,7 @@ thread_local std::vector<uint64_t> _currentStack;
 thread_local bool _stackSync = false;
 thread_local bool _inTrackedCall = false;
 thread_local bool _startCapture = true;
+thread_local uint64_t _SyncCount = 0;
 thread_local std::vector<MemoryRange> _MemRanges; 
 
 
@@ -278,10 +279,11 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 void SynchTool::RecordSynchronization(uint64_t id) {
 	_startCapture = true;
 	std::stringstream ss;
-	ss << "[SynchTool] Captured Synchronization " << id;
+	ss << "[SynchTool] Captured Synchronization " << id << "," << _SyncCount;
 	std::cerr << ss.str() << std::endl;
 	_sync_log.get()->Write(ss.str());
 	SignalToParent(0);
+	_SyncCount += 1;
 	_stackSync = false;
 }
 

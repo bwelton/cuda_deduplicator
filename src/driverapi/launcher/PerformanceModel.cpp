@@ -120,12 +120,12 @@ void PerformanceModel::ExtractLineInfo() {
 		}
 	}
 #ifdef DEBUG_MODEL
-	// for(auto i : _lineInfo) {
-	// 	std::cerr << "Stack with Synchronization" << std::endl;
-	// 	for (auto z : i.second){
-	// 		std::cerr << z.first << "," << z.second.filename << "," << z.second.lineNum << std::endl;
-	// 	}
-	// }
+	for(auto i : _lineInfo) {
+		std::cerr << "Stack with Synchronization" << std::endl;
+		for (auto z : i.second){
+			std::cerr << z.first << "," << z.second.filename << "," << z.second.lineNum << std::endl;
+		}
+	}
 #endif
 	std::cerr << "Synchronization Count: " << _totalSyncs << std::endl;
 	ProcessStacks();

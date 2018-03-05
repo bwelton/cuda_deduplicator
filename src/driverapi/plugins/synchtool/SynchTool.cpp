@@ -2,14 +2,16 @@
 #include "HelperFunctions.h"
 #include <stdlib.h>
 
-std::shared_ptr<SynchTool> Worker;
 thread_local std::shared_ptr<Parameters> prevCall;
-int exited = 0;
 thread_local pid_t my_thread_id = -1; 
 thread_local int my_process_id = -1;
-uint64_t testingInteger = 0;
 thread_local std::vector<uint64_t> _currentStack;
 thread_local bool _stackSync = false;
+
+std::shared_ptr<SynchTool> Worker;
+int exited = 0;
+uint64_t testingInteger = 0;
+
 
 extern "C" {
 	__attribute__ ((noinline)) void SYNCH_SIGNAL_DYNINST(void * memoryRanges, size_t bsize) {
@@ -31,12 +33,13 @@ extern "C" {
 	void SYNC_RECORD_SYNC_CALL() {
 		_stackSync = true;
 	}
-	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
 
+	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
+		SYNC_RECORD_FUNCTION_ENTRY(id);
 	}
 
 	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
-
+		SYNC_RECORD_FUNCTION_EXIT(id);
 	}
 
 	void SYNC_RECORD_FUNCTION_ENTRY(uint64_t id) {
@@ -211,7 +214,7 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
 		// Stash its value in TLS
-		prevCall = params;
+		//prevCall = params;
 		// If this is a memory transfer, we must store its information.
 		MemoryTransfer * mem = p->GetMemtrans();
 		if (mem->IsTransfer() == true){
@@ -250,9 +253,14 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 	return NO_ACTION;
 }
 
+void SynchTool::RecordSynchronization() {
+
+
+
+
+}
+
 PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
-	if (params.get()->GetID() != ID_cuStreamSynchronize)
-		prevCall.reset();
 	if (_stackSync == true){
 		_stackSync = false;
 		std::cerr << "We have synchronized in this call - " << params.get()->GetName() << std::endl;

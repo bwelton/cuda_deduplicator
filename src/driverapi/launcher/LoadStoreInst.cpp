@@ -226,11 +226,32 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 	return true;
 }
 
+#define DEBUG_LS 1
 bool LoadStoreInst::RunOneTimeCode() {
 	if (_runOneTime == false)
 		return true;
 
 	std::cerr << "In One time Check" << std::endl;
+
+	std::ifstream ifs ("syncResults.txt", std::ifstream::in);
+	std::vector<std::pair<uint64_t, uint64_t> > necessarySyncs;
+  	std::string line;
+  	while (std::getline(ifs, line)) {
+  		std::stringstream ss(line);
+  		std::vector<std::string> params;
+  		while(ss.good()){
+  			std::string substr;
+  			getline( ss, substr, ',' );
+  			params.push_back(substr);
+  		}
+  		assert(params.size() == 2);
+#ifdef DEBUG_LS
+  		std::cerr << params[0] << "," << params[1] << std::endl;
+#endif
+  		necessarySyncs.push_back(std::make_pair(std::stoull(params[0]), std::stoull(params[1])));
+
+  	}
+  	ifs.close();
 
 	// BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);
 	// BPatch_Vector<BPatch_thread *> threads;

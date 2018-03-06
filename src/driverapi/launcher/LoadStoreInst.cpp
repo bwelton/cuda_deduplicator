@@ -227,7 +227,39 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 }
 
 bool LoadStoreInst::RunOneTimeCode() {
-	return false;
+	if (_runOneTime == false)
+		return true;
+
+	BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);
+	BPatch_Vector<BPatch_thread *> threads;
+	_appProc->getThreads(threads);
+	for (auto i : threads) {
+		BPatch_Vector<BPatch_frame> frames;
+		i->getCallStack(frames);
+		bool found = false;
+		for (auto j : frames) {
+			if (frame.getFrameType() != BPatch_frameNormal)
+				continue;
+			BPatch_function * func = frame.findFunction();
+			if (func != NULL) {
+				if (func->getName() == "exit"){
+					found = true;
+					break;
+				}
+			}
+		}
+		// Run the one time code for this thread, should make this multithreaded in the future.
+		if (found == true) {
+			std::vector<BPatch_function *> funcList;
+			_img->findFunction("WRITE_SYNCRONIZATIONS", funcList);
+			assert(funcList.size() > 0);
+			std::vector<BPatch_snippet*> testArgs;
+			BPatch_funcCallExpr callFileDump(*funcList[0], testArgs);
+			i->oneTimeCode(callFileDump);
+			break;
+		}
+	}
+	return true;
 }
 
 bool LoadStoreInst::IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg) {

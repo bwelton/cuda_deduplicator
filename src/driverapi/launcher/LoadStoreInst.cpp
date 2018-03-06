@@ -240,10 +240,12 @@ bool LoadStoreInst::RunOneTimeCode() {
 		i->getCallStack(frames);
 		bool found = false;
 		for (auto frame : frames) {
-			if (frame.getFrameType() != BPatch_frameNormal)
+			if (frame.getFrameType() != BPatch_frameSignal)
 				continue;
+			std::cerr << "Found frame with type frameSignal" << std::endl;
 			BPatch_function * func = frame.findFunction();
 			if (func != NULL) {
+
 				if (func->getName().find("exit") != std::string::npos){
 					found = true;
 					break;

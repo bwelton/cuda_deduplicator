@@ -250,6 +250,7 @@ bool LoadStoreInst::RunOneTimeCode() {
 		}
 		// Run the one time code for this thread, should make this multithreaded in the future.
 		if (found == true) {
+			std::cerr << "Found the exit call, calling ontime code" << std::endl;
 			std::vector<BPatch_function *> funcList;
 			_img->findFunction("WRITE_SYNCRONIZATIONS", funcList);
 			assert(funcList.size() > 0);

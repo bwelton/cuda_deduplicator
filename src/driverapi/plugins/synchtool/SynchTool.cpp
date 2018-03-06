@@ -28,6 +28,7 @@ extern "C" {
 	}
 
 	__attribute__((noinline)) void WRITE_SYNCRONIZATIONS() {
+		std::cerr << "In one time call" << std::endl;
 		FILE * fdes = fopen("syncResults.txt","w");
 		for (auto i : _SynchResults)
 			fprintf(fdes, "%llu,%llu\n", i.first,i.second);

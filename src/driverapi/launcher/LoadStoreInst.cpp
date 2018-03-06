@@ -230,6 +230,8 @@ bool LoadStoreInst::RunOneTimeCode() {
 	if (_runOneTime == false)
 		return true;
 
+	std::cerr << "In One time Check" << std::endl;
+
 	BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);
 	BPatch_Vector<BPatch_thread *> threads;
 	proc->getThreads(threads);

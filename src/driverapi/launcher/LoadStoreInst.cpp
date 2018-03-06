@@ -242,7 +242,7 @@ bool LoadStoreInst::RunOneTimeCode() {
 				continue;
 			BPatch_function * func = frame.findFunction();
 			if (func != NULL) {
-				if (func->getName() == "exit"){
+				if (func->getName().find("exit") != std::string::npos){
 					found = true;
 					break;
 				}

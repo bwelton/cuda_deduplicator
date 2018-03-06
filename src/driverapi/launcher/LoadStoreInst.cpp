@@ -272,6 +272,11 @@ bool LoadStoreInst::RunOneTimeCode() {
   		_firstUses[i.first] = tmp;
   	}
 
+#ifdef DEBUG_LS
+  	for (auto i : _firstUses)
+  		std::cerr << i.first << "," << i.second.framePtr << "," << i.second.funcName << "," << i.second.libname << "," << i.second.libOffset << std::endl;
+#endif
+  	
 	// BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);
 	// BPatch_Vector<BPatch_thread *> threads;
 	// proc->getThreads(threads);

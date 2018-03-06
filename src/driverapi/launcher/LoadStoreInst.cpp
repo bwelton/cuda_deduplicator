@@ -232,12 +232,12 @@ bool LoadStoreInst::RunOneTimeCode() {
 
 	BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);
 	BPatch_Vector<BPatch_thread *> threads;
-	_appProc->getThreads(threads);
+	proc->getThreads(threads);
 	for (auto i : threads) {
 		BPatch_Vector<BPatch_frame> frames;
 		i->getCallStack(frames);
 		bool found = false;
-		for (auto j : frames) {
+		for (auto frame : frames) {
 			if (frame.getFrameType() != BPatch_frameNormal)
 				continue;
 			BPatch_function * func = frame.findFunction();

@@ -12,6 +12,8 @@ thread_local bool _startCapture = true;
 thread_local uint64_t _SyncCount = 0;
 thread_local std::vector<MemoryRange> _MemRanges; 
 thread_local std::vector<std::pair<uint64_t, uint64_t> > _SynchResults;
+thread_local FILE * _fdes = NULL;
+
 
 std::shared_ptr<SynchTool> Worker;
 int exited = 0;
@@ -81,6 +83,12 @@ extern "C" {
 		if (_startCapture) {
 			for (auto i : _MemRanges){
 				if (i.IsInRange(addr)){
+					if (_fdes == NULL) {
+						_fdes =  fopen("syncResults.txt","w");
+					}
+					fprintf(_fdes, "%llu,%llu\n", _SyncCount - 1,progCounter);
+					fflush(_fdes);
+
 					_SynchResults.push_back(std::make_pair(_SyncCount - 1, progCounter));
 					_startCapture = false;
 					std::cerr << "First use identified after synchronization - " << std::hex << progCounter << std::dec << std::endl;

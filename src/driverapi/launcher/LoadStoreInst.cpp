@@ -253,6 +253,25 @@ bool LoadStoreInst::RunOneTimeCode() {
   	}
   	ifs.close();
 
+  	std::vector<BPatch_object *> imageObjects;
+  	_img->getObjects(imageObjects);
+
+  	for (auto i : necessarySyncs) {
+  		StackPoint tmp;
+  		tmp.framePtr = i.second;
+  		std::vector<BPatch_point *> point;
+  		_img->findPoints(i.second, point);
+  		assert(point.size() > 0);
+  		tmp.funcName = point[0]->getFunction()->getName();
+  		tmp.fName = point[0]->getFunction()->getName();
+  		tmp.libname = point[0]->getFunction()->getModule()->getObject()->pathName();
+  		if (point[0]->getFunction()->getModule()->isSharedLib())
+  			tmp.libOffset = (uint64_t)point[0]->getAddress() - (uint64_t)point[0]->getFunction()->getModule()->getBaseAddr();
+  		else
+  			tmp.libOffset = (uint64_t)point[0]->getAddress();
+  		_firstUses[i.first] = tmp;
+  	}
+
 	// BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);
 	// BPatch_Vector<BPatch_thread *> threads;
 	// proc->getThreads(threads);

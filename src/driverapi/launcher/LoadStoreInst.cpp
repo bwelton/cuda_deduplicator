@@ -232,38 +232,38 @@ bool LoadStoreInst::RunOneTimeCode() {
 
 	std::cerr << "In One time Check" << std::endl;
 
-	BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);
-	BPatch_Vector<BPatch_thread *> threads;
-	proc->getThreads(threads);
-	for (auto i : threads) {
-		BPatch_Vector<BPatch_frame> frames;
-		i->getCallStack(frames);
-		bool found = false;
-		for (auto frame : frames) {
-			if (frame.getFrameType() != BPatch_frameSignal)
-				continue;
-			std::cerr << "Found frame with type frameSignal" << std::endl;
-			BPatch_function * func = frame.findFunction();
-			if (func != NULL) {
+	// BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);
+	// BPatch_Vector<BPatch_thread *> threads;
+	// proc->getThreads(threads);
+	// for (auto i : threads) {
+	// 	BPatch_Vector<BPatch_frame> frames;
+	// 	i->getCallStack(frames);
+	// 	bool found = false;
+	// 	for (auto frame : frames) {
+	// 		if (frame.getFrameType() != BPatch_frameSignal)
+	// 			continue;
+	// 		std::cerr << "Found frame with type frameSignal" << std::endl;
+	// 		BPatch_function * func = frame.findFunction();
+	// 		if (func != NULL) {
 
-				if (func->getName().find("exit") != std::string::npos){
-					found = true;
-					break;
-				}
-			}
-		}
-		// Run the one time code for this thread, should make this multithreaded in the future.
-		if (found == true) {
-			std::cerr << "Found the exit call, calling ontime code" << std::endl;
-			std::vector<BPatch_function *> funcList;
-			_img->findFunction("WRITE_SYNCRONIZATIONS", funcList);
-			assert(funcList.size() > 0);
-			std::vector<BPatch_snippet*> testArgs;
-			BPatch_funcCallExpr callFileDump(*funcList[0], testArgs);
-			i->oneTimeCode(callFileDump);
-			break;
-		}
-	}
+	// 			if (func->getName().find("exit") != std::string::npos){
+	// 				found = true;
+	// 				break;
+	// 			}
+	// 		}
+	// 	}
+	// 	// Run the one time code for this thread, should make this multithreaded in the future.
+	// 	if (found == true) {
+	// 		std::cerr << "Found the exit call, calling ontime code" << std::endl;
+	// 		std::vector<BPatch_function *> funcList;
+	// 		_img->findFunction("WRITE_SYNCRONIZATIONS", funcList);
+	// 		assert(funcList.size() > 0);
+	// 		std::vector<BPatch_snippet*> testArgs;
+	// 		BPatch_funcCallExpr callFileDump(*funcList[0], testArgs);
+	// 		i->oneTimeCode(callFileDump);
+	// 		break;
+	// 	}
+	// }
 	return true;
 }
 

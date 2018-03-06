@@ -42,7 +42,7 @@
 #include "set"
 #include "LogInfo.h"
 #include "Constants.h"
-
+#include "StackPoint.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -98,5 +98,6 @@ private:
 	BPatch_function * _exitSync;
 	BPatch_function * _syncLibNotify;
 
+	std::map<uint64_t, StackPoint> _firstUses;
 	std::map<BPatch_object::Region, std::pair<std::string,std::string> > _regionToLibname;
 };

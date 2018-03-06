@@ -23,7 +23,7 @@
 #include <boost/program_options.hpp>
 #include "ProcessControl.h"
 #include "SymbolLookup.h"
-
+#include "StackPoint.h"
 struct CallPoint {
 	std::string libCudaCallname;
 	std::vector<uint64_t> callStacks;

@@ -27,7 +27,7 @@
 #include "LogInfo.h"
 #include <libgen.h>
 #include <unistd.h>
-
+#include "StackPoint.h"
 class TimeApplications {
 public:
 	TimeApplications(boost::program_options::variables_map vm);

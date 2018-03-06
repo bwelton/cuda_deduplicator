@@ -42,38 +42,18 @@
 #include "set"
 #include "LogInfo.h"
 #include "Constants.h"
-
+#include "StackPoint.h"
 #include "LoadStoreInst.h"
+
+
 #define INTERNAL_SYNC_C 0x2864C0
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
 using namespace SymtabAPI;
 
-struct StackPoint {
-	std::string fname;
-	std::string libname;
-	std::string funcName;
-	uint64_t libOffset;
-	uint64_t funcOffset;
-	uint64_t framePtr;
-	bool inMain;
-	bool empty;
-	StackPoint() : empty(true), libOffset(0), framePtr(0), funcOffset(0), fname(std::string("")), libname(std::string("")) {
-		inMain = false;
-	};
-	uint64_t GetKey() {
-		return framePtr;
-	};
-};
 
-namespace std {
-	template<> struct less<StackPoint> {
-		bool operator() (const StackPoint& lhs, const StackPoint& rhs) {
-			return lhs.framePtr < rhs.framePtr;
-		};
-	};
-};
+
 
 
 class ProcessController {

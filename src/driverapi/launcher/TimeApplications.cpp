@@ -102,6 +102,8 @@ double TimeApplications::RunWithLSInstrimentation(std::string wrapperDef, std::v
 	auto stop = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> diff = stop-start;
 	std::cerr << "[TIMEAPP] Application runtime with instrimentation - " << diff.count() << std::endl;
+
+	_firstUses = proc.GetFirstUse();
 	return diff.count();	
 }
 
@@ -126,7 +128,7 @@ double TimeApplications::RunWithBreakpoints(std::string wrapperDef,
 	while (!proc.IsTerminated()){
 		proc.Run();
 		if (proc.IsStopped()){
-			std::cerr << "[TIMEAPP] Breakpoint has been hit" << std::endl;
+//			std::cerr << "[TIMEAPP] Breakpoint has been hit" << std::endl;
 			cb(&proc);
 			proc.ContinueExecution();
 		}

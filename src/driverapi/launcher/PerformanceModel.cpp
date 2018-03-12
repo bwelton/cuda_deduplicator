@@ -1,6 +1,6 @@
 #include "PerformanceModel.h"
 
-#define DEBUG_MODEL 1
+//#define DEBUG_MODEL 1
 PerformanceModel::PerformanceModel() : _fastestExecTime(std::numeric_limits<double>::max()), _totalSyncs(0) {
 
 }
@@ -10,6 +10,10 @@ void PerformanceModel::AddExecutionTime(double secs) {
 		std::cerr << "[PerfModel] Updating lowest execution time - " << _fastestExecTime << "=>" << secs << std::endl;
 		_fastestExecTime = secs;
 	}
+}
+
+void PerformanceModel::AddFirstUses(std::map<uint64_t, StackPoint> uses) {
+	_firstUses = uses;
 }
 
 void PerformanceModel::CaptureSyncTime() {
@@ -92,6 +96,26 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 		_stackPoints[hash] = stack;	
 }
 
+
+void PerformanceModel::FinalProcessing() {
+	std::stringstream sortByUse;
+	std::stringstream sortByTime;
+
+	uint64_t unnecssaryCount = 0;
+	double unnecssaryTime = 0.0;
+	for (int x = 0; x < _callPoints.size(); x++) {
+		if (_firstUses.find(x) == _firstUses.end()) {
+			unnecssaryCount += 1;
+			unnecssaryTime += _callPoints[x].time;
+		}
+	}
+
+	std::cerr << "Unnecssary Synchronization Count: " << unnecssaryCount << "/" << _callPoints.size() << " " << unnecssaryCount / _callPoints.size() << "% unncessary" << std::endl;
+	std::cerr << "Potential time savings: " << unnecssaryTime << "/" << _fastestExecTime << " " << unnecssaryTime / _fastestExecTime << "% of exectuion time wasted" << std::endl;
+
+
+}
+
 void PerformanceModel::ExtractLineInfo() {
 	std::map<std::string, std::shared_ptr<SymbolLookup> > symbolInfo;
 	
@@ -163,10 +187,10 @@ void PerformanceModel::ProcessStacks() {
 		}
 		_callPair[i.first] = std::make_tuple(parentParentCall,parentCall,cudaCall);
 	}
-#ifdef DEBUG_MODEL
+//#ifdef DEBUG_MODEL
 	for (auto i : _callPair)
 		std::cerr << "Synch at " << std::get<0>(i.second) << "," << std::get<1>(i.second) << "," << std::get<2>(i.second) << std::endl;
-#endif
+//#endif
 
 }
 

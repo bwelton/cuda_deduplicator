@@ -65,7 +65,11 @@ void SyncTesting::Run() {
 		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 		//extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 		double time = base.RunWithLSInstrimentation(def, extras, timingList);
+		_model.AddFirstUses(base._firstUses);
 	}
+
+	// We are done running. Perform Analysis.
+	
 
 	//GatherSynchronizationCalls();
 	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;

@@ -156,12 +156,17 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 	_addrSpace->finalizeInsertionSet(false);	
 }
 
+std::map<uint64_t, StackPoint> ProcessController::GetFirstUse() {
+	assert(_loadStore != NULL);
+	return _loadStore->_firstUses;
+}
+
 
 std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks() {
 	std::map<uint64_t, std::vector<StackPoint> > ret;
 	BPatch_Vector<BPatch_thread *> threads;
 	_appProc->getThreads(threads);
-	std::cerr << "Got " << threads.size() << " threads" << std::endl;
+	//std::cerr << "Got " << threads.size() << " threads" << std::endl;
 	for(auto i : threads){
 		i->getProcess()->stopExecution();
 		BPatch_Vector<BPatch_frame> frames;
@@ -198,7 +203,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 				sp.framePtr = (uint64_t)frame.getPC();
 				assert(func->getModule() != NULL);
 				sp.libname = func->getModule()->getObject()->pathName();
-				std::cerr << "Library Name: " << sp.libname  << std::endl;
+				//std::cerr << "Library Name: " << sp.libname  << std::endl;
 				// if (libname != NULL)
 				// 	sp.libname = std::string(libname);
 				sp.empty = false;

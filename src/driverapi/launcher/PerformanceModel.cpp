@@ -100,6 +100,7 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 void PerformanceModel::FinalProcessing() {
 	std::stringstream sortByUse;
 	std::stringstream sortByTime;
+	std::vector<int> unncessarySyncs;
 
 	uint64_t unnecssaryCount = 0;
 	double unnecssaryTime = 0.0;
@@ -107,11 +108,13 @@ void PerformanceModel::FinalProcessing() {
 		if (_firstUses.find(x) == _firstUses.end()) {
 			unnecssaryCount += 1;
 			unnecssaryTime += _callPoints[x].time;
+			unncessarySyncs.push_back(x);
 		}
 	}
 
 	std::cerr << "Unnecssary Synchronization Count: " << unnecssaryCount << "/" << _callPoints.size() << " " << unnecssaryCount / _callPoints.size() << "% unncessary" << std::endl;
 	std::cerr << "Potential time savings: " << unnecssaryTime << "/" << _fastestExecTime << " " << unnecssaryTime / _fastestExecTime << "% of exectuion time wasted" << std::endl;
+
 
 
 }

@@ -30,6 +30,7 @@ struct CallPoint {
 	double time;
 	// Number of times this specific call synchronizes
 	uint64_t syncCount;
+	uint64_t startPos;
 	CallPoint(std::string name, uint64_t count, double t) {
 		time = t;
 		syncCount = count;

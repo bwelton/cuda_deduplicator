@@ -43,8 +43,9 @@ void PerformanceModel::CaptureSyncTime() {
 
   	// Check against the total number of syncs we have captured and their stack traces
   	uint64_t orderPos = 0;
-  	for (auto i : _callPoints) {
+  	for (auto & i : _callPoints) {
   		int count = i.syncCount;
+  		i.startPos = orderPos;
   		for (int n = orderPos; n < _stackOrder.size(); n++) {
   			bool found = false;
   			// Search the line info of this stack ordering for the call 
@@ -116,7 +117,58 @@ void PerformanceModel::FinalProcessing() {
 	std::cerr << "Potential time savings: " << unnecssaryTime << "/" << _fastestExecTime << " " << unnecssaryTime / _fastestExecTime << "% of exectuion time wasted" << std::endl;
 
 
+	// Sort by count
+	std::map<uint64_t, uint64_t> unncessaryStack;
+	for (auto x : unncessarySyncs) {
+		uint64_t myStack = _stackOrder[_callPoints[x].startPos];
+		if (unncessaryStack.find(myStack) == unncessaryStack.end())
+			unncessaryStack[myStack] = 0;
+		unncessaryStack[myStack] += 1;
+	}
 
+	sortByUse << "Table Performane Model Count: " << std::endl;
+	sortByUse << "StackID\tStackCount" << std::endl;
+
+	// Likely should be iterating over the key, should fix this since we shouldn't be iterating backward.
+	for (auto iter = unncessaryStack.rbegin(); iter != unncessaryStack.rend(); ++iter) {
+		sortByUse << iter.first << "\t\t" << iter.second << std::endl; 
+	}
+	for (auto iter = unncessaryStack.rbegin(); iter != unncessaryStack.rend(); ++iter) {
+		sortByUse << "Stack with unncessary synchronization - " << iter.first << std::endl;
+		for(auto i : _lineInfo[iter.first].second) {
+			sortByUse <<  i.first << "," << i.second.filename << "," << i.second.lineNum << std::endl;
+		}
+	}
+
+	// Sort by time...
+	std::map<uint64_t, double> unncessaryStackTime;
+	for (auto x : unncessarySyncs) {
+		uint64_t myStack = _stackOrder[_callPoints[x].startPos];
+		if (unncessaryStack.find(myStack) == unncessaryStack.end())
+			unncessaryStackTime[myStack] = 0.0;
+		unncessaryStackTime[myStack] += _callPoints[x].time;
+	}
+
+	sortByTime << "Table Performance Model Time: " << std::endl;
+	sortByTime << "StackID\tTime Wasted" << std::endl;
+	for(auto x : unncessaryStackTime) {
+		sortByTime << x.first << "\t\t" << x.second << std::endl;
+	}
+	for (auto x : unncessaryStackTime) {
+		sortByTime << "Stack with unncessary synchronization: " << x.first << std::endl;
+		for(auto i : _lineInfo[x.first].second) {	
+			sortByTime <<  i.first << "," << i.second.filename << "," << i.second.lineNum << std::endl;
+		}
+	}
+
+	std::ofstream pfile;
+	pfile.open("UnncessarySyncsCount.txt");
+	pfile << sortByUse.str() << std::endl;
+	pfile.close();
+	pfile.open("UnncessarySyncsTime.txt");
+	pfile << sortByTime.str() << std::endl;
+	pfile.close();
+	std::cerr << "Performance model is complete" << std::endl;
 }
 
 void PerformanceModel::ExtractLineInfo() {

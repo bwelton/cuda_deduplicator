@@ -69,13 +69,13 @@ void SyncTesting::Run() {
 	}
 
 	// We are done running. Perform Analysis.
-	
+	_model.FinalProcessing();
 
-	//GatherSynchronizationCalls();
-	std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
-	for(auto i : _syncCalls) {
-		std::cerr << "\t" << i << std::endl;
-	}
+	// //GatherSynchronizationCalls();
+	// std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
+	// for(auto i : _syncCalls) {
+	// 	std::cerr << "\t" << i << std::endl;
+	// }
 	// GatherSynchronizationDelay();
 	// InstrumentProgram();
 	// RunWithLoadStoreAnalysis();

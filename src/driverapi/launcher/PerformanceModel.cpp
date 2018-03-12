@@ -135,7 +135,7 @@ void PerformanceModel::FinalProcessing() {
 	}
 	for (auto iter : unncessaryStack) {
 		sortByUse << "Stack with unncessary synchronization - " << iter.first << std::endl;
-		for(auto i : _lineInfo[iter.first].second) {
+		for(auto i : _lineInfo[iter.first]) {
 			sortByUse <<  i.first << "," << i.second.filename << "," << i.second.lineNum << std::endl;
 		}
 	}
@@ -156,7 +156,7 @@ void PerformanceModel::FinalProcessing() {
 	}
 	for (auto x : unncessaryStackTime) {
 		sortByTime << "Stack with unncessary synchronization: " << x.first << std::endl;
-		for(auto i : _lineInfo[x.first].second) {	
+		for(auto i : _lineInfo[x.first]) {	
 			sortByTime <<  i.first << "," << i.second.filename << "," << i.second.lineNum << std::endl;
 		}
 	}

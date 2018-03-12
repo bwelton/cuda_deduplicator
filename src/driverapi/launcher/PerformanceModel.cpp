@@ -113,8 +113,8 @@ void PerformanceModel::FinalProcessing() {
 		}
 	}
 
-	std::cerr << "Unnecssary Synchronization Count: " << unnecssaryCount << "/" << _callPoints.size() << " " << unnecssaryCount / _callPoints.size() << "% unncessary" << std::endl;
-	std::cerr << "Potential time savings: " << unnecssaryTime << "/" << _fastestExecTime << " " << unnecssaryTime / _fastestExecTime << "% of exectuion time wasted" << std::endl;
+	std::cerr << "Unnecssary Synchronization Count: " << unnecssaryCount << "/" << _callPoints.size() << " " << float(unnecssaryCount) / float(_callPoints.size()) * 100 << "% unncessary" << std::endl;
+	std::cerr << "Potential time savings: " << unnecssaryTime << "/" << _fastestExecTime << " " << unnecssaryTime / _fastestExecTime * 100 << "% of exectuion time wasted" << std::endl;
 
 
 	// Sort by count

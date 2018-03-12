@@ -130,10 +130,10 @@ void PerformanceModel::FinalProcessing() {
 	sortByUse << "StackID\tStackCount" << std::endl;
 
 	// Likely should be iterating over the key, should fix this since we shouldn't be iterating backward.
-	for (auto iter = unncessaryStack.rbegin(); iter != unncessaryStack.rend(); ++iter) {
+	for (auto iter : unncessaryStack) {
 		sortByUse << iter.first << "\t\t" << iter.second << std::endl; 
 	}
-	for (auto iter = unncessaryStack.rbegin(); iter != unncessaryStack.rend(); ++iter) {
+	for (auto iter : unncessaryStack) {
 		sortByUse << "Stack with unncessary synchronization - " << iter.first << std::endl;
 		for(auto i : _lineInfo[iter.first].second) {
 			sortByUse <<  i.first << "," << i.second.filename << "," << i.second.lineNum << std::endl;

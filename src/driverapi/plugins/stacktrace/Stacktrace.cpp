@@ -93,7 +93,7 @@ extern "C" {
 			std::memcpy(&(stashSpace[pos]), (void*) &(i.second), sizeof(uint64_t));
 			pos += sizeof(uint64_t);
 		}
-		write(outputFile->outFile, stashSpace, pos);
+		fwrite(stashSpace, 1, pos, outputFile->outFile);
 		in_inst = false;
 	}
 }

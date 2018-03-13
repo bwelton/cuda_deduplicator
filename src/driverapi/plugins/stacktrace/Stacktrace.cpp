@@ -4,7 +4,9 @@
 #include <fstream>    
 #include <string>		
 #include <cassert> 
-
+#include <unistd.h>
+#include <sys/syscall.h>
+#include <sstream>
 #define MAXIMUM_STACK 512
 
 // Stash Space for writing data to file
@@ -15,7 +17,7 @@ thread_local size_t charSize = 0;
 thread_local bool in_inst = false;
 
 // Storing the current stack
-thread_local std::vector<std::pair<uint64_t id, uint64_t callAddr> > calls;
+thread_local std::vector<std::pair<uint64_t, uint64_t> > calls;
 thread_local pid_t my_thread_id = -1;
 thread_local FILE * outputFile = NULL;
 extern "C" {

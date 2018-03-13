@@ -69,7 +69,7 @@ extern "C" {
 			std::cerr << "ERROR! Record Exit does not equal the entrance at the start of the stack!" << std::endl;
 			std::cerr << id << std::endl;
 		}
-		if (entries.size() > 0)
+		else
 			entries.pop_back();
 		in_inst = false;
 	}

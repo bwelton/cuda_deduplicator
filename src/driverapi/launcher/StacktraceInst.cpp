@@ -72,10 +72,10 @@ void StacktraceInst::InsertInstFuncEntryExit(BPatch_function * instFunc){
 	std::vector<BPatch_point*> * exitLocations = instFunc->findPoint(BPatch_locExit);
 
 	if (_addrSpace->insertSnippet(recordFuncEntry,*entryLocations) == NULL)
-		std::cerr << "Could not insert entry snippet - " << calledFunc->getName() << std::endl;
+		std::cerr << "Could not insert entry snippet - " << instFunc->getName() << std::endl;
 
 	if (_addrSpace->insertSnippet(recordFuncExit,*exitLocations) == NULL)
-		std::cerr << "Could not insert entry snippet - " << calledFunc->getName() << std::endl;
+		std::cerr << "Could not insert entry snippet - " << instFunc->getName() << std::endl;
 
 }
 void StacktraceInst::InsertEntryExitCall(BPatch_function * instFunc, BPatch_function * calledFunc, BPatch_point * callPoint) {

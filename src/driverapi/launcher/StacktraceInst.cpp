@@ -20,6 +20,8 @@ void StacktraceInst::InsertStackInst() {
 	// into the underlying function and the position of that entrance (i.e. the specific call it entered from).
 	// We will also record the exit from this function. 
 	for (auto i : all_functions) {
+		if (i == NULL)
+			continue;
 		if (IsFunctionExcluded(i))
 			continue;
 		uint64_t myID =  GetFuncId(i);	

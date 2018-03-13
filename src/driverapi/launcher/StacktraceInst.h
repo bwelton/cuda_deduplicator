@@ -58,7 +58,7 @@ public:
 	void InsertStackInst();
 	uint64_t GetFuncId(BPatch_function * func);
 	void InsertEntryExitCall(BPatch_function * instFunc, BPatch_function * calledFunc, BPatch_point * callPoint);
-	std::vector<std::pair<BPatch_function * func, BPatch_point *> > GetFunctionCalls(BPatch_function * func);
+	std::vector<std::pair<BPatch_function *, BPatch_point *> > GetFunctionCalls(BPatch_function * func);
 
 private:
 	BPatch_function * _entryFunc;

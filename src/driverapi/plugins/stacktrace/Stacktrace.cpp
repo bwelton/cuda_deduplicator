@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <sstream>
+#include <cstring>
 #define MAXIMUM_STACK 512
 
 // Stash Space for writing data to file
@@ -19,10 +20,24 @@ thread_local bool in_inst = false;
 // Storing the current stack
 thread_local std::vector<std::pair<uint64_t, uint64_t> > calls;
 thread_local pid_t my_thread_id = -1;
-thread_local FILE * outputFile = NULL;
+
+struct OutputFile {
+	FILE * outFile;
+	OutputFile::OutputFile(std::string filename) {
+		outFile = fopen(filename.c_str(),"w");
+	}
+
+	OutputFile::~OutputFile() {
+		fflush(outFile);
+		fclose(outFile);
+	}
+};
+
+thread_local std::shared_ptr<OutputFile> outputFile;
+
 extern "C" {
 	void SETUP_INTERCEPTOR() {
-		if (outputFile != NULL)
+		if (outputFile.get() != NULL)
 			return;
 
 		if (my_thread_id == -1)
@@ -30,8 +45,8 @@ extern "C" {
 
 		std::stringstream ss;
 		ss << "stackOut." << my_thread_id << ".bin";
-		outputFile = fopen(ss.str().c_str(), "w");
-		assert(outputFile != NULL);
+		outputFile.reset(new OutputFile(ss.str()));
+		assert(outputFile.get() != NULL);
 		stashSpace = (char *) malloc(MAXIMUM_STACK * sizeof(uint64_t) * 2 + sizeof(size_t));
 	}
 
@@ -58,12 +73,14 @@ extern "C" {
 			std::cerr << "ERROR! Exit does not equal the entrance at the start of the stack!" << std::endl;
 			std::cerr << id << "," << callAddr << " not maching " << calls.back().first << "," << calls.back().second << std::endl;
 		}
-		calls.pop_back();
+		else 
+			calls.pop_back();
 		in_inst = false;
 	}
 
 	void SYNC_RECORD_SYNC_CALL() {
 		in_inst = true;
+		SETUP_INTERCEPTOR();
 		int pos = 0;
 		assert(calls.size() < MAXIMUM_STACK);
 		std::memcpy(stashSpace, (void*) &(calls.size()), sizeof(size_t));
@@ -74,13 +91,7 @@ extern "C" {
 			std::memcpy(&(stashSpace[pos]), (void*) &(i.second), sizeof(uint64_t));
 			pos += sizeof(uint64_t);
 		}
-		write(outputFile, stashSpace, pos);
+		write(outputFile->outFile, stashSpace, pos);
 		in_inst = false;
-	}
-
-	void CAPTURE_EXIT(){
-		in_inst = true;
-		fflush(outputFile);
-		fclose(outputFile);
 	}
 }

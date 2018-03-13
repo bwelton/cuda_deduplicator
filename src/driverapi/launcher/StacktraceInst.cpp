@@ -20,8 +20,6 @@ void StacktraceInst::InsertStackInst() {
 	// into the underlying function and the position of that entrance (i.e. the specific call it entered from).
 	// We will also record the exit from this function. 
 	for (auto i : all_functions) {
-		if (i == NULL)
-			continue;
 		if (IsFunctionExcluded(i))
 			continue;
 		uint64_t myID =  GetFuncId(i);	
@@ -84,6 +82,8 @@ std::vector<std::pair<BPatch_function *, BPatch_point *> > StacktraceInst::GetFu
 	std::vector<BPatch_point*> * callPoints = func->findPoint(BPatch_locSubroutine);
 	std::vector<std::pair<BPatch_function *, BPatch_point *> > ret;
 	for (auto i : *callPoints) {
+		if (i->getCalledFunction() == NULL)
+			continue;
 		ret.push_back(std::make_pair(i->getCalledFunction(), i));
 	}
 	return ret;

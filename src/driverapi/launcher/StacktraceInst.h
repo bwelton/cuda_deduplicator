@@ -64,7 +64,9 @@ private:
 	BPatch_function * _entryFunc;
 	BPatch_function * _exitFunc;
 	BPatch_function * _recordSync;
-
+	BPatch_function * _atEntryFunc;
+	BPatch_function * _atExitFunc;
+	
 	BPatch_addressSpace * _addrSpace;
 	BPatch_image * _img;
 

@@ -55,7 +55,28 @@ void StacktraceInst::InsertStackInst() {
 
 	_addrSpace->finalizeInsertionSet(false);	
 }
+ 
 
+void StacktraceInst::InsertInstFuncEntryExit(BPatch_function * instFunc){
+	if (IsFunctionExcluded(instFunc))
+		return;
+	assert(instFunc != NULL);
+	uint64_t id = GetFuncId(instFunc);
+	std::vector<BPatch_snippet*> testArgs;
+	testArgs.push_back(new BPatch_constExpr(id));	
+	BPatch_funcCallExpr recordFuncEntry(*_atEntryFunc, testArgs);
+	BPatch_funcCallExpr recordFuncExit(*_atExitFunc, testArgs);	
+
+	std::vector<BPatch_point*> * entryLocations = instFunc->findPoint(BPatch_locEntry);
+	std::vector<BPatch_point*> * exitLocations = instFunc->findPoint(BPatch_locExit);
+
+	if (_addrSpace->insertSnippet(recordFuncEntry,*entryLocations) == NULL)
+		std::cerr << "Could not insert entry snippet - " << calledFunc->getName() << std::endl;
+
+	if (_addrSpace->insertSnippet(recordFuncExit,*exitLocations) == NULL)
+		std::cerr << "Could not insert entry snippet - " << calledFunc->getName() << std::endl;
+
+}
 void StacktraceInst::InsertEntryExitCall(BPatch_function * instFunc, BPatch_function * calledFunc, BPatch_point * callPoint) {
 	if (IsFunctionExcluded(calledFunc))
 		return;
@@ -104,19 +125,27 @@ void StacktraceInst::Setup() {
 	std::vector<BPatch_function *> entryFunc;
 	std::vector<BPatch_function *> exitFunc;
 	std::vector<BPatch_function *> recordSync;
+	std::vector<BPatch_function *> atFunctionEntry;
+	std::vector<BPatch_function *> atFunctionExit;
 
 	_img->findFunction("STACKTRACE_RECORD_ENTRY", entryFunc);
 	_img->findFunction("STACKTRACE_RECORD_EXIT", exitFunc);	
+	_img->findFunction("STACKTRACE_RECORD_MAIN_ENTRY", atFunctionEntry);
+	_img->findFunction("STACKTRACE_RECORD_MAIN_EXIT", atFunctionExit);	
 	_img->findFunction("SYNC_RECORD_SYNC_CALL", recordSync);	
 
 	assert(entryFunc.size() > 0);
 	assert(exitFunc.size() > 0);
 	assert(recordSync.size() > 0);
-
+	assert(atFunctionExit.size() > 0);
+	assert(atFunctionEntry.size() > 0);
 
 	_entryFunc = entryFunc[0];
 	_exitFunc = exitFunc[0];
 	_recordSync = recordSync[0];
+	_atEntryFunc = atFunctionEntry[0];
+	_atExitFunc = atFunctionExit[0];
+
 }
 
 

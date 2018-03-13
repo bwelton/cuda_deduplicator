@@ -84,7 +84,8 @@ extern "C" {
 		SETUP_INTERCEPTOR();
 		int pos = 0;
 		assert(calls.size() < MAXIMUM_STACK);
-		std::memcpy(stashSpace, (void*) &(calls.size()), sizeof(size_t));
+		size_t callCount = calls.size();
+		std::memcpy(stashSpace, (void*) &(callCount), sizeof(size_t));
 		pos += sizeof(size_t);
 		for (auto i : calls) {
 			std::memcpy(&(stashSpace[pos]), (void*) &(i.first), sizeof(uint64_t));

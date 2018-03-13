@@ -119,7 +119,7 @@ void StacktraceInst::Setup() {
 
 
 bool StacktraceInst::IsFunctionExcluded(BPatch_function * func) {
-	static StringVector skippedNames = {"cuda_deduplicator", "dyninst", "boost","libCUPTIEventHandler", "cudadedup", "libdl-2.23.so","libpthread-2.23.so","libc.so.6","libm.so.6", "exit"};
+	static std::vector<std::string> skippedNames = {"cuda_deduplicator", "dyninst", "boost","libCUPTIEventHandler", "cudadedup", "libdl-2.23.so","libpthread-2.23.so","libc.so.6","libm.so.6", "exit"};
 	std::string funcName = func->getName();
 	std::string objectName = func->getModule()->getObject()->pathName();
 	for (auto i :skippedNames){

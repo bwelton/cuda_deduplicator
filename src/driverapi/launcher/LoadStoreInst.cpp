@@ -10,7 +10,6 @@ void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFuncti
 	_wrappedFunctions = wrappedFunctions;
 }
 
-
 bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions) {
 	Setup();
 	_runOneTime = true;
@@ -276,7 +275,7 @@ bool LoadStoreInst::RunOneTimeCode() {
   	for (auto i : _firstUses)
   		std::cerr << i.first << "," << i.second.framePtr << "," << i.second.funcName << "," << i.second.libname << "," << i.second.libOffset << std::endl;
 #endif
-  	
+
 	// BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);
 	// BPatch_Vector<BPatch_thread *> threads;
 	// proc->getThreads(threads);

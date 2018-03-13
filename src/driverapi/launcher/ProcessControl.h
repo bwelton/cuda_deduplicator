@@ -44,7 +44,7 @@
 #include "Constants.h"
 #include "StackPoint.h"
 #include "LoadStoreInst.h"
-
+#include "StacktraceInst.h"
 
 #define INTERNAL_SYNC_C 0x2864C0
 using namespace Dyninst;
@@ -84,7 +84,7 @@ public:
 	void WriteOutput(std::string outputName);
 	void GetModules(std::map<std::string, BPatch_object *> & objs);
 	void DontFinalize();
-
+	void InsertStacktracing();
 	std::map<uint64_t, StackPoint> GetFirstUse();
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
@@ -103,4 +103,6 @@ private:
 	bool _binaryEdit;
 	BPatch_binaryEdit * _appBE;
 	bool _dontFin;
+
+	StacktraceInst * _stackTracer;
 };

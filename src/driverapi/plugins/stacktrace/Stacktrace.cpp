@@ -8,6 +8,7 @@
 #include <sys/syscall.h>
 #include <sstream>
 #include <cstring>
+#include <memory>
 #define MAXIMUM_STACK 512
 
 // Stash Space for writing data to file
@@ -23,11 +24,11 @@ thread_local pid_t my_thread_id = -1;
 
 struct OutputFile {
 	FILE * outFile;
-	OutputFile::OutputFile(std::string filename) {
+	OutputFile(std::string filename) {
 		outFile = fopen(filename.c_str(),"w");
 	}
 
-	OutputFile::~OutputFile() {
+	~OutputFile() {
 		fflush(outFile);
 		fclose(outFile);
 	}

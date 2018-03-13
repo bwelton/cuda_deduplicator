@@ -32,6 +32,7 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	_launched = true;
 	_appProc = dynamic_cast<BPatch_process*>(_addrSpace);
 	_loadStore = new LoadStoreInst(_addrSpace, _addrSpace->getImage());
+	_stackTracer = new StacktraceInst(_addrSpace, _addrSpace->getImage());
 	return handle;
 }
 
@@ -64,6 +65,7 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 	_appProc =  NULL;//dynamic_cast<BPatch_process*>(_addrSpace);
 	_loadStore = new LoadStoreInst(_addrSpace, app->getImage());
 	_appBE = dynamic_cast<BPatch_binaryEdit*>(app);
+	_stackTracer = new StacktraceInst(_addrSpace, _addrSpace->getImage());
 	return handle;
 }
 
@@ -80,6 +82,12 @@ void ProcessController::GetModules(std::map<std::string, BPatch_object *> & objs
 	for (auto i : objects) {
 		objs[i->pathName()] = i;
 	}
+}
+
+void ProcessController::InsertStacktracing() {
+	LoadWrapperLibrary(std::string("libcuda.so.1"));
+	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStacktrace.so"));
+	_stackTracer->InsertStackInst();
 }
 
 void ProcessController::InsertTimers(std::vector<StackPoint> points) {

@@ -26,7 +26,18 @@ void SyncTesting::Run() {
 	// Find out what user called functions actually contain a synchronization.
 	// This also captures secret entries into libcuda with synchronizations and relates them back
 	// to user level calls. 
-	InstrumentProgram();
+	{
+		TimeApplications base(_vm);
+		std::cerr << "Running " << _programName << " with stacktrace information enabled" << std::endl;
+		std::cerr << "Saving application output to file : " << _programName << ".stacktrace.out" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".stacktrace.out"));
+		time = base.RunWithStackTracing();
+		base.ReturnToTerminal();
+		_model.AddExecutionTime(time);
+		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
+	}
+	return; 
+	//InstrumentProgram();
 	_model.ExtractLineInfo();
 	std::vector<StackPoint> timingList;
 	_model.GetTimingList(timingList);

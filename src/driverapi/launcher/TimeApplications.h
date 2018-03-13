@@ -47,6 +47,7 @@ public:
 	void IdentifyDyninstBugs(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras, std::vector<std::string> libLoads);
 	void RedirectOutToFile(std::string filename);
 	void ReturnToTerminal();
+	double RunWithStackTracing();
 	std::map<uint64_t, StackPoint> _firstUses;
 private:
 	int terminal_stdout;

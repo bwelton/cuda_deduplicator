@@ -156,9 +156,9 @@ void StacktraceInst::Setup() {
 
 
 bool StacktraceInst::IsFunctionExcluded(BPatch_function * func) {
-	static std::vector<std::string> skippedNames = {"cuda_deduplicator", "dyninst", "boost" , "libCUPTIEventHandler", "cudadedup", "libdl-2.23.so","libpthread-2.23.so","libc.so.6","libm.so.6", "exit",
-													"__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column",
-													"libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+	static std::vector<std::string> skippedNames = {"cuda_deduplicator", "dyninst", "boost" , "libCUPTIEventHandler", "libdl-2.23.so","libpthread-2.23.so","libc.so.6","libm.so.6", "exit", "/usr", "/lib","/lib64",
+													"__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column","__GI___libc_fatal","_Unwind_Resume","__longjmp_chk"
+													"libdl-2.23.so","libpthread-2.23.so", "cudadedup","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so", "libStacktrace.so"};
 	std::string funcName = func->getName();
 	std::string objectName = func->getModule()->getObject()->pathName();
 	for (auto i : skippedNames){

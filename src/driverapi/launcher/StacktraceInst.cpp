@@ -25,6 +25,7 @@ void StacktraceInst::InsertStackInst() {
 		uint64_t myID =  GetFuncId(i);	
 		// Get points
 		std::vector<std::pair<BPatch_function * , BPatch_point *> > calls = GetFunctionCalls(i);
+		InsertInstFuncEntryExit(i);
 		for (auto n : calls) {
 			InsertEntryExitCall(i, n.first, n.second);
 		}

@@ -59,14 +59,14 @@ public:
 	uint64_t GetFuncId(BPatch_function * func);
 	void InsertEntryExitCall(BPatch_function * instFunc, BPatch_function * calledFunc, BPatch_point * callPoint);
 	std::vector<std::pair<BPatch_function *, BPatch_point *> > GetFunctionCalls(BPatch_function * func);
-
+	void InsertInstFuncEntryExit(BPatch_function * instFunc);
 private:
 	BPatch_function * _entryFunc;
 	BPatch_function * _exitFunc;
 	BPatch_function * _recordSync;
 	BPatch_function * _atEntryFunc;
 	BPatch_function * _atExitFunc;
-	
+
 	BPatch_addressSpace * _addrSpace;
 	BPatch_image * _img;
 

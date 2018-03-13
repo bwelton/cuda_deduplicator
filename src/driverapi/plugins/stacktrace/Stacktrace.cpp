@@ -49,7 +49,7 @@ extern "C" {
 		ss << "stackOut." << my_thread_id << ".bin";
 		outputFile.reset(new OutputFile(ss.str()));
 		assert(outputFile.get() != NULL);
-		stashSpace = (char *) malloc(MAXIMUM_STACK * sizeof(uint64_t) * 2 + sizeof(size_t));
+		stashSpace = (char *) malloc(MAXIMUM_STACK * sizeof(uint64_t) + sizeof(size_t));
 	}
 
 	void STACKTRACE_RECORD_MAIN_ENTRY(uint64_t id) {
@@ -105,38 +105,18 @@ extern "C" {
 	void SYNC_RECORD_SYNC_CALL() {
 		in_inst = true;
 		SETUP_INTERCEPTOR();
-
-		// Compare the entries at call points to function entries. 
-		if (entries.size() !=  calls.size()) {
-			if (calls.size() < entries.size()) {
-				std::vector<std::pair<uint64_t, uint64_t> > tmp = calls; 
-				calls.clear();
-				// insert missing calls into the call vector
-				size_t callPos = 0;
-				for(int i = 0; i < entries.size(); i++) {
-					if(entries[i] == tmp[callPos].first) {
-						calls.push_back(tmp[callPos]);
-						callPos += 1;
-					} else {
-						calls.push_back(std::make_pair(entries[i],0));
-					}
-				}
-				assert(callPos == tmp.size());
-			} else {
-				assert(entries.size() < calls.size());
-			}
-		}
+		std::cerr << "Sync Called" << std::endl;
 
 		int pos = 0;
-		assert(calls.size() < MAXIMUM_STACK);
-		size_t callCount = calls.size();
+		assert(entries.size() < MAXIMUM_STACK);
+		size_t callCount = entries.size();
 		std::memcpy(stashSpace, (void*) &(callCount), sizeof(size_t));
 		pos += sizeof(size_t);
-		for (auto i : calls) {
-			std::memcpy(&(stashSpace[pos]), (void*) &(i.first), sizeof(uint64_t));
+		for (auto i : entries) {
+			std::memcpy(&(stashSpace[pos]), (void*) &(i), sizeof(uint64_t));
 			pos += sizeof(uint64_t);
-			std::memcpy(&(stashSpace[pos]), (void*) &(i.second), sizeof(uint64_t));
-			pos += sizeof(uint64_t);
+			// std::memcpy(&(stashSpace[pos]), (void*) &(i.second), sizeof(uint64_t));
+			// pos += sizeof(uint64_t);
 		}
 		fwrite(stashSpace, 1, pos, outputFile->outFile);
 		in_inst = false;

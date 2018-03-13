@@ -38,7 +38,7 @@ double TimeApplications::RunWithStackTracing() {
 	auto stop = std::chrono::high_resolution_clock::now();	
 	std::chrono::duration<double> diff = stop-start;
 	std::cerr << "[TIMEAPP] Application runtime with stacktracing - " << diff.count() << std::endl;
-	return diff.count()
+	return diff.count();
 }
 
 

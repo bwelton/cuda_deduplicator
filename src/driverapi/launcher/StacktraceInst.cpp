@@ -78,7 +78,7 @@ void StacktraceInst::InsertEntryExitCall(BPatch_function * instFunc, BPatch_func
 		std::cerr << "Could not insert exit snippet - " << calledFunc->getName() << std::endl;
 }
 
-std::vector<BPatch_function * func, BPatch_point *> StacktraceInst::GetFunctionCalls(BPatch_function * func) {
+std::vector<std::pair<BPatch_function * func, BPatch_point *> > StacktraceInst::GetFunctionCalls(BPatch_function * func) {
 	std::vector<BPatch_point*> * callPoints = func->findPoint(BPatch_locSubroutine);
 	std::vector<BPatch_function * func, BPatch_point *> ret;
 	for (auto i : *callPoints) {

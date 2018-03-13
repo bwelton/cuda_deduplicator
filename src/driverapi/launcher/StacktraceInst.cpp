@@ -26,9 +26,9 @@ void StacktraceInst::InsertStackInst() {
 		// Get points
 		std::vector<std::pair<BPatch_function * , BPatch_point *> > calls = GetFunctionCalls(i);
 		InsertInstFuncEntryExit(i);
-		for (auto n : calls) {
-			InsertEntryExitCall(i, n.first, n.second);
-		}
+		// for (auto n : calls) {
+		// 	InsertEntryExitCall(i, n.first, n.second);
+		// }
 	}
 
 	// Insert call to capture synchronization specifically

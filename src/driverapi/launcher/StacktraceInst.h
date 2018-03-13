@@ -74,4 +74,5 @@ private:
 	uint64_t _curID;
 	// Offset to <bpatch_function, id> map
 	std::map<uint64_t, FuncIDPair > _idMap; 
+	std::set<uint64_t> _alreadyInstrimented; 
 };

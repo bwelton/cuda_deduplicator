@@ -62,8 +62,13 @@ void StacktraceInst::InsertInstFuncEntryExit(BPatch_function * instFunc){
 	if (IsFunctionExcluded(instFunc))
 		return;
 	assert(instFunc != NULL);
+
 	uint64_t id = GetFuncId(instFunc);
+	if (_alreadyInstrimented.find(id) != _alreadyInstrimented.end())
+		return;
+	_alreadyInstrimented.insert(id);
 	std::vector<BPatch_snippet*> testArgs;
+
 	testArgs.push_back(new BPatch_constExpr(id));	
 	BPatch_funcCallExpr recordFuncEntry(*_atEntryFunc, testArgs);
 	BPatch_funcCallExpr recordFuncExit(*_atExitFunc, testArgs);	

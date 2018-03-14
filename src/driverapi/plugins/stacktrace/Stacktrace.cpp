@@ -10,6 +10,7 @@
 #include <cstring>
 #include <memory>
 #include <execinfo.h>
+#include <libunwind.h>
 #define MAXIMUM_STACK 512
 
 // Stash Space for writing data to file
@@ -146,15 +147,31 @@ extern "C" {
 		std::cerr << "Sync Called" << std::endl;
 
 		int pos = 0;
-		int bt_size = backtrace(backtraceStore, 1024);
-		assert(bt_size > 0);
-		for (int i = 0; i < bt_size; i++)
-			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
-		for (int i = 0; i < 12; i++) {
-			std::cerr << std::hex << return_frame_ptr(i) << std::dec << std::endl;
-			if (return_frame_ptr(i) == NULL)
-				break;
+		unw_cursor_t cursor;
+		unw_context_t context;
+
+		// Initialize cursor to current frame for local unwinding.
+		unw_getcontext(&context);
+		unw_init_local(&cursor, &context);
+		while (unw_step(&cursor) > 0) {
+			unw_word_t offset, pc;
+			unw_get_reg(&cursor, UNW_REG_IP, &pc);\
+
+		   if (pc == 0) {
+		      break;
+		   }
+		   fprintf(stderr, "0x%lx\n", pc);
 		}
+
+		// int bt_size = backtrace(backtraceStore, 1024);
+		// assert(bt_size > 0);
+		// for (int i = 0; i < bt_size; i++)
+		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+		// for (int i = 0; i < 12; i++) {
+		// 	std::cerr << std::hex << return_frame_ptr(i) << std::dec << std::endl;
+		// 	if (return_frame_ptr(i) == NULL)
+		// 		break;
+		// }
 		assert(entries.size() < MAXIMUM_STACK);
 		size_t callCount = entries.size();
 		std::memcpy(stashSpace, (void*) &(callCount), sizeof(size_t));

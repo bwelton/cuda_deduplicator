@@ -70,7 +70,7 @@ int main(const int argc, const char * argv[]){
 	std::vector<BPatch_module *> mods;
 	img->getObjects(imgObjs);
 	obj->modules(mods);
-
+	assert(mods.size() >0);
 	for (auto i : mods){
 		// Found libcuda
 		cudaSync = i->findFunctionByEntry(INTERNAL_SYNC_ST);

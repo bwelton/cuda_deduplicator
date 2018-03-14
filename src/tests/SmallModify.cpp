@@ -57,14 +57,24 @@ int main(const int argc, const char * argv[]){
 	BPatch patch;
 	BPatch_binaryEdit * app = patch.openBinary(argv[1], true);
 	BPatch_image * img = app->getImage();
-	app->loadLibrary("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/plugins/libSynchTool.so");
+	app->loadLibrary("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/plugins/libStacktrace.so");
+	pp->loadLibrary("libcuda.so.1");
 	std::vector<BPatch_function *> tracerCall;
-	std::vector<BPatch_function *> giStrlen;
-	img->findFunction("SYNC_RECORD_FUNCTION_ENTRY", tracerCall);
-	img->findFunction("__GI_strlen",giStrlen);
-	std::vector<BPatch_point*> * funcEntry = giStrlen[0]->findPoint(BPatch_locEntry);
+	img->findFunction("SYNC_RECORD_SYNC_CALL", tracerCall);
+	BPatch_function * cudaSync = NULL;
+	Dyninst::Address offsetAddress = 0;
+	std::vector<BPatch_object *> imgObjs;
+	_img->getObjects(imgObjs);
+	for (auto i : imgObjs){
+		if (i->name().find("libcuda.so") == std::string::npos)
+			continue;
+		// Found libcuda
+		offsetAddress = i->fileOffsetToAddr(INTERNAL_SYNC_ST);
+		cudaSync = _img->findFunction(offsetAddress);
+		break;
+	}
+	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
 	std::vector<BPatch_snippet*> testArgs;
-	testArgs.push_back(new BPatch_constExpr(0));
 	BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
 	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
 	if(!app->writeFile(argv[2])) {

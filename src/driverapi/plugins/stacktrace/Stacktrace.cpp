@@ -175,7 +175,17 @@ extern "C" {
 		for (int i = 0; i < bt_size; i++)
 			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 
-		local_walker->walkStack(stackwalk);
+		Frame myFrame;
+		local_walker->getInitialFrame(myFrame);
+		for(int i = 0; i < 10; i++) {
+			Frame out;
+			std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
+			local_walker->walkSingleFrame(myFrame, out);
+			myFrame = out;
+		}
+
+
+		//local_walker->walkStack(stackwalk);
 		std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
 		// Initialize cursor to current frame for local unwinding.
 		// unw_getcontext(&context);

@@ -158,9 +158,9 @@ extern "C" {
 			unw_word_t offset, pc;
 			unw_get_reg(&cursor, UNW_REG_IP, &pc);\
 
-		   if (pc == 0) {
-		      break;
-		   }
+		   // if (pc == 0) {
+		   //    break;
+		   // }
 		   fprintf(stderr, "0x%lx\n", pc);
 		}
 

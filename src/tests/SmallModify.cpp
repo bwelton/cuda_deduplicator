@@ -72,7 +72,7 @@ int main(const int argc, const char * argv[]){
 
 	for (auto i : mods){
 		// Found libcuda
-		cudaSync = img->findFunctionByEntry(INTERNAL_SYNC_ST);
+		cudaSync = i->findFunctionByEntry(INTERNAL_SYNC_ST);
 		if (cudaSync != NULL)
 			break;
 		

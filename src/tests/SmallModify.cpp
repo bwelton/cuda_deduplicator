@@ -76,6 +76,7 @@ int main(const int argc, const char * argv[]){
 		std::vector<BPatch_function * > * internalFuncs = i->getProcedures();
 		for (auto z : *internalFuncs){
 			if ((uint64_t) z->getBaseAddr() == INTERNAL_SYNC_ST){
+				std::cerr << "Found" << std::endl;
 				cudaSync = z;
 				break;
 			}

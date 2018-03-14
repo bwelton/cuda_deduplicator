@@ -115,7 +115,7 @@ extern "C" {
 		assert(bt_size > 0);
 		for (int i = 0; i < bt_size; i++)
 			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
-		for (int i = 0; i < 16; i++) {
+		for (unsigned int i = 0; i < 16; i++) {
 			std::cerr << std::hex << __builtin_frame_address(i) << std::dec << std::endl;
 		}
 		assert(entries.size() < MAXIMUM_STACK);

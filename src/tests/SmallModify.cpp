@@ -41,6 +41,7 @@
 #include "BPatch_Vector.h"
 #include "BPatch_point.h"
 #include "BPatch_addressSpace.h"
+#include "BPatch_object.h"
 #include "BPatch_statement.h"
 #include "dynC.h"
 #include "set"

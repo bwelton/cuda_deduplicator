@@ -19,17 +19,17 @@ void StacktraceInst::InsertStackInst() {
 	// The strategy here is to insert an entry call at all functions calls in the function to denote entrance
 	// into the underlying function and the position of that entrance (i.e. the specific call it entered from).
 	// We will also record the exit from this function. 
-	for (auto i : all_functions) {
-		if (IsFunctionExcluded(i))
-			continue;
-		uint64_t myID =  GetFuncId(i);	
-		// Get points
-		std::vector<std::pair<BPatch_function * , BPatch_point *> > calls = GetFunctionCalls(i);
-		InsertInstFuncEntryExit(i);
-		// for (auto n : calls) {
-		// 	InsertEntryExitCall(i, n.first, n.second);
-		// }
-	}
+	// for (auto i : all_functions) {
+	// 	if (IsFunctionExcluded(i))
+	// 		continue;
+	// 	uint64_t myID =  GetFuncId(i);	
+	// 	// Get points
+	// 	std::vector<std::pair<BPatch_function * , BPatch_point *> > calls = GetFunctionCalls(i);
+	// 	InsertInstFuncEntryExit(i);
+	// 	// for (auto n : calls) {
+	// 	// 	InsertEntryExitCall(i, n.first, n.second);
+	// 	// }
+	// }
 
 	// Insert call to capture synchronization specifically
 	BPatch_function * cudaSync = NULL;

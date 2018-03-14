@@ -14,10 +14,25 @@
 #include <libunwind.h>
 #define MAXIMUM_STACK 512
 
+#include "framestepper.h"
+#include "walker.h"
+#include "procstate.h"
+#include "swk_errors.h"
+#include "steppergroup.h"
+#include "frame.h"
+#include "sw_c.h"
+#include "Symtab.h"
+#include "BPatch.h"
+#include "BPatch_process.h"
+using namespace Dyninst;
+using namespace Dyninst::Stackwalker;
+using namespace SymtabAPI;
+
+
 // Stash Space for writing data to file
 thread_local char * stashSpace = NULL;
 thread_local size_t charSize = 0;
-
+thread_local Walker *  local_walker;
 // Reentrant protection 
 thread_local bool in_inst = false;
 
@@ -82,6 +97,8 @@ extern "C" {
 		if (outputFile.get() != NULL)
 			return;
 
+
+		local_walker = Walker::newWalker();
 		if (my_thread_id == -1)
 			my_thread_id = (pid_t) syscall(__NR_gettid);
 
@@ -152,17 +169,17 @@ extern "C" {
 		unw_context_t context;
 
 		// Initialize cursor to current frame for local unwinding.
-		unw_getcontext(&context);
-		unw_init_local(&cursor, &context);
-		while (unw_step(&cursor)) {
-			unw_word_t offset, pc;
-			unw_get_reg(&cursor, UNW_REG_IP, &pc);
+		// unw_getcontext(&context);
+		// unw_init_local(&cursor, &context);
+		// while (unw_step(&cursor)) {
+		// 	unw_word_t offset, pc;
+		// 	unw_get_reg(&cursor, UNW_REG_IP, &pc);
 
-		   if (pc == 0) {
-		      break;
-		   }
-		   fprintf(stderr, "0x%lx\n", pc);
-		}
+		//    if (pc == 0) {
+		//       break;
+		//    }
+		//    fprintf(stderr, "0x%lx\n", pc);
+		// }
 
 		// int bt_size = backtrace(backtraceStore, 1024);
 		// assert(bt_size > 0);
@@ -186,4 +203,35 @@ extern "C" {
 		fwrite(stashSpace, 1, pos, outputFile->outFile);
 		in_inst = false;
 	}
+
+	// std::stringstream ret; 	
+	// std::vector<Frame> stackwalk;
+	// std::string s;
+	// void * sym; 
+	// Walker * walker = Walker::newWalker();
+	// walker->walkStack(stackwalk);
+	// Dyninst::Offset offset;
+	// for (int i = 0; i < stackwalk.size(); i++) {
+	// 	stackwalk[i].getName(s);
+	// 	ret << s << " - ";
+	// 	if(stackwalk[i].getLibOffset(s, offset, sym) == false){
+	// 	 	continue;
+	// 	}
+	// 	Symtab * curSym = static_cast<Symtab *>(sym);
+	// 	if (sym == NULL) {
+	// 		ret << "\n";
+	// 		continue;
+	// 	}
+	// 	std::vector<Statement *> lines;
+	// 	if((curSym)->getSourceLines(lines,offset) == false) {
+	// 		ret << "\n";
+	// 		continue;
+	// 	}
+	// 	for (int q = 0; q < lines.size(); q++) {
+	// 		ret << lines[q]->getFile() << ":" << std::to_string(lines[q]->getLine()) << " ";
+	// 	}
+	// 	ret << "\n";
+	// }
+	// ret << "\n";
+	// return ret.str();
 }

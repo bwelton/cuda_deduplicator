@@ -170,6 +170,11 @@ extern "C" {
 
 		assert(local_walker != NULL);
 		std::vector<Frame> stackwalk;
+		int bt_size = backtrace(backtraceStore, 1024);
+		assert(bt_size > 0);
+		for (int i = 0; i < bt_size; i++)
+			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+
 		local_walker->walkStack(stackwalk);
 		std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
 		// Initialize cursor to current frame for local unwinding.
@@ -185,10 +190,7 @@ extern "C" {
 		//    fprintf(stderr, "0x%lx\n", pc);
 		// }
 
-		// int bt_size = backtrace(backtraceStore, 1024);
-		// assert(bt_size > 0);
-		// for (int i = 0; i < bt_size; i++)
-		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+
 		// for (int i = 0; i < 12; i++) {
 		// 	std::cerr << std::hex << return_frame_ptr(i) << std::dec << std::endl;
 		// 	if (return_frame_ptr(i) == NULL)

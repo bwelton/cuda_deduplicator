@@ -10,6 +10,7 @@
 #include <cstring>
 #include <memory>
 #include <execinfo.h>
+#define UNW_LOCAL_ONLY  
 #include <libunwind.h>
 #define MAXIMUM_STACK 512
 

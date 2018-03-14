@@ -63,7 +63,7 @@ int main(const int argc, const char * argv[]){
 	BPatch_object * obj = app->loadLibrary("libcuda.so.1");
 	std::vector<BPatch_function *> tracerCall;
 	img->findFunction("SYNC_RECORD_SYNC_CALL", tracerCall);
-
+	assert(tracerCall.size() > 0);
 	BPatch_function * cudaSync = NULL;
 	Dyninst::Address offsetAddress = 0;
 	std::vector<BPatch_object *> imgObjs;

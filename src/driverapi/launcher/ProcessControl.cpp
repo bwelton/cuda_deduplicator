@@ -20,7 +20,9 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 		_log->Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
 
 	// Create the bpatch process
+	bpatch.setInstrStackFrames(true);
 	handle = bpatch.processCreate(argv[0],(const char **)argv);
+	bpatch.setInstrStackFrames(true);
 	assert(handle != NULL);
 
 	// Free temporary argv
@@ -52,7 +54,9 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 		_log->Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
 
 	// Create the bpatch process
+	bpatch.setInstrStackFrames(true);
 	BPatch_addressSpace * app = bpatch.openBinary(bin.c_str(), true);
+	bpatch.setInstrStackFrames(true);
 	assert(app != NULL);
 
 	// Free temporary argv

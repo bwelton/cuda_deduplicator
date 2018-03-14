@@ -62,21 +62,17 @@ int main(const int argc, const char * argv[]){
 	BPatch_object * obj = app->loadLibrary("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/plugins/libStacktrace.so");
 	app->loadLibrary("libcuda.so.1");
 	std::vector<BPatch_function *> tracerCall;
+	std::vector<BPatch_function *> syncCall;
 	img->findFunction("SYNC_RECORD_SYNC_CALL", tracerCall);
+	img->findFunction("INTERNAL_Synchronization", syncCall);
 	BPatch_function * cudaSync = NULL;
 	Dyninst::Address offsetAddress = 0;
 	std::vector<BPatch_object *> imgObjs;
 	std::vector<BPatch_module *> mods;
-	img->getObjects(imgObjs);
-	obj->modules(mods);
 
-	for (auto i : mods){
-		// Found libcuda
-		cudaSync = i->findFunctionByEntry(INTERNAL_SYNC_ST);
-		if (cudaSync != NULL)
-			break;
-		
-	}
+	assert(syncCall.size() > 0);
+	cudaSync = syncCall[0];
+
 	assert(cudaSync != NULL);
 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
 	std::vector<BPatch_snippet*> testArgs;

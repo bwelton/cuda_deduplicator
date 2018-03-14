@@ -9,6 +9,7 @@
 #include <sstream>
 #include <cstring>
 #include <memory>
+#include <execinfo.h>
 #define MAXIMUM_STACK 512
 
 // Stash Space for writing data to file
@@ -22,6 +23,8 @@ thread_local bool in_inst = false;
 thread_local std::vector<std::pair<uint64_t, uint64_t> > calls;
 thread_local std::vector<uint64_t> entries; 
 thread_local pid_t my_thread_id = -1;
+
+thread_local void * backtraceStore[1024];
 
 struct OutputFile {
 	FILE * outFile;
@@ -108,6 +111,10 @@ extern "C" {
 		std::cerr << "Sync Called" << std::endl;
 
 		int pos = 0;
+		int bt_size = backtrace(backtraceStore, 1024);
+		assert(bt_size > 0);
+		for (int i = 0; i < bt_size; i++)
+			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 		assert(entries.size() < MAXIMUM_STACK);
 		size_t callCount = entries.size();
 		std::memcpy(stashSpace, (void*) &(callCount), sizeof(size_t));

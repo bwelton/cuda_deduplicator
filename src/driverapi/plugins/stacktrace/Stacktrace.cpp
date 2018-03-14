@@ -169,7 +169,7 @@ extern "C" {
 		unw_context_t context;
 
 		std::vector<Frame> stackwalk;
-		walker->walkStack(stackwalk);
+		local_walker->walkStack(stackwalk);
 		std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
 		// Initialize cursor to current frame for local unwinding.
 		// unw_getcontext(&context);

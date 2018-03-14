@@ -72,9 +72,10 @@ int main(const int argc, const char * argv[]){
 			continue;
 		// Found libcuda
 		offsetAddress = i->fileOffsetToAddr(INTERNAL_SYNC_ST);
-		cudaSync = img->findFunction(offsetAddress);
+		cudaSync = img->findFunction(INTERNAL_SYNC_ST);
 		break;
 	}
+	assert(cudaSync != NULL);
 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
 	std::vector<BPatch_snippet*> testArgs;
 	BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);

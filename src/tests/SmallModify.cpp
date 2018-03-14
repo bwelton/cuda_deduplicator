@@ -68,7 +68,7 @@ int main(const int argc, const char * argv[]){
 	Dyninst::Address offsetAddress = 0;
 	std::vector<BPatch_object *> imgObjs;
 	std::vector<BPatch_module *> mods;
-	img->modules(mods);
+	img->getModules(mods);
 	assert(mods.size() > 0);
 	for (auto i : mods){
 		// Found libcuda

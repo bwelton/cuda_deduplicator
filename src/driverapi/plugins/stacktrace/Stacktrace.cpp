@@ -168,6 +168,7 @@ extern "C" {
 		unw_cursor_t cursor;
 		unw_context_t context;
 
+		assert(local_walker != NULL);
 		std::vector<Frame> stackwalk;
 		local_walker->walkStack(stackwalk);
 		std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
@@ -176,8 +177,8 @@ extern "C" {
 		// unw_init_local(&cursor, &context);
 		// while (unw_step(&cursor)) {
 		// 	unw_word_t offset, pc;
-		// 	unw_get_reg(&cursor, UNW_REG_IP, &pc);
-
+		// 	unw_get_reg(&cursor, UNW_X86_EBP, &pc);
+		// 	void * pts
 		//    if (pc == 0) {
 		//       break;
 		//    }

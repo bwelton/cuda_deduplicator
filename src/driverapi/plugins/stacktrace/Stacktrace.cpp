@@ -154,13 +154,13 @@ extern "C" {
 		// Initialize cursor to current frame for local unwinding.
 		unw_getcontext(&context);
 		unw_init_local(&cursor, &context);
-		while (unw_step(&cursor) > 0) {
+		while (unw_step(&cursor)) {
 			unw_word_t offset, pc;
-			unw_get_reg(&cursor, UNW_REG_IP, &pc);\
+			unw_get_reg(&cursor, UNW_REG_IP, &pc);
 
-		   // if (pc == 0) {
-		   //    break;
-		   // }
+		   if (pc == 0) {
+		      break;
+		   }
 		   fprintf(stderr, "0x%lx\n", pc);
 		}
 

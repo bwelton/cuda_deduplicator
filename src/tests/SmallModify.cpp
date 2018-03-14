@@ -64,13 +64,13 @@ int main(const int argc, const char * argv[]){
 	BPatch_function * cudaSync = NULL;
 	Dyninst::Address offsetAddress = 0;
 	std::vector<BPatch_object *> imgObjs;
-	_img->getObjects(imgObjs);
+	img->getObjects(imgObjs);
 	for (auto i : imgObjs){
 		if (i->name().find("libcuda.so") == std::string::npos)
 			continue;
 		// Found libcuda
 		offsetAddress = i->fileOffsetToAddr(INTERNAL_SYNC_ST);
-		cudaSync = _img->findFunction(offsetAddress);
+		cudaSync = img->findFunction(offsetAddress);
 		break;
 	}
 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);

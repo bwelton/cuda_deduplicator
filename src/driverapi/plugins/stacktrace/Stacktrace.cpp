@@ -152,6 +152,8 @@ extern "C" {
 			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 		for (int i = 0; i < 12; i++) {
 			std::cerr << std::hex << return_frame_ptr(i) << std::dec << std::endl;
+			if (return_frame_ptr(i) == NULL)
+				break;
 		}
 		assert(entries.size() < MAXIMUM_STACK);
 		size_t callCount = entries.size();

@@ -92,6 +92,8 @@ void ProcessController::InsertStacktracing() {
 	LoadWrapperLibrary(std::string("libcuda.so.1"));
 	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStacktrace.so"));
 	_stackTracer->InsertStackInst();
+
+	_appProc->dumpImage("currentImage");
 }
 
 void ProcessController::InsertTimers(std::vector<StackPoint> points) {

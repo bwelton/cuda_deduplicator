@@ -26,6 +26,41 @@ thread_local pid_t my_thread_id = -1;
 
 thread_local void * backtraceStore[1024];
 
+void * return_frame_ptr(int i) {
+	switch (i) {
+		case 0:
+			return __builtin_frame_address(0);
+		case 1:
+			return __builtin_frame_address(1);
+		case 2:
+			return __builtin_frame_address(2);
+		case 3:
+			return __builtin_frame_address(3);
+		case 4:
+			return __builtin_frame_address(4);
+		case 5:
+			return __builtin_frame_address(5);
+		case 6:
+			return __builtin_frame_address(6);
+		case 7:
+			return __builtin_frame_address(7);
+		case 8:
+			return __builtin_frame_address(8);
+		case 9:
+			return __builtin_frame_address(9);
+		case 10:
+			return __builtin_frame_address(10);
+		case 11:
+			return __builtin_frame_address(11);
+		case 12:
+			return __builtin_frame_address(12);
+		default:
+			return NULL;
+	}
+}
+
+
+
 struct OutputFile {
 	FILE * outFile;
 	OutputFile(std::string filename) {
@@ -115,8 +150,8 @@ extern "C" {
 		assert(bt_size > 0);
 		for (int i = 0; i < bt_size; i++)
 			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
-		for (unsigned int i = 0; i < 16; i++) {
-			std::cerr << std::hex << __builtin_frame_address(i) << std::dec << std::endl;
+		for (int i = 0; i < 12; i++) {
+			std::cerr << std::hex << return_frame_ptr(i) << std::dec << std::endl;
 		}
 		assert(entries.size() < MAXIMUM_STACK);
 		size_t callCount = entries.size();

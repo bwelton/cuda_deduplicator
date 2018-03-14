@@ -115,6 +115,9 @@ extern "C" {
 		assert(bt_size > 0);
 		for (int i = 0; i < bt_size; i++)
 			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+		for (int i = 0; i < 16; i++) {
+			std::cerr << std::hex << __builtin_frame_address(i) << std::dec << std::endl;
+		}
 		assert(entries.size() < MAXIMUM_STACK);
 		size_t callCount = entries.size();
 		std::memcpy(stashSpace, (void*) &(callCount), sizeof(size_t));

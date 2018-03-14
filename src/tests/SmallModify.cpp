@@ -70,13 +70,26 @@ int main(const int argc, const char * argv[]){
 	std::vector<BPatch_module *> mods;
 	img->getObjects(imgObjs);
 	obj->modules(mods);
-	assert(mods.size() >0);
+	assert(mods.size() > 0);
 	for (auto i : mods){
 		// Found libcuda
+		std::vector<BPatch_function * > * internalFuncs = i->getProcedures();
+		for (auto z : *internalFuncs){
+			if ((uint64_t) z->getBaseAddr() == INTERNAL_SYNC_ST){
+				cudaSync = z;
+				break;
+			}
+			if (z->getName() == std::string("INTERNAL_Synchronization"))
+			{
+				cudaSync = z;
+				break;
+			}
+		}
+		if (cudaSync != NULL)
+			break;
 		cudaSync = i->findFunctionByEntry(INTERNAL_SYNC_ST);
 		if (cudaSync != NULL)
 			break;
-		
 	}
 	assert(cudaSync != NULL);
 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);

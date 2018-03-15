@@ -172,8 +172,11 @@ extern "C" {
 		uint64_t lastSP;
 
 		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
+		uint64_t possiblePreviousFrame = ((uint64_t*)lastSP)[0];
 		lastSP = lastSP + 0xF0;
 		uint64_t retAddr = ((uint64_t*)lastSP)[0];
+		
+		std::cerr << "Possible Previous Frame: " << std::hex << possiblePreviousFrame << std::dec << std::endl;
 		std::cerr << "Last SP: " << std::hex << lastSP << std::dec << std::endl;
 		std::cerr << "Stack/FP: " << std::hex << lastSP << std::dec << "," <<  std::hex << lastSP - 0x8 << std::dec << std::endl;
 		std::cerr << "Return Address: " << std::hex << retAddr << std::dec << std::endl;

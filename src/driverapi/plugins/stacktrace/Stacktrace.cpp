@@ -159,7 +159,7 @@ extern "C" {
 		in_inst = false;
 	}
 
-	void SYNC_RECORD_SYNC_CALLi() {
+	void SYNC_RECORD_SYNC_CALL() {
 		// RSP at entry: 0x7fffffffb888
 		//  0x7fffffffb580 + 0xa8 + 0x218
 		//  0x7fffffffb798

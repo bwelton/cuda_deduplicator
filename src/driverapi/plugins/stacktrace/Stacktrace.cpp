@@ -192,8 +192,9 @@ extern "C" {
 		Frame myFrame;
 		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(((uint64_t*)lastSP - 0x8)[0], lastSP, lastSP - 0x8, local_walker);
 		std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
-		std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
 		myFrame = *fr;
+		std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
+		
 		//local_walker->getInitialFrame(myFrame);
 		for(int i = 0; i < 10; i++) {
 			Frame out;

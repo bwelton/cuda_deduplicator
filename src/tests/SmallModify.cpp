@@ -56,7 +56,7 @@ using namespace SymtabAPI;
 #define INTERNAL_SYNC_ST 0x2864C0
 int main(const int argc, const char * argv[]){
 	BPatch patch;
-	patch.setInstrStackFrames(true);
+	patch.setInstrStackFrames(false);
 	BPatch_binaryEdit * app = patch.openBinary(argv[1], true);
 	BPatch_image * img = app->getImage();
 	app->loadLibrary("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/plugins/libStacktrace.so");

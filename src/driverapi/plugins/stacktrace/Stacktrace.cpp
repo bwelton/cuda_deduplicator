@@ -174,7 +174,7 @@ extern "C" {
 		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
 		volatile uint64_t * addrOff = ((uint64_t*)lastSP);
 		volatile uint64_t possiblePreviousFrame = addrOff[0];
-		volatile uint64_t retAddr = ((uint64_t*)addrOff + 0xF0)[0];
+		volatile uint64_t retAddr = ((uint64_t*)lastSP + 0xF0)[0];
 		lastSP = lastSP + 0xF0;
 		
 		std::cerr << "Possible Previous Frame: " << std::hex << possiblePreviousFrame << std::dec << std::endl;
@@ -189,12 +189,12 @@ extern "C" {
 
 		// assert(local_walker != NULL);
 		// std::vector<Frame> stackwalk;
-		addrOff[0] = lastSP - 0x8;
-		int bt_size = backtrace(backtraceStore, 1024);
-		assert(bt_size > 0);
-		for (int i = 0; i < bt_size; i++)
-			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
-		addrOff[0] = possiblePreviousFrame;
+		// addrOff[0] = lastSP - 0x8;
+		// int bt_size = backtrace(backtraceStore, 1024);
+		// assert(bt_size > 0);
+		// for (int i = 0; i < bt_size; i++)
+		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+		// addrOff[0] = possiblePreviousFrame;
 		// 0x00007ffff5483eba
 		// Frame myFrame;
 		// Frame * fr = Dyninst::Stackwalker::Frame::newFrame(retAddr, lastSP, lastSP - 0x8, local_walker);

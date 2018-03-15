@@ -172,9 +172,9 @@ extern "C" {
 		uint64_t lastSP;
 
 		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
-		uint64_t * addrOff = ((uint64_t*)lastSP);
-		uint64_t possiblePreviousFrame = addrOff[0];
-		uint64_t retAddr = ((uint64_t*)addrOff + 0xF0)[0];
+		volatile uint64_t * addrOff = ((uint64_t*)lastSP);
+		volatile uint64_t possiblePreviousFrame = addrOff[0];
+		volatile uint64_t retAddr = ((uint64_t*)addrOff + 0xF0)[0];
 		lastSP = lastSP + 0xF0;
 		
 		std::cerr << "Possible Previous Frame: " << std::hex << possiblePreviousFrame << std::dec << std::endl;

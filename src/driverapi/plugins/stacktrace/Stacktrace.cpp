@@ -168,7 +168,7 @@ extern "C" {
 		//  0x00007ffff628041f
 		uint64_t lastSP;
 		asm ("mov %0, RBP;" : "=r"(lastSP));
-
+		std::cerr << "Last SP: " << lastSP << std::endl;
 		in_inst = true;
 		SETUP_INTERCEPTOR();
 		std::cerr << "Sync Called" << std::endl;

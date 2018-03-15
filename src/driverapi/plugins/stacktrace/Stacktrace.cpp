@@ -175,7 +175,7 @@ extern "C" {
 		std::cerr << "Last SP: " << lastSP << std::endl;
 		lastSP = lastSP - 0xF0;
 		std::cerr << "Stack/FP: " << std::hex << lastSP << std::dec << std::endl;
-		std::cerr << "Return Address: " std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
+		std::cerr << "Return Address: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
 		in_inst = true;
 		SETUP_INTERCEPTOR();
 		std::cerr << "Sync Called" << std::endl;

@@ -174,7 +174,7 @@ extern "C" {
 		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
 		std::cerr << "Last SP: " << std::hex << lastSP << std::dec << std::endl;
 
-		lastSP = lastSP - 0xF0;
+		lastSP = lastSP + 0xF0;
 		std::cerr << "Stack/FP: " << std::hex << lastSP << std::dec << std::endl;
 		std::cerr << "Return Address: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
 		in_inst = true;

@@ -159,7 +159,7 @@ extern "C" {
 		in_inst = false;
 	}
 
-	void SYNC_RECORD_SYNC_CALL() {
+	void SYNC_RECORD_SYNC_CALLi() {
 		// RSP at entry: 0x7fffffffb888
 		//  0x7fffffffb580 + 0xa8 + 0x218
 		//  0x7fffffffb798
@@ -172,9 +172,10 @@ extern "C" {
 		uint64_t lastSP;
 
 		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
-		uint64_t possiblePreviousFrame = ((uint64_t*)lastSP)[0];
+		uint64_t * addrOff = ((uint64_t*)lastSP);
+		uint64_t possiblePreviousFrame = addrOff[0];
+		uint64_t retAddr = ((uint64_t*)addrOff + 0xF0)[0];
 		lastSP = lastSP + 0xF0;
-		uint64_t retAddr = ((uint64_t*)lastSP)[0];
 		
 		std::cerr << "Possible Previous Frame: " << std::hex << possiblePreviousFrame << std::dec << std::endl;
 		std::cerr << "Last SP: " << std::hex << lastSP << std::dec << std::endl;

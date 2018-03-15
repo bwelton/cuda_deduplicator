@@ -192,7 +192,7 @@ extern "C" {
 			local_walker->walkSingleFrame(myFrame, out);
 			myFrame = out;
 		}
-		0x7ffff6280388
+		//0x7ffff6280388
 
 
 		// //local_walker->walkStack(stackwalk);

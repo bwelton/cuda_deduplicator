@@ -173,9 +173,8 @@ extern "C" {
 
 		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
 		std::cerr << "Last SP: " << std::hex << lastSP << std::dec << std::endl;
-
 		lastSP = lastSP + 0xF0;
-		std::cerr << "Stack/FP: " << std::hex << lastSP << std::dec << std::endl;
+		std::cerr << "Stack/FP: " << std::hex << lastSP << std::dec << "," <<  std::hex << lastSP - 0x8 << std::dec << std::endl;
 		std::cerr << "Return Address: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
 		in_inst = true;
 		SETUP_INTERCEPTOR();
@@ -191,7 +190,7 @@ extern "C" {
 		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 
 		Frame myFrame;
-		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(((uint64_t*)lastSP)[0], lastSP, lastSP, local_walker);
+		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(((uint64_t*)lastSP)[0], lastSP, lastSP - 0x8, local_walker);
 		myFrame = *fr;
 		//local_walker->getInitialFrame(myFrame);
 		for(int i = 0; i < 10; i++) {

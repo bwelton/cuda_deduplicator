@@ -190,8 +190,10 @@ extern "C" {
 		// for (int i = 0; i < bt_size; i++)
 		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 
-		Frame myFrame;
-		local_walker->getInitialFrame(myFrame);
+		Frame myFrame();
+		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(((uint64_t*)lastSP)[0], lastSP, lastSP, local_walker);
+		myFrame = *fr;
+		//local_walker->getInitialFrame(myFrame);
 		for(int i = 0; i < 10; i++) {
 			Frame out;
 			std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;

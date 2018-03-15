@@ -189,25 +189,27 @@ extern "C" {
 
 		// assert(local_walker != NULL);
 		// std::vector<Frame> stackwalk;
-		// int bt_size = backtrace(backtraceStore, 1024);
-		// assert(bt_size > 0);
-		// for (int i = 0; i < bt_size; i++)
-		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+		addrOff[0] = lastSP - 0x8;
+		int bt_size = backtrace(backtraceStore, 1024);
+		assert(bt_size > 0);
+		for (int i = 0; i < bt_size; i++)
+			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+		addrOff[0] = possiblePreviousFrame;
 		// 0x00007ffff5483eba
-		Frame myFrame;
-		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(retAddr, lastSP, lastSP - 0x8, local_walker);
-		std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
-		myFrame = *fr;
-		std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
+		// Frame myFrame;
+		// Frame * fr = Dyninst::Stackwalker::Frame::newFrame(retAddr, lastSP, lastSP - 0x8, local_walker);
+		// std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
+		// myFrame = *fr;
+		// std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
 		
-		//local_walker->getInitialFrame(myFrame);
-		for(int i = 0; i < 10; i++) {
-			Frame out;
-			std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
-			local_walker->walkSingleFrame(myFrame, out);
-			myFrame = out;
-		}
-		//0x7ffff6280388
+		// //local_walker->getInitialFrame(myFrame);
+		// for(int i = 0; i < 10; i++) {
+		// 	Frame out;
+		// 	std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
+		// 	local_walker->walkSingleFrame(myFrame, out);
+		// 	myFrame = out;
+		// }
+		// //0x7ffff6280388
 
 // RA: 0x00007ffff5483eba
 		// //local_walker->walkStack(stackwalk);

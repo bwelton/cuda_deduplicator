@@ -172,10 +172,11 @@ extern "C" {
 		uint64_t lastSP;
 
 		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
-		std::cerr << "Last SP: " << std::hex << lastSP << std::dec << std::endl;
 		lastSP = lastSP + 0xF0;
+		uint64_t retAddr = ((uint64_t*)lastSP)[0];
+		std::cerr << "Last SP: " << std::hex << lastSP << std::dec << std::endl;
 		std::cerr << "Stack/FP: " << std::hex << lastSP << std::dec << "," <<  std::hex << lastSP - 0x8 << std::dec << std::endl;
-		std::cerr << "Return Address: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
+		std::cerr << "Return Address: " << std::hex << retAddr << std::dec << std::endl;
 		in_inst = true;
 		SETUP_INTERCEPTOR();
 		std::cerr << "Sync Called" << std::endl;
@@ -190,7 +191,7 @@ extern "C" {
 		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 		// 0x00007ffff5483eba
 		Frame myFrame;
-		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(((uint64_t*)lastSP - 0x8)[0], lastSP, lastSP - 0x8, local_walker);
+		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(retAddr, lastSP, lastSP - 0x8, local_walker);
 		std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
 		myFrame = *fr;
 		std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;

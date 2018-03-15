@@ -188,9 +188,11 @@ extern "C" {
 		// assert(bt_size > 0);
 		// for (int i = 0; i < bt_size; i++)
 		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
-
+		// 0x00007ffff5483eba
 		Frame myFrame;
-		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(((uint64_t*)lastSP)[0], lastSP, lastSP - 0x8, local_walker);
+		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(((uint64_t*)lastSP - 0x8)[0], lastSP, lastSP - 0x8, local_walker);
+		std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
+		std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
 		myFrame = *fr;
 		//local_walker->getInitialFrame(myFrame);
 		for(int i = 0; i < 10; i++) {
@@ -201,7 +203,7 @@ extern "C" {
 		}
 		//0x7ffff6280388
 
-
+// RA: 0x00007ffff5483eba
 		// //local_walker->walkStack(stackwalk);
 		// std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
 		// Initialize cursor to current frame for local unwinding.

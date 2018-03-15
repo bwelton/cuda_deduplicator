@@ -160,6 +160,15 @@ extern "C" {
 	}
 
 	void SYNC_RECORD_SYNC_CALL() {
+		// RSP at entry: 0x7fffffffb888
+		//  0x7fffffffb580 + 0xa8 + 0x218
+		//  0x7fffffffb798
+		//  Distance from RBP 0xF0
+		//  
+		//  0x00007ffff628041f
+		uint64_t lastSP;
+		asm { mov [lastSP],rbp }
+		
 		in_inst = true;
 		SETUP_INTERCEPTOR();
 		std::cerr << "Sync Called" << std::endl;
@@ -183,6 +192,7 @@ extern "C" {
 			local_walker->walkSingleFrame(myFrame, out);
 			myFrame = out;
 		}
+		0x7ffff6280388
 
 
 		// //local_walker->walkStack(stackwalk);

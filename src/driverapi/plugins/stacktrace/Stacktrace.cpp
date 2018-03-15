@@ -170,19 +170,19 @@ extern "C" {
 
 		// assert(local_walker != NULL);
 		// std::vector<Frame> stackwalk;
-		// int bt_size = backtrace(backtraceStore, 1024);
+		int bt_size = backtrace(backtraceStore, 1024);
 		// assert(bt_size > 0);
 		// for (int i = 0; i < bt_size; i++)
 		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 
-		Frame myFrame;
-		local_walker->getInitialFrame(myFrame);
-		for(int i = 0; i < 10; i++) {
-			Frame out;
-			std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
-			local_walker->walkSingleFrame(myFrame, out);
-			myFrame = out;
-		}
+		// Frame myFrame;
+		// local_walker->getInitialFrame(myFrame);
+		// for(int i = 0; i < 10; i++) {
+		// 	Frame out;
+		// 	std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
+		// 	local_walker->walkSingleFrame(myFrame, out);
+		// 	myFrame = out;
+		// }
 
 
 		// //local_walker->walkStack(stackwalk);

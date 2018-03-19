@@ -198,6 +198,14 @@ extern "C" {
 		} else {
 			originalRA = ((uint64_t*)originalRBP-0x8)[0];
 		}
+		std::cerr << "Previous RA Value: " <<  std::hex << originalRA << std::dec << std::endl;
+		if (originalRA == 0 || originalRBP == 0 || originalRSP == 0){
+			std::cerr << "could not generate stack, skipping" << std::endl;
+			return;
+		}
+		
+
+
 
 		// if( ((uint64_t*)lastSP)[0] > 5128)
 		// 	if (((uint64_t*)lastSP)[0] > lastSP - 0xF0)
@@ -209,7 +217,7 @@ extern "C" {
 		// 		originalRA = ((uint64_t*)lastSP - 0x8)[0];
 		// else 
 		// 	assert(1 == 0);
-		std::cerr << "Previous RA Value: " <<  std::hex << originalRA << std::dec << std::endl;
+
 		//if (((uint64_t*)lastSP)[0]  lastSP - 0xF0 )	
 
 
@@ -237,19 +245,23 @@ extern "C" {
 		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 		// addrOff[0] = possiblePreviousFrame;
 		// 0x00007ffff5483eba
-		// Frame myFrame;
-		// Frame * fr = Dyninst::Stackwalker::Frame::newFrame(retAddr, lastSP, lastSP - 0x8, local_walker);
+		Frame myFrame;
+		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(originalRA, originalRSP, originalRBP, local_walker);
 		// std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
 		// myFrame = *fr;
 		// std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
 		
-		// //local_walker->getInitialFrame(myFrame);
-		// for(int i = 0; i < 10; i++) {
-		// 	Frame out;
-		// 	std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
-		// 	local_walker->walkSingleFrame(myFrame, out);
-		// 	myFrame = out;
-		// }
+		//local_walker->getInitialFrame(myFrame);
+		for(int i = 0; i < 5; i++) {
+			Frame out;
+			if (local_walker->walkSingleFrame(myFrame, out) == false)
+				break;
+			std::string tmp;
+			out.getName(tmp);
+			std::cerr << tmp << " " << std::hex << out.getRA() << std::dec << " " << std::hex << out.getSP() << std::dec << " " << std::hex << out.getFP() << std::dec << " " << std::endl;
+			myFrame = out;
+		}
+		std::cerr << "Done walking the stack" << std::endl;
 		// //0x7ffff6280388
 
 // RA: 0x00007ffff5483eba

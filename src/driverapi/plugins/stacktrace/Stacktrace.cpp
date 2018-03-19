@@ -195,7 +195,7 @@ extern "C" {
 		uint64_t originalRSP = lastSP + 0xF0;
 		if (originalRSP - originalRBP > 5128) {
 			originalRA = ((uint64_t*)originalRSP)[0];
-			originalRBP = (originalRSP+0x8);
+			originalRBP = (originalRSP-0x8);
 		} else {
 			originalRA = ((uint64_t*)originalRBP-0x8)[0];
 		}

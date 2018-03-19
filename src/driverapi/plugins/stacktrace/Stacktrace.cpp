@@ -204,7 +204,7 @@ extern "C" {
 			return;
 		}
 		
-
+		SETUP_INTERCEPTOR();
 
 
 		// if( ((uint64_t*)lastSP)[0] > 5128)

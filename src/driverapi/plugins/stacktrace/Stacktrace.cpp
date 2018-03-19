@@ -160,6 +160,21 @@ extern "C" {
 	}
 
 	void SYNC_RECORD_SYNC_CALL() {
+		// Original Call 
+		// Entry FP (deduced from RSP): 0x7fffffffb880 (+8)
+		// Entry RSP: 0x7fffffffb888
+		// Entry RBP: 0x731c88 (makes no sense, likely some value stored here).
+		//
+		// Instrimentation Call:
+		// Entry RBP: 0x7fffffffb798 -> old RBP
+		// Entry RSP: 0x7fffffffb580 -> Some saved value, dont use. 
+		// 
+		// Regenerating RSP and RBP:
+		// Original RBP: *CurRBP
+		// Original RSP: CurRBP-0xF0
+		// Original RA: if(abs(OrigRBP - OrigRSP) > 5128), default to RSP, 
+		// 				else default to RBP - 8.
+		// 
 		// RSP at entry: 0x7fffffffb888
 		//  0x7fffffffb580 + 0xa8 + 0x218
 		//  0x7fffffffb798
@@ -172,18 +187,22 @@ extern "C" {
 		uint64_t lastSP;
 
 		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
-		volatile uint64_t * addrOff = ((uint64_t*)lastSP);
-		volatile uint64_t possiblePreviousFrame = addrOff[0];
-		volatile uint64_t retAddr = ((uint64_t*)lastSP + 0xF0)[0];
-		lastSP = lastSP + 0xF0;
+		std::cerr << "RBP Value: " << lastSP << std::endl;
+
+
+
+		// volatile uint64_t * addrOff = ((uint64_t*)lastSP);
+		// volatile uint64_t possiblePreviousFrame = addrOff[0];
+		// volatile uint64_t retAddr = ((uint64_t*)lastSP + 0xF0)[0];
+		// lastSP = lastSP + 0xF0;
 		
-		std::cerr << "Possible Previous Frame: " << std::hex << possiblePreviousFrame << std::dec << std::endl;
-		std::cerr << "Last SP: " << std::hex << lastSP << std::dec << std::endl;
-		std::cerr << "Stack/FP: " << std::hex << lastSP << std::dec << "," <<  std::hex << lastSP - 0x8 << std::dec << std::endl;
-		std::cerr << "Return Address: " << std::hex << retAddr << std::dec << std::endl;
-		in_inst = true;
-		SETUP_INTERCEPTOR();
-		std::cerr << "Sync Called" << std::endl;
+		// std::cerr << "Possible Previous Frame: " << std::hex << possiblePreviousFrame << std::dec << std::endl;
+		// std::cerr << "Last SP: " << std::hex << lastSP << std::dec << std::endl;
+		// std::cerr << "Stack/FP: " << std::hex << lastSP << std::dec << "," <<  std::hex << lastSP - 0x8 << std::dec << std::endl;
+		// std::cerr << "Return Address: " << std::hex << retAddr << std::dec << std::endl;
+		// in_inst = true;
+		// SETUP_INTERCEPTOR();
+		// std::cerr << "Sync Called" << std::endl;
 
 		int pos = 0;
 
@@ -233,18 +252,18 @@ extern "C" {
 		// 	if (return_frame_ptr(i) == NULL)
 		// 		break;
 		// }
-		assert(entries.size() < MAXIMUM_STACK);
-		size_t callCount = entries.size();
-		std::memcpy(stashSpace, (void*) &(callCount), sizeof(size_t));
-		pos += sizeof(size_t);
-		for (auto i : entries) {
-			std::memcpy(&(stashSpace[pos]), (void*) &(i), sizeof(uint64_t));
-			pos += sizeof(uint64_t);
-			// std::memcpy(&(stashSpace[pos]), (void*) &(i.second), sizeof(uint64_t));
-			// pos += sizeof(uint64_t);
-		}
-		fwrite(stashSpace, 1, pos, outputFile->outFile);
-		in_inst = false;
+		// assert(entries.size() < MAXIMUM_STACK);
+		// size_t callCount = entries.size();
+		// std::memcpy(stashSpace, (void*) &(callCount), sizeof(size_t));
+		// pos += sizeof(size_t);
+		// for (auto i : entries) {
+		// 	std::memcpy(&(stashSpace[pos]), (void*) &(i), sizeof(uint64_t));
+		// 	pos += sizeof(uint64_t);
+		// 	// std::memcpy(&(stashSpace[pos]), (void*) &(i.second), sizeof(uint64_t));
+		// 	// pos += sizeof(uint64_t);
+		// }
+		// fwrite(stashSpace, 1, pos, outputFile->outFile);
+		// in_inst = false;
 	}
 
 	// std::stringstream ret; 	

@@ -191,17 +191,24 @@ extern "C" {
 		std::cerr << "Previous RBP Value: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
 		std::cerr << "Previous RSP Value: " << std::hex << lastSP + 0xF0 << std::dec << std::endl;
 		uint64_t originalRA = 0x0;
+		uint64_t originalRBP = ((uint64_t*)lastSP)[0];
+		uint64_t originalRSP = lastSP + 0xF0;
+		if (originalRSP - originalRBP > 5128) {
+			originalRA = ((uint64_t*)originalRSP)[0];
+		} else {
+			originalRA = ((uint64_t*)originalRBP-0x8)[0];
+		}
 
-		if( ((uint64_t*)lastSP)[0] > 5128)
-			if (((uint64_t*)lastSP)[0] > lastSP - 0xF0)
-				if (((uint64_t*)lastSP)[0] - (lastSP - 0xF0) > 5128)
-					originalRA = ((uint64_t*)(lastSP - 0xF0))[0];
-				else
-					originalRA = ((uint64_t*)lastSP - 0x8)[0];
-			else
-				originalRA = ((uint64_t*)lastSP - 0x8)[0];
-		else 
-			assert(1 == 0);
+		// if( ((uint64_t*)lastSP)[0] > 5128)
+		// 	if (((uint64_t*)lastSP)[0] > lastSP - 0xF0)
+		// 		if (((uint64_t*)lastSP)[0] - (lastSP - 0xF0) > 5128)
+		// 			originalRA = ((uint64_t*)(lastSP - 0xF0))[0];
+		// 		else
+		// 			originalRA = ((uint64_t*)lastSP - 0x8)[0];
+		// 	else
+		// 		originalRA = ((uint64_t*)lastSP - 0x8)[0];
+		// else 
+		// 	assert(1 == 0);
 		std::cerr << "Previous RA Value: " <<  std::hex << originalRA << std::dec << std::endl;
 		//if (((uint64_t*)lastSP)[0]  lastSP - 0xF0 )	
 

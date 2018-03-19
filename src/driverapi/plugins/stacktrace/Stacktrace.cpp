@@ -211,7 +211,7 @@ extern "C" {
 
 		int bt_size = backtrace(backtraceStore, 1024);
 
-		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
+		asm volatile("mov %0, %%RBP" : "=r" (lastSP));
 		assert(bt_size > 0);
 		for (int i = 0; i < bt_size; i++)
 			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;

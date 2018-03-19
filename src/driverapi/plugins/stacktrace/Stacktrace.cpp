@@ -189,7 +189,7 @@ extern "C" {
 		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
 		std::cerr << "RBP Value: " << std::hex << lastSP << std::dec << std::endl;
 		std::cerr << "Previous RBP Value: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
-		std::cerr << "Previous RSP Value: " << std::hex << lastSP - 0xF0 << std::dec << std::endl;
+		std::cerr << "Previous RSP Value: " << std::hex << lastSP + 0xF0 << std::dec << std::endl;
 		uint64_t originalRA = 0x0;
 
 		if( ((uint64_t*)lastSP)[0] > 5128)

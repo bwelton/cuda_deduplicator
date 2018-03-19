@@ -200,6 +200,7 @@ extern "C" {
 			originalRA = ((uint64_t*)originalRBP-0x8)[0];
 		}
 		std::cerr << "Previous RA Value: " <<  std::hex << originalRA << std::dec << std::endl;
+		std::cerr << "Previous RBP Value: " << std::hex << originalRBP << std::dec << std::endl;
 		if (originalRA == 0 || originalRBP == 0 || originalRSP == 0){
 			std::cerr << "could not generate stack, skipping" << std::endl;
 			return;

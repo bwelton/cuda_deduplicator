@@ -246,7 +246,7 @@ extern "C" {
 		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 		// addrOff[0] = possiblePreviousFrame;
 		// 0x00007ffff5483eba
-		// Frame myFrame;
+		Frame myFrame;
 		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(originalRA, originalRSP, originalRBP, local_walker);
 		std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
 		myFrame = *fr;

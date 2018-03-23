@@ -103,7 +103,7 @@ int main(const int argc, const char * argv[]){
 	img->getAddressSpace()->beginInsertionSet();
 
 	{
-		BPatch_variableExpr * voidPtr = img->getAddressSpace()->malloc(*(img->getAddressSpace()->findType("char *")) * 1024, "stackTraceVar");
+		BPatch_variableExpr * voidPtr = img->getAddressSpace()->malloc(sizeof(uint64_t) * 1024, "stackTraceVar");
 		std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
 		std::vector<BPatch_snippet*> testArgs;
 		testArgs.push_back(voidPtr);

@@ -143,7 +143,7 @@ double TimeApplications::RunWithBreakpoints(std::string wrapperDef,
 	for (auto i : libLoads) 
 		proc.LoadWrapperLibrary(i);
 
-	proc.InsertBreakpoints(breakFunctions);
+	//proc.InsertBreakpoints(breakFunctions);
 	proc.ContinueExecution();
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){

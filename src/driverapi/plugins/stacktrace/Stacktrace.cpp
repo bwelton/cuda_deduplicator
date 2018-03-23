@@ -206,16 +206,16 @@ extern "C" {
 		// 	return;
 		// }
 		
-		// SETUP_INTERCEPTOR();
+		SETUP_INTERCEPTOR();
 
 		// asm volatile("mov %0, %%RBP" : "=r" (originalRBP));
 
-		// int bt_size = backtrace(backtraceStore, 1024);
+		int bt_size = backtrace(backtraceStore, 1024);
 
 		// asm volatile("mov %0, %%RBP" : "=r" (lastSP));
 		// assert(bt_size > 0);
-		// for (int i = 0; i < bt_size; i++)
-		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+		for (int i = 0; i < bt_size; i++)
+			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 
 
 

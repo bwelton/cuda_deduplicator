@@ -102,15 +102,15 @@ int main(const int argc, const char * argv[]){
 
 	img->getAddressSpace()->beginInsertionSet();
 
-	{
-		BPatch_variableExpr * voidPtr = img->getAddressSpace()->malloc(sizeof(uint64_t) * 1024, "stackTraceVar");
-		std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
-		std::vector<BPatch_snippet*> testArgs;
-		testArgs.push_back(voidPtr);
-		testArgs.push_back(new BPatch_constExpr(1024));
-		BPatch_funcCallExpr recordFuncEntry(*(btcall[0]), testArgs);
-		assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
-	}
+	// {
+	// 	BPatch_variableExpr * voidPtr = img->getAddressSpace()->malloc(sizeof(uint64_t) * 1024, "stackTraceVar");
+	// 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
+	// 	std::vector<BPatch_snippet*> testArgs;
+	// 	testArgs.push_back(voidPtr);
+	// 	testArgs.push_back(new BPatch_constExpr(1024));
+	// 	BPatch_funcCallExpr recordFuncEntry(*(btcall[0]), testArgs);
+	// 	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
+	// }
 	std::cerr << cudaSync->getName() << std::endl;
  	{
 		std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);

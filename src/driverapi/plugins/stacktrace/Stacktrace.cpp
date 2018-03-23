@@ -210,12 +210,12 @@ extern "C" {
 
 		// asm volatile("mov %0, %%RBP" : "=r" (originalRBP));
 
-		int bt_size = backtrace(backtraceStore, 1024);
+		// int bt_size = backtrace(backtraceStore, 1024);
 
-		// asm volatile("mov %0, %%RBP" : "=r" (lastSP));
-		// assert(bt_size > 0);
-		for (int i = 0; i < bt_size; i++)
-			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+		// // asm volatile("mov %0, %%RBP" : "=r" (lastSP));
+		// // assert(bt_size > 0);
+		// for (int i = 0; i < bt_size; i++)
+		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 
 
 
@@ -249,7 +249,7 @@ extern "C" {
 		int pos = 0;
 
 		// assert(local_walker != NULL);
-		// std::vector<Frame> stackwalk;
+		std::vector<Frame> stackwalk;
 		// addrOff[0] = lastSP - 0x8;
 
 		// addrOff[0] = possiblePreviousFrame;
@@ -274,8 +274,8 @@ extern "C" {
 		// // //0x7ffff6280388
 
 // RA: 0x00007ffff5483eba
-		// //local_walker->walkStack(stackwalk);
-		// std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
+		local_walker->walkStack(stackwalk);
+		std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
 		// Initialize cursor to current frame for local unwinding.
 		// unw_getcontext(&context);
 		// unw_init_local(&cursor, &context);

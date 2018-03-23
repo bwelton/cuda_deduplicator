@@ -262,6 +262,14 @@ void SynchTool::SignalToParent(uint64_t stream) {
 	std::vector<Frame> stackwalk;
 	local_walker->walkStack(stackwalk);
 	std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
+	std::string s;
+	void * sym; 
+	Dyninst::Offset offset;
+	for (auto i : stackwalk) {
+		if (i.getLibOffset(s, offset, sym) == false)
+			continue;
+		std::cerr << "INTERNAL_STACKWALK - frames: " << s << " " << std::hex << offset << std::dec << std::endl;
+	}
 	SYNCH_SIGNAL_DYNINST(mem, size);
 	free(mem);
 	//MemProtectAddrs();

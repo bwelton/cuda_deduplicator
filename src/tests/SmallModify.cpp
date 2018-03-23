@@ -60,6 +60,7 @@ int main(const int argc, const char * argv[]){
 	BPatch_binaryEdit * app = patch.openBinary(argv[1], true);
 	patch.setInstrStackFrames(false);
 	patch.setSaveFPR(false);
+	patch.setTrampRecursive(true);
 	BPatch_image * img = app->getImage();
 	app->loadLibrary("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/plugins/libStacktrace.so");
 	//BPatch_object * obj = app->loadLibrary("libcuda.so.1");
@@ -75,6 +76,7 @@ int main(const int argc, const char * argv[]){
 	std::vector<BPatch_module *> mods;
 	img->getModules(mods);
 	assert(mods.size() > 0);
+
 	for (auto i : mods){
 		// Found libcuda
 		std::vector<BPatch_function * > * internalFuncs = i->getProcedures();
@@ -97,11 +99,26 @@ int main(const int argc, const char * argv[]){
 			break;
 	}
 	assert(cudaSync != NULL);
+
+	img->getAddressSpace()->beginInsertionSet();
+
+	{
+		BPatch_variableExpr * voidPtr = app->malloc(*(appImage->findType("char *")) * 1024, "stackTraceVar");
+		std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
+		std::vector<BPatch_snippet*> testArgs;
+		testArgs.push_back(voidPtr);
+		testArgs.push_back(BPatch_constExpr(1024));
+		BPatch_funcCallExpr recordFuncEntry(*(btcall[0]), testArgs);
+		assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
+	}
 	std::cerr << cudaSync->getName() << std::endl;
-	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
-	std::vector<BPatch_snippet*> testArgs;
-	BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
-	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
+ 	{
+		std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
+		std::vector<BPatch_snippet*> testArgs;
+		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
+		assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
+	}
+	img->getAddressSpace()->finalizeInsertionSet(false);	
 	if(!app->writeFile(argv[2])) {
 		fprintf(stderr, "Could not write output file %s\n", argv[2]);
 		return -1;

@@ -184,38 +184,38 @@ extern "C" {
 		//  SP: lastSP - 0xF0
 		//  FP: SP
 		//  RA: *SP
-		uint64_t lastSP;
+		// uint64_t lastSP;
 
-		asm volatile("mov %%RBP, %0" : "=r" (lastSP));
-		std::cerr << "RBP Value: " << std::hex << lastSP << std::dec << std::endl;
-		std::cerr << "Previous RBP Value: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
-		std::cerr << "Previous RSP Value: " << std::hex << lastSP + 0xF0 << std::dec << std::endl;
-		uint64_t originalRA = 0x0;
-		uint64_t originalRBP = ((uint64_t*)lastSP)[0];
-		uint64_t originalRSP = lastSP + 0xF0;
-		if (originalRSP - originalRBP > 5128) {
-			originalRA = ((uint64_t*)originalRSP)[0];
-			originalRBP = (originalRSP-0x8);
-		} else {
-			originalRA = ((uint64_t*)originalRBP-0x8)[0];
-		}
-		std::cerr << "Previous RA Value: " <<  std::hex << originalRA << std::dec << std::endl;
-		std::cerr << "Previous RBP Value: " << std::hex << originalRBP << std::dec << std::endl;
-		if (originalRA == 0 || originalRBP == 0 || originalRSP == 0){
-			std::cerr << "could not generate stack, skipping" << std::endl;
-			return;
-		}
+		// asm volatile("mov %%RBP, %0" : "=r" (lastSP));
+		// std::cerr << "RBP Value: " << std::hex << lastSP << std::dec << std::endl;
+		// std::cerr << "Previous RBP Value: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
+		// std::cerr << "Previous RSP Value: " << std::hex << lastSP + 0xF0 << std::dec << std::endl;
+		// uint64_t originalRA = 0x0;
+		// uint64_t originalRBP = ((uint64_t*)lastSP)[0];
+		// uint64_t originalRSP = lastSP + 0xF0;
+		// if (originalRSP - originalRBP > 5128) {
+		// 	originalRA = ((uint64_t*)originalRSP)[0];
+		// 	originalRBP = (originalRSP-0x8);
+		// } else {
+		// 	originalRA = ((uint64_t*)originalRBP-0x8)[0];
+		// }
+		// std::cerr << "Previous RA Value: " <<  std::hex << originalRA << std::dec << std::endl;
+		// std::cerr << "Previous RBP Value: " << std::hex << originalRBP << std::dec << std::endl;
+		// if (originalRA == 0 || originalRBP == 0 || originalRSP == 0){
+		// 	std::cerr << "could not generate stack, skipping" << std::endl;
+		// 	return;
+		// }
 		
-		SETUP_INTERCEPTOR();
+		// SETUP_INTERCEPTOR();
 
-		asm volatile("mov %0, %%RBP" : "=r" (originalRBP));
+		// asm volatile("mov %0, %%RBP" : "=r" (originalRBP));
 
-		int bt_size = backtrace(backtraceStore, 1024);
+		// int bt_size = backtrace(backtraceStore, 1024);
 
-		asm volatile("mov %0, %%RBP" : "=r" (lastSP));
-		assert(bt_size > 0);
-		for (int i = 0; i < bt_size; i++)
-			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+		// asm volatile("mov %0, %%RBP" : "=r" (lastSP));
+		// assert(bt_size > 0);
+		// for (int i = 0; i < bt_size; i++)
+		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 
 
 

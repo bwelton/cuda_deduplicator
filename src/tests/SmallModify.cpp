@@ -58,11 +58,15 @@ int main(const int argc, const char * argv[]){
 	BPatch patch;
 	patch.setInstrStackFrames(false);
 	BPatch_binaryEdit * app = patch.openBinary(argv[1], true);
+	patch.setInstrStackFrames(false);
 	BPatch_image * img = app->getImage();
 	app->loadLibrary("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/plugins/libStacktrace.so");
 	//BPatch_object * obj = app->loadLibrary("libcuda.so.1");
 	std::vector<BPatch_function *> tracerCall;
 	img->findFunction("SYNC_RECORD_SYNC_CALL", tracerCall);
+	std::vector<BPatch_function *> btcall;
+	img->findFunction("__backtrace", btcall);
+	assert(btcall.size() > 0);
 	assert(tracerCall.size() > 0);
 	BPatch_function * cudaSync = NULL;
 	Dyninst::Address offsetAddress = 0;

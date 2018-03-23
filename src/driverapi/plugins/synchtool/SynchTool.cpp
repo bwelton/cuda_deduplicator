@@ -2,6 +2,20 @@
 #include "HelperFunctions.h"
 #include <stdlib.h>
 
+#include "framestepper.h"
+#include "walker.h"
+#include "procstate.h"
+#include "swk_errors.h"
+#include "steppergroup.h"
+#include "frame.h"
+#include "sw_c.h"
+#include "Symtab.h"
+#include "BPatch.h"
+#include "BPatch_process.h"
+using namespace Dyninst;
+using namespace Dyninst::Stackwalker;
+using namespace SymtabAPI;
+
 thread_local std::shared_ptr<Parameters> prevCall;
 thread_local pid_t my_thread_id = -1; 
 thread_local int my_process_id = -1;
@@ -14,6 +28,7 @@ thread_local std::vector<MemoryRange> _MemRanges;
 thread_local std::vector<std::pair<uint64_t, uint64_t> > _SynchResults;
 thread_local FILE * _fdes = NULL;
 
+Walker *  local_walker;
 
 std::shared_ptr<SynchTool> Worker;
 int exited = 0;
@@ -24,6 +39,7 @@ extern "C" {
 
 	__attribute__ ((noinline)) void SYNCH_SIGNAL_DYNINST(void * memoryRanges, size_t bsize) {
 		// Do nothing here, this just delivers a pointer to dyninst to do its magic
+		
 	}
 
 	__attribute__ ((noinline)) void SYNCH_FIRST_FAULT() {
@@ -105,6 +121,7 @@ extern "C" {
 SynchTool::SynchTool(std::vector<std::string> & cmd_list) {
 	_cmd_list = cmd_list;
 	exited = 0;
+	local_walker = Walker::newWalker();
 	_sync_log.reset(new LogInfo(fopen("synch_log.out", "w")));
 }
 
@@ -242,6 +259,9 @@ void SynchTool::ClearExisting(uint64_t stream) {
 void SynchTool::SignalToParent(uint64_t stream) {
 	size_t size;
 	uint64_t * mem = SeralizeMemRanges(size);
+	std::vector<Frame> stackwalk;
+	local_walker->walkStack(stackwalk);
+	std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
 	SYNCH_SIGNAL_DYNINST(mem, size);
 	free(mem);
 	//MemProtectAddrs();

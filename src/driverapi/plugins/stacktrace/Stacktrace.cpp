@@ -117,8 +117,13 @@ extern "C" {
 		local_walker->walkStack(stackwalk);
 		for (auto frame : stackwalk) {
 			StackPoint sp;
-			if (frame.getFrameType() != BPatch_frameNormal)
-				continue;
+			std::string lib;
+			uint64_t offset;
+			void * stab;
+			frame.getLibOffset(lib, offset, stab);
+			//getLibOffset(std::string &lib, Dyninst::Offset &offset, void* &symtab) const;
+			// if (frame.getFrameType() != BPatch_frameNormal)
+			// 	continue;
 		}
 	}
 

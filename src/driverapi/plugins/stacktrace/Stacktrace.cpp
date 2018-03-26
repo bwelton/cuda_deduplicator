@@ -115,12 +115,14 @@ extern "C" {
 		SETUP_INTERCEPTOR();
 		std::vector<Frame> stackwalk;
 		local_walker->walkStack(stackwalk);
+		std::cerr << "Stackwalk" << std::endl;
 		for (auto frame : stackwalk) {
 			StackPoint sp;
 			std::string lib;
 			uint64_t offset;
 			void * stab;
 			frame.getLibOffset(lib, offset, stab);
+			std::cerr << lib << "," << offset << std::endl;
 			//getLibOffset(std::string &lib, Dyninst::Offset &offset, void* &symtab) const;
 			// if (frame.getFrameType() != BPatch_frameNormal)
 			// 	continue;

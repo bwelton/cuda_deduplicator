@@ -61,14 +61,18 @@ public:
 	std::vector<std::pair<BPatch_function *, BPatch_point *> > GetFunctionCalls(BPatch_function * func);
 	void InsertInstFuncEntryExit(BPatch_function * instFunc);
 private:
-	BPatch_function * _entryFunc;
-	BPatch_function * _exitFunc;
-	BPatch_function * _recordSync;
-	BPatch_function * _atEntryFunc;
-	BPatch_function * _atExitFunc;
+	BPatch_function * _wrapperFunc;
+	BPatch_function * _cudaSync;
+	Dyninst::SymtabAPI::Symbol * _wrapSym;
+	// BPatch_function * _entryFunc;
+	// BPatch_function * _exitFunc;
+	// BPatch_function * _recordSync;
+	// BPatch_function * _atEntryFunc;
+	// BPatch_function * _atExitFunc;
 
 	BPatch_addressSpace * _addrSpace;
 	BPatch_image * _img;
+
 
 	// Stores the current id
 	uint64_t _curID;

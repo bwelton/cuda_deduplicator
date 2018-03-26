@@ -13,7 +13,7 @@
 #define UNW_LOCAL_ONLY  
 #include <libunwind.h>
 #define MAXIMUM_STACK 512
-
+#include "StackPoint.h"
 #include "framestepper.h"
 #include "walker.h"
 #include "procstate.h"
@@ -93,10 +93,10 @@ struct OutputFile {
 thread_local std::shared_ptr<OutputFile> outputFile;
 
 extern "C" {
+
 	void SETUP_INTERCEPTOR() {
 		if (outputFile.get() != NULL)
 			return;
-
 
 		local_walker = Walker::newWalker();
 		if (my_thread_id == -1)
@@ -109,55 +109,82 @@ extern "C" {
 		stashSpace = (char *) malloc(MAXIMUM_STACK * sizeof(uint64_t) + sizeof(size_t));
 	}
 
-	void STACKTRACE_RECORD_MAIN_ENTRY(uint64_t id) {
-		if(in_inst)
-			return;
-		in_inst = true;
+
+
+	__attribute__ ((noinline)) void RecordStack() {
 		SETUP_INTERCEPTOR();
-		entries.push_back(id);
-		in_inst = false;
-	}
-	void STACKTRACE_RECORD_MAIN_EXIT(uint64_t id) {
-		if (in_inst)
-			return;
-		in_inst = true;
-		SETUP_INTERCEPTOR();
-		if (entries.back() != id) {
-			std::cerr << "ERROR! Record Exit does not equal the entrance at the start of the stack!" << std::endl;
-			std::cerr << id << std::endl;
+		std::vector<Frame> stackwalk;
+		local_walker->walkStack(stackwalk);
+		for (auto frame : stackwalk) {
+			StackPoint sp;
+			if (frame.getFrameType() != BPatch_frameNormal)
+				continue;
 		}
-		else
-			entries.pop_back();
-		in_inst = false;
 	}
 
-	void STACKTRACE_RECORD_ENTRY(uint64_t id, uint64_t callAddr) {
-		if (in_inst)
-			return;
-		in_inst = true;
-		SETUP_INTERCEPTOR();
-		calls.push_back(std::make_pair(id, callAddr));
-		in_inst = false;
+
+	__attribute__ ((noinline)) int SynchronizationWrapper(void * a, void * b, void * c) {
+		return 0;
+	} 
+
+
+	__attribute__ ((noinline)) int STACK_SyncWrapper(void * a, void * b, void * c) {
+		RecordStack();
+		return SynchronizationWrapper(a,b,c);
 	}
 
-	void STACKTRACE_RECORD_EXIT(uint64_t id, uint64_t callAddr) {
-		if (in_inst)
-			return;
-		in_inst = true;
-		SETUP_INTERCEPTOR();
-		// Error out if for some reason the vector is empty.
-		if (calls.size() == 0)
-			assert(calls.size() > 0);
 
-		// If there is a non matching id at the back, error out.
-		if(calls.back().first != id) {
-			std::cerr << "ERROR! Exit does not equal the entrance at the start of the stack!" << std::endl;
-			std::cerr << id << "," << callAddr << " not maching " << calls.back().first << "," << calls.back().second << std::endl;
-		}
-		else 
-			calls.pop_back();
-		in_inst = false;
-	}
+
+
+	// void STACKTRACE_RECORD_MAIN_ENTRY(uint64_t id) {
+	// 	if(in_inst)
+	// 		return;
+	// 	in_inst = true;
+	// 	SETUP_INTERCEPTOR();
+	// 	entries.push_back(id);
+	// 	in_inst = false;
+	// }
+	// void STACKTRACE_RECORD_MAIN_EXIT(uint64_t id) {
+	// 	if (in_inst)
+	// 		return;
+	// 	in_inst = true;
+	// 	SETUP_INTERCEPTOR();
+	// 	if (entries.back() != id) {
+	// 		std::cerr << "ERROR! Record Exit does not equal the entrance at the start of the stack!" << std::endl;
+	// 		std::cerr << id << std::endl;
+	// 	}
+	// 	else
+	// 		entries.pop_back();
+	// 	in_inst = false;
+	// }
+
+	// void STACKTRACE_RECORD_ENTRY(uint64_t id, uint64_t callAddr) {
+	// 	if (in_inst)
+	// 		return;
+	// 	in_inst = true;
+	// 	SETUP_INTERCEPTOR();
+	// 	calls.push_back(std::make_pair(id, callAddr));
+	// 	in_inst = false;
+	// }
+
+	// void STACKTRACE_RECORD_EXIT(uint64_t id, uint64_t callAddr) {
+	// 	if (in_inst)
+	// 		return;
+	// 	in_inst = true;
+	// 	SETUP_INTERCEPTOR();
+	// 	// Error out if for some reason the vector is empty.
+	// 	if (calls.size() == 0)
+	// 		assert(calls.size() > 0);
+
+	// 	// If there is a non matching id at the back, error out.
+	// 	if(calls.back().first != id) {
+	// 		std::cerr << "ERROR! Exit does not equal the entrance at the start of the stack!" << std::endl;
+	// 		std::cerr << id << "," << callAddr << " not maching " << calls.back().first << "," << calls.back().second << std::endl;
+	// 	}
+	// 	else 
+	// 		calls.pop_back();
+	// 	in_inst = false;
+	// }
 
 	void SYNC_RECORD_SYNC_CALL() {
 		// Original Call 

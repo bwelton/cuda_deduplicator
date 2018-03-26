@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES(Stacktrace ${Boost_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/driverapi")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/deduplicate")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/driverapi/launcher")
 target_link_libraries(Stacktrace "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti -lboost_timer -lunwind")
 install(TARGETS Stacktrace
         RUNTIME DESTINATION bin

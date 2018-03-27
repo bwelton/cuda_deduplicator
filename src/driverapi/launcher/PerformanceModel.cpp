@@ -60,6 +60,9 @@ void PerformanceModel::CaptureSyncTime() {
   			// this run is useless.
   			if (found == false){
   				std::cerr << i.libCudaCallname << " NOT FOUND IN EXISTING LINE INFO FROM PREVIOUS RUNS! " << std::endl;
+  				for (auto m : _lineInfo[_stackOrder[n]]) {
+  					std::cerr << m.first << std::endl;
+  				}
   				assert(found == true);
   			}
 

@@ -18,7 +18,7 @@ std::string SymbolLookup::GetFuncName(uint64_t offset) {
 	if (_obj == NULL)
 		return std::string("");
 	SymtabAPI::Function * f;
-	_obj->getContainingFunction(offset, func);
+	_obj->getContainingFunction(offset, f);
 	return f->getName();
 }
 

@@ -242,6 +242,7 @@ void PerformanceModel::ExtractLineInfo() {
 			symbolInfo[z.libname]->GetInfoAtLocation(z.libOffset, tmp);
 			z.funcOffset = symbolInfo[z.libname]->GetFunctionOffset(z.libOffset);
 			z.funcName = symbolInfo[z.libname]->GetFuncName(z.libOffset);
+			z.fname = z.funcName;
 			assert(z.funcOffset != 0);
 			_lineInfo[i.first].push_back(tmp);
 #ifdef DEBUG_MODEL

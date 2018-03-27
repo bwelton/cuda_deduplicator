@@ -154,6 +154,8 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 			assert(curObj->fileOffsetToAddr(i.funcOffset) != -1);
 			instFunc = img->findFunction(curObj->fileOffsetToAddr(i.funcOffset));
 		}
+		std::cerr << "Inserting timing Instrimentation into - " << instFunc->getName() << std::endl;
+		std::cerr << "Function Name: " << i.fname << std::endl;
 		assert(instFunc != NULL);
 		assert(instFunc->getName() == i.fname);
 		std::cerr << "Inserting timing Instrimentation into - " << instFunc->getName() << std::endl;

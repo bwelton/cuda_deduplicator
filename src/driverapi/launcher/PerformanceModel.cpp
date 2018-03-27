@@ -1,6 +1,6 @@
 #include "PerformanceModel.h"
 
-#define DEBUG_MODEL 1
+//#define DEBUG_MODEL 1
 PerformanceModel::PerformanceModel() : _fastestExecTime(std::numeric_limits<double>::max()), _totalSyncs(0) {
 
 }

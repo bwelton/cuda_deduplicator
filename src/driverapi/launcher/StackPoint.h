@@ -44,7 +44,7 @@
 #include "LogInfo.h"
 #include "Constants.h"
 
-#define SP_DEBUG 1
+//#define SP_DEBUG 1
 
 struct StackPoint {
 	std::string fname;

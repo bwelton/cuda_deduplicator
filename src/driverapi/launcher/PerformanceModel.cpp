@@ -34,7 +34,7 @@ void PerformanceModel::CaptureSyncTime() {
   		_callPoints.push_back(CallPoint(params[0], uint64_t(std::stoi(params[2])), ::atof(params[1].c_str())));
   	}
   	// Temporary fix for failure to capture first synchronization.
-  	_callPoints[0].syncCount = _callPoints[0].syncCount - 1;
+  	_callPoints[0].syncCount = _callPoints[0].syncCount;
 #ifdef DEBUG_MODEL
   	std::cerr << "Call info read from callDelay file" << std::endl;
   	for (auto i : _callPoints)
@@ -60,9 +60,9 @@ void PerformanceModel::CaptureSyncTime() {
   			// this run is useless.
   			if (found == false){
   				std::cerr << i.libCudaCallname << " NOT FOUND IN EXISTING LINE INFO FROM PREVIOUS RUNS! " << std::endl;
-  				for (auto m : _lineInfo[_stackOrder[n]]) {
-  					std::cerr << m.first << std::endl;
-  				}
+  				// for (auto m : _lineInfo[_stackOrder[n]]) {
+  				// 	std::cerr << m.first << std::endl;
+  				// }
   				assert(found == true);
   			}
 

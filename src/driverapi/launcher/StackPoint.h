@@ -87,7 +87,10 @@ struct StackPoint {
 		pos += sizeof(uint64_t);
 		if (len < size + sizeof(uint64_t) + sizeof(uint64_t))
 			assert(len < size + sizeof(uint64_t) + sizeof(uint64_t));
+		if (size >= 1024)
+			assert(size < 1024);
 		std::memcpy(tmp, &(data[pos]), size);
+
 		tmp[size] = '\000';
 		libname = std::string(tmp);
 		pos += size;
@@ -97,6 +100,7 @@ struct StackPoint {
 #endif
 		empty = false;
 		framePtr = libOffset;
+		pos += sizeof(uint64_t);
 		return pos;
 	}
 

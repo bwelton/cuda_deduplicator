@@ -160,7 +160,8 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 		assert(instFunc->getName() == i.fname);
 		std::vector<BPatch_point*> * funcEntry = instFunc->findPoint(BPatch_locEntry);
 		std::vector<BPatch_point*> * funcExit = instFunc->findPoint(BPatch_locExit);
-
+		assert(funcEntry->size() > 0);
+		assert(funcExit->size() > 0);
 		std::vector<BPatch_snippet*> testArgs;
 		testArgs.push_back(new BPatch_constExpr(i.funcName.c_str()));
 		BPatch_funcCallExpr recordFuncEntry(*(startFunc[0]), testArgs);

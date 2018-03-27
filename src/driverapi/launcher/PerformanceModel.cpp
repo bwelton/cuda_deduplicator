@@ -232,7 +232,7 @@ void PerformanceModel::ExtractLineInfo() {
 	}
 
 	// Decode line info for every stack
-	for (auto i : _stackPoints) {
+	for (auto & i : _stackPoints) {
 		_lineInfo[i.first] = std::vector<std::pair<std::string, LineInfo> >();
 		for(auto & z : i.second) {
 			// Convert to line info and add  to _lineInfo
@@ -241,6 +241,7 @@ void PerformanceModel::ExtractLineInfo() {
 			std::pair<std::string, LineInfo> tmp;
 			symbolInfo[z.libname]->GetInfoAtLocation(z.libOffset, tmp);
 			z.funcOffset = symbolInfo[z.libname]->GetFunctionOffset(z.libOffset);
+			assert(z.funcOffset != 0);
 			_lineInfo[i.first].push_back(tmp);
 #ifdef DEBUG_MODEL
 			// std::cerr << "Looking up " << z.libOffset << " in " << z.libname << std::endl;

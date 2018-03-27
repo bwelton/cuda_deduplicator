@@ -16,6 +16,7 @@
 #include <set> 
 #include <iomanip>
 #include <string>
+#include <cassert>
 #include <sys/types.h>
 #include <unistd.h>
 #include <mutex>
@@ -58,6 +59,33 @@ struct StackPoint {
 	uint64_t GetKey() {
 		return framePtr;
 	};
+
+	int Serialize(void * data, int size) {
+		int pos = 0;
+		if (size < sizeof(uint64_t) + libname.size() + sizeof(uint64_t))
+			return -1;
+
+		uint64_t stringSize = libname.size();
+		std::memcpy(&(data[0]), &stringSize, sizeof(uint64_t));
+		pos += sizeof(uint64_t);
+		std::memcpy(&(data[pos]),libname.c_str(), libname.size());
+		pos += libname.size();
+		std::memcpy(&(data[pos]), &libOffset, sizeof(uint64_t));
+		return pos + sizeof(uint64_t);
+	}
+
+	void Deserialize(void * data, int len) {
+		uint64_t size = 0;
+		int pos = 0;
+		std::memcpy(&size, data, sizeof(uint64_t));
+		pos += sizeof(uint64_t);
+		if (len != size + sizeof(uint64_t) + sizeof(uint64_t))
+			assert(len != size + sizeof(uint64_t) + sizeof(uint64_t));
+		libname = std::string((const char *) &(data[pos]), size);
+		pos += size;
+		std::memcpy(&libOffset, &(data[pos]), sizeof(uint64_t));
+	}
+
 };
 
 namespace std {

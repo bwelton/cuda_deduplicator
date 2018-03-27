@@ -14,6 +14,14 @@ SymbolLookup::~SymbolLookup() {
 		Symtab::closeSymtab(_obj);
 }
 
+std::string SymbolLookup::GetFuncName(uint64_t offset) {
+	if (_obj == NULL)
+		return std::string("");
+	SymtabAPI::Function * f;
+	_obj->getContainingFunction(offset, func);
+	return f->getName();
+}
+
 uint64_t SymbolLookup::GetFunctionOffset(uint64_t offset) {
 	if (_obj == NULL)
 		return 0;

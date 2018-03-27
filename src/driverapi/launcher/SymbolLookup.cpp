@@ -17,7 +17,7 @@ SymbolLookup::~SymbolLookup() {
 uint64_t SymbolLookup::GetFunctionOffset(uint64_t offset) {
 	if (_obj == NULL)
 		return 0;
-	Function * f;
+	SymtabAPI::Function * f;
 	
 	if(_obj->getContainingFunction(offset, f)==false)
 		assert(true == false);

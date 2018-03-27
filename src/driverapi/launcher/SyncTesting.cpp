@@ -38,7 +38,7 @@ void SyncTesting::Run() {
 		_model.AddExecutionTime(time);
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
 	}
-	_model.ReadStackFile();
+	_model.ReadStackFiles();
 	_model.ExtractLineInfo();
 	return; 
 	//InstrumentProgram();

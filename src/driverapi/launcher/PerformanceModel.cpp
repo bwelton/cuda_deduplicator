@@ -106,12 +106,14 @@ void PerformanceModel::ReadStackFile(std::string s) {
 		int pos = 0;
 		fread(&stackSize, 1, sizeof(int), inFile);
 		char * tmp = (char *) malloc(stackSize);
-		fread(tmp, 1, stackSize, inFile);
+		int s = fread(tmp, 1, stackSize, inFile);
+		assert(s == stackSize);
 		uint64_t numRecords = ((uint64_t *)tmp)[0];
 		pos += sizeof(uint64_t);
 		std::vector<StackPoint> points;
 		for (uint64_t i = 0; i < numRecords; i++) {
 			StackPoint sp;
+			std::cerr << "stack : " << i << std::endl;
 			pos += sp.Deserialize(&(tmp[pos]), stackSize - pos);
 			points.push_back(sp);
 		}

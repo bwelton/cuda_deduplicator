@@ -99,6 +99,10 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 
 
 void PerformanceModel::ReadStackFile(std::string s) {
+
+#ifdef DEBUG_MODEL
+	std::cerr << "Reading file : " << s << std::endl;
+#endif
 	FILE * inFile = fopen(s.c_str(), "rb");
 	assert(inFile != NULL);
 	while(!feof(inFile)) {
@@ -113,7 +117,6 @@ void PerformanceModel::ReadStackFile(std::string s) {
 		std::vector<StackPoint> points;
 		for (uint64_t i = 0; i < numRecords; i++) {
 			StackPoint sp;
-			std::cerr << "stack : " << i << std::endl;
 			pos += sp.Deserialize(&(tmp[pos]), stackSize - pos);
 			points.push_back(sp);
 		}

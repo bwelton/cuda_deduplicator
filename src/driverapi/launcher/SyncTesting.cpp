@@ -27,6 +27,8 @@ void SyncTesting::Run() {
 	// This also captures secret entries into libcuda with synchronizations and relates them back
 	// to user level calls. 
 	{
+		// Remove all previous stack files from this directory.
+		system("exec rm -rf ./stackOut.*");
 		TimeApplications base(_vm);
 		std::cerr << "Running " << _programName << " with stacktrace information enabled" << std::endl;
 		std::cerr << "Saving application output to file : " << _programName << ".stacktrace.out" << std::endl;
@@ -36,9 +38,11 @@ void SyncTesting::Run() {
 		_model.AddExecutionTime(time);
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
 	}
+	_model.ReadStackFile();
+	_model.ExtractLineInfo();
 	return; 
 	//InstrumentProgram();
-	_model.ExtractLineInfo();
+	
 	std::vector<StackPoint> timingList;
 	_model.GetTimingList(timingList);
 	return;

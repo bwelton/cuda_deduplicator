@@ -1,6 +1,6 @@
 #include "PerformanceModel.h"
 
-//#define DEBUG_MODEL 1
+#define DEBUG_MODEL 1
 PerformanceModel::PerformanceModel() : _fastestExecTime(std::numeric_limits<double>::max()), _totalSyncs(0) {
 
 }
@@ -98,6 +98,49 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 }
 
 
+void PerformanceModel::ReadStackFile(std::string s) {
+	FILE * inFile = fopen(s.c_str(), "rb");
+	assert(inFile != NULL);
+	while(!feof(inFile)) {
+		int stackSize = 0;
+		int pos = 0;
+		fread(&stackSize, 1, sizeof(int), inFile);
+		char * tmp = (char *) malloc(stackSize);
+		fread(tmp, 1, stackSize, inFile);
+		uint64_t numRecords = ((uint64_t *)tmp)[0];
+		pos += sizeof(uint64_t);
+		std::vector<StackPoint> points;
+		for (uint64_t i = 0; i < numRecords; i++) {
+			StackPoint sp;
+			pos += sp.Deserialize(&(tmp[pos]), stackSize - pos);
+			points.push_back(sp);
+		}
+		AddStack(points);
+	}
+}
+
+void PerformanceModel::ReadStackFiles() {
+	// Read all files in the directory looking for stackOut files. 
+	std::vector<std::string> files;
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir (".")) != NULL) {
+		while ((ent = readdir (dir)) != NULL) {
+			files.push_back(std::string(ent->d_name));
+		}
+		closedir(dir);
+	}
+	assert(files.size() > 0);
+
+	if (files.size() > 1) {
+		std::cerr << "We have more than one stack output directory, multithreaded synchronization support not yet availible" << std::endl;
+		assert(files.size() == 1);
+	}
+	ReadStackFile(files[0]);
+
+}
+
+
 void PerformanceModel::FinalProcessing() {
 	std::stringstream sortByUse;
 	std::stringstream sortByTime;
@@ -115,7 +158,6 @@ void PerformanceModel::FinalProcessing() {
 
 	std::cerr << "Unnecssary Synchronization Count: " << unnecssaryCount << "/" << _callPoints.size() << " " << float(unnecssaryCount) / float(_callPoints.size()) * 100 << "% unncessary" << std::endl;
 	std::cerr << "Potential time savings: " << unnecssaryTime << "/" << _fastestExecTime << " " << unnecssaryTime / _fastestExecTime * 100 << "% of exectuion time wasted" << std::endl;
-
 
 	// Sort by count
 	std::map<uint64_t, uint64_t> unncessaryStack;

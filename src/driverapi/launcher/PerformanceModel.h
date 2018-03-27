@@ -17,6 +17,7 @@
 #include <iomanip>
 #include <string>
 #include <sys/types.h>
+#include <dirent.h>
 #include <unistd.h>
 #include <mutex>
 #include <fstream>
@@ -49,6 +50,8 @@ public:
 	void GetTimingList(std::vector<StackPoint> & timingList);
 	void AddFirstUses(std::map<uint64_t, StackPoint> uses);
 	void FinalProcessing();
+	void ReadStackFile(std::string s);
+	void ReadStackFiles();
 private:
 	double _fastestExecTime;
 	uint64_t _totalSyncs;

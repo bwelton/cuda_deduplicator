@@ -12,45 +12,8 @@ void StacktraceInst::InsertStackInst() {
 	// Begin the insertion set
 	_addrSpace->beginInsertionSet();
 
-
 	assert(_addrSpace->wrapFunction(_cudaSync, _wrapperFunc, _wrapSym) != false);
-	// The strategy here is to insert an entry call at all functions calls in the function to denote entrance
-	// into the underlying function and the position of that entrance (i.e. the specific call it entered from).
-	// We will also record the exit from this function. 
-	// for (auto i : all_functions) {
-	// 	if (IsFunctionExcluded(i))
-	// 		continue;
-	// 	uint64_t myID =  GetFuncId(i);	
-	// 	// Get points
-	// 	std::vector<std::pair<BPatch_function * , BPatch_point *> > calls = GetFunctionCalls(i);
-	// 	InsertInstFuncEntryExit(i);
-	// 	// for (auto n : calls) {
-	// 	// 	InsertEntryExitCall(i, n.first, n.second);
-	// 	// }
-	// }
 
-	// Insert call to capture synchronization specifically
-	// BPatch_function * cudaSync = NULL;
-	// Dyninst::Address offsetAddress = 0;
-	// std::vector<BPatch_object *> imgObjs;
-	// _img->getObjects(imgObjs);
-	// for (auto i : imgObjs){
-	// 	if (i->name().find("libcuda.so") == std::string::npos)
-	// 		continue;
-	// 	// Found libcuda
-	// 	offsetAddress = i->fileOffsetToAddr(INTERNAL_SYNC_ST);
-	// 	cudaSync = _img->findFunction(offsetAddress);
-	// 	break;
-	// }
-	// assert(cudaSync != NULL);
-	// {
-	// 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
-	// 	std::vector<BPatch_snippet*> testArgs;
-	// 	BPatch_funcCallExpr recordFuncEntry(*_recordSync, testArgs);
-	// 	std::cerr << "Adding Sync Notifyer" << std::endl;
-	// 	if (_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) == NULL) 
-	// 		std::cerr << "could not insert func entry snippet" << std::endl;
-	// }
 	_addrSpace->finalizeInsertionSet(false);	
 }
  

@@ -74,16 +74,20 @@ struct StackPoint {
 		return pos + sizeof(uint64_t);
 	}
 
-	void Deserialize(char * data, int len) {
+	int Deserialize(char * data, int len) {
 		uint64_t size = 0;
 		int pos = 0;
 		std::memcpy(&size, data, sizeof(uint64_t));
 		pos += sizeof(uint64_t);
-		if (len != size + sizeof(uint64_t) + sizeof(uint64_t))
-			assert(len != size + sizeof(uint64_t) + sizeof(uint64_t));
+		if (len < size + sizeof(uint64_t) + sizeof(uint64_t))
+			assert(len < size + sizeof(uint64_t) + sizeof(uint64_t));
 		libname = std::string((const char *) &(data[pos]), size);
 		pos += size;
 		std::memcpy(&libOffset, &(data[pos]), sizeof(uint64_t));
+
+		empty = false;
+		framePtr = libOffset;
+		return pos;
 	}
 
 };

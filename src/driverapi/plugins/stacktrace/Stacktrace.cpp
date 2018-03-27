@@ -40,43 +40,8 @@ thread_local bool in_inst = false;
 thread_local std::vector<std::pair<uint64_t, uint64_t> > calls;
 thread_local std::vector<uint64_t> entries; 
 thread_local pid_t my_thread_id = -1;
-
-thread_local void * backtraceStore[1024];
-
-void * return_frame_ptr(int i) {
-	switch (i) {
-		case 0:
-			return __builtin_frame_address(0);
-		case 1:
-			return __builtin_frame_address(1);
-		case 2:
-			return __builtin_frame_address(2);
-		case 3:
-			return __builtin_frame_address(3);
-		case 4:
-			return __builtin_frame_address(4);
-		case 5:
-			return __builtin_frame_address(5);
-		case 6:
-			return __builtin_frame_address(6);
-		case 7:
-			return __builtin_frame_address(7);
-		case 8:
-			return __builtin_frame_address(8);
-		case 9:
-			return __builtin_frame_address(9);
-		case 10:
-			return __builtin_frame_address(10);
-		case 11:
-			return __builtin_frame_address(11);
-		case 12:
-			return __builtin_frame_address(12);
-		default:
-			return NULL;
-	}
-}
-
-
+// Make this really large, in case we need lots of space for the stack.
+thread_local char stackStore[512000];
 
 struct OutputFile {
 	FILE * outFile;
@@ -106,7 +71,6 @@ extern "C" {
 		ss << "stackOut." << my_thread_id << ".bin";
 		outputFile.reset(new OutputFile(ss.str()));
 		assert(outputFile.get() != NULL);
-		stashSpace = (char *) malloc(MAXIMUM_STACK * sizeof(uint64_t) + sizeof(size_t));
 	}
 
 
@@ -115,18 +79,25 @@ extern "C" {
 		SETUP_INTERCEPTOR();
 		std::vector<Frame> stackwalk;
 		local_walker->walkStack(stackwalk);
-		std::cerr << "Stackwalk" << std::endl;
+		int pos = 0;
+		StackPoint sp;
+		std::string lib;
+		void * stab;
+		uint64_t offset = stackwalk.size();
+		std::memcpy(stackStore, &offset, sizeof(uint64_t));
+		pos += sizeof(uint64_t);
 		for (auto frame : stackwalk) {
-			StackPoint sp;
-			std::string lib;
-			uint64_t offset;
-			void * stab;
 			frame.getLibOffset(lib, offset, stab);
-			std::cerr << lib << "," << offset << std::endl;
-			//getLibOffset(std::string &lib, Dyninst::Offset &offset, void* &symtab) const;
-			// if (frame.getFrameType() != BPatch_frameNormal)
-			// 	continue;
+			sp.libname = lib;
+			sp.libOffset = offset;
+			if (pos < 512000) {
+				int ret = sp.Serialize(&(stackStore[pos]), 512000 - pos);
+				if (ret == -1)
+					assert(ret != -1);
+				pos += ret;
+			}
 		}
+		fwrite(stackStore, 1, pos, outputFile->outFile);		
 	}
 
 

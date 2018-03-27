@@ -310,6 +310,7 @@ void PerformanceModel::GetTimingList(std::vector<StackPoint> & timingList) {
 				break;
 			}
 		}
+		std::cerr << found.libname << std::endl;
 		assert(found.funcOffset != 0);
 		if (alreadyPresent.find(found.funcOffset) == alreadyPresent.end()){
 			timingList.push_back(found);

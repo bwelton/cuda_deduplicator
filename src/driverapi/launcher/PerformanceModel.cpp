@@ -126,7 +126,8 @@ void PerformanceModel::ReadStackFiles() {
 	struct dirent *ent;
 	if ((dir = opendir (".")) != NULL) {
 		while ((ent = readdir (dir)) != NULL) {
-			files.push_back(std::string(ent->d_name));
+			if (strncmp(ent->d_name, "stackOut.", 9))
+				files.push_back(std::string(ent->d_name));
 		}
 		closedir(dir);
 	}

@@ -57,6 +57,7 @@ class SymbolLookup{
 public:
 	SymbolLookup(std::string filename);
     ~SymbolLookup();
+    uint64_t GetFunctionOffset(uint64_t offset);
     bool GetInfoAtLocation(uint64_t offset, std::pair<std::string, LineInfo> & lines);
 private:
 	Symtab * _obj;

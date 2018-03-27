@@ -14,6 +14,17 @@ SymbolLookup::~SymbolLookup() {
 		Symtab::closeSymtab(_obj);
 }
 
+uint64_t SymbolLookup::GetFunctionOffset(uint64_t offset) {
+	if (_obj == NULL)
+		return 0;
+	Function * f;
+	
+	if(_obj->getContainingFunction(offset, f)==false)
+		assert(true == false);
+	return f->getOffset();
+}
+
+
 bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, LineInfo> & lines) {
 	if (_obj == NULL) {
 		LineInfo tmp;

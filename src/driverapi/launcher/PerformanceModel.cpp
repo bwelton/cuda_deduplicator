@@ -240,6 +240,7 @@ void PerformanceModel::ExtractLineInfo() {
 				continue;
 			std::pair<std::string, LineInfo> tmp;
 			symbolInfo[z.libname]->GetInfoAtLocation(z.libOffset, tmp);
+			z.funcOffset = symbolInfo[z.libname]->GetFunctionOffset(z.libOffset);
 			_lineInfo[i.first].push_back(tmp);
 #ifdef DEBUG_MODEL
 			// std::cerr << "Looking up " << z.libOffset << " in " << z.libname << std::endl;

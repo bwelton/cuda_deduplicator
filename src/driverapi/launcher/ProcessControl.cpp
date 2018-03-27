@@ -163,13 +163,13 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 		assert(funcEntry->size() > 0);
 		assert(funcExit->size() > 0);
 		std::vector<BPatch_snippet*> testArgs;
-		testArgs.push_back(new BPatch_constExpr(i.funcName.c_str()));
+		testArgs.push_back(new BPatch_constExpr(instFunc->getName().c_str()));
 		BPatch_funcCallExpr recordFuncEntry(*(startFunc[0]), testArgs);
 		BPatch_funcCallExpr recordFuncExit(*(stopFunc[0]), testArgs);
 		assert(_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
 		assert(_addrSpace->insertSnippet(recordFuncExit,*funcExit) != NULL); 
 	}
-	_addrSpace->finalizeInsertionSet(false);	
+	assert(_addrSpace->finalizeInsertionSet(false) == true);
 }
 
 std::map<uint64_t, StackPoint> ProcessController::GetFirstUse() {

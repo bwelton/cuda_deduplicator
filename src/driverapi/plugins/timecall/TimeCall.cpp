@@ -68,6 +68,7 @@ void TIMER_SIMPLE_TIME_START(const char * callName) {
 		std::cerr << "Starting timing log" << std::endl;
 		_timingLog.reset(new LogInfo(fopen("callDelay.out", "w")));
 	}
+	std::cerr << callName << std::endl;
 	TimingCount.push_back(0);
 	TimingPairs.push_back(std::make_pair(std::string(callName),std::chrono::high_resolution_clock::now()));
 }

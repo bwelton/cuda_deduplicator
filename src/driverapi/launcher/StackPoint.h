@@ -60,7 +60,7 @@ struct StackPoint {
 		return framePtr;
 	};
 
-	int Serialize(void * data, int size) {
+	int Serialize(char * data, int size) {
 		int pos = 0;
 		if (size < sizeof(uint64_t) + libname.size() + sizeof(uint64_t))
 			return -1;
@@ -74,7 +74,7 @@ struct StackPoint {
 		return pos + sizeof(uint64_t);
 	}
 
-	void Deserialize(void * data, int len) {
+	void Deserialize(char * data, int len) {
 		uint64_t size = 0;
 		int pos = 0;
 		std::memcpy(&size, data, sizeof(uint64_t));

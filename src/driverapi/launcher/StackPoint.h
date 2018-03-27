@@ -80,13 +80,16 @@ struct StackPoint {
 	}
 
 	int Deserialize(char * data, int len) {
+		char tmp[1024];
 		uint64_t size = 0;
 		int pos = 0;
 		std::memcpy(&size, data, sizeof(uint64_t));
 		pos += sizeof(uint64_t);
 		if (len < size + sizeof(uint64_t) + sizeof(uint64_t))
 			assert(len < size + sizeof(uint64_t) + sizeof(uint64_t));
-		libname = std::string((const char *) &(data[pos]), size);
+		std::memcpy(tmp, &(data[pos]), size);
+		tmp[size] = '\000';
+		libname = std::string(tmp);
 		pos += size;
 		std::memcpy(&libOffset, &(data[pos]), sizeof(uint64_t));
 #ifdef SP_DEBUG

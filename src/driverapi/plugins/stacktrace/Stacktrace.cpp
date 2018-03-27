@@ -98,7 +98,7 @@ extern "C" {
 			}
 		}
 		fwrite(&pos, 1, sizeof(int), outputFile->outFile);
-		fwrite(stackStore, 1, pos, outputFile->outFile);		
+		fwrite(stackStore, 1, pos, outputFile->outFile);
 	}
 
 

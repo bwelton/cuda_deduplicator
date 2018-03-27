@@ -108,7 +108,8 @@ void PerformanceModel::ReadStackFile(std::string s) {
 	while(!feof(inFile)) {
 		int stackSize = 0;
 		int pos = 0;
-		fread(&stackSize, 1, sizeof(int), inFile);
+		if(fread(&stackSize, 1, sizeof(int), inFile) == 0)
+			break;
 		char * tmp = (char *) malloc(stackSize);
 		int s = fread(tmp, 1, stackSize, inFile);
 		assert(s == stackSize);

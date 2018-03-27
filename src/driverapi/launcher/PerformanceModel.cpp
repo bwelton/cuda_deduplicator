@@ -93,7 +93,7 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 		ss << z.framePtr << std::endl;
 	}
 	uint64_t hash = std::hash<std::string>()(ss.str());
-	std::cerr << hash << std::endl;
+	//std::cerr << hash << std::endl;
 	_stackOrder.push_back(hash);
 	if (_stackCount.find(hash) == _stackCount.end())
 		_stackCount[hash] = 0;

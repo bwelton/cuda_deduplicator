@@ -117,7 +117,11 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
 	uint64_t hash = 0;
 	while (fread(&hash, 1, sizeof(uint64_t), inFile) > 0){
-		AddStack(ret[hash]);
+		if (hash != 0)
+			AddStack(ret[hash]);
+		else 
+			// Need an error here
+			continue;
 	// while(!feof(inFile)) {
 	// 	int stackSize = 0;
 	// 	int pos = 0;

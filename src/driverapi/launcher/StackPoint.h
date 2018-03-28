@@ -176,7 +176,7 @@ struct StackKeyReader {
 		uint64_t size = 0;
 		std::map<uint64_t, std::vector<StackPoint> > ret;
 		while(fread(&size,1, sizeof(int), in) > 0) {
-			if (feof(inFile))
+			if (feof(in))
 				break;
 			std::vector<StackPoint> points; 
 			uint64_t hashId, recCount, pos;

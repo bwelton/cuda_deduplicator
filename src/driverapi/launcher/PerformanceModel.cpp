@@ -103,30 +103,39 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 }
 
 
-void PerformanceModel::ReadStackFile(std::string s) {
+void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
+	std::cerr << "Reading stack file: " << timeline << std::endl;
+	std::cerr << "Reading key file: " << key << std::endl;
 
-#ifdef DEBUG_MODEL
-	std::cerr << "Reading file : " << s << std::endl;
-#endif
-	FILE * inFile = fopen(s.c_str(), "rb");
+	FILE * inFile = fopen(timeline.c_str(), "rb");
 	assert(inFile != NULL);
-	while(!feof(inFile)) {
-		int stackSize = 0;
-		int pos = 0;
-		if(fread(&stackSize, 1, sizeof(int), inFile) == 0)
-			break;
-		char * tmp = (char *) malloc(stackSize);
-		int s = fread(tmp, 1, stackSize, inFile);
-		assert(s == stackSize);
-		uint64_t numRecords = ((uint64_t *)tmp)[0];
-		pos += sizeof(uint64_t);
-		std::vector<StackPoint> points;
-		for (uint64_t i = 0; i < numRecords; i++) {
-			StackPoint sp;
-			pos += sp.Deserialize(&(tmp[pos]), stackSize - pos);
-			points.push_back(sp);
-		}
-		AddStack(points);
+
+	FILE * keyFile = fopen(key.c_str(), "rb");
+	assert(keyFile != NULL);
+
+	StackKeyReader reader(keyFile);
+	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
+	uint64_t hash = 0;
+	while (fread(&hash, 1, sizeof(uint64_t), inFile) > 0){
+		AddStack(ret[hash]);
+	// while(!feof(inFile)) {
+	// 	int stackSize = 0;
+	// 	int pos = 0;
+	// 	if(fread(&stackSize, 1, sizeof(int), inFile) == 0)
+	// 		break;
+	// 	char * tmp = (char *) malloc(stackSize);
+	// 	int s = fread(tmp, 1, stackSize, inFile);
+	// 	assert(s == stackSize);
+	// 	uint64_t numRecords = ((uint64_t *)tmp)[0];
+	// 	pos += sizeof(uint64_t);
+	// 	std::vector<StackPoint> points;
+	// 	for (uint64_t i = 0; i < numRecords; i++) {
+	// 		StackPoint sp;
+	// 		pos += sp.Deserialize(&(tmp[pos]), stackSize - pos);
+	// 		points.push_back(sp);
+	// 	}
+	// 	AddStack(points);
+	// }
 	}
 }
 
@@ -144,11 +153,15 @@ void PerformanceModel::ReadStackFiles() {
 	}
 	assert(files.size() > 0);
 
-	if (files.size() > 1) {
+	if (files.size() != 2) {
 		std::cerr << "We have more than one stack output directory, multithreaded synchronization support not yet availible" << std::endl;
-		assert(files.size() == 1);
+		assert(files.size() == 2);
 	}
-	ReadStackFile(files[0]);
+	if (files[0].find("key") != std::string::npos){
+		ReadStackFile(files[0], files[1]);
+	} else {
+		ReadStackFile(files[1], files[0]);
+	}
 
 }
 

@@ -50,8 +50,9 @@ public:
 	void GetTimingList(std::vector<StackPoint> & timingList);
 	void AddFirstUses(std::map<uint64_t, StackPoint> uses);
 	void FinalProcessing();
-	void ReadStackFile(std::string s);
+	void ReadStackFile(std::string key, std::string timeline);
 	void ReadStackFiles();
+	
 private:
 	double _fastestExecTime;
 	uint64_t _totalSyncs;

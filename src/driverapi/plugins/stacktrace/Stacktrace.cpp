@@ -78,7 +78,7 @@ extern "C" {
 		assert(outputFile.get() != NULL);
 		ss.clear();
 		ss << "stackOut." << my_thread_id << ".key";
-		keyFile.reset(new StackKeyWriter(fopen(ss.c_str(),"w")));
+		keyFile.reset(new StackKeyWriter(fopen(ss.str().c_str(),"w")));
 		assert(keyFile.get() != NULL);
 	}
 
@@ -99,12 +99,13 @@ extern "C" {
 		}
 		for (auto frame : stackwalk) {
 			StackPoint sp;
+			uint64_t offset;
 			frame.getLibOffset(lib, offset, stab);
 			sp.libname = lib;
 			sp.libOffset = offset;
 			points.push_back(sp);
 		}
-		pos = keyFile.InsertStack(points);
+		pos = keyFile->InsertStack(points);
 		fwrite(&pos, 1, sizeof(uint64_t), outputFile->outFile);
 		// uint64_t offset = stackwalk.size();
 		// std::memcpy(stackStore, &offset, sizeof(uint64_t));

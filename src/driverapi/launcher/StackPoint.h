@@ -159,7 +159,8 @@ struct StackKeyWriter {
 		pos += sizeof(uint64_t);
 		fwrite(&pos, 1, sizeof(int), out);
 		fwrite(&hash, 1, sizeof(uint64_t), out);
-		fwrite(buffer, 1, pos, out);
+		if (fwrite(buffer, 1, pos, out) != pos)
+			assert(pos == -1);
 		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
 	}
 };
@@ -182,7 +183,11 @@ struct StackKeyReader {
 			std::vector<StackPoint> points; 
 			uint64_t hashId, recCount, pos;
 			pos = 0;
-			assert(fread(buffer, 1, size, in) == size);
+			int read = 0;
+			do {
+				read += fread(&(buffer[read]), 1, size - read, in);
+			} while (read < size);
+			assert(read == size);
 			std::memcpy(&hashId, &(buffer[pos]), sizeof(uint64_t));
 			pos += sizeof(uint64_t);
 			std::memcpy(&recCount, &(buffer[pos]), sizeof(uint64_t));

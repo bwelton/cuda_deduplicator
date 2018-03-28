@@ -171,10 +171,10 @@ struct StackKeyReader {
 	~StackKeyReader() {
 		fclose(in);
 	}
-	std::vector<std::pair<uint64_t, std::vector<StackPoint> > > ReadStacks() {
+	std::map<uint64_t, std::vector<StackPoint> > ReadStacks() {
 		char buffer[512000];
 		uint64_t size = 0;
-		std::vector<std::pair<uint64_t, std::vector<StackPoint> > > ret;
+		std::map<uint64_t, std::vector<StackPoint> > ret;
 		while(fread(&size,1, sizeof(int), in) != 0) {
 			std::vector<StackPoint> points; 
 			uint64_t hashId, recCount, pos;

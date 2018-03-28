@@ -55,7 +55,12 @@ struct OutputFile {
 	}
 };
 
+
+
+
 thread_local std::shared_ptr<OutputFile> outputFile;
+thread_local std::shared_ptr<StackKeyWriter> keyFile;
+
 
 extern "C" {
 
@@ -71,6 +76,10 @@ extern "C" {
 		ss << "stackOut." << my_thread_id << ".bin";
 		outputFile.reset(new OutputFile(ss.str()));
 		assert(outputFile.get() != NULL);
+		ss.clear();
+		ss << "stackOut." << my_thread_id << ".key";
+		keyFile.reset(new StackKeyWriter(fopen(ss.c_str(),"w")));
+		assert(keyFile.get() != NULL);
 	}
 
 
@@ -78,31 +87,41 @@ extern "C" {
 	__attribute__ ((noinline)) void RecordStack() {
 		SETUP_INTERCEPTOR();
 		std::vector<Frame> stackwalk;
-		int pos = 0;
+		std::vector<StackPoint> points;
+		uint64_t pos = 0;
 		StackPoint sp;
 		std::string lib;
 		void * stab;
 		if(local_walker->walkStack(stackwalk) == false) {
 			std::cout << "Could not walk stack, returning nothing" << std::endl;
-			fwrite(&pos, 1, sizeof(int), outputFile->outFile);
+			fwrite(&pos, 1, sizeof(uint64_t), outputFile->outFile);
 			return;
 		}
-		uint64_t offset = stackwalk.size();
-		std::memcpy(stackStore, &offset, sizeof(uint64_t));
-		pos += sizeof(uint64_t);
 		for (auto frame : stackwalk) {
+			StackPoint sp;
 			frame.getLibOffset(lib, offset, stab);
 			sp.libname = lib;
 			sp.libOffset = offset;
-			if (pos < 512000) {
-				int ret = sp.Serialize(&(stackStore[pos]), 512000 - pos);
-				if (ret == -1)
-					assert(ret != -1);
-				pos += ret;
-			}
+			points.push_back(sp);
 		}
-		fwrite(&pos, 1, sizeof(int), outputFile->outFile);
-		fwrite(stackStore, 1, pos, outputFile->outFile);
+		pos = keyFile.InsertStack(points);
+		fwrite(&pos, 1, sizeof(uint64_t), outputFile->outFile);
+		// uint64_t offset = stackwalk.size();
+		// std::memcpy(stackStore, &offset, sizeof(uint64_t));
+		// pos += sizeof(uint64_t);
+		// for (auto frame : stackwalk) {
+		// 	frame.getLibOffset(lib, offset, stab);
+		// 	sp.libname = lib;
+		// 	sp.libOffset = offset;
+		// 	if (pos < 512000) {
+		// 		int ret = sp.Serialize(&(stackStore[pos]), 512000 - pos);
+		// 		if (ret == -1)
+		// 			assert(ret != -1);
+		// 		pos += ret;
+		// 	}
+		// }
+		// fwrite(&pos, 1, sizeof(int), outputFile->outFile);
+		// fwrite(stackStore, 1, pos, outputFile->outFile);
 	}
 
 

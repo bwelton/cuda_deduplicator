@@ -76,7 +76,7 @@ extern "C" {
 		ss << "stackOut." << my_thread_id << ".bin";
 		outputFile.reset(new OutputFile(ss.str()));
 		assert(outputFile.get() != NULL);
-		ss.clear();
+		ss.str(std::string());
 		ss << "stackOut." << my_thread_id << ".key";
 		keyFile.reset(new StackKeyWriter(fopen(ss.str().c_str(),"w")));
 		assert(keyFile.get() != NULL);

@@ -111,7 +111,7 @@ struct StackHasher{
 	uint64_t HashStack(std::vector<StackPoint> & points) {
 		if (points.size() == 0)
 			return 0;
-		ss.clear();
+		ss.str(std::string());
 		for (auto i : points)
 			ss << i.libname << "," << i.libOffset << "|";
 		return std::hash<std::string>()(ss.str());

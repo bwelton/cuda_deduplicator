@@ -9,16 +9,16 @@ SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 
 void SyncTesting::Run() {
 	double time;
-	{
-		TimeApplications base(_vm);
-		std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".base.out"));
-		time = base.Run();
-		base.ReturnToTerminal();
-		_model.AddExecutionTime(time);
-		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
-	}
+	// {
+	// 	TimeApplications base(_vm);
+	// 	std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
+	// 	std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
+	// 	base.RedirectOutToFile(_programName + std::string(".base.out"));
+	// 	time = base.Run();
+	// 	base.ReturnToTerminal();
+	// 	_model.AddExecutionTime(time);
+	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	// }
 	
 	
 	//RunWithCUPTI();

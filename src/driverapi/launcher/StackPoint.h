@@ -116,7 +116,7 @@ struct StackHasher{
 			ss << i.libname << "," << i.libOffset << "|";
 		return std::hash<std::string>()(ss.str());
 	}
-}
+};
 
 
 // Key file for the stacks outputted
@@ -150,7 +150,7 @@ struct StackKeyWriter {
 		std::memcpy(buffer, &offset, sizeof(uint64_t));
 		pos += sizeof(uint64_t);
 		for (auto i : points) {
-			int ret = sp.Serialize(&(buffer[pos]), 512000 - pos);
+			int ret = i.Serialize(&(buffer[pos]), 512000 - pos);
 			if (ret == -1)
 				assert(ret != -1);
 			pos += ret;

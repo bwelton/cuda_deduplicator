@@ -160,6 +160,7 @@ struct StackKeyWriter {
 		fwrite(&pos, 1, sizeof(int), out);
 		fwrite(&hash, 1, sizeof(uint64_t), out);
 		fwrite(buffer, 1, pos, out);
+		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
 	}
 };
 
@@ -192,6 +193,7 @@ struct StackKeyReader {
 				points.push_back(sp);
 			}
 			ret[hashId] = points;
+			std::cerr << "Read stack with hash id: " << hashId << std::endl;
 		}
 		return ret;
 	}

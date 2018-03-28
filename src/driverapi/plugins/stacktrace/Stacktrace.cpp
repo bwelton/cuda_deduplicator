@@ -77,16 +77,16 @@ extern "C" {
 
 	__attribute__ ((noinline)) void RecordStack() {
 		SETUP_INTERCEPTOR();
-		void * backtraceStore[1024];
-		int bt_size = backtrace(backtraceStore, 1024);
-		std::cerr << "[SDebug] Backtrace Stack of size - " << bt_size << std::endl;
 		std::vector<Frame> stackwalk;
-		local_walker->walkStack(stackwalk);
-		std::cerr << "[SDebug] Dyninst Stack of size - " << stackwalk.size() << std::endl;
 		int pos = 0;
 		StackPoint sp;
 		std::string lib;
 		void * stab;
+		if(local_walker->walkStack(stackwalk) == false) {
+			std::cout << "Could not walk stack, returning nothing" << std::endl;
+			fwrite(&pos, 1, sizeof(int), outputFile->outFile);
+			return;
+		}
 		uint64_t offset = stackwalk.size();
 		std::memcpy(stackStore, &offset, sizeof(uint64_t));
 		pos += sizeof(uint64_t);

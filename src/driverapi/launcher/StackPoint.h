@@ -106,6 +106,96 @@ struct StackPoint {
 
 };
 
+struct StackHasher{
+	std::stringstream ss;
+	uint64_t HashStack(std::vector<StackPoint> & points) {
+		if (points.size() == 0)
+			return 0;
+		ss.clear();
+		for (auto i : points)
+			ss << i.libname << "," << i.libOffset << "|";
+		return std::hash<std::string>()(ss.str());
+	}
+}
+
+
+// Key file for the stacks outputted
+struct StackKeyWriter {
+	char buffer[512000];
+	uint64_t curPos;
+	std::map<uint64_t, uint64_t> prevStacks;
+	StackHasher h;
+	FILE * out;
+	StackKeyWriter(FILE * fp) {
+		out = fp;
+		curPos = 1;
+	}
+	~StackKeyWriter() {
+		fclose(out);
+	}
+	uint64_t InsertStack(std::vector<StackPoint> & points){
+		uint64_t hash = h.HashStack(points);
+		if (hash == 0)
+			return 0;
+		if (prevStacks.find(hash) != prevStacks.end()) {
+			hash = prevStacks[hash];
+			return hash;
+		} else {
+			prevStacks[hash] = curPos;
+			hash = curPos;
+			curPos++;
+		}
+		int pos = 0;
+		uint64_t offset = points.size();
+		std::memcpy(buffer, &offset, sizeof(uint64_t));
+		pos += sizeof(uint64_t);
+		for (auto i : points) {
+			int ret = sp.Serialize(&(buffer[pos]), 512000 - pos);
+			if (ret == -1)
+				assert(ret != -1);
+			pos += ret;
+		}
+		// Size of the hash table id
+		pos += sizeof(uint64_t);
+		fwrite(&pos, 1, sizeof(int), out);
+		fwrite(&hash, 1, sizeof(uint64_t), out);
+		fwrite(buffer, 1, pos, out);
+	}
+};
+
+struct StackKeyReader {
+	FILE * in;
+	StackKeyReader(FILE * fp) {
+		in = fp;
+	}
+	~StackKeyReader() {
+		fclose(in);
+	}
+	std::vector<std::pair<uint64_t, std::vector<StackPoint> > > ReadStacks() {
+		char buffer[512000];
+		uint64_t size = 0;
+		std::vector<std::pair<uint64_t, std::vector<StackPoint> > > ret;
+		while(fread(&size,1, sizeof(int), in) != 0) {
+			std::vector<StackPoint> points; 
+			uint64_t hashId, recCount, pos;
+			pos = 0;
+			assert(fread(buffer, 1, size, in) == size);
+			std::memcpy(&hashId, &(buffer[pos]), sizeof(uint64_t));
+			pos += sizeof(uint64_t);
+			std::memcpy(&recCount, &(buffer[pos]), sizeof(uint64_t));
+			pos += sizeof(uint64_t);
+			for (int i = 0; i < recCount; i++) {
+				StackPoint sp;
+				pos += sp.Deserialize(&(buffer[pos]), size - pos);
+				points.push_back(sp);
+			}
+			ret[hashId] = points;
+		}
+		return ret;
+	}
+};
+
+
 namespace std {
 	template<> struct less<StackPoint> {
 		bool operator() (const StackPoint& lhs, const StackPoint& rhs) {
@@ -113,3 +203,4 @@ namespace std {
 		};
 	};
 };
+

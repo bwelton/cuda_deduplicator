@@ -183,7 +183,7 @@ struct StackKeyReader {
   		char * token = strtok(tmp.get(), "\n");
   		while (token != NULL) {
   			std::string tmpToken = std::string(token);
-  			uint64_t hash = ::stoull(tmpToken.substr(0, tmpToken.find("$")));
+  			uint64_t hash = std::stoull(tmpToken.substr(0, tmpToken.find("$")));
   			uint64_t start = tmpToken.find("$");
   			ret[hash] = std::vector<StackPoint>();
   			while(start < tmpToken.size()){
@@ -191,13 +191,13 @@ struct StackKeyReader {
   				std::string r;
   				if (tmpToken.find("$", start+1) != std::string::npos)
   					r = tmpToken.substr(start, tmpToken.find("$", start+1));
-  					start = tmpToken.find("$", start+1)
+  					start = tmpToken.find("$", start+1);
   				else{
   					r = tmpToken.substr(start);
   					start = tmpToken.size();
   				}
   				sp.libname = r.substr(0, r.find("@"));
-  				sp.libOffset = ::stoull(r.substr(r.find("@")));
+  				sp.libOffset = std::stoull(r.substr(r.find("@")));
   				std::cerr <<  hash << "," sp.libname << "," << sp.libOffset << std::endl;
   				ret[hash].push_back(sp);
   			}

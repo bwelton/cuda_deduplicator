@@ -146,21 +146,17 @@ struct StackKeyWriter {
 			curPos++;
 		}
 		int pos = 0;
-		uint64_t offset = points.size();
-		std::memcpy(buffer, &offset, sizeof(uint64_t));
-		pos += sizeof(uint64_t);
-		for (auto i : points) {
-			int ret = i.Serialize(&(buffer[pos]), 512000 - pos);
-			if (ret == -1)
-				assert(ret != -1);
-			pos += ret;
-		}
-		// Size of the hash table id
-		pos += sizeof(uint64_t);
-		fwrite(&pos, 1, sizeof(int), out);
-		fwrite(&hash, 1, sizeof(uint64_t), out);
-		if (fwrite(buffer, 1, pos, out) != pos)
-			assert(pos == -1);
+		std::stringstream outStr;
+		outStr << hash << "$";
+		for (auto i : points)
+			outStr << i.libname << "@" << i.libOffset << "$";
+
+		std::string t = outStr.str();
+		t.pop_back();
+		t = t + std::string("\n");
+		do {
+			pos += fwrite(t.c_str(), 1, t.size() - pos, out);
+		} while(pos != t.size());
 		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
 	}
 };
@@ -174,33 +170,66 @@ struct StackKeyReader {
 		fclose(in);
 	}
 	std::map<uint64_t, std::vector<StackPoint> > ReadStacks() {
-		char buffer[512000];
-		uint64_t size = 0;
 		std::map<uint64_t, std::vector<StackPoint> > ret;
-		while(fread(&size,1, sizeof(int), in) > 0) {
-			if (feof(in))
-				break;
-			std::vector<StackPoint> points; 
-			uint64_t hashId, recCount, pos;
-			pos = 0;
-			int read = 0;
-			do {
-				read += fread(&(buffer[read]), 1, size - read, in);
-			} while (read < size);
-			assert(read == size);
-			std::memcpy(&hashId, &(buffer[pos]), sizeof(uint64_t));
-			pos += sizeof(uint64_t);
-			std::memcpy(&recCount, &(buffer[pos]), sizeof(uint64_t));
-			pos += sizeof(uint64_t);
-			for (int i = 0; i < recCount; i++) {
-				StackPoint sp;
-				pos += sp.Deserialize(&(buffer[pos]), size - pos);
-				points.push_back(sp);
-			}
-			ret[hashId] = points;
-			std::cerr << "Read stack with hash id: " << hashId << std::endl;
-		}
+		fseek(in, 0, SEEK_END);
+  		uint64_t size = ftell(in);
+  		fseek(in, 0, SEEK_SET);
+  		std::shared_ptr<char> tmp(new char[size+1]);
+  		uint64_t readPos = 0;
+  		do {
+  			readPos += fread(tmp.get(), 1, size - readPos, in);
+  		} while (readPos != size);
+  		tmp.get()[size] = '\000';
+  		char * token = strtok(tmp.get(), "\n");
+  		while (token != NULL) {
+  			std::string tmpToken = std::string(token);
+  			uint64_t hash = ::stoull(tmpToken.substr(0, tmpToken.find("$")));
+  			uint64_t start = tmpToken.find("$");
+  			ret[hash] = std::vector<StackPoint>();
+  			while(start < tmpToken.size()){
+  				StackPoint sp;
+  				std::string r;
+  				if (tmpToken.find("$", start+1) != std::string::npos)
+  					r = tmpToken.substr(start, tmpToken.find("$", start+1));
+  					start = tmpToken.find("$", start+1)
+  				else{
+  					r = tmpToken.substr(start);
+  					start = tmpToken.size();
+  				}
+  				sp.libname = r.substr(0, r.find("@"));
+  				sp.libOffset = ::stoull(r.substr(r.find("@")));
+  				std::cerr <<  hash << "," sp.libname << "," << sp.libOffset << std::endl;
+  				ret[hash].push_back(sp);
+  			}
+  			token = strtok(NULL,"\n");
+  		}
+
+
+		// while(fread(&size,1, sizeof(int), in) > 0) {
+		// 	if (feof(in))
+		// 		break;
+		// 	std::vector<StackPoint> points; 
+		// 	uint64_t hashId, recCount, pos;
+		// 	pos = 0;
+		// 	int read = 0;
+		// 	do {
+		// 		read += fread(&(buffer[read]), 1, size - read, in);
+		// 	} while (read < size);
+		// 	assert(read == size);
+		// 	std::memcpy(&hashId, &(buffer[pos]), sizeof(uint64_t));
+		// 	pos += sizeof(uint64_t);
+		// 	std::memcpy(&recCount, &(buffer[pos]), sizeof(uint64_t));
+		// 	pos += sizeof(uint64_t);
+		// 	for (int i = 0; i < recCount; i++) {
+		// 		StackPoint sp;
+		// 		pos += sp.Deserialize(&(buffer[pos]), size - pos);
+		// 		points.push_back(sp);
+		// 	}
+		// 	ret[hashId] = points;
+		// 	std::cerr << "Read stack with hash id: " << hashId << std::endl;
+		// }
 		return ret;
+  			}
 	}
 };
 

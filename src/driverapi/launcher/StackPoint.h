@@ -189,13 +189,13 @@ struct StackKeyReader {
   			while (getline(ifstring, line, '$')) {
   				if (line.find("@") == std::string::npos){
   					hash = std::stoull(line);
-  					std::cerr << "My hash - " << hash << std::endl;
+  					//std::cerr << "My hash - " << hash << std::endl;
   					ret[hash] = std::vector<StackPoint>();
   				} else {
   					StackPoint sp;
   					sp.libname = line.substr(0, line.find('@'));	
   					sp.libOffset = std::stoull(line.substr(line.find('@')+1)); 	
-  					std::cerr <<  hash << "," << sp.libname << "," << sp.libOffset << std::endl;
+  					//std::cerr <<  hash << "," << sp.libname << "," << sp.libOffset << std::endl;
   					ret[hash].push_back(sp);
   				}
   			}

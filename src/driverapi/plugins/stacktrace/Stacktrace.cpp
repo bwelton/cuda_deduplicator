@@ -35,6 +35,7 @@ thread_local size_t charSize = 0;
 thread_local Walker *  local_walker;
 // Reentrant protection 
 thread_local bool in_inst = false;
+thread_local uint64_t skippedStacks;
 
 // Storing the current stack
 thread_local std::vector<std::pair<uint64_t, uint64_t> > calls;
@@ -68,6 +69,7 @@ extern "C" {
 		if (outputFile.get() != NULL)
 			return;
 
+		skippedStacks = 0;
 		local_walker = Walker::newWalker();
 		if (my_thread_id == -1)
 			my_thread_id = (pid_t) syscall(__NR_gettid);
@@ -94,6 +96,7 @@ extern "C" {
 		void * stab;
 		if(local_walker->walkStack(stackwalk) == false) {
 			std::cout << "Could not walk stack, returning nothing" << std::endl;
+			skippedStacks += 1; 
 			fwrite(&pos, 1, sizeof(uint64_t), outputFile->outFile);
 			return;
 		}

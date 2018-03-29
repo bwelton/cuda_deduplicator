@@ -183,15 +183,16 @@ struct StackKeyReader {
   		char * token = strtok(tmp.get(), "\n");
   		while (token != NULL) {
   			std::string tmpToken = std::string(token);
+  			std::cerr << tmpToken << std::endl;
   			uint64_t hash = std::stoull(tmpToken.substr(0, tmpToken.find("$")));
   			uint64_t start = tmpToken.find("$") + 1;
   			ret[hash] = std::vector<StackPoint>();
   			while(start < tmpToken.size()){
   				StackPoint sp;
   				std::string r;
-  				if (tmpToken.find("$", start+1) != std::string::npos){
-  					r = tmpToken.substr(start, tmpToken.find("$", start+1));
-  					start = tmpToken.find("$", start+1) + 1;
+  				if (tmpToken.find("$", start) != std::string::npos){
+  					r = tmpToken.substr(start, tmpToken.find("$", start));
+  					start = tmpToken.find("$", start) + 1;
 	  			}	else{
   					r = tmpToken.substr(start);
   					start = tmpToken.size();

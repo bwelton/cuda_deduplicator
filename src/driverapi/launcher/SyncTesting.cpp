@@ -43,6 +43,7 @@ void SyncTesting::Run() {
 	//InstrumentProgram();
 	std::vector<StackPoint> timingList;
 	_model.GetTimingList(timingList);
+	return;
 	// Get timing for these functions
 	{
 		TimeApplications base(_vm);

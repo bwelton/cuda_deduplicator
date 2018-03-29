@@ -97,6 +97,7 @@ extern "C" {
 		if(local_walker->walkStack(stackwalk) == false) {
 			std::cout << "Could not walk stack, returning nothing" << std::endl;
 			skippedStacks += 1; 
+			std::cout << "Skipped Stacks: " << skippedStacks << std::endl;
 			fwrite(&pos, 1, sizeof(uint64_t), outputFile->outFile);
 			return;
 		}

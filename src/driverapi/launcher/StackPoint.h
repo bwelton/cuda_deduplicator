@@ -155,7 +155,8 @@ struct StackKeyWriter {
 		t.pop_back();
 		t = t + std::string("\n");
 		do {
-			pos += fwrite(t.c_str(), 1, t.size() - pos, out);
+			const char * myString = t.c_str();
+			pos += fwrite(&myString[t.size()-pos], 1, t.size() - pos, out);
 		} while(pos != t.size());
 		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
 	}

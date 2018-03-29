@@ -131,6 +131,7 @@ extern "C" {
 
 
 	__attribute__ ((noinline)) int SynchronizationWrapper(void * a, void * b, void * c) {
+		assert(1==0);
 		return 0;
 	} 
 

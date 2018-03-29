@@ -198,7 +198,7 @@ struct StackKeyReader {
   				}
   				sp.libname = r.substr(0, r.find("@"));
   				sp.libOffset = std::stoull(r.substr(r.find("@")));
-  				std::cerr <<  hash << "," sp.libname << "," << sp.libOffset << std::endl;
+  				std::cerr <<  hash << "," << sp.libname << "," << sp.libOffset << std::endl;
   				ret[hash].push_back(sp);
   			}
   			token = strtok(NULL,"\n");

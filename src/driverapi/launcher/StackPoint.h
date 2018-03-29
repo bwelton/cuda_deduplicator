@@ -156,7 +156,7 @@ struct StackKeyWriter {
 		t = t + std::string("\n");
 		do {
 			const char * myString = t.c_str();
-			pos += fwrite(&myString[t.size()-pos], 1, t.size() - pos, out);
+			pos += fwrite(&myString[pos], 1, t.size() - pos, out);
 		} while(pos != t.size());
 		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
 	}
@@ -178,7 +178,8 @@ struct StackKeyReader {
   		std::shared_ptr<char> tmp(new char[size+1]);
   		uint64_t readPos = 0;
   		do {
-  			readPos += fread(tmp.get(), 1, size - readPos, in);
+  			char * myString = tmp.get();
+  			readPos += fread(&myString[readPos], 1, size - readPos, in);
   		} while (readPos != size);
   		tmp.get()[size] = '\000';
   		char * token = strtok(tmp.get(), "\n");

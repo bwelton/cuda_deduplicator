@@ -182,27 +182,43 @@ struct StackKeyReader {
   		tmp.get()[size] = '\000';
   		char * token = strtok(tmp.get(), "\n");
   		while (token != NULL) {
+  			uint64_t hash = 0;
   			std::string tmpToken = std::string(token);
-  			std::cerr << tmpToken << std::endl;
-  			uint64_t hash = std::stoull(tmpToken.substr(0, tmpToken.find('$')));
-  			uint64_t start = tmpToken.find('$') + 1;
-  			ret[hash] = std::vector<StackPoint>();
-  			while(start < tmpToken.size()){
-  				StackPoint sp;
-  				std::string r;
-  				if (tmpToken.find('$', start) != std::string::npos){
-  					r = tmpToken.substr(start, tmpToken.find('$', start));
-  					start = tmpToken.find('$', start) + 1;
-	  			}	else{
-  					r = tmpToken.substr(start);
-  					start = tmpToken.size();
+  			std::istringstream ifstring(tmpToken);
+  			std::string line;
+  			while (getline(ifstring, line, '$')) {
+  				if (line.find("@") == std::string::npos){
+  					hash = std::stoull(line);
+  					std::cerr << "My hash - " << hash << std::endl;
+  					ret[hash] = std::vector<StackPoint>();
+  				} else {
+  					StackPoint sp;
+  					sp.libname = r.substr(0, r.find('@'));	
+  					sp.libOffset = std::stoull(r.substr(r.find('@')+1)); 	
+  					std::cerr <<  hash << "," << sp.libname << "," << sp.libOffset << std::endl;
+  					ret[hash].push_back(sp);
   				}
-  				std::cerr << r << std::endl;
-  				sp.libname = r.substr(0, r.find('@'));	
-  				sp.libOffset = std::stoull(r.substr(r.find('@')));
-  				std::cerr <<  hash << "," << sp.libname << "," << sp.libOffset << std::endl;
-  				ret[hash].push_back(sp);
   			}
+
+  			// uint64_t hash = std::stoull(tmpToken.substr(0, tmpToken.find('$')));
+  			// uint64_t start = tmpToken.find('$') + 1;
+  			
+  			// while(start < tmpToken.size()){
+  			// 	StackPoint sp;
+  			// 	std::string r;
+  			// 	if (tmpToken.find('$', start) != std::string::npos){
+  			// 		r = tmpToken.substr(start, tmpToken.find('$', start));
+  			// 		start = tmpToken.find('$', start) + 1;
+	  		// 	}	else{
+  			// 		r = tmpToken.substr(start);
+  			// 		start = tmpToken.size();
+  			// 	}
+  			// 	std::cerr << r << std::endl;
+  			// 	sp.libname = r.substr(0, r.find('@'));	
+  			// 	sp.libOffset = std::stoull(r.substr(r.find('@')));
+  			// 	std::cerr <<  hash << "," << sp.libname << "," << sp.libOffset << std::endl;
+  			// 	ret[hash].push_back(sp);
+  			// }
   			token = strtok(NULL,"\n");
   		}
 

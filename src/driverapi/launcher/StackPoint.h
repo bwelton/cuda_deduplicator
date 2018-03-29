@@ -189,10 +189,10 @@ struct StackKeyReader {
   			while(start < tmpToken.size()){
   				StackPoint sp;
   				std::string r;
-  				if (tmpToken.find("$", start+1) != std::string::npos)
+  				if (tmpToken.find("$", start+1) != std::string::npos){
   					r = tmpToken.substr(start, tmpToken.find("$", start+1));
   					start = tmpToken.find("$", start+1);
-  				else{
+	  			}	else{
   					r = tmpToken.substr(start);
   					start = tmpToken.size();
   				}

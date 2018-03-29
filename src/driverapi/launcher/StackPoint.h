@@ -229,7 +229,6 @@ struct StackKeyReader {
 		// 	std::cerr << "Read stack with hash id: " << hashId << std::endl;
 		// }
 		return ret;
-  			}
 	}
 };
 

@@ -272,8 +272,8 @@ bool LoadStoreInst::RunOneTimeCode() {
   	}
 
 #ifdef DEBUG_LS
-  	for (auto i : _firstUses)
-  		std::cerr << i.first << "," << i.second.framePtr << "," << i.second.funcName << "," << i.second.libname << "," << i.second.libOffset << std::endl;
+  	// for (auto i : _firstUses)
+  	// 	std::cerr << i.first << "," << i.second.framePtr << "," << i.second.funcName << "," << i.second.libname << "," << i.second.libOffset << std::endl;
 #endif
 
 	// BPatch_process * proc = dynamic_cast<BPatch_process*>(_addrSpace);

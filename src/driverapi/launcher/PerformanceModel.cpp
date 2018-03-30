@@ -18,7 +18,13 @@ void PerformanceModel::AddFirstUses(std::map<uint64_t, StackPoint> uses) {
 
 void PerformanceModel::CaptureSyncTime() {
 	std::map<std::string, uint64_t> callNameToId;
-
+	for (auto i : _stackRecords) {
+		if (i.first != 0) {
+			callNameToId[i.second.GetFirstCudaCall().funcName] = i.first;
+		}
+	}
+	callNameToId[std::string("unknown")] = 0;
+	
 
 // 	std::ifstream ifs ("callDelay.out", std::ifstream::in);
 // 	std::string line;

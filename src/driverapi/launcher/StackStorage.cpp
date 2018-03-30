@@ -1,5 +1,7 @@
 #include "StackStorage.h"
 
+StackRecord::StackRecord() {}
+
 StackRecord::StackRecord(uint64_t id, std::vector<StackPoint> & points) : _id(id), _points(points) {
 
 }

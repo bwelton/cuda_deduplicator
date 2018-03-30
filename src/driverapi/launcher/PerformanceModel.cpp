@@ -18,6 +18,7 @@ void PerformanceModel::AddFirstUses(std::map<uint64_t, StackPoint> uses) {
 
 void PerformanceModel::CaptureSyncTime() {
 
+	std::cerr << "[PerformanceModel] In capture sync time" << std::endl;
 	FILE * inFile = fopen("callDelay.out","rb");
 	assert(inFile != NULL);
 
@@ -28,10 +29,11 @@ void PerformanceModel::CaptureSyncTime() {
 	elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t));
 	_timingData = std::vector<TimingData>(elementCount);
 
-	uint64_t curPos = 0;
+
 	uint64_t id;
 	double time; 
 	uint64_t count;
+	uint64_t total = 0;
 	for (int i = 0; i < elementCount; i++) {
 		fread(&id, 1, sizeof(uint64_t), inFile);
 		fread(&time, 1, sizeof(double), inFile);
@@ -39,9 +41,47 @@ void PerformanceModel::CaptureSyncTime() {
 		_timingData[i].genId = id;
 		_timingData[i].time = time;
 		_timingData[i].count = count;
+		total += count;
 	}
+	std::cerr << "[PerformanceModel] Total Synchronization Count: " << total << " Expecting: " << _orderingInfo.size() << std::endl;
 	
-	
+	// Set the real id's for the timing data calls
+	std::cerr << "[PerformanceModel] Checking for errors" << std::endl;
+	// // Manually check the first position
+	// uint64_t curPos = 0;
+	// for (uint64_t i = 0; i < _orderingInfo.size(); i++) {
+
+	// }
+	// uint64_t curPos = 0;
+	// for (uint64_t i = 0; i < _timingData.size(); i++) {
+	// 	uint64_t prevPos = curPos;
+	// 	uint64_t genId = _timingData[i].genId;
+	// 	uint64_t remaining = _timingData[i].count;
+	// 	int currentId = -1;
+
+	// 	for (uint64_t z = curPos; z < _orderingInfo.size(); z++) {
+	// 		if (currentId == -1) {
+	// 			currentId = _orderingInfo[z];
+	// 			if (_callMapper.StackIDToGeneral(_orderingInfo[z]) != genId){
+	// 				break;
+	// 			}
+	// 		}
+	// 		if (currentId != _orderingInfo[z])
+	// 			break;
+	// 		remaining = remaining - 1;
+	// 		curPos++;
+	// 		if (remaining == 0)
+	// 			break;
+	// 	}
+	// 	if (remaining != _timingData[i].count && currentId != -1) {
+	// 		_timingData[i].stackId = currentId;
+	// 	}  
+	// 	if (remaining != 0) {
+	// 		std::cout << "[PerformanceModel] ERROR - Could not identify all synchronizations at position " << z << " with count " << _timingData[i].count << " have " << remaining << " unsatisfied " << std::endl;
+	// 	}
+
+	// }
+
 	// std::map<std::string, uint64_t> callNameToId;
 	// for (auto i : _stackRecords) {
 	// 	if (i.first != 0) {

@@ -263,7 +263,7 @@ void PerformanceModel::ExtractLineInfo() {
 		}	
 	}
 
-	for (auto i : _stackRecords)
+	for (auto & i : _stackRecords)
 		i.second.GetStackSymbols(symbolInfo);
 
 // 	// Decode line info for every stack

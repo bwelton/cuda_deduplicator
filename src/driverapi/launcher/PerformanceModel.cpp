@@ -30,7 +30,7 @@ void PerformanceModel::CaptureSyncTime() {
  	std::ifstream ifs ("callDelay.out", std::ifstream::in);
  	std::string line;
  	uint64_t pos = 0;
-   	while (std::getline(ifs, line)) {
+   	// while (std::getline(ifs, line)) {
 //   		std::vector<std::string> params;
 //   		std::stringstream ss(line);
 //   		while(ss.good()){

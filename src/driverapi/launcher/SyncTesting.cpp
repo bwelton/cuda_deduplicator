@@ -43,7 +43,7 @@ void SyncTesting::Run() {
 	//InstrumentProgram();
 	std::vector<StackPoint> timingList;
 	_model.GetTimingList(timingList);
-
+	return;
 	// Get timing for these functions
 	{
 		TimeApplications base(_vm);
@@ -56,7 +56,7 @@ void SyncTesting::Run() {
 		std::cerr << "Application executed with runtime of - " << mytime << "s" << std::endl;	
 	}
 
-	return;
+
 	// Check that our timing run matches the synchronizations identified.
 	// If so, this program is very likely deterministic given the same inputs in relation to cuda calls.
 	_model.CaptureSyncTime();

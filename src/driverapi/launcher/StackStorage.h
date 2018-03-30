@@ -31,6 +31,12 @@ struct TimingData {
 	uint64_t start;
 	uint64_t end;
 	double time;
+	TimingData() {}
+	TimingData(uint64_t Start, uint64_t len, double Time) {
+		start = Start;
+		end = Start + len;
+		time = Time
+	};
 };
 
 
@@ -41,11 +47,13 @@ public:
 	StackRecord(uint64_t id, std::vector<StackPoint> & points);
 	void GetStackSymbols(SymbolMap & m);
 	void AddStackRecord(uint64_t pos);
+	void AddTimingData(uint64_t start, uint64_t len, double time);
 	StackPoint GetFirstCudaCall();
 private:
 	uint64_t _id;
 	std::vector<StackPoint> _points;
 	std::vector<SyncRangeRecord> _ranges;
+	std::vector<TimingData> _timingData;
 };
 
 

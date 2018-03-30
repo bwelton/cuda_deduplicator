@@ -30,20 +30,25 @@ void PerformanceModel::CaptureSyncTime() {
  	std::ifstream ifs ("callDelay.out", std::ifstream::in);
  	std::string line;
  	uint64_t pos = 0;
-   	// while (std::getline(ifs, line)) {
-//   		std::vector<std::string> params;
-//   		std::stringstream ss(line);
-//   		while(ss.good()){
-//   			std::string substr;
-//   			getline( ss, substr, ',' );
-//   			params.push_back(substr);
-//   		}
-//   		assert(params.size() == 3);
-//   		if (params[0][0] == ' ')
-//   			params[0].erase(0,1);
-//   		std::cerr << params[0] << "," << params[1] << "," << params[2] << std::endl;
-//   		_callPoints.push_back(CallPoint(params[0], uint64_t(std::stoi(params[2])), ::atof(params[1].c_str())));
-//   	}
+   	while (std::getline(ifs, line)) {
+  		std::vector<std::string> params;
+  		std::stringstream ss(line);
+  		while(ss.good()){
+  			std::string substr;
+  			getline( ss, substr, ',' );
+  			params.push_back(substr);
+  		}
+  		assert(params.size() == 3);
+  		if (params[0][0] == ' ')
+  			params[0].erase(0,1);
+
+  		if(callNameToId.find(params[0]) == callNameToId.end()){
+  			std::cout << "[PerformanceModel] ERROR Could not identify call " << params[0] << " at position " << pos << std::endl;
+  		} else {
+  			_stackRecords[callNameToId[params[0]]].AddTimingData(pos,uint64_t(std::stoi(params[2])), ::atof(params[1].c_str()));
+  		}
+  		pos += uint64_t(std::stoi(params[2]));
+  	}
 //   	// Temporary fix for failure to capture first synchronization.
 //   	_callPoints[0].syncCount = _callPoints[0].syncCount;
 // #ifdef DEBUG_MODEL

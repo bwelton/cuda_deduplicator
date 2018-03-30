@@ -18,6 +18,21 @@ void PerformanceModel::AddFirstUses(std::map<uint64_t, StackPoint> uses) {
 
 void PerformanceModel::CaptureSyncTime() {
 
+	// FILE * inFile = fopen("callDelay.out","rb");
+	// assert(inFile != NULL);
+
+	// fseek(inFile, 0, SEEK_END);
+	// uint64_t elementCount = ftell(inFile);
+	// fseek(inFile, 0, SEEK_SET);
+
+	// elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t));
+	// uint64_t id;
+	// double time; 
+	// uint64_t count;
+	// for (int i = 0; i < elementCount; i++) {
+
+	// }
+
 	// std::map<std::string, uint64_t> callNameToId;
 	// for (auto i : _stackRecords) {
 	// 	if (i.first != 0) {

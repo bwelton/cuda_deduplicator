@@ -155,7 +155,7 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 			instFunc = img->findFunction(curObj->fileOffsetToAddr(i.funcOffset));
 		}
 		std::cerr << "Inserting timing Instrimentation into - " << instFunc->getName() << std::endl;
-		std::cerr << "Function Name: " << i.funcName << ","<< i.funcName << std::endl;
+		std::cerr << "Function Name: " << i.funcName << ","<< i.funcName << "," << i.timerID << std::endl;
 		assert(instFunc != NULL);
 		assert(instFunc->getName() == i.funcName);
 		std::vector<BPatch_point*> * funcEntry = instFunc->findPoint(BPatch_locEntry);
@@ -163,7 +163,7 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 		assert(funcEntry->size() > 0);
 		assert(funcExit->size() > 0);
 		std::vector<BPatch_snippet*> testArgs;
-		testArgs.push_back(new BPatch_constExpr(instFunc->getName().c_str()));
+		testArgs.push_back(new BPatch_constExpr(i.timerID));
 		BPatch_funcCallExpr recordFuncEntry(*(startFunc[0]), testArgs);
 		BPatch_funcCallExpr recordFuncExit(*(stopFunc[0]), testArgs);
 		assert(_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) != NULL);

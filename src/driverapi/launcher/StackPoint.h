@@ -47,7 +47,7 @@
 //#define SP_DEBUG 1
 
 struct StackPoint {
-	std::string fname;
+	//std::string fname;
 	std::string libname;
 	std::string funcName;
 	uint64_t libOffset;
@@ -55,7 +55,7 @@ struct StackPoint {
 	uint64_t framePtr;
 	bool inMain;
 	bool empty;
-	StackPoint() : empty(true), libOffset(0), framePtr(0), funcOffset(0), fname(std::string("")), libname(std::string("")) {
+	StackPoint() : empty(true), libOffset(0), framePtr(0), funcOffset(0), funcName(std::string("")), libname(std::string("")) {
 		inMain = false;
 	};
 	uint64_t GetKey() {

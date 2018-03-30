@@ -155,9 +155,9 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 			instFunc = img->findFunction(curObj->fileOffsetToAddr(i.funcOffset));
 		}
 		std::cerr << "Inserting timing Instrimentation into - " << instFunc->getName() << std::endl;
-		std::cerr << "Function Name: " << i.fname << ","<< i.funcName << std::endl;
+		std::cerr << "Function Name: " << i.funcName << ","<< i.funcName << std::endl;
 		assert(instFunc != NULL);
-		assert(instFunc->getName() == i.fname);
+		assert(instFunc->getName() == i.funcName);
 		std::vector<BPatch_point*> * funcEntry = instFunc->findPoint(BPatch_locEntry);
 		std::vector<BPatch_point*> * funcExit = instFunc->findPoint(BPatch_locExit);
 		assert(funcEntry->size() > 0);
@@ -201,7 +201,7 @@ std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks(
 				sp.framePtr = (uint64_t)point->getAddress();
 	   		    sp.empty = false;
 			} else {
-				sp.fname = func->getName();
+				sp.funcName = func->getName();
 				// Get the symbol for the source line.
 				// This may need to be switched to bpatch_object
 				BPatch_module * funcMod = func->getModule();
@@ -377,7 +377,7 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 
 	for (auto i : points) {
 		synchFunctions.push_back(i.funcName);
-		synchFunctions.push_back(i.fname);
+		//synchFunctions.push_back(i.fname);
 	}
 
 	_loadStore->SetWrappedFunctions(wrappedFunctionNames);

@@ -18,21 +18,30 @@ void PerformanceModel::AddFirstUses(std::map<uint64_t, StackPoint> uses) {
 
 void PerformanceModel::CaptureSyncTime() {
 
-	// FILE * inFile = fopen("callDelay.out","rb");
-	// assert(inFile != NULL);
+	FILE * inFile = fopen("callDelay.out","rb");
+	assert(inFile != NULL);
 
-	// fseek(inFile, 0, SEEK_END);
-	// uint64_t elementCount = ftell(inFile);
-	// fseek(inFile, 0, SEEK_SET);
+	fseek(inFile, 0, SEEK_END);
+	uint64_t elementCount = ftell(inFile);
+	fseek(inFile, 0, SEEK_SET);
 
-	// elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t));
-	// uint64_t id;
-	// double time; 
-	// uint64_t count;
-	// for (int i = 0; i < elementCount; i++) {
+	elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t));
+	_timingData = std::vector<TimingData>(elementCount);
 
-	// }
-
+	uint64_t curPos = 0;
+	uint64_t id;
+	double time; 
+	uint64_t count;
+	for (int i = 0; i < elementCount; i++) {
+		fread(&id, 1, sizeof(uint64_t), inFile);
+		fread(&time, 1, sizeof(double), inFile);
+		fread(&count, 1, sizeof(uint64_t), inFile); 
+		_timingData[i].genId = id;
+		_timingData[i].time = time;
+		_timingData[i].count = count;
+	}
+	
+	
 	// std::map<std::string, uint64_t> callNameToId;
 	// for (auto i : _stackRecords) {
 	// 	if (i.first != 0) {

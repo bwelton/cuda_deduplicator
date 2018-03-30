@@ -35,7 +35,7 @@ struct TimingData {
 	TimingData(uint64_t Start, uint64_t len, double Time) {
 		start = Start;
 		end = Start + len;
-		time = Time
+		time = Time;
 	};
 };
 

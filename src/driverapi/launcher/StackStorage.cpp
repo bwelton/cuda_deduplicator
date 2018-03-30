@@ -11,6 +11,7 @@ StackRecord::StackRecord(uint64_t id, std::vector<StackPoint> & points) : _id(id
 StackPoint StackRecord::GetFirstCudaCall() {
 	for (int i = _points.size() - 1; i >= 0; i = i - 1){
 		if(_points[i].libname.find("libcuda.so") != std::string::npos){
+			_points[i].empty = false;
 #ifdef DEBUG_STACKRECORD
 			std::cout << "[StackRecord] First entry into libcuda for Stack Record " << _id << " is " << _points[i].funcName << std::endl;
 #endif

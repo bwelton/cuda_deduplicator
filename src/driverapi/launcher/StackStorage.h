@@ -27,9 +27,17 @@ struct SyncRangeRecord {
 	};
 };
 
+struct TimingData {
+	uint64_t start;
+	uint64_t end;
+	double time;
+};
+
+
 
 class StackRecord {
 public:
+	StackRecord();
 	StackRecord(uint64_t id, std::vector<StackPoint> & points);
 	void GetStackSymbols(SymbolMap & m);
 	void AddStackRecord(uint64_t pos);

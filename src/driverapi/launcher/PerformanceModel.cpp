@@ -46,41 +46,41 @@ void PerformanceModel::CaptureSyncTime() {
 	}
 	std::cerr << "[PerformanceModel] Total Synchronization Count: " << total << " Expecting: " << _orderingInfo.size() << std::endl;
 	std::cerr << "[PerformanceModel] Checking for errors" << std::endl;
-	if (total == _orderingInfo.size()) {
-		// We have an exact match, we can relate 1 to 1 observed with stacks.
-		uint64_t curPos = 0;
-		uint64_t remaining = _timingData[0].count;
-		uint64_t curId = _timingData[0].genId;
-		for (uint64_t i = 0; i < _orderingInfo.size(); i++) {
-			if (remaining == 0){
-				curPos++;
-				if (curPos == _timingData.size())
-					break;
-				remaining = _timingData[curPos].count;
-				curId = _timingData[curPos].genId;
-			}
+	// if (total == _orderingInfo.size()) {
+	// 	// We have an exact match, we can relate 1 to 1 observed with stacks.
+	// 	uint64_t curPos = 0;
+	// 	uint64_t remaining = _timingData[0].count;
+	// 	uint64_t curId = _timingData[0].genId;
+	// 	for (uint64_t i = 0; i < _orderingInfo.size(); i++) {
+	// 		if (remaining == 0){
+	// 			curPos++;
+	// 			if (curPos == _timingData.size())
+	// 				break;
+	// 			remaining = _timingData[curPos].count;
+	// 			curId = _timingData[curPos].genId;
+	// 		}
 
-			uint64_t orderGen = _callMapper.StackIDToGeneral(_orderingInfo[i]);
-			if (curId == orderGen && remaining > 0) {
-				remaining = remaining - 1;
-				_timingData[curPos].stackId = _orderingInfo[i];
-			} else if (curId == 0) {
-				_timingData[curPos].genId = orderGen;
-				_timingData[curPos].stackId = _orderingInfo[i];
-				remaining = _timingData[curPos].count - 1;
-				curId = orderGen;
-			} else if (orderGen == 0) {
-				remaining = remaining - 1;
-			} else if (orderGen != curId) {
-				std::cout << "[PerformanceModel] Missmatch between timing and stack data at position - Timing Data: " << curPos << " and Order Data: " <<  i << std::endl;
-				std::cout << "[PerformanceModel] Ordering Info - ID: " << _orderingInfo[i] << " GenID: " << orderGen << std::endl;
-				std::cout << "[PerformanceModel] Timing Info - ID: " << _timingData[curPos].genId << " GenID: " << _timingData[curPos].count << std::endl;
-				remaining = remaining - 1;
-			}
-		}
-	} else {
-		std::cout << "[PerformanceModel] Error - Timing and Stack models differ, this will cause issues with output. Cannot provide correlation between stacktraces and time saved" << std::endl;
-	}
+	// 		uint64_t orderGen = _callMapper.StackIDToGeneral(_orderingInfo[i]);
+	// 		if (curId == orderGen && remaining > 0) {
+	// 			remaining = remaining - 1;
+	// 			_timingData[curPos].stackId = _orderingInfo[i];
+	// 		} else if (curId == 0) {
+	// 			_timingData[curPos].genId = orderGen;
+	// 			_timingData[curPos].stackId = _orderingInfo[i];
+	// 			remaining = _timingData[curPos].count - 1;
+	// 			curId = orderGen;
+	// 		} else if (orderGen == 0) {
+	// 			remaining = remaining - 1;
+	// 		} else if (orderGen != curId) {
+	// 			std::cout << "[PerformanceModel] Missmatch between timing and stack data at position - Timing Data: " << curPos << " and Order Data: " <<  i << std::endl;
+	// 			std::cout << "[PerformanceModel] Ordering Info - ID: " << _orderingInfo[i] << " GenID: " << orderGen << std::endl;
+	// 			std::cout << "[PerformanceModel] Timing Info - ID: " << _timingData[curPos].genId << " GenID: " << _timingData[curPos].count << std::endl;
+	// 			remaining = remaining - 1;
+	// 		}
+	// 	}
+	// } else {
+	// 	std::cout << "[PerformanceModel] Error - Timing and Stack models differ, this will cause issues with output. Cannot provide correlation between stacktraces and time saved" << std::endl;
+	// }
 
 	// Set the real id's for the timing data calls
 

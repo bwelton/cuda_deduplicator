@@ -17,6 +17,9 @@ void PerformanceModel::AddFirstUses(std::map<uint64_t, StackPoint> uses) {
 }
 
 void PerformanceModel::CaptureSyncTime() {
+	std::map<std::string, uint64_t> callNameToId;
+
+
 // 	std::ifstream ifs ("callDelay.out", std::ifstream::in);
 // 	std::string line;
 //   	while (std::getline(ifs, line)) {
@@ -120,8 +123,9 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 		_stackRecords[i.first] = StackRecord(i.first, i.second);
 
 	ExtractLineInfo();
+	std::vector<StackPoint> e;
 	// Insert an empty element at 0 for unidentified synchronizations.
-	_stackRecords[0] = StackRecord(0, std::vector<StackPoint>());
+	_stackRecords[0] = StackRecord(0, e);
 	uint64_t hash = 0;
 	uint64_t pos = 0;
 	while (fread(&hash, 1, sizeof(uint64_t), inFile) > 0){
@@ -248,7 +252,7 @@ void PerformanceModel::ExtractLineInfo() {
 	}
 
 	for (auto i : _stackRecords)
-		i.GetStackSymbols(symbolInfo);
+		i.second.GetStackSymbols(symbolInfo);
 
 // 	// Decode line info for every stack
 // 	for (auto & i : _stackPoints) {
@@ -324,7 +328,7 @@ void PerformanceModel::ProcessStacks() {
 void PerformanceModel::GetTimingList(std::vector<StackPoint> & timingList) {
 	std::set<uint64_t> alreadyPresent;
 	for (auto i : _stackRecords) {
-		StackPoint p = i.GetFirstCudaCall();
+		StackPoint p = i.second.GetFirstCudaCall();
 		if (p.empty == true)
 			continue;
 		if (alreadyPresent.find(p.libOffset) != alreadyPresent.end())

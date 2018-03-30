@@ -371,8 +371,8 @@ void PerformanceModel::GetTimingList(std::vector<StackPoint> & timingList) {
 	// 	}
 	// }
 		
-#ifdef DEBUG_MODEL
+//#ifdef DEBUG_MODEL
 	for (auto i : timingList)
 		std::cerr << "Inserting timing info into - " << i.funcName << std::endl;
-#endif
+//#endif
 }

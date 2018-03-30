@@ -258,8 +258,8 @@ void PerformanceModel::ExtractLineInfo() {
 	for (auto i : _stackRecords) {
 		std::vector<std::string> lnames = i.second.GetLibNames();
 		for (auto z : lnames){
-			if (symbolInfo.find(z.libname) == symbolInfo.end())
-				symbolInfo[z.libname] = std::shared_ptr<SymbolLookup>(new SymbolLookup(z.libname));
+			if (symbolInfo.find(z) == symbolInfo.end())
+				symbolInfo[z] = std::shared_ptr<SymbolLookup>(new SymbolLookup(z));
 		}	
 	}
 

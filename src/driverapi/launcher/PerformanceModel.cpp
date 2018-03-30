@@ -356,8 +356,10 @@ void PerformanceModel::GetTimingList(std::vector<StackPoint> & timingList) {
 	std::set<uint64_t> alreadyPresent;
 	for (auto i : _stackRecords) {
 		StackPoint p = i.second.GetFirstCudaCall();
-		if (p.empty == true)
+		if (p.empty == true){
+			std::cerr << "Skipping because empty..." << std::endl;
 			continue;
+		}
 		if (alreadyPresent.find(p.libOffset) != alreadyPresent.end()) {
 			alreadyPresent.insert(p.libOffset);
 			p.timerID = _callMapper.NameToGeneral(p.funcName);

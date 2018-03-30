@@ -45,6 +45,7 @@ class StackRecord {
 public:
 	StackRecord();
 	StackRecord(uint64_t id, std::vector<StackPoint> & points);
+	std::vector<std::string> GetLibNames();
 	void GetStackSymbols(SymbolMap & m);
 	void AddStackRecord(uint64_t pos);
 	void AddTimingData(uint64_t start, uint64_t len, double time);

@@ -34,6 +34,14 @@ void StackRecord::AddTimingData(uint64_t start, uint64_t len, double time) {
 	_timingData.push_back(TimingData(start, len, time));
 }
 
+std::vector<std::string> StackRecord::GetLibNames() {
+	std::vector<std::string> ret;
+	for (auto i : _points) {
+		ret.push_back(i.libname);
+	}
+	return ret;
+}
+
 void StackRecord::GetStackSymbols(SymbolMap & m) {
 	for (int i = 0; i < _points.size(); i++) {
 		if (m.find(_points[i].libname) == m.end())

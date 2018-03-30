@@ -25,8 +25,6 @@ void PerformanceModel::CaptureSyncTime() {
 	}
 	callNameToId[std::string("unknown")] = 0;
 
-
-
  	std::ifstream ifs ("callDelay.out", std::ifstream::in);
  	std::string line;
  	uint64_t pos = 0;
@@ -257,8 +255,9 @@ void PerformanceModel::ExtractLineInfo() {
 	SymbolMap symbolInfo;
 	
 	// Open all symtabs for functions found on the stack. 
-	for (auto i : _stackPoints) {
-		for (auto z : i.second){
+	for (auto i : _stackRecords) {
+		std::vector<std::string> lnames = i.second.GetLibNames();
+		for (auto z : lnames){
 			if (symbolInfo.find(z.libname) == symbolInfo.end())
 				symbolInfo[z.libname] = std::shared_ptr<SymbolLookup>(new SymbolLookup(z.libname));
 		}	

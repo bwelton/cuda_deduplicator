@@ -30,12 +30,20 @@ struct SyncRangeRecord {
 struct TimingData {
 	uint64_t start;
 	uint64_t end;
+	uint64_t id;
 	double time;
+
 	TimingData() {}
 	TimingData(uint64_t Start, uint64_t len, double Time) {
 		start = Start;
 		end = Start + len;
 		time = Time;
+	};
+	TimingData(uint64_t Start, uint64_t len, double Time, uint64_t ident) {
+		start = Start;
+		end = Start + len;
+		time = Time;
+		id = ident;
 	};
 };
 

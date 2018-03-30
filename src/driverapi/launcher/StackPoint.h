@@ -51,6 +51,7 @@ struct StackPoint {
 	std::string funcName;
 	uint64_t libOffset;
 	uint64_t funcOffset;
+	uint64_t timerID;
 	bool inMain;
 	bool empty;
 	StackPoint() : empty(true), libOffset(0), funcOffset(0), funcName(std::string("")), libname(std::string("")) {

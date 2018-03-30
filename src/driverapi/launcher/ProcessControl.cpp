@@ -130,7 +130,7 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 		BPatch_funcCallExpr recordFuncEntry(*(addFunction[0]), testArgs);
 		assert(_addrSpace->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
 	}
-
+	std::cerr << "Inserting timers into " << points.size() << " functions " << std::endl;
 	// Insert Entry/Exit calls for synchronous functions
 	for (auto i : points) {
 		BPatch_object * curObj = NULL;

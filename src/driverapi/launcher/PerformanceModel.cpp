@@ -137,18 +137,30 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 		_stackRecords[i.first] = StackRecord(i.first, i.second);
 
 	ExtractLineInfo();
+
+	for (auto i : _stackRecords) 
+		_callMapper.InsertStackID(i.second.GetFirstCudaCall().funcName, i.first);
+
+
+	fseek(inFile, 0, SEEK_END);
+	uint64_t elementCount = ftell(inFile);
+	fseek(inFile, 0, SEEK_SET);
+	elementCount = elementCount / 8;
+	_orderingInfo.reserve(elementCount);
+
 	std::vector<StackPoint> e;
 	// Insert an empty element at 0 for unidentified synchronizations.
 	_stackRecords[0] = StackRecord(0, e);
 	uint64_t hash = 0;
 	uint64_t pos = 0;
 	while (fread(&hash, 1, sizeof(uint64_t), inFile) > 0){
-		if (_stackRecords.find(hash) == _stackRecords.end()) {
-			std::cerr << "[PerformanceModel]  ERROR - WE COULD NOT FIND HASH OF " << hash << std::endl;
-		} else {
-			_stackRecords[hash].AddStackRecord(pos);
-		}
-		pos++;
+		_orderingInfo.push_back(hash);
+		// if (_stackRecords.find(hash) == _stackRecords.end()) {
+		// 	std::cerr << "[PerformanceModel]  ERROR - WE COULD NOT FIND HASH OF " << hash << std::endl;
+		// } else {
+		// 	_stackRecords[hash].AddStackRecord(pos);
+		// }
+		// pos++;
 		if (feof(inFile))
 			break;
 	}
@@ -346,9 +358,9 @@ void PerformanceModel::GetTimingList(std::vector<StackPoint> & timingList) {
 		StackPoint p = i.second.GetFirstCudaCall();
 		if (p.empty == true)
 			continue;
-		if (alreadyPresent.find(p.libOffset) != alreadyPresent.end())
-		{
+		if (alreadyPresent.find(p.libOffset) != alreadyPresent.end()) {
 			alreadyPresent.insert(p.libOffset);
+			p.timerID = _callMapper.NameToGeneral(p.funcName);
 			timingList.push_back(p);
 		}
 	}

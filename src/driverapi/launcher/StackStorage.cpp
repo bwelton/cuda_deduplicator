@@ -1,5 +1,7 @@
 #include "StackStorage.h"
 
+
+
 StackRecord::StackRecord() {}
 
 StackRecord::StackRecord(uint64_t id, std::vector<StackPoint> & points) : _id(id), _points(points) {
@@ -58,3 +60,30 @@ void StackRecord::GetStackSymbols(SymbolMap & m) {
 		std::cout << "[StackRecord]\t" << i.funcName << "@" << i.funcOffset << " in " << i.libname << std::endl;
 #endif 
 }
+
+
+CudaCallMap::CudaCallMap() : _pos(1) {
+	_nameToGeneralID[std::string("unknown")] = 0;
+	_stackToGeneral[0] = 0;
+}
+
+void CudaCallMap::InsertStackID(std::string & s, uint64_t id) {
+	if (_nameToGeneralID.find(s) == _nameToGeneralID.end()){
+		_nameToGeneralID[s] = _pos;
+		_stackToGeneral[id] = _pos;
+		_pos++;
+	}
+}
+
+uint64_t CudaCallMap::StackIDToGeneral(uint64_t id) {
+	if (_stackToGeneral.find(id) == _stackToGeneral.end())
+		assert(1 == 0);
+	return _stackToGeneral[id];
+}
+
+uint64_t CudaCallMap::NameToGeneral(std::string s) {
+	if (_nameToGeneralID.find(s) == _nameToGeneralID.end())
+		assert(1 == 0);
+	return _nameToGeneralID[s];
+}
+

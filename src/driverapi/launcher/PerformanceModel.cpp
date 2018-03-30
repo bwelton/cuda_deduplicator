@@ -41,7 +41,7 @@ void PerformanceModel::CaptureSyncTime() {
 		_timingData[i].genId = id;
 		_timingData[i].time = time;
 		_timingData[i].count = count;
-		std::cerr << id << "," << time << "," << count << std::endl;
+		//std::cerr << id << "," << time << "," << count << std::endl;
 		total += count;
 	}
 	std::cerr << "[PerformanceModel] Total Synchronization Count: " << total << " Expecting: " << _orderingInfo.size() << std::endl;

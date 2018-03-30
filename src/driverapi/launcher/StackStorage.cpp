@@ -47,6 +47,6 @@ void StackRecord::GetStackSymbols(SymbolMap & m) {
 #ifdef DEBUG_STACKRECORD
 	std::cout << "[StackRecord] Decoded Stack for ID - " << _id << std::endl;
 	for (auto i : _points)
-		std::cout << "[StackRecord]\t" << i.funcName << "@" << i.libOffset << " in " << i.libname << std::endl;
+		std::cout << "[StackRecord]\t" << i.funcName << "@" << i.funcOffset << " in " << i.libname << std::endl;
 #endif 
 }

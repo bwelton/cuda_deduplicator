@@ -53,6 +53,8 @@ void PerformanceModel::CaptureSyncTime() {
 		for (uint64_t i = 0; i < _orderingInfo.size(); i++) {
 			if (remaining == 0){
 				curPos++;
+				if (curPos == _timingData.size())
+					break;
 				remaining = _timingData[curPos].count;
 				curId = _timingData[curPos].genId;
 			}
@@ -70,6 +72,8 @@ void PerformanceModel::CaptureSyncTime() {
 				remaining = remaining - 1;
 			} else if (orderGen != curId) {
 				std::cout << "[PerformanceModel] Missmatch between timing and stack data at position - Timing Data: " << curPos << " and Order Data: " <<  i << std::endl;
+				std::cout << "[PerformanceModel] Ordering Info - ID: " << _orderingInfo[i] << " GenID: " << orderGen << std::endl;
+				std::cout << "[PerformanceModel] Timing Info - ID: " << _timingData[curPos].genId << " GenID: " << _timingData[curPos].count << std::endl;
 				remaining = remaining - 1;
 			}
 		}

@@ -89,7 +89,7 @@ void TIMER_SIMPLE_COUNT_ADD_ONE() {
 		TimingCount[TimingCount.size() - 1] += 1;
 	else {
 		// Write out an unknown timing entry
-		outFile->Write(0, 0.0, 1);
+		_outFile->Write(0, 0.0, 1);
 		std::cout << "Timing error, trying to add one to an unknown synchronization!" << std::endl;
 	}
 }
@@ -118,7 +118,7 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 	}
 	std::chrono::duration<double> diff = endTimer-TimingPairs[found].second;
 	if (TimingCount[TimingCount.size() - 1] > 0){
-		outFile->Write(id, diff.count(), TimingCount[TimingCount.size() - 1]);
+		_outFile->Write(id, diff.count(), TimingCount[TimingCount.size() - 1]);
 		//ss << callName << "," << diff.count() << "," << TimingCount[TimingCount.size() - 1];
 		//_timingLog->Write(ss.str());
 		TimingCount.pop_back();

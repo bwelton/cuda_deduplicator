@@ -80,7 +80,7 @@ class CudaCallMap {
 public: 
 	CudaCallMap();
 	// ID for stack record containing the cuda call s.
-	void InsertStackID(std::string & s, uint64_t id);
+	void InsertStackID(std::string s, uint64_t id);
 	uint64_t StackIDToGeneral(uint64_t id);
 	uint64_t NameToGeneral(std::string s);
 
@@ -97,32 +97,6 @@ private:
 	// StackID -> GeneralID
 	// GeneralID,time,count
 };
-
-CudaCallMap::CudaCallMap() : _pos(1) {
-	_nameToGeneralID[std::string("unknown")] = 0;
-	_stackToGeneral[0] = 0;
-}
-
-void CudaCallMap::InsertStackID(std::string & s, uint64_t id) {
-	if (_nameToGeneralID.find(s) == _nameToGeneralID.end()){
-		_nameToGeneralID[s] = _pos;
-		_stackToGeneral[id] = _pos;
-		_pos++;
-	}
-}
-
-uint64_t CudaCallMap::StackIDToGeneral(uint64_t id) {
-	if (_stackToGeneral.find(id) == _stackToGeneral.end())
-		assert(1 == 0);
-	return _stackToGeneral[id];
-}
-
-uint64_t CudaCallMap::NameToGeneral(std::string s) {
-	if (_nameToGeneralID.find(s) == _nameToGeneralID.end())
-		assert(1 == 0);
-	return _nameToGeneralID[s];
-}
-
 
 
 

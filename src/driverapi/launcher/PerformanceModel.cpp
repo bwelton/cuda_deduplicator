@@ -127,7 +127,7 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 	StackKeyReader reader(keyFile);
 	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
 
-	for (auto & i : _stackRecords)
+	for (auto & i : ret)
 		_stackRecords[i.first] = StackRecord(i.first, i.second);
 
 	ExtractLineInfo();

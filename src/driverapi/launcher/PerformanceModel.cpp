@@ -24,11 +24,13 @@ void PerformanceModel::CaptureSyncTime() {
 		}
 	}
 	callNameToId[std::string("unknown")] = 0;
-	
 
-// 	std::ifstream ifs ("callDelay.out", std::ifstream::in);
-// 	std::string line;
-//   	while (std::getline(ifs, line)) {
+
+
+ 	std::ifstream ifs ("callDelay.out", std::ifstream::in);
+ 	std::string line;
+ 	uint64_t pos = 0;
+   	while (std::getline(ifs, line)) {
 //   		std::vector<std::string> params;
 //   		std::stringstream ss(line);
 //   		while(ss.good()){
@@ -125,7 +127,7 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 	StackKeyReader reader(keyFile);
 	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
 
-	for (auto i : ret) 
+	for (auto & i : _stackRecords)
 		_stackRecords[i.first] = StackRecord(i.first, i.second);
 
 	ExtractLineInfo();

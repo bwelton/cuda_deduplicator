@@ -257,12 +257,12 @@ bool LoadStoreInst::RunOneTimeCode() {
 
   	for (auto i : necessarySyncs) {
   		StackPoint tmp;
-  		tmp.framePtr = i.second;
+// 		tmp.framePtr = i.second;
   		std::vector<BPatch_point *> point;
   		_img->findPoints(i.second, point);
   		assert(point.size() > 0);
   		tmp.funcName = point[0]->getFunction()->getName();
-  		tmp.funcName = point[0]->getFunction()->getName();
+  		//tmp.fname = point[0]->getFunction()->getName();
   		tmp.libname = point[0]->getFunction()->getModule()->getObject()->pathName();
   		if (point[0]->getFunction()->getModule()->isSharedLib())
   			tmp.libOffset = (uint64_t)point[0]->getAddress() - (uint64_t)point[0]->getFunction()->getModule()->getBaseAddr();

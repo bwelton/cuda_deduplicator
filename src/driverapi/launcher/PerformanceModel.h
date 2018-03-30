@@ -25,6 +25,7 @@
 #include "ProcessControl.h"
 #include "SymbolLookup.h"
 #include "StackPoint.h"
+#include "StackStorage.h"
 struct CallPoint {
 	std::string libCudaCallname;
 	std::vector<uint64_t> callStacks;

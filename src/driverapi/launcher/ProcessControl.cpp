@@ -180,53 +180,6 @@ std::map<uint64_t, StackPoint> ProcessController::GetFirstUse() {
 
 std::map<uint64_t, std::vector<StackPoint> > ProcessController::GetThreadStacks() {
 	std::map<uint64_t, std::vector<StackPoint> > ret;
-	BPatch_Vector<BPatch_thread *> threads;
-	_appProc->getThreads(threads);
-	//std::cerr << "Got " << threads.size() << " threads" << std::endl;
-	for(auto i : threads){
-		i->getProcess()->stopExecution();
-		BPatch_Vector<BPatch_frame> frames;
-		i->getCallStack(frames);
-		uint64_t threadTid = i->getTid();
-		for (auto frame : frames) {
-			//std::cerr << "adding frame " << std::endl;
-			StackPoint sp;
-			if (frame.getFrameType() != BPatch_frameNormal)
-				continue;
-			BPatch_function * func = frame.findFunction();
-			BPatch_point * point = frame.getPoint();
-			if (func == NULL && point == NULL) {
-				sp.empty = true;
-			} else if (func == NULL && point != NULL) {
-				sp.framePtr = (uint64_t)point->getAddress();
-	   		    sp.empty = false;
-			} else {
-				sp.funcName = func->getName();
-				// Get the symbol for the source line.
-				// This may need to be switched to bpatch_object
-				BPatch_module * funcMod = func->getModule();
-				if (funcMod != NULL){
-					if (funcMod->isSharedLib()){
-						sp.funcOffset = (uint64_t)func->getBaseAddr() - (uint64_t) funcMod->getBaseAddr();
-						sp.libOffset = (uint64_t) frame.getPC() - (uint64_t) funcMod->getBaseAddr();
-					}
-					else{
-						sp.funcOffset = (uint64_t) func->getBaseAddr();
-						sp.libOffset = (uint64_t) frame.getPC();
-						sp.inMain = true;
-					}
-				}
-				sp.framePtr = (uint64_t)frame.getPC();
-				assert(func->getModule() != NULL);
-				sp.libname = func->getModule()->getObject()->pathName();
-				//std::cerr << "Library Name: " << sp.libname  << std::endl;
-				// if (libname != NULL)
-				// 	sp.libname = std::string(libname);
-				sp.empty = false;
-			}
-			ret[threadTid].push_back(sp);
-		}
-	}
 	return ret;
 }
 

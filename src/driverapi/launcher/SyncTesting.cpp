@@ -175,27 +175,26 @@ void SyncTesting::RunWithLoadStoreAnalysis() {
 
 void SyncTesting::HandleBreakpoint(ProcessController * p) {
 	std::map<uint64_t, std::vector<StackPoint> > stacks = p->GetThreadStacks();
-	for (auto i : stacks) {
-		bool containsLibcuda = false;
-		for (auto z : i.second) 
-			if(z.libname.find("libSynchTool.so") != std::string::npos) {
-				containsLibcuda = true;
-				break;
-			}
-		if (containsLibcuda == true) {
-			_model.AddStack(i.second);
-			std::stringstream ss;
-			for (auto z : i.second) {
-				if(_stackKeys.find(z) == _stackKeys.end())
-					_stackKeys.insert(z);
-				ss << std::hex << z.framePtr << std::dec << std::endl;
-			}
-			if (_storedStacks.find(ss.str()) == _storedStacks.end())
-				_storedStacks[ss.str()] = 1;
-			else
-				_storedStacks[ss.str()] += 1;
-		}
-	}
+	// for (auto i : stacks) {
+	// 	bool containsLibcuda = false;
+	// 	for (auto z : i.second) 
+	// 		if(z.libname.find("libSynchTool.so") != std::string::npos) {
+	// 			containsLibcuda = true;
+	// 			break;
+	// 		}
+	// 	if (containsLibcuda == true) {
+	// 		_model.AddStack(i.second);
+	// 		std::stringstream ss;
+	// 		for (auto z : i.second) {
+	// 			if(_stackKeys.find(z) == _stackKeys.end())
+	// 				_stackKeys.insert(z);
+	// 		}
+	// 		if (_storedStacks.find(ss.str()) == _storedStacks.end())
+	// 			_storedStacks[ss.str()] = 1;
+	// 		else
+	// 			_storedStacks[ss.str()] += 1;
+	// 	}
+	// }
 }
 
 void SyncTesting::InstrumentProgram() {

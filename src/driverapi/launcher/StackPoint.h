@@ -47,19 +47,14 @@
 //#define SP_DEBUG 1
 
 struct StackPoint {
-	//std::string fname;
 	std::string libname;
 	std::string funcName;
 	uint64_t libOffset;
 	uint64_t funcOffset;
-	uint64_t framePtr;
 	bool inMain;
 	bool empty;
-	StackPoint() : empty(true), libOffset(0), framePtr(0), funcOffset(0), funcName(std::string("")), libname(std::string("")) {
+	StackPoint() : empty(true), libOffset(0), funcOffset(0), funcName(std::string("")), libname(std::string("")) {
 		inMain = false;
-	};
-	uint64_t GetKey() {
-		return framePtr;
 	};
 
 	int Serialize(char * data, int size) {
@@ -99,7 +94,6 @@ struct StackPoint {
 		std::cerr << "Decoding: " << libname << "," << libOffset << std::endl;
 #endif
 		empty = false;
-		framePtr = libOffset;
 		pos += sizeof(uint64_t);
 		return pos;
 	}
@@ -253,11 +247,11 @@ struct StackKeyReader {
 };
 
 
-namespace std {
-	template<> struct less<StackPoint> {
-		bool operator() (const StackPoint& lhs, const StackPoint& rhs) {
-			return lhs.framePtr < rhs.framePtr;
-		};
-	};
-};
+// namespace std {
+// 	template<> struct less<StackPoint> {
+// 		bool operator() (const StackPoint& lhs, const StackPoint& rhs) {
+// 			return lhs.libOffset < rhs.libOffset;
+// 		};
+// 	};
+// };
 

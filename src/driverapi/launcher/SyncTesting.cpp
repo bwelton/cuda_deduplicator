@@ -43,6 +43,7 @@ void SyncTesting::Run() {
 	//InstrumentProgram();
 	std::vector<StackPoint> timingList;
 	_model.GetTimingList(timingList);
+	std::cout << "Timing list of size - " << timingList.size() << std::endl;
 	return;
 	// Get timing for these functions
 	{

@@ -337,6 +337,7 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 	while (fread(&hash, 1, sizeof(uint64_t), inFile) > 0){
 		syncCount++;
 		found = false;
+		std::cerr << "My Hash: " << hash << std::endl;
 		if (start != true) {
 			if (_orderingInfo.back().stackId == hash){
 				_orderingInfo.back().count++;
@@ -346,7 +347,7 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 		if (start == true || found == false){
 			TimingData tmp;
 			tmp.stackId = hash;
-			std::cerr << "My Hash: " << hash << std::endl;
+			
 			tmp.genId = _callMapper.StackIDToGeneral(hash);
 			tmp.count = 1;
 			_orderingInfo.push_back(tmp);

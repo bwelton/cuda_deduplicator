@@ -302,8 +302,10 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 
 	ExtractLineInfo();
 
-	for (auto i : _stackRecords) 
+	for (auto i : _stackRecords) {
+		std::cerr << "Adding " << i.second.GetFirstCudaCall().funcName << " with hash id " << i.first << std::endl;
 		_callMapper.InsertStackID(i.second.GetFirstCudaCall().funcName, i.first);
+	}
 
 
 	fseek(inFile, 0, SEEK_END);
@@ -333,6 +335,7 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 		if (start == true || found == false){
 			TimingData tmp;
 			tmp.stackId = hash;
+			std::cerr << "My Hash: " << hash << std::endl;
 			tmp.genId = _callMapper.StackIDToGeneral(hash);
 			tmp.count = 1;
 			_orderingInfo.push_back(tmp);

@@ -16,6 +16,16 @@ void PerformanceModel::AddFirstUses(std::map<uint64_t, StackPoint> uses) {
 	_firstUses = uses;
 }
 
+bool PerformanceModel::FindElement(uint64_t genId, uint64_t & startPos, std::vector<TimingData> & array) {
+	for (uint64_t i = startPos; i < array.size(); i++){
+		if(array[i].genId == genId){
+			startPos = i;
+			return true;
+		}
+	}
+	return false;
+}
+
 void PerformanceModel::CaptureSyncTime() {
 
 	std::cerr << "[PerformanceModel] In capture sync time" << std::endl;
@@ -44,8 +54,61 @@ void PerformanceModel::CaptureSyncTime() {
 		//std::cerr << id << "," << time << "," << count << std::endl;
 		total += count;
 	}
-	std::cerr << "[PerformanceModel] Total Synchronization Count: " << total << " Expecting: " << _orderingInfo.size() << std::endl;
+	std::cerr << "[PerformanceModel] Total Synchronization Count: " << total << " Expecting: " << _capturedSyncs << std::endl;
 	std::cerr << "[PerformanceModel] Checking for errors" << std::endl;
+
+	uint64_t correctCount = 0;
+	uint64_t errorCount = 0;
+	uint64_t timingStart = 0;
+	uint64_t stackStart = 0;
+	bool finished = false;
+	do {
+		// If the current positions for each match, check sizes.
+		// If the sizes match, advance both pointers.
+		if (_timingData[timingStart].genId == _orderingInfo[stackStart].genId) {
+			correctCount++;
+			// If equal, advance both counters
+			if(_timingData[timingStart].count == _orderingInfo[stackStart].count) {
+				timingStart++;
+				stackStart++;
+			// If not equal, advance only stack start.
+			} else if (_timingData[timingStart].count > _orderingInfo[stackStart].count) {
+				_timingData[timingStart].count -= _orderingInfo[stackStart].count;
+				stackStart++;
+			} else if (_timingData[timingStart].count < _orderingInfo[stackStart].count) {
+				_orderingInfo[stackStart].count -= _timingData[timingStart].count;
+				timingStart++;
+			}
+		} else if {
+			errorCount++;
+			std::cerr << "[PerformanceModel] Check Error - Missmatch between " << stackStart << " and " << timingStart << std::endl;
+			// We have a missmatch, in this case find the nearest element in either list and adjust the stack postion to that
+			// location.
+			uint64_t tmpStack = stackStart;
+			uint64_t tmptiming = timingStart;
+			if (FindElement(_timingData[timingStart].genId, tmpStack, _orderingInfo)){
+				if(FindElement(_orderingInfo[stackStart].genId, tmptiming, _timingData)){
+					if (tmptiming - timingStart == tmpStack - stackStart){
+						//stackStart = tmpStack;
+						timingStart = tmptiming;
+					} else if (tmptiming - timingStart > tmpStack - stackStart){
+						stackStart = tmpStack;
+					} else {
+						timingStart = tmptiming;
+					}
+				} else {
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		if (stackStart >= _orderingInfo.size() || timingStart >= _timingData.size())
+			break;
+	} while(finished != true);
+
+	std::cerr << "[Performance Model] Errors/Correct Stack Identifications - " << errorCount << " / " << correctCount << std::endl;
+
 	// if (total == _orderingInfo.size()) {
 	// 	// We have an exact match, we can relate 1 to 1 observed with stacks.
 	// 	uint64_t curPos = 0;
@@ -247,15 +310,34 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 	uint64_t elementCount = ftell(inFile);
 	fseek(inFile, 0, SEEK_SET);
 	elementCount = elementCount / 8;
-	_orderingInfo.reserve(elementCount);
+	// Typically have ~7 calls to low level synchronization
+	_orderingInfo.reserve(elementCount / 7);
 
 	std::vector<StackPoint> e;
 	// Insert an empty element at 0 for unidentified synchronizations.
 	_stackRecords[0] = StackRecord(0, e);
 	uint64_t hash = 0;
 	uint64_t pos = 0;
+	uint64_t syncCount = 0;
+	bool start = true;
+	bool found = false;
 	while (fread(&hash, 1, sizeof(uint64_t), inFile) > 0){
-		_orderingInfo.push_back(hash);
+		syncCount++;
+		found = false;
+		if (start != true) {
+			if (_orderingInfo.back().stackId == hash){
+				_orderingInfo.back().count++;
+				found = true;
+			}
+		}
+		if (start == true || found == false){
+			TimingData tmp;
+			tmp.stackId = hash;
+			tmp.genId = _callMapper.StackIDToGeneral(hash);
+			tmp.count = 1;
+			_orderingInfo.push_back(tmp);
+			start = false;
+		}
 		// if (_stackRecords.find(hash) == _stackRecords.end()) {
 		// 	std::cerr << "[PerformanceModel]  ERROR - WE COULD NOT FIND HASH OF " << hash << std::endl;
 		// } else {
@@ -265,6 +347,7 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 		if (feof(inFile))
 			break;
 	}
+	_capturedSyncs = syncCount;
 	fclose(inFile);
 }
 

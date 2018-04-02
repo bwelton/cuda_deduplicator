@@ -53,9 +53,10 @@ public:
 	void FinalProcessing();
 	void ReadStackFile(std::string key, std::string timeline);
 	void ReadStackFiles();
-	
+	bool FindElement(uint64_t genId, uint64_t & startPos, std::vector<TimingData> & array);
 private:
 	double _fastestExecTime;
+	uint64_t _capturedSyncs;
 	uint64_t _totalSyncs;
 	std::vector<uint64_t> _stackOrder;
 	std::vector<CallPoint> _callPoints;
@@ -68,7 +69,7 @@ private:
 	//std::vector<SyncRangeRecord> _orderingInfo;
 
 	CudaCallMap _callMapper;
-	std::vector<uint64_t> _orderingInfo;
+	std::vector<TimingData> _orderingInfo;
 
 	std::map<std::string, uint64_t> _nameMap;
 	std::vector<TimingData> _timingData;

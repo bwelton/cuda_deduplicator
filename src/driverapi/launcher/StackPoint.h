@@ -154,6 +154,7 @@ struct StackKeyWriter {
 			pos += fwrite(&myString[pos], 1, t.size() - pos, out);
 		} while(pos != t.size());
 		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
+		return hash;
 	}
 };
 

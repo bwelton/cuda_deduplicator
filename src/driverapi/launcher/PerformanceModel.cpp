@@ -75,7 +75,7 @@ void PerformanceModel::CaptureSyncTime() {
 	do {
 		// If the current positions for each match, check sizes.
 		// If the sizes match, advance both pointers.
-		if (_timingData[timingStart].genId == _orderingInfo[stackStart].genId) {
+		if (_timingData[timingStart].genId == _orderingInfo[stackStart].genId || _orderingInfo[stackStart].genId == 0 || _timingData[timingStart].genId == 0 ) {
 			correctCount++;
 			// If equal, advance both counters
 			if(_timingData[timingStart].count == _orderingInfo[stackStart].count) {
@@ -108,7 +108,8 @@ void PerformanceModel::CaptureSyncTime() {
 						timingStart = tmptiming;
 					}
 				} else {
-					break;
+					stackStart = tmpStack;
+					//break;
 				}
 			} else {
 				break;

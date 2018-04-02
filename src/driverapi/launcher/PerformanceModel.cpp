@@ -57,15 +57,15 @@ void PerformanceModel::CaptureSyncTime() {
 	std::cerr << "[PerformanceModel] Total Synchronization Count: " << total << " Expecting: " << _capturedSyncs << std::endl;
 	std::cerr << "[PerformanceModel] Checking for errors" << std::endl;
 
-	std::cerr << "[PerformanceModel] Decoded Ordering Info: "  << std::endl;
-	for (auto i = 0; i < _orderingInfo.size(); i++) {
-		std::cerr << "[PerformanceModel]\t Pos: " << i << " GenID: " << _orderingInfo[i].genId << " StackID: " << _orderingInfo[i].stackId <<  " Call Count: " << _orderingInfo[i].count << " CallName: " << _callMapper.GeneralToName(_orderingInfo[i].genId) << std::endl;
-	}
+	// std::cerr << "[PerformanceModel] Decoded Ordering Info: "  << std::endl;
+	// for (auto i = 0; i < _orderingInfo.size(); i++) {
+	// 	std::cerr << "[PerformanceModel]\t Pos: " << i << " GenID: " << _orderingInfo[i].genId << " StackID: " << _orderingInfo[i].stackId <<  " Call Count: " << _orderingInfo[i].count << " CallName: " << _callMapper.GeneralToName(_orderingInfo[i].genId) << std::endl;
+	// }
 
-	std::cerr << "[PerformanceModel] Decoded Timing Info: "  << std::endl;
-	for (auto i = 0; i < _timingData.size(); i++) {
-		std::cerr << "[PerformanceModel]\t Pos: " << i << " GenID: " << _timingData[i].genId << " StackID: " << _timingData[i].stackId <<  " Call Count: " << _timingData[i].count <<" CallName: " << _callMapper.GeneralToName(_timingData[i].genId) << std::endl;		
-	}
+	// std::cerr << "[PerformanceModel] Decoded Timing Info: "  << std::endl;
+	// for (auto i = 0; i < _timingData.size(); i++) {
+	// 	std::cerr << "[PerformanceModel]\t Pos: " << i << " GenID: " << _timingData[i].genId << " StackID: " << _timingData[i].stackId <<  " Call Count: " << _timingData[i].count <<" CallName: " << _callMapper.GeneralToName(_timingData[i].genId) << std::endl;		
+	// }
 
 	uint64_t correctCount = 0;
 	uint64_t errorCount = 0;
@@ -338,7 +338,7 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 	while (fread(&hash, 1, sizeof(uint64_t), inFile) > 0){
 		syncCount++;
 		found = false;
-		std::cerr << "My Hash: " << hash << std::endl;
+		//std::cerr << "My Hash: " << hash << std::endl;
 		if (start != true) {
 			if (_orderingInfo.back().stackId == hash){
 				_orderingInfo.back().count++;

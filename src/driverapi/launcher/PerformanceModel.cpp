@@ -79,7 +79,7 @@ void PerformanceModel::CaptureSyncTime() {
 				_orderingInfo[stackStart].count -= _timingData[timingStart].count;
 				timingStart++;
 			}
-		} else if {
+		} else {
 			errorCount++;
 			std::cerr << "[PerformanceModel] Check Error - Missmatch between " << stackStart << " and " << timingStart << std::endl;
 			// We have a missmatch, in this case find the nearest element in either list and adjust the stack postion to that

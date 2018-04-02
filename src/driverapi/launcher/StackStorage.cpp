@@ -73,6 +73,8 @@ void CudaCallMap::InsertStackID(std::string s, uint64_t id) {
 		_nameToGeneralID[s] = _pos;
 		_stackToGeneral[id] = _pos;
 		_pos++;
+	} else {
+		_stackToGeneral[id] = _nameToGeneralID[s];
 	}
 }
 

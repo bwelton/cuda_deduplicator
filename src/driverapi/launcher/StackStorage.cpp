@@ -78,6 +78,13 @@ void CudaCallMap::InsertStackID(std::string s, uint64_t id) {
 	}
 }
 
+std::string CudaCallMap::GeneralToName(uint64_t id) {
+	for (auto i : _nameToGeneralID)
+		if (i.second == id)
+			return i.first;
+	return std::string("");
+}
+
 uint64_t CudaCallMap::StackIDToGeneral(uint64_t id) {
 	if (_stackToGeneral.find(id) == _stackToGeneral.end())
 		assert(1 == 0);

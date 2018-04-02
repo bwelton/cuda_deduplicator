@@ -72,7 +72,7 @@ public:
 	void InsertStackID(std::string s, uint64_t id);
 	uint64_t StackIDToGeneral(uint64_t id);
 	uint64_t NameToGeneral(std::string s);
-
+	std::string GeneralToName(uint64_t id);
 	// // Takes timer ID and sees if matches those for the c
 	// void DoesIDMatch(std::string & s, uint64_t id);
 	// uint64_t GetCallId(std::string & v);

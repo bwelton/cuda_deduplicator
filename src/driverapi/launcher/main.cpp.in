@@ -15,26 +15,32 @@ int main(int argc, char * argv[]) {
 		("prog,p", value<std::vector<std::string> >()->multitoken(), "Program to instrument with all parameters")
 		("plugindir", value<std::string>()->default_value(std::string("@CMAKE_INSTALL_PREFIX@/lib")), "Directory containing the plugins (install lib directory)")
 		("synch,s", bool_switch()->default_value(false), "Enable synchronization checker")
-		("reevaluate,r", bool_switch()->default_value(false), "Reevaluate existing synchronization files");
+		("reevaluate,r", bool_switch()->default_value(false), "Reevaluate existing synchronization trace files");
 
 		store(parse_command_line(argc, argv, desc), vm);
 		notify(vm);
 
-		if (vm.count("prog") == 0) {
+		if (vm.count("prog") == 0 && vm["reevaluate"].as<bool>() == false) {
 			std::cerr << "Program to instriment is not set, specify with -p or -prog" << std::endl; 
 			exit(-1);
-		} 
-		std::vector<std::string> progName = vm["prog"].as<std::vector<std::string> >();
-		std::string pluginDirectory = vm["plugindir"].as<std::string>();
-		std::cerr << "Beginning Instrimentation of Program - " << progName[0] << std::endl;
-		std::cerr << "Arguments to program: ";
-		for (auto i : progName)
-			std::cerr << i << " ";
-		std::cerr << std::endl;
-		std::cerr << "Plugin Directory In Use - " << pluginDirectory << std::endl; 
-		if (vm["synch"].as<bool>() == true) {
+		} else {
+			std::vector<std::string> progName = vm["prog"].as<std::vector<std::string> >();
+			std::string pluginDirectory = vm["plugindir"].as<std::string>();
+			std::cerr << "Beginning Instrimentation of Program - " << progName[0] << std::endl;
+			std::cerr << "Arguments to program: ";
+			for (auto i : progName)
+				std::cerr << i << " ";
+			std::cerr << std::endl;
+			std::cerr << "Plugin Directory In Use - " << pluginDirectory << std::endl; 
+			if (vm["synch"].as<bool>() == true) {
+				SyncTesting runSync(vm);
+				runSync.Run();
+			}
+		}
+
+		if (vm["reevaluate"].as<bool>() == true) {
 			SyncTesting runSync(vm);
-			runSync.Run();
+			runSync.ReprocessModel();
 		}
 	} catch (const error &ex) {
 		std::cerr << ex.what() << '\n';

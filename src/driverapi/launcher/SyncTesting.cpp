@@ -2,9 +2,26 @@
 
 SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 	_vm(vm) {
-	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
-	_programName = std::string(basename((char *)progName[0].c_str()));
+	if (vm.count("prog") > 0){
+		std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
+		_programName = std::string(basename((char *)progName[0].c_str()));
+	}	
+}
 
+void SyncTesting::ReprocessModel() {
+	// Add a bogus execution time for now so that other things do not break
+	_model.AddExecutionTime(0.0);
+
+	// Get the stacks and line info.
+	_model.ReadStackFiles();
+	_model.ExtractLineInfo();
+
+	// Get the timing list
+	std::vector<StackPoint> timingList;
+	_model.GetTimingList(timingList);
+
+	// Read the syncronization times.
+	_model.CaptureSyncTime();
 }
 
 void SyncTesting::Run() {

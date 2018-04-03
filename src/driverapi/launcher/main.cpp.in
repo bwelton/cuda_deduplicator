@@ -14,7 +14,8 @@ int main(int argc, char * argv[]) {
 		("help,h", "Help screen")
 		("prog,p", value<std::vector<std::string> >()->multitoken(), "Program to instrument with all parameters")
 		("plugindir", value<std::string>()->default_value(std::string("@CMAKE_INSTALL_PREFIX@/lib")), "Directory containing the plugins (install lib directory)")
-		("synch,s", bool_switch()->default_value(false), "Enable synchronization checker");
+		("synch,s", bool_switch()->default_value(false), "Enable synchronization checker")
+		("reevaluate,r", bool_switch()->default_value(false), "Reevaluate existing synchronization files");
 
 		store(parse_command_line(argc, argv, desc), vm);
 		notify(vm);

@@ -51,6 +51,7 @@ void StackRecord::GetStackSymbols(SymbolMap & m) {
 			continue;
 		std::pair<std::string, LineInfo> tmp;
 		m[_points[i].libname]->GetInfoAtLocation(_points[i].libOffset, tmp);
+		std::cerr << _points[i].libname << " " << _points[i].libOffset << std::endl;
 		_points[i].funcOffset = m[_points[i].libname]->GetFunctionOffset(_points[i].libOffset);
 		_points[i].funcName = m[_points[i].libname]->GetFuncName(_points[i].libOffset);
 		_points[i].empty = false;

@@ -23,7 +23,7 @@ int main(int argc, char * argv[]) {
 		if (vm.count("prog") == 0 && vm["reevaluate"].as<bool>() == false) {
 			std::cerr << "Program to instriment is not set, specify with -p or -prog" << std::endl; 
 			exit(-1);
-		} else {
+		} else if (vm["reevaluate"].as<bool>() == false) {
 			std::vector<std::string> progName = vm["prog"].as<std::vector<std::string> >();
 			std::string pluginDirectory = vm["plugindir"].as<std::string>();
 			std::cerr << "Beginning Instrimentation of Program - " << progName[0] << std::endl;
@@ -36,9 +36,7 @@ int main(int argc, char * argv[]) {
 				SyncTesting runSync(vm);
 				runSync.Run();
 			}
-		}
-
-		if (vm["reevaluate"].as<bool>() == true) {
+		} else if (vm["reevaluate"].as<bool>() == true) {
 			SyncTesting runSync(vm);
 			runSync.ReprocessModel();
 		}

@@ -18,7 +18,12 @@ std::string SymbolLookup::GetFuncName(uint64_t offset) {
 	if (_obj == NULL)
 		return std::string("");
 	SymtabAPI::Function * f;
-	_obj->getContainingFunction(offset, f);
+	if(_obj->getContainingFunction(offset, f) == false) {
+		std::stringstream ss;
+		ss << "<Unknown at Offset 0x" << std::hex << offset << std::dec << ">";
+		return ss.str();
+	}
+
 	return f->getName();
 }
 
@@ -28,7 +33,8 @@ uint64_t SymbolLookup::GetFunctionOffset(uint64_t offset) {
 	SymtabAPI::Function * f;
 	
 	if(_obj->getContainingFunction(offset, f)==false)
-		assert(true == false);
+		return offset;
+		//assert(true == false);
 	return f->getOffset();
 }
 
@@ -45,6 +51,11 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 	SymtabAPI::Function * func = NULL;
 	_obj->getContainingFunction(offset, func);
 	if (func == NULL) {
+		std::stringstream ss;
+		ss << "<Unknown at Offset 0x" << std::hex << offset << std::dec << ">";
+		lines.first = ss.str();
+		lines.second.filename = std::string("");
+		lines.second.lineNum = 0;
 #ifdef DEBUG_SYMBOLLOOKUP
 		std::cerr << "Did not return a function for this point" << std::endl;
 #endif		

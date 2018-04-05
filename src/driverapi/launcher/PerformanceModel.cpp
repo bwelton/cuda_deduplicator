@@ -95,7 +95,7 @@ void PerformanceModel::CaptureSyncTime() {
 			uint64_t pOff = 0;
 			for (auto n : i.second) {
 				if (n != orderInfo[i.first][pOff]){
-					std::cerr << "[PerformanceModel] Timing and Order Info differ at position : " << pOff << " for genid " << i.first << std::endl;
+					std::cerr << "[PerformanceModel] Timing and Order Info differ at array offset " << pOff << " element position " << n <<  " for genid " << i.first << std::endl;
 					break;
 				}
 				pOff++;

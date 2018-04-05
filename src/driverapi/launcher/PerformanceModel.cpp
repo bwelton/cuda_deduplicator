@@ -93,14 +93,31 @@ void PerformanceModel::CaptureSyncTime() {
 				std::cerr << "[PerformanceModel]\t Timing Info Size: " << i.second.size() << " Order Info Size: " << orderInfo[i.first].size() << std::endl;
 			}
 			uint64_t pOff = 0;
+			bool correct = true;
 			for (auto n : i.second) {
 				if (n != orderInfo[i.first][pOff]){
 					std::cerr << "[PerformanceModel] Timing and Order Info differ at array offset " << pOff << " element position " << n <<  " for genid " << i.first << std::endl;
+					correct = false;
 					break;
 				}
 				pOff++;
 				if (orderInfo[i.first].size() == pOff)
 					break;
+			}
+			// Secondary check to see if the arrays are shifted by a common offset
+			if (correct == false) {
+				std::set<uint64_t> findOffsets;
+				pOff = 0;
+				for (auto n : i.second) {
+					findOffsets.insert((n > orderInfo[i.first][pOff]) ? (n - orderInfo[i.first][pOff]): (orderInfo[i.first][pOff] - n));
+					pOff++;
+					if (orderInfo[i.first].size() == pOff)
+						break;					
+				}
+				if (findOffsets.size() == 1)
+					std::cerr << "[PerformanceModel] GenID " << i.first << " has consistent offset pattern" << std::endl;
+				else
+					std::cerr << "[PerformanceModel] GenID " << i.first << " has inconsistent offset pattern" << std::endl;
 			}
 		}
 	}

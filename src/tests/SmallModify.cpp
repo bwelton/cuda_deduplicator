@@ -67,8 +67,8 @@ int main(const int argc, const char * argv[]){
 	std::vector<BPatch_function *> tracerCall;
 	img->findFunction("SYNC_RECORD_SYNC_CALL", tracerCall);
 	std::vector<BPatch_function *> btcall;
-	img->findFunction("__backtrace", btcall);
-	assert(btcall.size() > 0);
+	//img->findFunction("__backtrace", btcall);
+	//assert(btcall.size() > 0);
 	assert(tracerCall.size() > 0);
 	BPatch_function * cudaSync = NULL;
 	Dyninst::Address offsetAddress = 0;

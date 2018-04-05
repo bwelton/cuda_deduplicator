@@ -39,7 +39,6 @@ void PerformanceModel::CaptureSyncTime() {
 	elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t));
 	_timingData = std::vector<TimingData>(elementCount);
 
-
 	uint64_t id;
 	double time; 
 	uint64_t count;
@@ -67,57 +66,87 @@ void PerformanceModel::CaptureSyncTime() {
 	// 	std::cerr << "[PerformanceModel]\t Pos: " << i << " GenID: " << _timingData[i].genId << " StackID: " << _timingData[i].stackId <<  " Call Count: " << _timingData[i].count <<" CallName: " << _callMapper.GeneralToName(_timingData[i].genId) << std::endl;		
 	// }
 
-	uint64_t correctCount = 0;
-	uint64_t errorCount = 0;
-	uint64_t timingStart = 0;
-	uint64_t stackStart = 0;
-	bool finished = false;
-	do {
-		// If the current positions for each match, check sizes.
-		// If the sizes match, advance both pointers.
-		if (_timingData[timingStart].genId == _orderingInfo[stackStart].genId || _orderingInfo[stackStart].genId == 0 || _timingData[timingStart].genId == 0 ) {
-			correctCount++;
-			// If equal, advance both counters
-			if(_timingData[timingStart].count == _orderingInfo[stackStart].count) {
-				timingStart++;
-				stackStart++;
-			// If not equal, advance only stack start.
-			} else if (_timingData[timingStart].count > _orderingInfo[stackStart].count) {
-				_timingData[timingStart].count -= _orderingInfo[stackStart].count;
-				stackStart++;
-			} else if (_timingData[timingStart].count < _orderingInfo[stackStart].count) {
-				_orderingInfo[stackStart].count -= _timingData[timingStart].count;
-				timingStart++;
-			}
-		} else {
-			errorCount++;
-			std::cerr << "[PerformanceModel] Check Error - Missmatch between " << stackStart << " and " << timingStart << std::endl;
-			std::cerr << "[PerformanceModel] Timing ID: " << _timingData[timingStart].genId << " StackID: " << _orderingInfo[stackStart].genId << std::endl;
-			// We have a missmatch, in this case find the nearest element in either list and adjust the stack postion to that
-			// location.
-			uint64_t tmpStack = stackStart;
-			uint64_t tmptiming = timingStart;
-			if (FindElement(_timingData[timingStart].genId, tmpStack, _orderingInfo)){
-				if(FindElement(_orderingInfo[stackStart].genId, tmptiming, _timingData)){
-					if (tmptiming - timingStart == tmpStack - stackStart){
-						//stackStart = tmpStack;
-						timingStart = tmptiming;
-					} else if (tmptiming - timingStart > tmpStack - stackStart){
-						stackStart = tmpStack;
-					} else {
-						timingStart = tmptiming;
-					}
-				} else {
-					stackStart = tmpStack;
-					//break;
-				}
-			} else {
-				break;
-			}
+	std::map<uint64_t, std::vector<uint64_t> > orderInfo;
+	std::map<uint64_t, std::vector<uint64_t> > timingInfo;
+	for (uint64_t z = 0; z < _timingData.size(); z++){
+		auto i = _timingData[z];
+		if (timingInfo.find(i.genId) == timingInfo.end()) {
+			timingInfo[i.genId] = std::vector<uint64_t>();
 		}
-		if (stackStart >= _orderingInfo.size() || timingStart >= _timingData.size())
-			break;
-	} while(finished != true);
+		timingInfo[i.genId].push_back(z);
+	}
+
+	for (uint64_t z = 0; z < _orderingInfo.size(); z++){
+		auto i = _orderingInfo[z];
+		if (orderInfo.find(i.genId) == orderInfo.end()) {
+			orderInfo[i.genId] = std::vector<uint64_t>();
+		}
+		orderInfo[i.genId].push_back(z);
+	}
+
+	for (auto i : timingInfo) {
+		if (orderInfo.find(i.first) == orderInfo.end()) {
+			std::cerr << "[PerformanceModel] Ordering Info is missing element " << i.first << std::endl;
+		} else {
+			if (i.second.size() != orderInfo[i.first].size()) {
+				std::cerr << "[PerformanceModel] Timing model at GenID " << i.first << " does not match OrderInfo size" << std::endl;
+				std::cerr << "[PerformanceModel]\t Timing Info Size: " << i.second.size() << " Order Info Size: " << orderInfo[i.first].size() << std::endl;
+			}			
+		}
+	}
+
+
+	// uint64_t correctCount = 0;
+	// uint64_t errorCount = 0;
+	// uint64_t timingStart = 0;
+	// uint64_t stackStart = 0;
+	// bool finished = false;
+	// do {
+	// 	// If the current positions for each match, check sizes.
+	// 	// If the sizes match, advance both pointers.
+	// 	if (_timingData[timingStart].genId == _orderingInfo[stackStart].genId || _orderingInfo[stackStart].genId == 0 || _timingData[timingStart].genId == 0 ) {
+	// 		correctCount++;
+	// 		// If equal, advance both counters
+	// 		if(_timingData[timingStart].count == _orderingInfo[stackStart].count) {
+	// 			timingStart++;
+	// 			stackStart++;
+	// 		// If not equal, advance only stack start.
+	// 		} else if (_timingData[timingStart].count > _orderingInfo[stackStart].count) {
+	// 			_timingData[timingStart].count -= _orderingInfo[stackStart].count;
+	// 			stackStart++;
+	// 		} else if (_timingData[timingStart].count < _orderingInfo[stackStart].count) {
+	// 			_orderingInfo[stackStart].count -= _timingData[timingStart].count;
+	// 			timingStart++;
+	// 		}
+	// 	} else {
+	// 		errorCount++;
+	// 		std::cerr << "[PerformanceModel] Check Error - Missmatch between " << stackStart << " and " << timingStart << std::endl;
+	// 		std::cerr << "[PerformanceModel] Timing ID: " << _timingData[timingStart].genId << " StackID: " << _orderingInfo[stackStart].genId << std::endl;
+	// 		// We have a missmatch, in this case find the nearest element in either list and adjust the stack postion to that
+	// 		// location.
+	// 		uint64_t tmpStack = stackStart;
+	// 		uint64_t tmptiming = timingStart;
+	// 		if (FindElement(_timingData[timingStart].genId, tmpStack, _orderingInfo)){
+	// 			if(FindElement(_orderingInfo[stackStart].genId, tmptiming, _timingData)){
+	// 				if (tmptiming - timingStart == tmpStack - stackStart){
+	// 					//stackStart = tmpStack;
+	// 					timingStart = tmptiming;
+	// 				} else if (tmptiming - timingStart > tmpStack - stackStart){
+	// 					stackStart = tmpStack;
+	// 				} else {
+	// 					timingStart = tmptiming;
+	// 				}
+	// 			} else {
+	// 				stackStart = tmpStack;
+	// 				//break;
+	// 			}
+	// 		} else {
+	// 			break;
+	// 		}
+	// 	}
+	// 	if (stackStart >= _orderingInfo.size() || timingStart >= _timingData.size())
+	// 		break;
+	// } while(finished != true);
 
 	std::cerr << "[Performance Model] Errors/Correct Stack Identifications - " << errorCount << " / " << correctCount << std::endl;
 

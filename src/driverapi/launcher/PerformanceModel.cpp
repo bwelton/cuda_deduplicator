@@ -91,7 +91,17 @@ void PerformanceModel::CaptureSyncTime() {
 			if (i.second.size() != orderInfo[i.first].size()) {
 				std::cerr << "[PerformanceModel] Timing model at GenID " << i.first << " does not match OrderInfo size" << std::endl;
 				std::cerr << "[PerformanceModel]\t Timing Info Size: " << i.second.size() << " Order Info Size: " << orderInfo[i.first].size() << std::endl;
-			}			
+			}
+			uint64_t pOff = 0;
+			for (auto n : i.second) {
+				if (n != orderInfo[i.first][pOff]){
+					std::cerr << "[PerformanceModel] Timing and Order Info differ at position : " << pOff << " for genid " << i.first << std::endl;
+					break;
+				}
+				pOff++;
+				if (orderInfo[i.first].size() == pOff)
+					break;
+			}
 		}
 	}
 

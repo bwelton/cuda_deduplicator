@@ -148,7 +148,7 @@ void PerformanceModel::CaptureSyncTime() {
 	// 		break;
 	// } while(finished != true);
 
-	std::cerr << "[Performance Model] Errors/Correct Stack Identifications - " << errorCount << " / " << correctCount << std::endl;
+	// std::cerr << "[Performance Model] Errors/Correct Stack Identifications - " << errorCount << " / " << correctCount << std::endl;
 
 	// if (total == _orderingInfo.size()) {
 	// 	// We have an exact match, we can relate 1 to 1 observed with stacks.

@@ -230,10 +230,10 @@ extern "C" {
 		//  RA: *SP
 		volatile uint64_t RBPStore;
 		asm volatile("mov %%RBP, %0" : "=r" (RBPStore));
-		uint64_t prevRBP = ((uint64_t*)RBPStore)[0];
-		uint64_t previousSP =  ((uint64_t*)RBPStore - 0x8)[0];
-		uint64_t dyninstRSP = previousSP + 0x2;
-		uint64_t returnAddress = ((uint64_t*)previousSP)[0];
+		volatile uint64_t prevRBP = ((uint64_t*)RBPStore)[0];
+		volatile uint64_t previousSP =  ((uint64_t*)RBPStore - 0x8)[0];
+		volatile uint64_t dyninstRSP = previousSP + 0x2;
+		volatile uint64_t returnAddress = ((uint64_t*)previousSP)[0];
 		std::cerr << RBPStore << "," << prevRBP << "," << previousSP << "," << dyninstRSP << "," << returnAddress << std::endl;
 		// std::cerr << "RBP Value: " << std::hex << lastSP << std::dec << std::endl;
 		// std::cerr << "Previous RBP Value: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;

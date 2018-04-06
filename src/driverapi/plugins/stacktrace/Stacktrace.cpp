@@ -234,7 +234,7 @@ extern "C" {
 		volatile uint64_t previousSP =  ((uint64_t*)RBPStore)[1];
 		volatile uint64_t dyninstRSP = previousSP + 0x2;
 		volatile uint64_t returnAddress = ((uint64_t*)previousSP)[0];
-		std::cerr << RBPStore << "," << prevRBP << "," << previousSP << "," << dyninstRSP << "," << returnAddress << std::endl;
+		std::cerr << std::hex << RBPStore << std::dec << "," << std::hex << prevRBP << std::dec << "," << std::hex << previousSP << std::dec << "," << std::hex << dyninstRSP << std::dec  << "," << std::hex << returnAddress << std::dec << std::endl;
 		// std::cerr << "RBP Value: " << std::hex << lastSP << std::dec << std::endl;
 		// std::cerr << "Previous RBP Value: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
 		// std::cerr << "Previous RSP Value: " << std::hex << lastSP + 0xF0 << std::dec << std::endl;

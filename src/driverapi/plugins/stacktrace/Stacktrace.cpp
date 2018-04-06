@@ -291,7 +291,7 @@ extern "C" {
 		// addrOff[0] = possiblePreviousFrame;
 		// 0x00007ffff5483eba
 		Frame myFrame;
-		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(0x7ffff5c54eba, 0x7fffffffb838, 0x733c18, local_walker);
+		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(0x7ffff5c54eba, 0x7fffffffb818, 0x733c18, local_walker);
 		std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
 		myFrame = *fr;
 		// std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;

@@ -244,14 +244,14 @@ extern "C" {
 		SETUP_INTERCEPTOR();
 
 		// asm volatile("mov %0, %%RBP" : "=r" (originalRBP));
-		void * backtraceStore[1024];
-		int bt_size = backtrace(backtraceStore, 1024);
+		// void * backtraceStore[1024];
+		// int bt_size = backtrace(backtraceStore, 1024);
 
-		// // asm volatile("mov %0, %%RBP" : "=r" (lastSP));
-		// // assert(bt_size > 0);
-		std::cerr << "Stack of size: " << bt_size << std::endl;
-		for (int i = 0; i < bt_size; i++)
-			std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
+		// // // asm volatile("mov %0, %%RBP" : "=r" (lastSP));
+		// // // assert(bt_size > 0);
+		// std::cerr << "Stack of size: " << bt_size << std::endl;
+		// for (int i = 0; i < bt_size; i++)
+		// 	std::cerr << std::hex << backtraceStore[i] << std::dec << std::endl;
 
 
 
@@ -290,22 +290,22 @@ extern "C" {
 
 		// addrOff[0] = possiblePreviousFrame;
 		// 0x00007ffff5483eba
-		// Frame myFrame;
-		// Frame * fr = Dyninst::Stackwalker::Frame::newFrame(originalRA, originalRSP, originalRBP, local_walker);
-		// std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
-		// myFrame = *fr;
+		Frame myFrame;
+		Frame * fr = Dyninst::Stackwalker::Frame::newFrame(0, 0, 0, local_walker);
+		std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
+		myFrame = *fr;
 		// std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
 		
 		// //local_walker->getInitialFrame(myFrame);
-		// for(int i = 0; i < 5; i++) {
-		// 	Frame out;
-		// 	if (local_walker->walkSingleFrame(myFrame, out) == false)
-		// 		break;
-		// 	std::string tmp;
-		// 	out.getName(tmp);
-		// 	std::cerr << tmp << " " << std::hex << out.getRA() << std::dec << " " << std::hex << out.getSP() << std::dec << " " << std::hex << out.getFP() << std::dec << " " << std::endl;
-		// 	myFrame = out;
-		// }
+		for(int i = 0; i < 10; i++) {
+			Frame out;
+			if (local_walker->walkSingleFrame(myFrame, out) == false)
+				break;
+			std::string tmp;
+			out.getName(tmp);
+			std::cerr << tmp << " " << std::hex << out.getRA() << std::dec << " " << std::hex << out.getSP() << std::dec << " " << std::hex << out.getFP() << std::dec << " " << std::endl;
+			myFrame = out;
+		}
 		// std::cerr << "Done walking the stack" << std::endl;
 		// // //0x7ffff6280388
 

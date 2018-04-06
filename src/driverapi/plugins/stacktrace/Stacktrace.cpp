@@ -196,6 +196,15 @@ extern "C" {
 
 	void SYNC_RECORD_SYNC_CALL() {
 		// Original Call 
+		// RBP: 0x7ffff69c13a0, RSP: 0x7fffffffb4b8, RA: 0x00007ffff5cfd2cc
+		// Dyninst frame setup:
+		// 	RA: *RSP
+		// 	RSP: RSP + 0x2
+		// 	RBP: RBP
+		// Accessing these values:
+		// 	RBP: *RBP
+		// 	RSP: (*(RBP - 0x8)) + 0x2
+		// 	RA: *(RSP)
 		// Entry FP (deduced from RSP): 0x7fffffffb880 (+8)
 		// Entry RSP: 0x7fffffffb888
 		// Entry RBP: 0x731c88 (makes no sense, likely some value stored here).
@@ -219,9 +228,13 @@ extern "C" {
 		//  SP: lastSP - 0xF0
 		//  FP: SP
 		//  RA: *SP
-		// uint64_t lastSP;
-
-		// asm volatile("mov %%RBP, %0" : "=r" (lastSP));
+		volatile uint64_t RBPStore;
+		asm volatile("mov %%RBP, %0" : "=r" (RBPStore));
+		uint64_t prevRBP = ((uint64_t*)RBPStore)[0];
+		uint64_t previousSP =  ((uint64_t*)RBPStore - 0x8)[0];
+		uint64_t dyninstRSP = previousSP + 0x2;
+		uint64_t returnAddress = ((uint64_t*)previousSP)[0];
+		std::cerr << RBPStore << "," << prevRBP << "," << previousSP << "," << dyninstRSP << "," << returnAddress << std::endl;
 		// std::cerr << "RBP Value: " << std::hex << lastSP << std::dec << std::endl;
 		// std::cerr << "Previous RBP Value: " << std::hex << ((uint64_t*)lastSP)[0] << std::dec << std::endl;
 		// std::cerr << "Previous RSP Value: " << std::hex << lastSP + 0xF0 << std::dec << std::endl;

@@ -29,10 +29,6 @@ TimeCall::~TimeCall() {
 
 PluginReturn TimeCall::Precall(std::shared_ptr<Parameters> params) {
 	if (_callsToMonitor.find(params.get()->GetID()) != _callsToMonitor.end()) {
-		// uint64_t * firstArg = ((uint64_t*)params.get()->GetParameter(0));
-		// uint64_t * secondArg = ((uint64_t*)params.get()->GetParameter(1));
-		// uint64_t * thirdArg = ((uint64_t*)params.get()->GetParameter(2));
-		// std::cerr << "Call To Sync: " << firstArg[0] << "," << secondArg[0] << "," << thirdArg[0] << std::endl;
 		auto start = std::chrono::high_resolution_clock::now();
 		params.get()->Call();
 		auto stop = std::chrono::high_resolution_clock::now();
@@ -53,6 +49,11 @@ struct OutputFile {
 		outFile = fopen(filename.c_str(),"w");
 		assert(outFile != NULL);
 	};
+	void Write(uint64_t dyninstId, uint64_t stackTraceId, double time) {
+		fwrite(&dyninstId, 1, sizeof(uint64_t), outFile);
+		fwrite(&stackTraceId, 1, sizeof(uint64_t), outFile);
+		fwrite(&time, 1, sizeof(double), outFile);
+	}
 	void Write(uint64_t id, double time, uint64_t count) {
 		// Change to single write at some point in future
 		fwrite(&id, 1, sizeof(uint64_t), outFile);
@@ -67,6 +68,7 @@ struct OutputFile {
 
 
 thread_local std::shared_ptr<OutputFile> _outFile;
+thread_local std::shared_ptr<StackKeyWriter> keyFile;
 
 thread_local std::vector<std::pair<uint64_t, std::chrono::high_resolution_clock::time_point> > TimingPairs; 
 thread_local std::vector<uint64_t> TimingCount; 
@@ -81,6 +83,10 @@ void INIT_TIMERS() {
 		std::cerr << "Starting timing log" << std::endl;
 		_outFile.reset(new OutputFile(std::string("callDelay.out")));
 	}
+	if (keyFile.get() == NULL) {
+		std::cerr << "Starting keyfile" << std::endl;
+		keyFile.reset(new StackKeyWriter(fopen("timeKey.out","w")));
+	}
 }
 
 void TIMER_SIMPLE_COUNT_ADD_ONE() {
@@ -89,14 +95,14 @@ void TIMER_SIMPLE_COUNT_ADD_ONE() {
 		TimingCount[TimingCount.size() - 1] += 1;
 	else {
 		// Write out an unknown timing entry
-		_outFile->Write(0, 0.0, 1);
+		_outFile->write(0,0,0.0);
+		//_outFile->Write(0, 0.0, 1);
 		std::cout << "Timing error, trying to add one to an unknown synchronization!" << std::endl;
 	}
 }
 
 void TIMER_SIMPLE_TIME_START(uint64_t id) {
 	INIT_TIMERS();
-	//std::cerr << callName << std::endl;
 	TimingCount.push_back(0);
 	TimingPairs.push_back(std::make_pair(id,std::chrono::high_resolution_clock::now()));
 }
@@ -104,7 +110,7 @@ void TIMER_SIMPLE_TIME_START(uint64_t id) {
 void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 	INIT_TIMERS();
 	std::chrono::high_resolution_clock::time_point endTimer = std::chrono::high_resolution_clock::now();
-	//std::string tmp = std::string(callName);
+
 	int found = -1;
 	for (int i = TimingPairs.size(); i >= 0; i = i - 1) {
 		if (TimingPairs[i].first == id){
@@ -117,11 +123,18 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		assert(found != -1);
 	}
 	std::chrono::duration<double> diff = endTimer-TimingPairs[found].second;
-	if (TimingCount[TimingCount.size() - 1] > 0){
-		_outFile->Write(id, diff.count(), TimingCount[TimingCount.size() - 1]);
-		//ss << callName << "," << diff.count() << "," << TimingCount[TimingCount.size() - 1];
-		//_timingLog->Write(ss.str());
-		TimingCount.pop_back();
+
+
+	if (TimingCount[TimingCount.size() - 1] > 0) {
+		std::vector<StackPoint> points;
+		bool ret = GET_FP_STACKWALK(points);
+		if (ret == false) {
+			std::cout << "unknown timing stack, discarding time" << std::endl;
+			_outFile->write(id,0,diff.count());
+		} else {
+			uint64_t pos = keyFile->InsertStack(points);
+			outFile->write(id,pos,diff.count());
+		}	
 	}
 	TimingPairs.erase(TimingPairs.begin() + found);
 }

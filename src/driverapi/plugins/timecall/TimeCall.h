@@ -17,7 +17,7 @@
 #include <fstream>
 #include <numeric>
 #include <chrono>
-
+#include "StackwalkingCommon.h"
 extern "C" {
 	void init(std::vector<std::string> & cmd_list);
 	PluginReturn Precall(std::shared_ptr<Parameters> params);

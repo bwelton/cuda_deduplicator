@@ -1,3 +1,4 @@
+add_subdirectory(common)
 add_subdirectory(echo)
 add_subdirectory(transfer_timeline)
 add_subdirectory(cupti)

@@ -113,7 +113,7 @@ int main(const int argc, const char * argv[]){
 	// }
 	std::cerr << cudaSync->getName() << std::endl;
  	{
-		std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
+		std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locExit);
 		std::vector<BPatch_snippet*> testArgs;
 		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
 		assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);

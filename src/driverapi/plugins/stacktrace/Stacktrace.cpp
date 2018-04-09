@@ -299,33 +299,38 @@ extern "C" {
 		int pos = 0;
 
 		// assert(local_walker != NULL);
-		//std::vector<Frame> stackwalk;
+		std::vector<Frame> stackwalk;
 		// addrOff[0] = lastSP - 0x8;0x7fffffffb930
 
 		// addrOff[0] = possiblePreviousFrame;
 		// // 0x00007ffff5483eba
-		Frame myFrame;
+		//Frame myFrame;
 		// Frame * fr = Dyninst::Stackwalker::Frame::newFrame(returnAddress, dyninstRSP, prevRBP, local_walker);
 		// std::cerr << std::hex << fr->getRA() << std::dec << " " << std::hex << fr->getSP() << std::dec << " " << std::hex << fr->getFP() << std::dec << " " << std::endl;
 		// myFrame = *fr;
 		// // std::cerr << std::hex << myFrame.getRA() << std::dec << " " << std::hex << myFrame.getSP() << std::dec << " " << std::hex << myFrame.getFP() << std::dec << " " << std::endl;
 		
-		local_walker->getInitialFrame(myFrame);
-		for(int i = 0; i < 10; i++) {
-			Frame out;
-			if (local_walker->walkSingleFrame(myFrame, out) == false)
-				break;
-			std::string tmp;
-			out.getName(tmp);
-			std::cerr << tmp << " " << std::hex << out.getRA() << std::dec << " " << std::hex << out.getSP() << std::dec << " " << std::hex << out.getFP() << std::dec << " " << std::endl;
-			myFrame = out;
-		}
-		std::cerr << "End of stack" << std::endl;
+		// local_walker->getInitialFrame(myFrame);
+		// while (1){
+		// 	Frame out;
+		// 	if (local_walker->walkSingleFrame(myFrame, out) == false)
+		// 		break;
+		// 	std::string tmp;
+		// 	out.getName(tmp);
+		// 	std::cerr << tmp << " " << std::hex << out.getRA() << std::dec << " " << std::hex << out.getSP() << std::dec << " " << std::hex << out.getFP() << std::dec << " " << std::endl;
+		// 	myFrame = out;
+		// }
+		//
 		// // std::cerr << "Done walking the stack" << std::endl;
 		// // //0x7ffff6280388
 
 // RA: 0x00007ffff5483eba
-		//local_walker->walkStack(stackwalk);
+		local_walker->walkStack(stackwalk);	
+		for (auto i : stackwalk) {
+			std::cerr << " " << std::hex << i.getRA() << std::dec << " " << std::hex << i.getSP() << std::dec << " " << std::hex << i.getFP() << std::dec << " " << std::endl;
+		}
+
+		std::cerr << "End of stack" << std::endl;
 		//std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
 		// Initialize cursor to current frame for local unwinding.
 		// unw_getcontext(&context);

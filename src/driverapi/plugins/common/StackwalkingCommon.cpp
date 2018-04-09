@@ -25,6 +25,10 @@
 #include "BPatch.h"
 #include "BPatch_process.h"
 
+using namespace Dyninst;
+using namespace Dyninst::Stackwalker;
+using namespace SymtabAPI;
+
 thread_local Walker *  local_walker = NULL;
 
 extern "C" {
@@ -36,11 +40,13 @@ extern "C" {
 
 	bool GET_FP_STACKWALK(std::vector<StackPoint> & ret) {
 		INIT_FP_STACKWALKER();
-		
+
 		std::vector<Frame> stackwalk;
 		if(local_walker->walkStack(stackwalk) == false) {
 			return false;
 		}
+		std::string lib;
+		void * stab;
 		for (auto frame : stackwalk) {
 			StackPoint sp;
 			uint64_t offset;

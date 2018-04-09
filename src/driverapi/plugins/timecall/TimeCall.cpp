@@ -95,7 +95,7 @@ void TIMER_SIMPLE_COUNT_ADD_ONE() {
 		TimingCount[TimingCount.size() - 1] += 1;
 	else {
 		// Write out an unknown timing entry
-		_outFile->write(0,0,0.0);
+		_outFile->Write(0,0,0.0);
 		//_outFile->Write(0, 0.0, 1);
 		std::cout << "Timing error, trying to add one to an unknown synchronization!" << std::endl;
 	}
@@ -130,10 +130,10 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		bool ret = GET_FP_STACKWALK(points);
 		if (ret == false) {
 			std::cout << "unknown timing stack, discarding time" << std::endl;
-			_outFile->write(id,0,diff.count());
+			_outFile->Write(id,0,diff.count());
 		} else {
 			uint64_t pos = keyFile->InsertStack(points);
-			outFile->write(id,pos,diff.count());
+			_outFile->Write(id,pos,diff.count());
 		}	
 	}
 	TimingPairs.erase(TimingPairs.begin() + found);

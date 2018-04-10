@@ -105,7 +105,10 @@ extern "C" {
 	}
 
 	void SYNC_RECORD_SYNC_CALL() {
-
+		bool ret = GET_FP_STACKWALK(points);
+		for (auto i : points) {
+			std::cerr << i.libname <<  "," << i.libOffset << std::endl;
+		}
 	}
 
 }

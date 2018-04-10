@@ -77,7 +77,7 @@ void SyncTesting::Run() {
 
 	// Check that our timing run matches the synchronizations identified.
 	// If so, this program is very likely deterministic given the same inputs in relation to cuda calls.
-	_model.CaptureSyncTime();
+	//_model.CaptureSyncTime();
 	return;
 
 	// Load Store Instrimentation.

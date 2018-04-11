@@ -1,5 +1,5 @@
 #include "StacktraceInst.h"
-
+#define USE_BPATCHINSERT 1
 StacktraceInst::StacktraceInst(BPatch_addressSpace * addrSpace, BPatch_image * img) :
 	_addrSpace(addrSpace), _img(img), _curID(0) {
 	
@@ -12,8 +12,14 @@ void StacktraceInst::InsertStackInst() {
 	// Begin the insertion set
 	_addrSpace->beginInsertionSet();
 
+#ifdef USE_BPATCHINSERT
+	std::vector<BPatch_point*> * entryLocations = _cudaSync->findPoint(BPatch_locEntry);
+	std::vector<BPatch_snippet*> testArgs;
+	BPatch_funcCallExpr recordFuncExit(*_wrapperFunc, testArgs);
+	assert(_addrSpace->insertSnippet(recordFuncEntry,*entryLocations) == NULL);
+#else
 	assert(_addrSpace->wrapFunction(_cudaSync, _wrapperFunc, _wrapSym) != false);
-
+#endif
 	_addrSpace->finalizeInsertionSet(false);	
 }
  
@@ -90,7 +96,11 @@ uint64_t StacktraceInst::GetFuncId(BPatch_function * func) {
 void StacktraceInst::Setup() {
 	std::cerr << "[StacktraceInst] Starting Setup.... " << std::endl;
 	std::vector<BPatch_function *> wrapperFunc;
+#ifdef USE_BPATCHINSERT
+	_img->findFunction("RecordStack", wrapperFunc);
+#else
 	_img->findFunction("STACK_SyncWrapper", wrapperFunc);
+#endif
 	assert(wrapperFunc.size() > 0);
 	_wrapperFunc = wrapperFunc[0];
 

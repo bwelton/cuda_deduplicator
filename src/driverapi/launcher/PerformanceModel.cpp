@@ -386,6 +386,7 @@ void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelin
 	uint64_t dynId;
 	uint64_t stackId;
 	uint64_t count;
+	uint64_t total;
 	double time; 
 	for (int i = 0; i < elementCount; i++) {
 		fread(&dynId, 1, sizeof(uint64_t), inFile);

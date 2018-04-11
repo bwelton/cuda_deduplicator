@@ -49,7 +49,7 @@ struct OutputFile {
 		outFile = fopen(filename.c_str(),"w");
 		assert(outFile != NULL);
 	};
-	void Write(uint64_t dyninstId, uint64_t stackTraceId, double time) {
+	void Write(uint64_t dyninstId, uint64_t stackTraceId, uint64_t count, double time) {
 		fwrite(&dyninstId, 1, sizeof(uint64_t), outFile);
 		fwrite(&stackTraceId, 1, sizeof(uint64_t), outFile);
 		fwrite(&time, 1, sizeof(double), outFile);
@@ -130,10 +130,10 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		bool ret = GET_FP_STACKWALK(points);
 		if (ret == false) {
 			std::cout << "unknown timing stack, discarding time" << std::endl;
-			_outFile->Write(id,0,diff.count());
+			_outFile->Write(id,0,TimingCount[TimingCount.size() - 1],diff.count());
 		} else {
 			uint64_t pos = keyFile->InsertStack(points);
-			_outFile->Write(id,pos,diff.count());
+			_outFile->Write(id,pos,TimingCount[TimingCount.size() - 1],diff.count());
 		}	
 	}
 	TimingPairs.erase(TimingPairs.begin() + found);

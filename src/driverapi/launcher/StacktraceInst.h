@@ -43,6 +43,8 @@
 #include "LogInfo.h"
 #include "Constants.h"
 #include "StackPoint.h"
+#include "Symbol.h"
+#include "Module.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;

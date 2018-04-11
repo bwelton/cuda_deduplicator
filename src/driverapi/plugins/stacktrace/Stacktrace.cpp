@@ -93,10 +93,7 @@ extern "C" {
 	}
 
 
-	__attribute__ ((noinline)) int SynchronizationWrapper(void * a, void * b, void * c) {
-		assert(1==0);
-		return 0;
-	} 
+	__attribute__ ((noinline)) int SynchronizationWrapper(void * a, void * b, void * c);
 
 
 	__attribute__ ((noinline)) int STACK_SyncWrapper(void * a, void * b, void * c) {

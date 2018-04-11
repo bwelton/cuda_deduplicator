@@ -118,7 +118,8 @@ void StacktraceInst::Setup() {
 	std::cerr << "[StacktraceInst] Finding wrapper symbol.... " << std::endl;
 	for (auto i : tmp) {
 		if (i->getPrettyName().find("SynchronizationWrapper") != std::string::npos) {
-			std::cerr << i->getModule()->fullName() << std::endl;
+			if (i->getModule() != NULL)
+				std::cerr << i->getModule()->fullName() << std::endl;
 			// if (i->getModule()->fileName().find("STraceWrapSync") == std::string::npos)
 			// 	continue;
 			_wrapSym = i;

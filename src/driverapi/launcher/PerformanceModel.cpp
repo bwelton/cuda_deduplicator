@@ -29,98 +29,99 @@ bool PerformanceModel::FindElement(uint64_t genId, uint64_t & startPos, std::vec
 void PerformanceModel::CaptureSyncTime() {
 
 	std::cerr << "[PerformanceModel] In capture sync time" << std::endl;
-	FILE * inFile = fopen("callDelay.out","rb");
-	assert(inFile != NULL);
+	ReadTimingStacks(std::string("timeKey.out"),std::string("callDelay.out"));
+	// FILE * inFile = fopen("callDelay.out","rb");
+	// assert(inFile != NULL);
 
-	fseek(inFile, 0, SEEK_END);
-	uint64_t elementCount = ftell(inFile);
-	fseek(inFile, 0, SEEK_SET);
+	// fseek(inFile, 0, SEEK_END);
+	// uint64_t elementCount = ftell(inFile);
+	// fseek(inFile, 0, SEEK_SET);
 
-	elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t));
-	_timingData = std::vector<TimingData>(elementCount);
+	// elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t));
+	// _timingData = std::vector<TimingData>(elementCount);
 
-	uint64_t id;
-	double time; 
-	uint64_t count;
-	uint64_t total = 0;
-	for (int i = 0; i < elementCount; i++) {
-		fread(&id, 1, sizeof(uint64_t), inFile);
-		fread(&time, 1, sizeof(double), inFile);
-		fread(&count, 1, sizeof(uint64_t), inFile); 
-		_timingData[i].genId = id;
-		_timingData[i].time = time;
-		_timingData[i].count = count;
-		//std::cerr << id << "," << time << "," << count << std::endl;
-		total += count;
-	}
-	std::cerr << "[PerformanceModel] Total Synchronization Count: " << total << " Expecting: " << _capturedSyncs << std::endl;
-	std::cerr << "[PerformanceModel] Checking for errors" << std::endl;
+	// uint64_t id;
+	// double time; 
+	// uint64_t count;
+	// uint64_t total = 0;
+	// for (int i = 0; i < elementCount; i++) {
+	// 	fread(&id, 1, sizeof(uint64_t), inFile);
+	// 	fread(&time, 1, sizeof(double), inFile);
+	// 	fread(&count, 1, sizeof(uint64_t), inFile); 
+	// 	_timingData[i].genId = id;
+	// 	_timingData[i].time = time;
+	// 	_timingData[i].count = count;
+	// 	//std::cerr << id << "," << time << "," << count << std::endl;
+	// 	total += count;
+	// }
+	// std::cerr << "[PerformanceModel] Total Synchronization Count: " << total << " Expecting: " << _capturedSyncs << std::endl;
+	// std::cerr << "[PerformanceModel] Checking for errors" << std::endl;
 
-	// std::cerr << "[PerformanceModel] Decoded Ordering Info: "  << std::endl;
-	// for (auto i = 0; i < _orderingInfo.size(); i++) {
-	// 	std::cerr << "[PerformanceModel]\t Pos: " << i << " GenID: " << _orderingInfo[i].genId << " StackID: " << _orderingInfo[i].stackId <<  " Call Count: " << _orderingInfo[i].count << " CallName: " << _callMapper.GeneralToName(_orderingInfo[i].genId) << std::endl;
+	// // std::cerr << "[PerformanceModel] Decoded Ordering Info: "  << std::endl;
+	// // for (auto i = 0; i < _orderingInfo.size(); i++) {
+	// // 	std::cerr << "[PerformanceModel]\t Pos: " << i << " GenID: " << _orderingInfo[i].genId << " StackID: " << _orderingInfo[i].stackId <<  " Call Count: " << _orderingInfo[i].count << " CallName: " << _callMapper.GeneralToName(_orderingInfo[i].genId) << std::endl;
+	// // }
+
+	// // std::cerr << "[PerformanceModel] Decoded Timing Info: "  << std::endl;
+	// // for (auto i = 0; i < _timingData.size(); i++) {
+	// // 	std::cerr << "[PerformanceModel]\t Pos: " << i << " GenID: " << _timingData[i].genId << " StackID: " << _timingData[i].stackId <<  " Call Count: " << _timingData[i].count <<" CallName: " << _callMapper.GeneralToName(_timingData[i].genId) << std::endl;		
+	// // }
+
+	// std::map<uint64_t, std::vector<uint64_t> > orderInfo;
+	// std::map<uint64_t, std::vector<uint64_t> > timingInfo;
+	// for (uint64_t z = 0; z < _timingData.size(); z++){
+	// 	auto i = _timingData[z];
+	// 	if (timingInfo.find(i.genId) == timingInfo.end()) {
+	// 		timingInfo[i.genId] = std::vector<uint64_t>();
+	// 	}
+	// 	timingInfo[i.genId].push_back(z);
 	// }
 
-	// std::cerr << "[PerformanceModel] Decoded Timing Info: "  << std::endl;
-	// for (auto i = 0; i < _timingData.size(); i++) {
-	// 	std::cerr << "[PerformanceModel]\t Pos: " << i << " GenID: " << _timingData[i].genId << " StackID: " << _timingData[i].stackId <<  " Call Count: " << _timingData[i].count <<" CallName: " << _callMapper.GeneralToName(_timingData[i].genId) << std::endl;		
+	// for (uint64_t z = 0; z < _orderingInfo.size(); z++){
+	// 	auto i = _orderingInfo[z];
+	// 	if (orderInfo.find(i.genId) == orderInfo.end()) {
+	// 		orderInfo[i.genId] = std::vector<uint64_t>();
+	// 	}
+	// 	orderInfo[i.genId].push_back(z);
 	// }
 
-	std::map<uint64_t, std::vector<uint64_t> > orderInfo;
-	std::map<uint64_t, std::vector<uint64_t> > timingInfo;
-	for (uint64_t z = 0; z < _timingData.size(); z++){
-		auto i = _timingData[z];
-		if (timingInfo.find(i.genId) == timingInfo.end()) {
-			timingInfo[i.genId] = std::vector<uint64_t>();
-		}
-		timingInfo[i.genId].push_back(z);
-	}
-
-	for (uint64_t z = 0; z < _orderingInfo.size(); z++){
-		auto i = _orderingInfo[z];
-		if (orderInfo.find(i.genId) == orderInfo.end()) {
-			orderInfo[i.genId] = std::vector<uint64_t>();
-		}
-		orderInfo[i.genId].push_back(z);
-	}
-
-	for (auto i : timingInfo) {
-		if (orderInfo.find(i.first) == orderInfo.end()) {
-			std::cerr << "[PerformanceModel] Ordering Info is missing element " << i.first << std::endl;
-		} else {
-			if (i.second.size() != orderInfo[i.first].size()) {
-				std::cerr << "[PerformanceModel] Timing model at GenID " << i.first << " does not match OrderInfo size" << std::endl;
-				std::cerr << "[PerformanceModel]\t Timing Info Size: " << i.second.size() << " Order Info Size: " << orderInfo[i.first].size() << std::endl;
-			}
-			uint64_t pOff = 0;
-			bool correct = true;
-			for (auto n : i.second) {
-				if (n != orderInfo[i.first][pOff]){
-					std::cerr << "[PerformanceModel] Timing and Order Info differ at array offset " << pOff << " element position " << n <<  " for genid " << i.first << std::endl;
-					correct = false;
-					break;
-				}
-				pOff++;
-				if (orderInfo[i.first].size() == pOff)
-					break;
-			}
-			// Secondary check to see if the arrays are shifted by a common offset
-			if (correct == false) {
-				std::set<uint64_t> findOffsets;
-				pOff = 0;
-				for (auto n : i.second) {
-					findOffsets.insert((n > orderInfo[i.first][pOff]) ? (n - orderInfo[i.first][pOff]): (orderInfo[i.first][pOff] - n));
-					pOff++;
-					if (orderInfo[i.first].size() == pOff)
-						break;					
-				}
-				if (findOffsets.size() == 1)
-					std::cerr << "[PerformanceModel] GenID " << i.first << " has consistent offset pattern" << std::endl;
-				else
-					std::cerr << "[PerformanceModel] GenID " << i.first << " has inconsistent offset pattern" << std::endl;
-			}
-		}
-	}
+	// for (auto i : timingInfo) {
+	// 	if (orderInfo.find(i.first) == orderInfo.end()) {
+	// 		std::cerr << "[PerformanceModel] Ordering Info is missing element " << i.first << std::endl;
+	// 	} else {
+	// 		if (i.second.size() != orderInfo[i.first].size()) {
+	// 			std::cerr << "[PerformanceModel] Timing model at GenID " << i.first << " does not match OrderInfo size" << std::endl;
+	// 			std::cerr << "[PerformanceModel]\t Timing Info Size: " << i.second.size() << " Order Info Size: " << orderInfo[i.first].size() << std::endl;
+	// 		}
+	// 		uint64_t pOff = 0;
+	// 		bool correct = true;
+	// 		for (auto n : i.second) {
+	// 			if (n != orderInfo[i.first][pOff]){
+	// 				std::cerr << "[PerformanceModel] Timing and Order Info differ at array offset " << pOff << " element position " << n <<  " for genid " << i.first << std::endl;
+	// 				correct = false;
+	// 				break;
+	// 			}
+	// 			pOff++;
+	// 			if (orderInfo[i.first].size() == pOff)
+	// 				break;
+	// 		}
+	// 		// Secondary check to see if the arrays are shifted by a common offset
+	// 		if (correct == false) {
+	// 			std::set<uint64_t> findOffsets;
+	// 			pOff = 0;
+	// 			for (auto n : i.second) {
+	// 				findOffsets.insert((n > orderInfo[i.first][pOff]) ? (n - orderInfo[i.first][pOff]): (orderInfo[i.first][pOff] - n));
+	// 				pOff++;
+	// 				if (orderInfo[i.first].size() == pOff)
+	// 					break;					
+	// 			}
+	// 			if (findOffsets.size() == 1)
+	// 				std::cerr << "[PerformanceModel] GenID " << i.first << " has consistent offset pattern" << std::endl;
+	// 			else
+	// 				std::cerr << "[PerformanceModel] GenID " << i.first << " has inconsistent offset pattern" << std::endl;
+	// 		}
+	// 	}
+	// }
 
 
 	// uint64_t correctCount = 0;
@@ -352,6 +353,55 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 }
 
 
+void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelineFile) {
+	std::cerr << "[PerformanceModel] Reading Timing Information" << std::endl;
+	std::cerr << "[PerformanceModel] Reading timing stack file: " << timeline << std::endl;
+	std::cerr << "[PerformanceModel] Reading timing key file: " << key << std::endl;
+
+	FILE * inFile = fopen(timeline.c_str(), "rb");
+	assert(inFile != NULL);
+
+	FILE * keyFile = fopen(key.c_str(), "rb");
+	assert(keyFile != NULL);
+
+
+	StackKeyReader reader(keyFile);
+	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
+
+	for (auto & i : ret)
+		_timingStackRecords[i.first] = StackRecord(i.first, i.second);
+
+	ExtractLineInfo(_timingStackRecords);
+
+	for (auto i : _timingStackRecords) 
+		std::cerr << "Adding " << i.second.GetFirstCudaCall().funcName << " with hash id " << i.first << std::endl;
+
+	fseek(inFile, 0, SEEK_END);
+	uint64_t elementCount = ftell(inFile);
+	fseek(inFile, 0, SEEK_SET);
+
+	elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t) + sizeof(uint64_t));
+	_timingData = std::vector<TimingData>(elementCount);
+
+	uint64_t dynId;
+	uint64_t stackId;
+	uint64_t count;
+	double time; 
+	for (int i = 0; i < elementCount; i++) {
+		fread(&dynId, 1, sizeof(uint64_t), inFile);
+		fread(&stackId, 1, sizeof(uint64_t), inFile);
+		fread(&count, 1, sizeof(uint64_t), inFile); 
+		fread(&time, 1, sizeof(double), inFile);
+
+		_timingData[i].genId = dynId;
+		_timingData[i].stackId = stackId;
+		_timingData[i].time = time;
+		_timingData[i].count = count;
+		total += count;
+	}
+	std::cerr << "[PerformanceModel] Captured " << total << " synchronizations from timing " << std::endl;
+}
+
 void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 	std::cerr << "Reading stack file: " << timeline << std::endl;
 	std::cerr << "Reading key file: " << key << std::endl;
@@ -368,7 +418,7 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 	for (auto & i : ret)
 		_stackRecords[i.first] = StackRecord(i.first, i.second);
 
-	ExtractLineInfo();
+	ExtractLineInfo(_stackRecords);
 
 	for (auto i : _stackRecords) {
 		std::cerr << "Adding " << i.second.GetFirstCudaCall().funcName << " with hash id " << i.first << std::endl;
@@ -410,12 +460,6 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 			_orderingInfo.push_back(tmp);
 			start = false;
 		}
-		// if (_stackRecords.find(hash) == _stackRecords.end()) {
-		// 	std::cerr << "[PerformanceModel]  ERROR - WE COULD NOT FIND HASH OF " << hash << std::endl;
-		// } else {
-		// 	_stackRecords[hash].AddStackRecord(pos);
-		// }
-		// pos++;
 		if (feof(inFile))
 			break;
 	}
@@ -522,11 +566,11 @@ void PerformanceModel::FinalProcessing() {
 	// std::cerr << "Performance model is complete" << std::endl;
 }
 
-void PerformanceModel::ExtractLineInfo() {
+void PerformanceModel::ExtractLineInfo(std::map<uint64_t, StackRecord> & rec) {
 	SymbolMap symbolInfo;
 	
 	// Open all symtabs for functions found on the stack. 
-	for (auto i : _stackRecords) {
+	for (auto i : rec) {
 		std::vector<std::string> lnames = i.second.GetLibNames();
 		for (auto z : lnames){
 			if (symbolInfo.find(z) == symbolInfo.end())
@@ -534,7 +578,7 @@ void PerformanceModel::ExtractLineInfo() {
 		}	
 	}
 
-	for (auto & i : _stackRecords)
+	for (auto & i : rec)
 		i.second.GetStackSymbols(symbolInfo);
 
 // 	// Decode line info for every stack

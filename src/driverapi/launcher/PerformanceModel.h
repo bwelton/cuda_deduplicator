@@ -45,7 +45,7 @@ public:
 	PerformanceModel();
 	void AddExecutionTime(double secs);
 	void AddStack(std::vector<StackPoint> stack);
-	void ExtractLineInfo();
+	void ExtractLineInfo(std::map<uint64_t, StackRecord> & rec);
 	void ProcessStacks();
 	void CaptureSyncTime();
 	void GetTimingList(std::vector<StackPoint> & timingList);
@@ -54,6 +54,7 @@ public:
 	void ReadStackFile(std::string key, std::string timeline);
 	void ReadStackFiles();
 	bool FindElement(uint64_t genId, uint64_t & startPos, std::vector<TimingData> & array);
+	void ReadTimingStacks(std::string keyFile, std::string timelineFile);
 private:
 	double _fastestExecTime;
 	uint64_t _capturedSyncs;
@@ -74,4 +75,5 @@ private:
 	std::map<std::string, uint64_t> _nameMap;
 	std::vector<TimingData> _timingData;
 	std::map<uint64_t, StackRecord> _stackRecords; 
+	std::map<uint64_t, StackRecord> _timingStackRecords; 
 };

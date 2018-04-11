@@ -52,6 +52,7 @@ struct OutputFile {
 	void Write(uint64_t dyninstId, uint64_t stackTraceId, uint64_t count, double time) {
 		fwrite(&dyninstId, 1, sizeof(uint64_t), outFile);
 		fwrite(&stackTraceId, 1, sizeof(uint64_t), outFile);
+		fwrite(&count, 1, sizeof(uint64_t), outFile);
 		fwrite(&time, 1, sizeof(double), outFile);
 	}
 	void Write(uint64_t id, double time, uint64_t count) {

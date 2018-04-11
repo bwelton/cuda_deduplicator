@@ -30,6 +30,10 @@ void PerformanceModel::CaptureSyncTime() {
 
 	std::cerr << "[PerformanceModel] In capture sync time" << std::endl;
 	ReadTimingStacks(std::string("timeKey.out"),std::string("callDelay.out"));
+
+	// Rectify the stack traces. 
+	
+
 	// FILE * inFile = fopen("callDelay.out","rb");
 	// assert(inFile != NULL);
 

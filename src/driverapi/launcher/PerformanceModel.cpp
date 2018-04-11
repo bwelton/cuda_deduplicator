@@ -355,17 +355,17 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 
 void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelineFile) {
 	std::cerr << "[PerformanceModel] Reading Timing Information" << std::endl;
-	std::cerr << "[PerformanceModel] Reading timing stack file: " << timeline << std::endl;
-	std::cerr << "[PerformanceModel] Reading timing key file: " << key << std::endl;
+	std::cerr << "[PerformanceModel] Reading timing stack file: " << timelineFile << std::endl;
+	std::cerr << "[PerformanceModel] Reading timing key file: " << keyFile << std::endl;
 
-	FILE * inFile = fopen(timeline.c_str(), "rb");
+	FILE * inFile = fopen(timelineFile.c_str(), "rb");
 	assert(inFile != NULL);
 
-	FILE * keyFile = fopen(key.c_str(), "rb");
-	assert(keyFile != NULL);
+	FILE * kf = fopen(keyFile.c_str(), "rb");
+	assert(kf != NULL);
 
 
-	StackKeyReader reader(keyFile);
+	StackKeyReader reader(kf);
 	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
 
 	for (auto & i : ret)

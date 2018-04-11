@@ -56,7 +56,7 @@ void SyncTesting::Run() {
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
 	}
 	_model.ReadStackFiles();
-	_model.ExtractLineInfo();
+	//_model.ExtractLineInfo();
 	//InstrumentProgram();
 	std::vector<StackPoint> timingList;
 	_model.GetTimingList(timingList);

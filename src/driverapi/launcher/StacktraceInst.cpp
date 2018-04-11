@@ -88,6 +88,7 @@ uint64_t StacktraceInst::GetFuncId(BPatch_function * func) {
 }
 
 void StacktraceInst::Setup() {
+	std::cerr << "[StacktraceInst] Starting Setup.... " << std::endl;
 	std::vector<BPatch_function *> wrapperFunc;
 	_img->findFunction("STACK_SyncWrapper", wrapperFunc);
 	assert(wrapperFunc.size() > 0);
@@ -105,6 +106,7 @@ void StacktraceInst::Setup() {
 		break;
 	}
 	assert(cudaSync != NULL);
+	std::cerr << "[StacktraceInst] Cudasync has been found " << std::endl;
 	_cudaSync = cudaSync;
 
 	// Find the symbol to wrap
@@ -113,6 +115,7 @@ void StacktraceInst::Setup() {
 	std::vector<Dyninst::SymtabAPI::Symbol *> tmp;
 	symt->getAllSymbols(tmp);
 	_wrapSym = NULL;
+	std::cerr << "[StacktraceInst] Finding wrapper symbol.... " << std::endl;
 	for (auto i : tmp) {
 		if (i->getPrettyName().find("SynchronizationWrapper") != std::string::npos) {
 			std::cerr << i->getModule()->fullName() << std::endl;

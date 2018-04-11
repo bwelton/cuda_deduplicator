@@ -116,11 +116,11 @@ void StacktraceInst::Setup() {
 	for (auto i : tmp) {
 		if (i->getPrettyName().find("SynchronizationWrapper") != std::string::npos) {
 			std::cerr << i->getModule()->fullName() << std::endl;
-			if (i->getModule()->fileName().find("STraceWrapSync") == std::string::npos)
-				continue;
+			// if (i->getModule()->fileName().find("STraceWrapSync") == std::string::npos)
+			// 	continue;
 			_wrapSym = i;
 			std::cerr << "Found synchtonization Wrapper" << std::endl;
-			break;
+			//break;
 		}
 	}
 	assert(_wrapSym != NULL);

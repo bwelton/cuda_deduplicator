@@ -14,7 +14,7 @@ void SyncTesting::ReprocessModel() {
 
 	// Get the stacks and line info.
 	_model.ReadStackFiles();
-	_model.ExtractLineInfo();
+	//_model.ExtractLineInfo();
 
 	// Get the timing list
 	std::vector<StackPoint> timingList;

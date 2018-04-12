@@ -38,12 +38,29 @@ void PerformanceModel::CaptureSyncTime() {
 	for (auto i : _stackToDynId) {
 		uint64_t stackIDTiming = i.first;
 		uint64_t genericID = i.second;
+		if (stackIDTiming == 0 || genericID == 0){
+			std::cerr << "[PerformanceModel] Skipping a zero ID - " << stackIDTiming << " - " << genericID << std::endl; 
+			continue;
+		}
+		
 		std::string tmp = _callMapper.GeneralToName(genericID);
 		std::cerr << "[PerformanceModel] Changing timing stackid " << stackIDTiming << " to have libcuda entry at " << tmp << std::endl;
+		if (_timingStackRecords.find(stackIDTiming) == _timingStackRecords.end()){
+			std::cerr << "[PerformanceModel] Could not find timing stack record with id " << stackIDTiming << " continuing " << std::endl;
+			continue;
+		}
+
+		uint64_t cudaPos = _timingStackRecords[stackIDTiming].GetFirstCudaCallPos();
+		std::cerr << "[PerformanceModel] For stack record " << stackIDTiming << " first cuda position is " << cudaPos << std::endl;
+		if (cudaPos != 0)
+			_timingStackRecords[stackIDTiming].AddCallnameAtPosition(tmp, cudaPos);
 	}
 
+	std::cerr << "[PerformanceModel] Timing stacks after correction" << std::endl;
+	for (auto i : _timingStackRecords) 
+		i.second.PrintStack();	
 
-	_callMapper.GeneralToName()
+	//_callMapper.GeneralToName()
 	// FILE * inFile = fopen("callDelay.out","rb");
 	// assert(inFile != NULL);
 

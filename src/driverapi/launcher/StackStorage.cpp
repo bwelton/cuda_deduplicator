@@ -23,6 +23,16 @@ StackPoint StackRecord::GetFirstCudaCall() {
 	return empty;
 }
 
+uint64_t StackRecord::GetFirstCudaCallPos() {
+	for (int i = _points.size() - 1; i >= 0; i = i - 1){
+		if(_points[i].libname.find("libcuda.so") != std::string::npos){
+			return i;
+		}
+	}	
+	return 0;
+}
+
+
 void StackRecord::AddCallnameAtPosition(std::string name, uint64_t pos) {
 	if (pos < _points.size()) {
 		_points[pos].funcName = name;
@@ -63,10 +73,14 @@ void StackRecord::GetStackSymbols(SymbolMap & m) {
 		_points[i].empty = false;
 	}
 #ifdef DEBUG_STACKRECORD
+	PrintStack();
+#endif 
+}
+
+void StackRecord::PrintStack() {
 	std::cout << "[StackRecord] Decoded Stack for ID - " << _id << std::endl;
 	for (auto i : _points)
 		std::cout << "[StackRecord]\t" << i.funcName << "@" << i.funcOffset << " in " << i.libname << std::endl;
-#endif 
 }
 
 

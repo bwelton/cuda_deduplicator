@@ -54,9 +54,10 @@ public:
 	void AddCallnameAtPosition(std::string name, uint64_t pos);
 	void GetStackSymbols(SymbolMap & m);
 	void AddStackRecord(uint64_t pos);
-
+	void PrintStack();
 	//void AddTimingData(uint64_t start, uint64_t len, double time);
 	StackPoint GetFirstCudaCall();
+	uint64_t GetFirstCudaCallPos();
 private:
 	uint64_t _id;
 	std::vector<StackPoint> _points;

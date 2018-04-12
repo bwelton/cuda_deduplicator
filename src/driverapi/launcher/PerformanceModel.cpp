@@ -30,8 +30,8 @@ std::map<uint64_t,uint64_t> PerformanceModel::MatchStackTraces(std::map<uint64_t
 	std::map<uint64_t,uint64_t> ret;
 	for (auto outer : a) {
 		for (auto inner : b) {
-			if (a.second.IsEqual(b.second)){
-				ret[a.first] = b.first;
+			if (outer.second.IsEqual(inner.second)){
+				ret[outer.first] = inner.first;
 				break;
 			}
 		}
@@ -78,7 +78,8 @@ void PerformanceModel::CaptureSyncTime() {
 		i.second.PrintStack();	
 	
 	// Find Identical Stacks. 
-	
+	std::map<uint64_t,uint64_t> s = MatchStackTraces(_timingStackRecords, _stackRecords);
+
 
 
 	//_callMapper.GeneralToName()

@@ -51,6 +51,7 @@ public:
 	StackRecord(uint64_t id, std::vector<StackPoint> & points);
 
 	std::vector<std::string> GetLibNames();
+	void AddCallnameAtPosition(std::string name, uint64_t pos);
 	void GetStackSymbols(SymbolMap & m);
 	void AddStackRecord(uint64_t pos);
 

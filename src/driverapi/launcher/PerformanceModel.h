@@ -76,4 +76,5 @@ private:
 	std::vector<TimingData> _timingData;
 	std::map<uint64_t, StackRecord> _stackRecords; 
 	std::map<uint64_t, StackRecord> _timingStackRecords; 
+	std::map<uint64_t, uint64_t> _stackToDynId;
 };

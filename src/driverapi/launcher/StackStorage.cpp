@@ -23,6 +23,12 @@ StackPoint StackRecord::GetFirstCudaCall() {
 	return empty;
 }
 
+void StackRecord::AddCallnameAtPosition(std::string name, uint64_t pos) {
+	if (pos < _points.size()) {
+		_points[pos].funcName = name;
+	}
+}
+
 void StackRecord::AddStackRecord(uint64_t pos) {
 	if (_ranges.size() == 0){
 		_ranges.push_back(SyncRangeRecord(pos));

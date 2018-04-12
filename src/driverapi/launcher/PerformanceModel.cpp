@@ -31,9 +31,19 @@ void PerformanceModel::CaptureSyncTime() {
 	std::cerr << "[PerformanceModel] In capture sync time" << std::endl;
 	ReadTimingStacks(std::string("timeKey.out"),std::string("callDelay.out"));
 
-	// Rectify the stack traces. 
-	
+	// Because for timing we instrument the entries into libcuda, 
+	// we do not get the correct function names at those locations. We must
+	// find out what those functions should be and replace the stack positions
+	// with the correct names. 
+	for (auto i : _stackToDynId) {
+		uint64_t stackIDTiming = i.first;
+		uint64_t genericID = i.second;
+		std::string tmp = _callMapper.GeneralToName(genericID);
+		std::cerr << "[PerformanceModel] Changing timing stackid " << stackIDTiming << " to have libcuda entry at " << tmp << std::endl;
+	}
 
+
+	_callMapper.GeneralToName()
 	// FILE * inFile = fopen("callDelay.out","rb");
 	// assert(inFile != NULL);
 
@@ -368,7 +378,6 @@ void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelin
 	FILE * kf = fopen(keyFile.c_str(), "rb");
 	assert(kf != NULL);
 
-
 	StackKeyReader reader(kf);
 	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
 
@@ -402,6 +411,7 @@ void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelin
 		_timingData[i].stackId = stackId;
 		_timingData[i].time = time;
 		_timingData[i].count = count;
+		_stackToDynId[stackId] = dynId;
 		total += count;
 	}
 	std::cerr << "[PerformanceModel] Captured " << total << " synchronizations from timing " << std::endl;

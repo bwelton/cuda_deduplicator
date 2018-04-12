@@ -58,6 +58,12 @@ struct StackPoint {
 		inMain = false;
 	};
 
+	bool IsEqual(StackPoint & other) {
+		if(libname == other.libname && libOffset == other.libOffset)
+			return true;
+		return false;
+	};
+
 	int Serialize(char * data, int size) {
 		int pos = 0;
 		if (size < sizeof(uint64_t) + libname.size() + sizeof(uint64_t))

@@ -26,6 +26,19 @@ bool PerformanceModel::FindElement(uint64_t genId, uint64_t & startPos, std::vec
 	return false;
 }
 
+std::map<uint64_t,uint64_t> PerformanceModel::MatchStackTraces(std::map<uint64_t, StackRecord> & a, std::map<uint64_t, StackRecord> & b) {
+	std::map<uint64_t,uint64_t> ret;
+	for (auto outer : a) {
+		for (auto inner : b) {
+			if (a.second.IsEqual(b.second)){
+				ret[a.first] = b.first;
+				break;
+			}
+		}
+	}
+	return ret;
+}
+
 void PerformanceModel::CaptureSyncTime() {
 
 	std::cerr << "[PerformanceModel] In capture sync time" << std::endl;
@@ -63,6 +76,10 @@ void PerformanceModel::CaptureSyncTime() {
 	std::cerr << "[PerformanceModel] Timing stacks after correction" << std::endl;
 	for (auto i : _timingStackRecords) 
 		i.second.PrintStack();	
+	
+	// Find Identical Stacks. 
+	
+
 
 	//_callMapper.GeneralToName()
 	// FILE * inFile = fopen("callDelay.out","rb");

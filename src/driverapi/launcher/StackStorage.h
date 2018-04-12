@@ -58,6 +58,8 @@ public:
 	//void AddTimingData(uint64_t start, uint64_t len, double time);
 	StackPoint GetFirstCudaCall();
 	uint64_t GetFirstLibDynRTPosition();
+	bool IsEqual(StackRecord & other);
+	void ReturnPreCudaCalls(std::vector<StackPoint> & ret);
 private:
 	uint64_t _id;
 	std::vector<StackPoint> _points;

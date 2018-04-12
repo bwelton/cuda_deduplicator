@@ -34,6 +34,28 @@ uint64_t StackRecord::GetFirstLibDynRTPosition() {
 	return 0;
 }
 
+void StackRecord::ReturnPreCudaCalls(std::vector<StackPoint> & ret) {
+	for (int i = _points.size() - 1; i >= 0; i++) 
+		if (_points[i].libname.find("libcuda.so") == std::string::npos && 
+			_points[i].libname.find("libdyninstAPI_RT.so") == std::string::npos)
+			ret.push_back(_points[i]);
+		else
+			break;
+}
+
+bool StackRecord::IsEqual(StackRecord & other) {
+	std::vector<StackPoint> a,b;
+	ReturnPreCudaCalls(a);
+	other.ReturnPreCudaCalls(b);
+	if (a.size() != b.size())
+		return false;
+	for (int i = 0; i < a.size(); i++) {
+		if(!a[i].IsEqual(b[i]))
+			return false;
+	}
+	return true;
+}
+
 
 void StackRecord::ChangePointAtPosition(StackPoint p, uint64_t pos) {
 	if (pos < _points.size()) {

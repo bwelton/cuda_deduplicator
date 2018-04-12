@@ -50,10 +50,14 @@ void PerformanceModel::CaptureSyncTime() {
 			continue;
 		}
 
-		uint64_t cudaPos = _timingStackRecords[stackIDTiming].GetFirstCudaCallPos();
+		uint64_t cudaPos = _timingStackRecords[stackIDTiming].GetFirstLibDynRTPosition();
 		std::cerr << "[PerformanceModel] For stack record " << stackIDTiming << " first cuda position is " << cudaPos << std::endl;
-		if (cudaPos != 0)
-			_timingStackRecords[stackIDTiming].AddCallnameAtPosition(tmp, cudaPos);
+		if (cudaPos != 0){
+			uint64_t tmpStackID = _callMapper.GeneralToStackID(genericID);
+			if (tmpStackID == 0)
+				continue;
+			_timingStackRecords[stackIDTiming].ChangePointAtPosition(_stackRecords[tmpStackID].GetFirstCudaCall(), cudaPos);
+		}
 	}
 
 	std::cerr << "[PerformanceModel] Timing stacks after correction" << std::endl;

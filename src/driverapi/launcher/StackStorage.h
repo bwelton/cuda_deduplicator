@@ -51,13 +51,13 @@ public:
 	StackRecord(uint64_t id, std::vector<StackPoint> & points);
 
 	std::vector<std::string> GetLibNames();
-	void AddCallnameAtPosition(std::string name, uint64_t pos);
+	void ChangePointAtPosition(StackPoint p, uint64_t pos);
 	void GetStackSymbols(SymbolMap & m);
 	void AddStackRecord(uint64_t pos);
 	void PrintStack();
 	//void AddTimingData(uint64_t start, uint64_t len, double time);
 	StackPoint GetFirstCudaCall();
-	uint64_t GetFirstCudaCallPos();
+	uint64_t GetFirstLibDynRTPosition();
 private:
 	uint64_t _id;
 	std::vector<StackPoint> _points;
@@ -75,6 +75,7 @@ public:
 	uint64_t StackIDToGeneral(uint64_t id);
 	uint64_t NameToGeneral(std::string s);
 	std::string GeneralToName(uint64_t id);
+	uint64_t GeneralToStackID(uint64_t id);
 	// // Takes timer ID and sees if matches those for the c
 	// void DoesIDMatch(std::string & s, uint64_t id);
 	// uint64_t GetCallId(std::string & v);

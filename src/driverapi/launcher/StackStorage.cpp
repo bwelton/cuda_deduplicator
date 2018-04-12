@@ -23,9 +23,11 @@ StackPoint StackRecord::GetFirstCudaCall() {
 	return empty;
 }
 
-uint64_t StackRecord::GetFirstCudaCallPos() {
+// Walking out of instrimented frames causes the frame being walked out of to look like it is
+// coming from libdyninstAPI_RT.so, we need to get that position
+uint64_t StackRecord::GetFirstLibDynRTPosition() {
 	for (int i = _points.size() - 1; i >= 0; i = i - 1){
-		if(_points[i].libname.find("libcuda.so") != std::string::npos){
+		if(_points[i].libname.find("libdyninstAPI_RT.so") != std::string::npos){
 			return i;
 		}
 	}	
@@ -33,9 +35,9 @@ uint64_t StackRecord::GetFirstCudaCallPos() {
 }
 
 
-void StackRecord::AddCallnameAtPosition(std::string name, uint64_t pos) {
+void StackRecord::ChangePointAtPosition(StackPoint p, uint64_t pos) {
 	if (pos < _points.size()) {
-		_points[pos].funcName = name;
+		_points[pos] = p;
 	}
 }
 
@@ -97,6 +99,15 @@ void CudaCallMap::InsertStackID(std::string s, uint64_t id) {
 	} else {
 		_stackToGeneral[id] = _nameToGeneralID[s];
 	}
+}
+
+uint64_t CudaCallMap::GeneralToStackID(uint64_t id) {
+	for (auto i : _stackToGeneral) {
+		if (i.second == id) {
+			return i.first;
+		}
+	}
+	return 0;
 }
 
 std::string CudaCallMap::GeneralToName(uint64_t id) {

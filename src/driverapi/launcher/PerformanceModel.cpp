@@ -119,8 +119,8 @@ void PerformanceModel::CaptureSyncTime() {
 		if (stackToTiming.find(i) != stackToTiming.end()){
 			if (timingBins.find(stackToTiming[i]) != timingBins.end()){
 				if (timingBins[stackToTiming[i]].size() != 0){
-					timingBins[stackToTiming[i]].back().count--;
-					if (timingBins[stackToTiming[i]].back().count)
+					_timingData[timingBins[stackToTiming[i]].back()].count--;
+					if (_timingData[timingBins[stackToTiming[i]].back()].count == 0)
 						timingBins[stackToTiming[i]].pop_back();
 					continue;
 				}

@@ -107,9 +107,9 @@ void PerformanceModel::CaptureSyncTime() {
 	std::cerr << "[PerformanceModel] Checking if stacks line up " << std::endl;
 
 	std::map<uint64_t, std::vector<uint64_t> > timingBins;
-	assert(_timingData.size() > 0);
-	
-	for(uint64_t i = _timingData.size() - 1; i >= 0; i = i - 1) {
+	assert(_timingData.size() > 1);
+
+	for(int64_t i = _timingData.size() - 1; i >= 0; i = i - 1) {
 		if (timingBins.find(_timingData[i].stackId) ==timingBins.end())
 			timingBins[_timingData[i].stackId] = std::vector<uint64_t>();
 		timingBins[_timingData[i].stackId].push_back(i);

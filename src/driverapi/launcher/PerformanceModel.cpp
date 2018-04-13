@@ -80,6 +80,30 @@ void PerformanceModel::CaptureSyncTime() {
 	// Find Identical Stacks. 
 	std::map<uint64_t,uint64_t> s = MatchStackTraces(_timingStackRecords, _stackRecords);
 
+	// Check for stacks that were not found matching...
+	std::set<uint64_t> timeStackIDs;
+	std::set<uint64_t> stackRecordIDs;
+
+	for (auto i : _timingStackRecords)
+		timeStackIDs.insert(i.first);
+	for (auto i : _stackRecords) 
+		stackRecordIDs.insert(i.first);
+
+	for (auto i : s) {
+		std::cerr << "[PerformanceModel] Timing Stack of " << i.first << " matches with stack record " << i.second << std::endl;
+		timeStackIDs.erase(i.first);
+		stackRecordIDs.erase(i.first);
+	}
+	
+	for (auto i : timeStackIDs)
+		std::cerr << "[PerformanceModel] Error: Could not find timing stack that matched - " << i << std::endl;
+
+	for (auto i : stackRecordIDs) 
+		std::cerr << "[PerformanceModel] Error: Could not find stack record that matched - " << i << std::endl;
+	
+
+
+
 
 
 	//_callMapper.GeneralToName()

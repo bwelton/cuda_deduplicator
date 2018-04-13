@@ -100,11 +100,36 @@ void PerformanceModel::CaptureSyncTime() {
 
 	for (auto i : stackRecordIDs) 
 		std::cerr << "[PerformanceModel] Error: Could not find stack record that matched - " << i << std::endl;
-	
 
+	if (timeStackIDs.size() == stackRecordIDs.size())
+		std::cerr << "[PerformanceModel] Backtraces match between timing and stack record ids" << std::endl;
 
+	std::cerr << "[PerformanceModel] Checking if stacks line up " << std::endl;
 
+	std::map<uint64_t, std::vector<uint64_t> > timingBins;
+	for(uint64_t i = _timingData.size(); i >= 0; i = i - 1) {
+		if (timingBins.find(_timingData[i].stackId) ==timingBins.end())
+			timingBins[_timingData[i].stackId] = std::vector<uint64_t>();
+		timingBins[_timingData[i].stackId].push_back(i);
+	}
 
+	std::map<uint64_t,uint64_t> stackToTiming = MatchStackTraces(_stackRecords, _timingStackRecords);
+	uint64_t notFound = 0;
+	for (uint64_t i = 0; i < _orderingInfo.size(); i++) {
+		if (stackToTiming.find(i) != stackToTiming.end()){
+			if (timingBins.find(stackToTiming[i]) != timingBins.end()){
+				if (timingBins[stackToTiming[i]].size() != 0){
+					timingBins[stackToTiming[i]].back().count--;
+					if (timingBins[stackToTiming[i]].back().count)
+						timingBins[stackToTiming[i]].pop_back();
+					continue;
+				}
+			}
+		}
+		notFound++;
+	}
+
+	std::cerr << "[PerformanceModel] Number of elements in ordering info not found - " << notFound << std::endl;
 
 	//_callMapper.GeneralToName()
 	// FILE * inFile = fopen("callDelay.out","rb");

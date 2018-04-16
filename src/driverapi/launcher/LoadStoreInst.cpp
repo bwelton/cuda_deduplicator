@@ -50,7 +50,7 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 			_alreadyInstrimented[t].insert(hashValue);
 	}	
 	for (auto i : removeList) {
-		points->erase(i);
+		points->erase(vec.begin()+i);
 	}
 	if (points->size() == 0) 
 		return false;

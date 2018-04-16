@@ -93,7 +93,7 @@ void SyncTesting::Run() {
 		std::vector<std::string> pluginNames = {"libSynchTool"};
 		CreatePluginFile(pluginNames);
 		//std::string def(WRAPPER_DEF);
-		std::string def();
+		std::string def("");
 		TimeApplications base(_vm);
 		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 		//extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
@@ -102,7 +102,7 @@ void SyncTesting::Run() {
 	}
 
 	// We are done running. Perform Analysis.
-	_model.FinalProcessing();
+	//_model.FinalProcessing();
 
 	// //GatherSynchronizationCalls();
 	// std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;

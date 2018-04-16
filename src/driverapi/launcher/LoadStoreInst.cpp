@@ -1,10 +1,135 @@
 #include "LoadStoreInst.h"
 
+BinaryLocationIDMap::BinaryLocationIDMap() : _curPos(1), _libids(1) {
+
+}
+uint64_t BinaryLocationIDMap::StorePosition(std::string & libname, uint64_t offsetAddr) {
+	if (_libnameToLibID.find(libname) == _libnameToLibID.end()) {
+		_libnameToLibID[libname] = _libids;
+		_libIdtoLibname[_libids] = libname;
+		_libids++;
+	}
+	_idToLibOffset[_curPos] = std::make_pair(_libnameToLibID[libname], offsetAddr);
+	_curPos++;
+	return _curPos - 1;
+}
+
+uint64_t BinaryLocationIDMap::GetOffsetForID(uint64_t id) {
+	if (_idToLibOffset.find(id) != _idToLibOffset.end())
+		return _idToLibOffset[id].second;
+	return 0;
+}
+
+std::string * BinaryLocationIDMap::GetLibnameForID(uint64_t id) {
+	if (_idToLibOffset.find(id) != _idToLibOffset.end())
+		if (_libIdtoLibname.find(_idToLibOffset[id].first) != _libIdtoLibname.end())
+			return &(_libIdtoLibname[_idToLibOffset[id].first]);
+	return (std::string *)NULL;
+}
+
+InstrimentationTracker::InstrimentationTracker() {
+}
+
+void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & wrappedFunctions) {
+	_prevWrappedFunctions = wrappedFunctions;
+}
+bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
+	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(fund, t))
+		return false;
+	
+	if (_alreadyInstrimented.find(t) == _alreadyInstrimented.end())
+		_alreadyInstrimented[t] = std::set<uint64_t>();
+	std::string pathName = func->getModule()->getObject()->pathName();
+	std::vector<uint64_t> removeList;
+
+	for (int i = 0; i < points->size(); i++) {
+		uint64_t hashValue = HashPoint(func, (*points)[i]);
+		if (_alreadyInstrimented[t].find(hashValue) != _alreadyInstrimented.end())
+			removeList.push_back(i);
+		else 
+			_alreadyInstrimented[t].insert(hashValue);
+	}	
+	for (auto i : removeList) {
+		points->erase(i);
+	}
+	if (points->size() > 0) 
+		return false;
+	return true;
+}
+
+uint64_t InstrimentationTracker::HashPoint(BPatch_function * func, BPatch_point * point) {
+	std::stringstream ss;
+	ss << func->getModule()->getObject()->pathName() << "," << (uint64_t)point->getAddress();
+	return std::hash<std::string>()(ss.str());
+}
+
+bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, InstType t) {
+	static StringVector callTracingSkips  = {"__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
+	static StringVector loadStoreSkips =  {"_fini","atexit",
+	"__libc_csu_init", "__libc_csu_fini","malloc","printf","fwrite","strlen","abort","assert","strnlen","new_heap","fflush",
+	"__static_initialization_and_destruction_0","_start", "__GI___backtrace","__GI___libc_secure_getenv","__GI_exit","cudart","_IO_puts","__new_fopen","fopen","_Unwind_Resume","__run_exit_handlers","free","open",
+	"_init", "cudart::cuosInitializeCriticalSection","cudart::", "cudaLaunch",
+	"cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc",
+	"cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3",
+	"__printf","__GI_fprintf","_IO_vfprintf_internal","buffered_vfprintf","printf_positional","__printf_fp","__printf_fphex","__fxprintf","__GI___printf_fp_l","vfwprintf","__GI___asprintf","buffered_vfprintf","printf_positional","_IO_vasprintf","__snprintf","vsnprintf",
+    "__GI___libc_malloc","_int_malloc","__malloc_assert","malloc_consolidate","sysmalloc","malloc_printerr"};
+
+    StringVector * toSkip;
+    if (t == LOAD_STORE_INST)
+    	toSkip = &loadStoreSkips;
+    else
+    	toSkip = &callTracingSkips;
+    std::string funcName = func->getName();
+    for (auto i : *toSkip) {
+    	if (funcName.find(i) != std::string::npos)
+    		return false;
+    }
+    return true;
+}
+
+bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, InstType t) {
+	static StringVector loadStoreModSkips = {"libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so","libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so", "dyninst", "Dyninst"};
+	static StringVector callTracingModSkips = {"libdl-2.23.so","dyninst","Dyninst","boost", "libc.so.6", "libpthread-2.23.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+    StringVector * toSkip;
+    if (t == LOAD_STORE_INST)
+    	toSkip = &loadStoreModSkips;
+    else
+    	toSkip = &callTracingModSkips;
+    std::string modname = func->getModule()->getObject()->pathName();
+    for (auto i : *toSkip) {
+    	if (modname.find(i) != std::string::npos)
+    		return false;
+    }
+    return true;
+}
+
 LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img) :
 	_addrSpace(addrSpace), _img(img), _started(false), _funcId(0) {
 	_runOneTime = false;	
-
 }
+
+// Synchronization Points:
+// 1. Wrap all function calls in the program outside of libcuda
+//    - Wrapper Framwork: locationID.
+
+
+// bool LoadStoreInst::ShouldWrap(BPatch_function * func, )
+
+// void LoadStoreInst::WrapEntryAndExit() {
+// 	// Get all the functions in the binary
+// 	std::vector<BPatch_function *> all_functions;
+// 	_img->getProcedures(all_functions);
+
+// 	for (auto i : syncFunctions){
+// 		// Function is part of the public CUDA API. Do not rewrap.
+// 		if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),i ) != _wrappedFunctions.end())
+// 			continue;	
+
+// 	std::vector<BPatch_point*> * funcCalls = x->findPoint(BPatch_locSubroutine);
+
+// }	
+
+
 
 void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFunctions ) {
 	_wrappedFunctions = wrappedFunctions;

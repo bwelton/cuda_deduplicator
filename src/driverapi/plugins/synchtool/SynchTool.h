@@ -15,7 +15,8 @@
 #include <sys/mman.h>
 #include <signal.h>
 #include <sstream>
-
+#include "StackwalkingCommon.h"
+#include "StackPoint.h"
 #define SYNCH_DEBUG 1
 
 extern "C" {

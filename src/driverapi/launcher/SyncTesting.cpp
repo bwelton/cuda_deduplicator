@@ -92,12 +92,13 @@ void SyncTesting::Run() {
 	{	
 		std::vector<std::string> pluginNames = {"libSynchTool"};
 		CreatePluginFile(pluginNames);
-		std::string def(WRAPPER_DEF);
+		//std::string def(WRAPPER_DEF);
+		std::string def();
 		TimeApplications base(_vm);
 		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 		//extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 		double time = base.RunWithLSInstrimentation(def, extras, timingList);
-		_model.AddFirstUses(base._firstUses);
+		//_model.AddFirstUses(base._firstUses);
 	}
 
 	// We are done running. Perform Analysis.

@@ -119,19 +119,19 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 
 // bool LoadStoreInst::ShouldWrap(BPatch_function * func, )
 
-// void LoadStoreInst::WrapEntryAndExit() {
-// 	// Get all the functions in the binary
-// 	std::vector<BPatch_function *> all_functions;
-// 	_img->getProcedures(all_functions);
+void LoadStoreInst::WrapEntryAndExit() {
+	// Get all the functions in the binary
+	std::vector<BPatch_function *> all_functions;
+	_img->getProcedures(all_functions);
 
-// 	for (auto i : syncFunctions){
-// 		// Function is part of the public CUDA API. Do not rewrap.
-// 		if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),i ) != _wrappedFunctions.end())
-// 			continue;	
-
-// 	std::vector<BPatch_point*> * funcCalls = x->findPoint(BPatch_locSubroutine);
-
-// }	
+	for (auto i : all_functions) {
+		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
+		if(_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING))
+			std::cerr << "[LoadStoreInst] We will insert call tracing into " << i->getName() << std::endl;
+		else 
+			std::cerr << "[LoadStoreInst] We will not be inserting call tracing into " << i->getName() << std::endl;
+	}
+}	
 
 
 
@@ -143,7 +143,7 @@ void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFuncti
 bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions) {
 	Setup();
 	BeginInsertionSet();
-
+	WrapEntryAndExit();
 	// _runOneTime = true;
 	// std::stringstream ss;
 	// // Parameters for Record Memory Function
@@ -533,7 +533,7 @@ void LoadStoreInst::Setup() {
 	assert(syncCall.size() > 0);
 	_entryFunction = entryFuncitons[0];
 	_exitingFunction = exitFunctions[0];
-	
+
 	_endFuncCall = endFuncCall[0];
 	_recordMemAccess = callFunc[0];
 	_tracerFunction = tracerCall[0];

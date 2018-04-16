@@ -108,7 +108,7 @@ public:
 	bool RunOneTimeCode();
 	void SetWrappedFunctions(std::vector<std::string> & wrappedFunctions);
 	std::map<uint64_t, StackPoint> _firstUses;
-
+	void WrapEntryAndExit();
 private:
 	bool IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg);
 	bool IsNeverInstriment(BPatch_function * func, BPatch_object::Region reg);
@@ -138,7 +138,7 @@ private:
 
 	BPatch_function * _entryFunction;
 	BPatch_function * _exitingFunction;
-	
+
 	BinaryLocationIDMap _binLoc;
 	InstrimentationTracker _instTracker;
 	std::map<BPatch_object::Region, std::pair<std::string,std::string> > _regionToLibname;

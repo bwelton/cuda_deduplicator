@@ -52,7 +52,7 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 	for (auto i : removeList) {
 		points->erase(i);
 	}
-	if (points->size() > 0) 
+	if (points->size() == 0) 
 		return false;
 	return true;
 }

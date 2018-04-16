@@ -137,7 +137,7 @@ private:
 	BPatch_function * _syncLibNotify;
 
 	BPatch_function * _entryFunction;
-	BPatch_function * _exitingFunciton;
+	BPatch_function * _exitingFunction;
 	
 	BinaryLocationIDMap _binLoc;
 	InstrimentationTracker _instTracker;

@@ -119,19 +119,19 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 
 // bool LoadStoreInst::ShouldWrap(BPatch_function * func, )
 
-// void LoadStoreInst::WrapEntryAndExit() {
-// 	// Get all the functions in the binary
-// 	std::vector<BPatch_function *> all_functions;
-// 	_img->getProcedures(all_functions);
+void LoadStoreInst::WrapEntryAndExit() {
+	// Get all the functions in the binary
+	std::vector<BPatch_function *> all_functions;
+	_img->getProcedures(all_functions);
 
-// 	for (auto i : syncFunctions){
-// 		// Function is part of the public CUDA API. Do not rewrap.
-// 		if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),i ) != _wrappedFunctions.end())
-// 			continue;	
+	for (auto i : syncFunctions){
+		// Function is part of the public CUDA API. Do not rewrap.
+		if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),i ) != _wrappedFunctions.end())
+			continue;	
 
-// 	std::vector<BPatch_point*> * funcCalls = x->findPoint(BPatch_locSubroutine);
+	std::vector<BPatch_point*> * funcCalls = x->findPoint(BPatch_locSubroutine);
 
-// }	
+}	
 
 
 

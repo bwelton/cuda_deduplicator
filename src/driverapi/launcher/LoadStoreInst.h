@@ -135,6 +135,11 @@ private:
 	BPatch_function * _enterSync;
 	BPatch_function * _exitSync;
 	BPatch_function * _syncLibNotify;
+
+	BPatch_function * _entryFunction;
+	BPatch_function * _exitingFunciton;
+	
 	BinaryLocationIDMap _binLoc;
+	InstrimentationTracker _instTracker;
 	std::map<BPatch_object::Region, std::pair<std::string,std::string> > _regionToLibname;
 };

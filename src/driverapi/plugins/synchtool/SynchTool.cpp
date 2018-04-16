@@ -35,6 +35,8 @@ int exited = 0;
 uint64_t testingInteger = 0;
 
 
+thread_local std::vector<uint64_t> _currentStack;
+
 extern "C" {
 
 	__attribute__ ((noinline)) void SYNCH_SIGNAL_DYNINST(void * memoryRanges, size_t bsize) {
@@ -59,6 +61,27 @@ extern "C" {
 		//PLUG_BUILD_FACTORY(std::vector<std::string>())
 		PLUG_FACTORY_PTR->UnprotectMemory();
 		SYNCH_FIRST_FAULT();
+	}
+
+
+
+
+	void TESTING_RECORD_FUNCTION_ENTRY(uint64_t ident) {
+		_currentStack.push_back(ident);
+		std::cerr << "[SyncTesting] Entering function - " << ident << std::endl;
+	}
+	void TESTING_RECORD_FUNCTION_EXIT(uint64_t ident) {
+		std::cerr << "[SyncTesting] Exiting function - " << ident << std::endl;
+		if (_currentStack.size() == 0)
+			std::cerr << "[SyncTesting] No Elements on the stack..." << std::endl;
+		else {
+			if (_currentStack.back() != ident)
+				std::cerr << "[SyncTesting] Ending element does not match stackhead" << std::endl;
+			else {
+				_currentStack.pop_back();
+			}
+		}
+
 	}
 
 
@@ -338,7 +361,9 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 	if (_stackSync == true){
 		_stackSync = false;
 		std::cerr << "We have synchronized in this call - " << params.get()->GetName() << std::endl;
-		RecordSynchronization(0);
+		// Uncomment this....
+		//RecordSynchronization(0);
+		
 	// SetThreadLocals();
 	// Parameters * p = params.get();
 	// CallID ident = p->GetID();

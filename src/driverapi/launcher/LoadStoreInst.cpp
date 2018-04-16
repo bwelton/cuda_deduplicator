@@ -34,7 +34,7 @@ void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & w
 	_prevWrappedFunctions = wrappedFunctions;
 }
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
-	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(fund, t))
+	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t))
 		return false;
 	
 	if (_alreadyInstrimented.find(t) == _alreadyInstrimented.end())
@@ -44,7 +44,7 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 
 	for (int i = 0; i < points->size(); i++) {
 		uint64_t hashValue = HashPoint(func, (*points)[i]);
-		if (_alreadyInstrimented[t].find(hashValue) != _alreadyInstrimented.end())
+		if (_alreadyInstrimented[t].find(hashValue) != _alreadyInstrimented[t].end())
 			removeList.push_back(i);
 		else 
 			_alreadyInstrimented[t].insert(hashValue);

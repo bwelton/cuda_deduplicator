@@ -35,7 +35,7 @@ int exited = 0;
 uint64_t testingInteger = 0;
 
 
-thread_local std::vector<uint64_t> _currentStack;
+//thread_local std::vector<uint64_t> _currentStack;
 
 extern "C" {
 

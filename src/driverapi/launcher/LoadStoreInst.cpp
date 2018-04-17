@@ -156,6 +156,7 @@ void LoadStoreInst::WrapEntryAndExit() {
 		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
 		if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
 			InsertEntryExitSnippets(i, funcCalls);
+			return;
 		}
 	}
 }	

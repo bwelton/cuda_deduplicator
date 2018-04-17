@@ -40,17 +40,20 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 	if (_alreadyInstrimented.find(t) == _alreadyInstrimented.end())
 		_alreadyInstrimented[t] = std::set<uint64_t>();
 	std::string pathName = func->getModule()->getObject()->pathName();
-	std::vector<uint64_t> removeList;
+	std::set<uint64_t> removeList;
 
 	for (int i = 0; i < points->size(); i++) {
 		uint64_t hashValue = HashPoint(func, (*points)[i]);
 		if (_alreadyInstrimented[t].find(hashValue) != _alreadyInstrimented[t].end())
-			removeList.push_back(i);
+			removeList.insert(i);
 		else 
 			_alreadyInstrimented[t].insert(hashValue);
-	}	
-	for (auto i : removeList) {
-		points->erase(points->begin()+i);
+	}
+	std::vector<BPatch_point *> tmpPoints = *points;
+	points->clear();
+	for (int i = 0; i < tmpPoints.size(); i++) {
+		if (removeList.find(i) == removeList.end())
+			points->push_back(tmpPoints[i]);
 	}
 	if (points->size() == 0) 
 		return false;
@@ -124,7 +127,7 @@ void LoadStoreInst::WrapEntryAndExit() {
 	std::vector<BPatch_function *> all_functions;
 	_img->getProcedures(all_functions);
 	std::cerr << "[LoadStoreInst] Number of functions to instriment - " << all_functions.size() << std::endl;
-	
+
 	for (auto i : all_functions) {
 		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
 		if(_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING))

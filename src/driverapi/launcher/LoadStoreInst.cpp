@@ -95,14 +95,15 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
 }
 
 bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, InstType t) {
-	static StringVector loadStoreModSkips = {"libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so","libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so", "dyninst", "Dyninst"};
-	static StringVector callTracingModSkips = {"ld-linux-x86-64","libgcc_s.so","libstdc++.so", "libdl.so", "libpthread.so", "libdl-2.23.so","dyninst","Dyninst","boost", "libc.so", "linux-vdso.so", "libpthread-2.23.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+	static StringVector loadStoreModSkips = {"cudadedup","libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so","libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libcuptieventhandler.so","libecho.so","libsynchtool.so","libtimecall.so","libtransfertimeline.so","libstublib.so", "dyninst", "dyninst"};
+	static StringVector callTracingModSkips = {"ld-linux-x86-64","libgcc_s.so","libstdc++.so", "libdl.so", "libpthread.so", "cudadedup", "libdl-2.23.so","dyninst","dyninst","boost", "libc.so", "linux-vdso.so", "libpthread-2.23.so","libcuptieventhandler.so","libecho.so","libsynchtool.so","libtimecall.so","libtransfertimeline.so","libstublib.so"};
     StringVector * toSkip;
     if (t == LOAD_STORE_INST)
     	toSkip = &loadStoreModSkips;
     else
     	toSkip = &callTracingModSkips;
     std::string modname = func->getModule()->getObject()->pathName();
+    std::transform(modname.begin(), modname.end(), modname.begin(), ::tolower);
     for (auto i : *toSkip) {
     	if (modname.find(i) != std::string::npos)
     		return false;

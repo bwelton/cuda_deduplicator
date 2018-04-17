@@ -96,7 +96,7 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
 
 bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, InstType t) {
 	static StringVector loadStoreModSkips = {"libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so","libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so", "dyninst", "Dyninst"};
-	static StringVector callTracingModSkips = {"libdl-2.23.so","dyninst","Dyninst","boost", "libc.so.6", "libpthread-2.23.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
+	static StringVector callTracingModSkips = {"ld-linux-x86-64","libgcc_s.so","libstdc++.so", "libdl.so", "libpthread.so", "libdl-2.23.so","dyninst","Dyninst","boost", "libc.so", "linux-vdso.so", "libpthread-2.23.so","libCUPTIEventHandler.so","libEcho.so","libSynchTool.so","libTimeCall.so","libTransferTimeline.so","libStubLib.so"};
     StringVector * toSkip;
     if (t == LOAD_STORE_INST)
     	toSkip = &loadStoreModSkips;

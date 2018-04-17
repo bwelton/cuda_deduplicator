@@ -188,7 +188,7 @@ void LoadStoreInst::InsertSyncCallNotifier(std::vector<StackPoint> & points) {
 				if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),func->getName()) != _wrappedFunctions.end() || 
 				   std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),n.funcName) != _wrappedFunctions.end())
 					continue;
-				InsertSyncCallNotifier(func, n.libOffset);
+				InsertSyncNotifierSnippet(func, n.libOffset);
 			}
 		}
 	}

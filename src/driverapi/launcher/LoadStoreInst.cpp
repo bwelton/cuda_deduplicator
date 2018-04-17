@@ -166,7 +166,7 @@ void LoadStoreInst::InsertSyncNotifierSnippet(BPatch_function * func, uint64_t o
 	std::string tmp = func->getModule()->getObject()->pathName();
 	uint64_t id = _binLoc.StorePosition(tmp,offset);
 	std::vector<BPatch_snippet*> recordArgs;
-	recordArgs.push_back(id);
+	recordArgs.push_back(new BPatch_constExpr(id));
 	BPatch_funcCallExpr entryExpr(*_enterSync, recordArgs);
 	BPatch_funcCallExpr exitExpr(*_exitSync, recordArgs);
 	if (_addrSpace->insertSnippet(entryExpr,*entryPoints) == NULL) {
@@ -177,19 +177,34 @@ void LoadStoreInst::InsertSyncNotifierSnippet(BPatch_function * func, uint64_t o
 	}
 }
 
-void LoadStoreInst::InsertSyncCallNotifier(std::vector<StackPoint> & points) {
-	BPatch_image * img = _addrSpace->getImage();
-	std::vector<BPatch_object *> objects;
-	img->getObjects(objects);
-	for (auto i : objects) {
-		if (i->pathName().find("libcuda.so") != std::string::npos) {
-			for (auto n : points) {
-				BPatch_function * func = img->findFunction(i->fileOffsetToAddr(n.libOffset));
-				if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),func->getName()) != _wrappedFunctions.end() || 
-				   std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),n.funcName) != _wrappedFunctions.end())
-					continue;
-				InsertSyncCallNotifier(func, n.libOffset);
-			}
+// void LoadStoreInst::InsertSyncCallNotifier(std::vector<StackPoint> & points) {
+// 	BPatch_image * img = _addrSpace->getImage();
+// 	std::vector<BPatch_object *> objects;
+// 	img->getObjects(objects);
+// 	for (auto i : objects) {
+// 		if (i->pathName().find("libcuda.so") != std::string::npos) {
+// 			for (auto n : points) {
+// 				BPatch_function * func = img->findFunction(i->fileOffsetToAddr(n.libOffset));
+// 				if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),func->getName()) != _wrappedFunctions.end() || 
+// 				   std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),n.funcName) != _wrappedFunctions.end())
+// 					continue;
+// 				InsertSyncCallNotifier(func, n.libOffset);
+// 			}
+// 		}
+// 	}
+// }
+
+void LoadStoreInst::InsertLoadStoreInstrimentation() {
+	std::vector<BPatch_function *> all_functions;
+	_img->getProcedures(all_functions);
+	std::set<BPatch_opCode> axs;
+	axs.insert(BPatch_opLoad);
+	axs.insert(BPatch_opStore);
+	for (auto i : all_functions) {
+
+		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
+		if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
+			InsertEntryExitSnippets(i, funcCalls);
 		}
 	}
 }

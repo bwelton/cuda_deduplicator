@@ -127,6 +127,8 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 	std::string libname = func->getModule()->getObject()->pathName();
 	std::cerr << "[LoadStoreInst] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
 	for (auto i : *points) {
+		if (i->getCalledFunction() == NULL)
+			continue;
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
 		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());

@@ -135,7 +135,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		i->getBlock()->getInstructions(instructionVector);
 		Dyninst::InstructionAPI::Instruction::Ptr pointInstruction = NULL;
 		for (auto z : instructionVector)
-			if(z.second == i->getAddress())
+			if(z.second == (uint64_t)i->getAddress())
 			{
 				pointInstruction = z.first;
 				break;

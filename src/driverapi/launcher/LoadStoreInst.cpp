@@ -140,10 +140,12 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 				pointInstruction = z.first;
 				break;
 			}
+		std::string instString;
 		if (pointInstruction != NULL)
-			std::cerr << "[LoadStoreInst] Instruction is - " << pointInstruction->format() << std::endl;
-		else 
-			assert(pointInstruction != NULL);
+			instString = pointInstruction->format();
+
+		if (instString.find("call") == std::string::npos)
+			continue;
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
 		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());

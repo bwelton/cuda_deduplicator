@@ -192,9 +192,9 @@ void LoadStoreInst::InsertSyncCallNotifier(std::vector<StackPoint> & points) {
 	}
 }
 
-void LoadStoreInst::InsertLoadStoreInstrimentation() {
+// void LoadStoreInst::InsertLoadStoreInstrimentation() {
 
-}
+// }
 
 
 

@@ -123,7 +123,8 @@ void LoadStoreInst::WrapEntryAndExit() {
 	// Get all the functions in the binary
 	std::vector<BPatch_function *> all_functions;
 	_img->getProcedures(all_functions);
-
+	std::cerr << "[LoadStoreInst] Number of functions to instriment - " << all_functions.size() << std::endl;
+	
 	for (auto i : all_functions) {
 		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
 		if(_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING))

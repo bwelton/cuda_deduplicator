@@ -31,6 +31,7 @@
 #include "BPatch_object.h"
 #include "BPatch_snippet.h"
 #include "BPatch.h"
+#include "BPatch_basicBlock.h"
 #include "BPatch_binaryEdit.h"
 #include "BPatch_image.h"
 #include "BPatch_function.h"

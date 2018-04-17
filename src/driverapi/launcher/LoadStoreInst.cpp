@@ -127,7 +127,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 	for (auto i : *points) {
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
-		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i.getAddress());
+		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
 		std::vector<BPatch_snippet*> recordArgs;
 		recordArgs.push_back(new BPatch_constExpr(id));
 		BPatch_funcCallExpr entryExpr(*_exitingFunction, recordArgs);
@@ -151,7 +151,7 @@ void LoadStoreInst::WrapEntryAndExit() {
 	for (auto i : all_functions) {
 		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
 		if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
-			InsertEntryExitSnippets(func, funcCalls);
+			InsertEntryExitSnippets(i, funcCalls);
 		}
 	}
 }	

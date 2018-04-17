@@ -111,6 +111,8 @@ public:
 	void WrapEntryAndExit();
 	void InsertSyncNotifierSnippet(BPatch_function * func, uint64_t offset);
 	void InsertSyncCallNotifier(std::vector<StackPoint> & points);
+	void InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);
+	void InsertLoadStoreInstrimentation();
 private:
 	bool IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg);
 	bool IsNeverInstriment(BPatch_function * func, BPatch_object::Region reg);

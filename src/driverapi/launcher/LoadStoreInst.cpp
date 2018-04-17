@@ -194,20 +194,40 @@ void LoadStoreInst::InsertSyncCallNotifier(std::vector<StackPoint> & points) {
 	}
 }
 
-// void LoadStoreInst::InsertLoadStoreInstrimentation() {
-// 	std::vector<BPatch_function *> all_functions;
-// 	_img->getProcedures(all_functions);
-// 	std::set<BPatch_opCode> axs;
-// 	axs.insert(BPatch_opLoad);
-// 	axs.insert(BPatch_opStore);
-// 	for (auto i : all_functions) {
+void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
+	std::string libname = func->getModule()->getObject()->pathName();
+	std::cerr << "[LoadStoreInst] Inserting load store instrimentation into - " << func->getName() << " with ids: ";
+	for (auto i : *points) {
+		std::vector<BPatch_point*> singlePoint;
+		singlePoint.push_back(i);
+		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
+		std::vector<BPatch_snippet*> recordArgs;
+		BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
+		recordArgs.push_back(loadAddr);
+		recordArgs.push_back(new BPatch_constExpr(id));
+		BPatch_funcCallExpr recordAddrCall(*_recordMemAccess, recordArgs);
+		std::cerr << id << ",";
+		if (_addrSpace->insertSnippet(recordAddrCall,singlePoint) == NULL) {
+			std::cerr << "[LoadStoreInst] Could not insert load store instrimentation into " << func->getName() << std::endl;
+		}
+	}
+	std::cerr << std::endl;
+}
 
-// 		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
-// 		if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
-// 			InsertEntryExitSnippets(i, funcCalls);
-// 		}
-// 	}
-// }
+
+void LoadStoreInst::InsertLoadStoreInstrimentation() {
+	std::vector<BPatch_function *> all_functions;
+	_img->getProcedures(all_functions);
+	std::set<BPatch_opCode> axs;
+	axs.insert(BPatch_opLoad);
+	axs.insert(BPatch_opStore);
+	for (auto i : all_functions) {
+		std::vector<BPatch_point*> * loadsAndStores = i->findPoint(axs);
+		if (_instTracker.ShouldInstriment(i, loadsAndStores, LOAD_STORE_INST)) {
+			InsertLoadStoreSnippets(i, funcCalls);
+		}
+	}
+}
 
 // void LoadStoreInst::InsertLoadStoreInstrimentation() {
 

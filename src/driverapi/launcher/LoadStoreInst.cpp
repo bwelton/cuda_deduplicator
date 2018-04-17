@@ -161,6 +161,11 @@ void LoadStoreInst::WrapEntryAndExit() {
 
 		}
 	}
+	BPatch_image * img = _addrSpace->getImage();
+	std::vector<BPatch_object *> objects;
+	img->getObjects(objects);
+	for (auto i : objects)
+		std::cerr << "[MYOBJS] " << i->pathName() << std::endl;
 }	
 
 void LoadStoreInst::InsertSyncNotifierSnippet(BPatch_function * func, uint64_t offset) {

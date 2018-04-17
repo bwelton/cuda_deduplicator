@@ -143,9 +143,11 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		std::string instString;
 		if (pointInstruction != NULL)
 			instString = pointInstruction->format();
-
+		else 
+			continue;
 		if (instString.find("call") == std::string::npos)
 			continue;
+		std:cerr << "[PointInst] Inserting instrimentation into - " << instString << " at position " << std::hex << (uint64_t) i->getAddress() << std::dec << std::endl;
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
 		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());

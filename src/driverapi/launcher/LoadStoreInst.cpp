@@ -131,7 +131,8 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 	for (auto i : *points) {
 		if (i->getCalledFunction() == NULL)
 			continue;
-		std::cerr << "[LoadStoreInst] Instruction at point " << (uint64_t) i->getAddress() << " - " << i->getInsnAtPoint()->format(0) << std::endl;
+		if (i->getInsnAtPoint() != NULL)
+			std::cerr << "[LoadStoreInst] Instruction at point " << (uint64_t) i->getAddress() << " - " << i->getInsnAtPoint()->format(0) << std::endl;
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
 		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());

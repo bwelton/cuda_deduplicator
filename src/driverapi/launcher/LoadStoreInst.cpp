@@ -163,7 +163,8 @@ void LoadStoreInst::InsertSyncNotifierSnippet(BPatch_function * func, uint64_t o
 		return;
 	std::vector<BPatch_point*> * entryPoints = func->findPoint(BPatch_locEntry);
 	std::vector<BPatch_point*> * exitPoints = func->findPoint(BPatch_locExit);
-	uint64_t id = _binLoc.StorePosition(func->getModule()->getObject()->pathName(),offset);
+	std::string tmp = func->getModule()->getObject()->pathName();
+	uint64_t id = _binLoc.StorePosition(tmp,offset);
 	std::vector<BPatch_snippet*> recordArgs;
 	recordArgs.push_back(id);
 	BPatch_funcCallExpr entryExpr(*_enterSync, recordArgs);
@@ -178,6 +179,7 @@ void LoadStoreInst::InsertSyncNotifierSnippet(BPatch_function * func, uint64_t o
 
 void LoadStoreInst::InsertSyncCallNotifier(std::vector<StackPoint> & points) {
 	BPatch_image * img = _addrSpace->getImage();
+	std::vector<BPatch_object *> objects;
 	img->getObjects(objects);
 	for (auto i : objects) {
 		if (i->pathName().find("libcuda.so") != std::string::npos) {

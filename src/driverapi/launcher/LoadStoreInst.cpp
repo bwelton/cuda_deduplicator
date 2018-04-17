@@ -224,7 +224,7 @@ void LoadStoreInst::InsertLoadStoreInstrimentation() {
 	for (auto i : all_functions) {
 		std::vector<BPatch_point*> * loadsAndStores = i->findPoint(axs);
 		if (_instTracker.ShouldInstriment(i, loadsAndStores, LOAD_STORE_INST)) {
-			InsertLoadStoreSnippets(i, funcCalls);
+			InsertLoadStoreSnippets(i, loadsAndStores);
 		}
 	}
 }

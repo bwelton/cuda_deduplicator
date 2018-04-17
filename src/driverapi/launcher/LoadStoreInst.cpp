@@ -125,7 +125,7 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 
 void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
-	std::cerr << "[LoadStoreInst] Inserting entry exit instrimentation into - " << func->getName() << std::endl;
+	std::cerr << "[LoadStoreInst] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
 	for (auto i : *points) {
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
@@ -134,7 +134,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		recordArgs.push_back(new BPatch_constExpr(id));
 		BPatch_funcCallExpr entryExpr(*_exitingFunction, recordArgs);
 		BPatch_funcCallExpr exitExpr(*_entryFunction, recordArgs);
-
+		std::cerr << id << ",";
 		if (_addrSpace->insertSnippet(entryExpr,singlePoint) == NULL) {
 			std::cerr << "[LoadStoreInst] Could not insert entry tracking into " << func->getName() << std::endl;
 		}
@@ -142,6 +142,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 			std::cerr << "[LoadStoreInst] Could not insert exit tracking into " << func->getName() << std::endl;
 		}		
 	}
+	std::cerr << std::endl;
 }
 
 void LoadStoreInst::WrapEntryAndExit() {

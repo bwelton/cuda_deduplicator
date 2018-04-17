@@ -136,7 +136,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		singlePoint.push_back(i);
 		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
 		std::cerr << "[LoadStoreInst] Instruction at point " 
-			      << id << " , " << (uint64_t) i->getAddress() << std::endl;
+			      << id << " , " << std::hex << (uint64_t) i->getAddress() << std::dec << std::endl;
 		std::vector<BPatch_snippet*> recordArgs;
 		recordArgs.push_back(new BPatch_constExpr(id));
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);

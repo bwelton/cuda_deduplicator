@@ -131,7 +131,19 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 	for (auto i : *points) {
 		if (i->getCalledFunction() == NULL)
 			continue;
-		
+		std::vector<std::pair<Dyninst::InstructionAPI::Instruction::Ptr, Dyninst::Address> > instructionVector;
+		i->getBlock()->getInstructions(instructionVector);
+		Dyninst::InstructionAPI::Instruction::Ptr pointInstruction = NULL;
+		for (auto z : instructionVector)
+			if(z.second == i->getAddress())
+			{
+				pointInstruction = z.first;
+				break;
+			}
+		if (pointInstruction != NULL)
+			std::cerr << "[LoadStoreInst] Instruction is - " << pointInstruction->format() << std::endl;
+		else 
+			assert(pointInstruction != NULL);
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
 		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
@@ -161,7 +173,6 @@ void LoadStoreInst::WrapEntryAndExit() {
 		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
 		if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
 			InsertEntryExitSnippets(i, funcCalls);
-
 		}
 	}
 	BPatch_image * img = _addrSpace->getImage();

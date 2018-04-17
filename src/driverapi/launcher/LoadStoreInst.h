@@ -101,7 +101,7 @@ private:
 class LoadStoreInst {
 public: 
 	LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img);
-	bool InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions);
+	bool InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points);
 	bool InstrimentNewModule(BPatch_object * obj, bool finalize);
 	void Finalize();
 	void BeginInsertionSet();
@@ -109,6 +109,8 @@ public:
 	void SetWrappedFunctions(std::vector<std::string> & wrappedFunctions);
 	std::map<uint64_t, StackPoint> _firstUses;
 	void WrapEntryAndExit();
+	void InsertSyncNotifierSnippet(BPatch_function * func, uint64_t offset);
+	void InsertSyncCallNotifier(std::vector<StackPoint> & points);
 private:
 	bool IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg);
 	bool IsNeverInstriment(BPatch_function * func, BPatch_object::Region reg);

@@ -105,15 +105,17 @@ extern "C" {
 	}
 
 	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
+		std::cerr << "In hidden call enter for id " << id << std::endl;
 		if (_inTrackedCall == false) {
-			SYNC_RECORD_FUNCTION_ENTRY(id); 
+			//SYNC_RECORD_FUNCTION_ENTRY(id); 
 		}
 	}
 
 	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
+		std::cerr << "In hidden call exit for id " << id << std::endl;
 		if (_inTrackedCall == false) {
-			PLUG_FACTORY_PTR->RecordSynchronization(id);
-			SYNC_RECORD_FUNCTION_EXIT(id);
+			//PLUG_FACTORY_PTR->RecordSynchronization(id);
+			//SYNC_RECORD_FUNCTION_EXIT(id);
 		}
 	}
 

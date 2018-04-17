@@ -122,20 +122,41 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 
 // bool LoadStoreInst::ShouldWrap(BPatch_function * func, )
 
+void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
+	std::string libname = func->getModule()->getObject()->pathName();
+	for (auto i : *points) {
+		std::vector<BPatch_point*> singlePoint;
+		singlePoint.push_back(i);
+		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i.getAddress());
+		std::vector<BPatch_snippet*> recordArgs;
+		recordArgs.push_back(new BPatch_constExpr(id));
+		BPatch_funcCallExpr entryExpr(*_exitingFunction, recordArgs);
+		BPatch_funcCallExpr exitExpr(*_entryFunction, recordArgs);
+		if (_addrSpace->insertSnippet(entryExpr,singlePoint) == NULL) {
+			std::cerr << "[LoadStoreInst] Could not insert entry tracking into " << func->getName() << std::endl;
+		}
+		if (_addrSpace->insertSnippet(exitExpr,singlePoint) == NULL) {
+			std::cerr << "[LoadStoreInst] Could not insert exit tracking into " << func->getName() << std::endl;
+		}		
+	}
+}
+
 void LoadStoreInst::WrapEntryAndExit() {
 	// Get all the functions in the binary
+
 	std::vector<BPatch_function *> all_functions;
 	_img->getProcedures(all_functions);
 	std::cerr << "[LoadStoreInst] Number of functions to instriment - " << all_functions.size() << std::endl;
 
 	for (auto i : all_functions) {
 		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
-		if(_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING))
-			std::cerr << "[LoadStoreInst] We will insert call tracing into " << i->getName() << std::endl;
-		else 
-			std::cerr << "[LoadStoreInst] We will not be inserting call tracing into " << i->getName() << std::endl;
+		if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
+			InsertEntryExitSnippets(func, funcCalls);
+		}
 	}
 }	
+
+//void LoadStoreInst::InsertInstrimentation
 
 
 

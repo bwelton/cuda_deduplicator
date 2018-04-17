@@ -120,7 +120,7 @@ private:
 	StringVector & GetSkipFunctions();
 	StringVector & GetNeverInstrimentLibs();
 	StringVector & SkipExact();
-
+	void InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);
 	BPatch_image * _img;
 	BPatch_addressSpace * _addrSpace;
 	bool _started;

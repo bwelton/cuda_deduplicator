@@ -107,6 +107,8 @@ bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, Inst
     for (auto i : *toSkip) {
     	if (modname.find(i) != std::string::npos)
     		return false;
+    	else if (modname.find("libcuda.so") == std::string::npos)
+    		return false;
     }
     return true;
 }
@@ -156,7 +158,7 @@ void LoadStoreInst::WrapEntryAndExit() {
 		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
 		if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
 			InsertEntryExitSnippets(i, funcCalls);
-			return;
+
 		}
 	}
 }	

@@ -183,10 +183,10 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 			}
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
+				std::cerr << "[LoadStoreInst] Inserting exit/entry info into - " << z.funcName << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
 			}			
 		}
-		break;
 	}		
 
 	//BPatch_object * obj = NULL;

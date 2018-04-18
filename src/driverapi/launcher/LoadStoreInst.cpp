@@ -187,6 +187,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				break;
 			}			
 		}
+		break;
 	}		
 
 	//BPatch_object * obj = NULL;

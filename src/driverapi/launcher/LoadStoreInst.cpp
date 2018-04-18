@@ -192,7 +192,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 					break;
 			}			
 		}
-		if (count != 0)
+		if (count > 6)
 			break;
 	}		
 

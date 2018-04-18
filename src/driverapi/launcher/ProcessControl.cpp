@@ -21,7 +21,9 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 
 	// Create the bpatch process
 	bpatch.setInstrStackFrames(true);
+	bpatch.setLivenessAnalysis(false);
 	handle = bpatch.processCreate(argv[0],(const char **)argv);
+	bpatch.setLivenessAnalysis(false);
 	bpatch.setInstrStackFrames(true);
 	assert(handle != NULL);
 

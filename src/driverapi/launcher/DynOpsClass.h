@@ -43,10 +43,8 @@
 #include "LogInfo.h"
 #include "Constants.h"
 #include "StackPoint.h"
-#include "LoadStoreInst.h"
-#include "StacktraceInst.h"
 #include "StackStorage.h"
-#define INTERNAL_SYNC_C 0x2864C0
+
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;

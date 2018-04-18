@@ -187,11 +187,11 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				std::cerr << "[LoadStoreInst] Inserting exit/entry info into - " << z.funcName << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
 				count++;
-				if (count > 6)
+				if (count > 7)
 					break;
 			}			
 		}
-		if (count > 6)
+		if (count > 7)
 			break;
 	}		
 

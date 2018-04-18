@@ -167,7 +167,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		}		
 		count++;
 		if (func->getName().find("targ31cea0") != std::string::npos)
-			if (count >= 1)
+			if (count >= 2)
 				break;
 	}
 	std::cerr << std::endl;

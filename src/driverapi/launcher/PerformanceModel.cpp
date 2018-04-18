@@ -457,7 +457,7 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 }
 
  std::map<uint64_t, StackRecord> PerformanceModel::GetTimingStackRecords() {
- 	return _timingStackRecords;
+ 	return _stackRecords;
  }
 
 void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelineFile) {

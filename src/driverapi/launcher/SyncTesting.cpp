@@ -98,7 +98,7 @@ void SyncTesting::Run() {
 		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 		std::map<uint64_t, StackRecord> stackSyncs = _model.GetTimingStackRecords();
 		//extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
-		double time = base.RunWithLSInstrimentation(def, extras, timingList);
+		double time = base.RunWithLSInstrimentation(def, extras, timingList, stackSyncs);
 		//_model.AddFirstUses(base._firstUses);
 	}
 

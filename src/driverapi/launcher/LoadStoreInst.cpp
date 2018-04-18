@@ -128,6 +128,7 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
 	std::cerr << "[LoadStoreInst] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
+	uint64_t count = 0;
 	for (auto i : *points) {
 		if (i->getCalledFunction() == NULL)
 			continue;
@@ -164,6 +165,10 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		if (_addrSpace->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
 			std::cerr << "[LoadStoreInst] Could not insert exit tracking into " << func->getName() << std::endl;
 		}		
+		count++;
+		if (func->getName().find("targ31cea0") != std::string::npos)
+			if (count >= 1)
+				break;
 	}
 	std::cerr << std::endl;
 }
@@ -187,11 +192,11 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				std::cerr << "[LoadStoreInst] Inserting exit/entry info into - " << z.funcName << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
 				count++;
-				if (count > 10)
+				if (count > 11)
 					break;
 			}			
 		}
-		if (count > 10)
+		if (count > 11)
 			break;
 	}		
 

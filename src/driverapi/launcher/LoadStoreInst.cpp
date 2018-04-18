@@ -172,9 +172,8 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 	// Get all the functions in the binary
 	std::vector<BPatch_object *> objects;
 	_img->getObjects(objects);
-
+	uint64_t count = 0;
 	for (auto i : syncStacks) {
-		uint64_t count = 0;
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
 			std::cerr << "[LoadStoreInst] Attempting to find - " << z.funcName << std::endl;

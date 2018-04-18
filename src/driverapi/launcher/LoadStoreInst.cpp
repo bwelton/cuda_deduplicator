@@ -166,9 +166,9 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 			std::cerr << "[LoadStoreInst] Could not insert exit tracking into " << func->getName() << std::endl;
 		}		
 		count++;
-		if (func->getName().find("targ31cea0") != std::string::npos)
-			if (count >= 2)
-				break;
+		// if (func->getName().find("targ31cea0") != std::string::npos)
+		// 	if (count >= 2)
+		// 		break;
 	}
 	std::cerr << std::endl;
 }
@@ -192,12 +192,12 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				std::cerr << "[LoadStoreInst] Inserting exit/entry info into - " << z.funcName << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
 				count++;
-				if (count > 11)
-					break;
+				// if (count > 11)
+				// 	break;
 			}			
 		}
-		if (count > 11)
-			break;
+		// if (count > 11)
+		// 	break;
 	}		
 
 	//BPatch_object * obj = NULL;

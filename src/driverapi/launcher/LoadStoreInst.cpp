@@ -168,22 +168,51 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 	std::cerr << std::endl;
 }
 
-void LoadStoreInst::WrapEntryAndExit() {
+void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStacks) {
 	// Get all the functions in the binary
-	std::vector<BPatch_function *> all_functions;
-	_img->getProcedures(all_functions);
-	std::cerr << "[LoadStoreInst] Number of functions to instriment - " << all_functions.size() << std::endl;
-	for (auto i : all_functions) {
-		std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
-		if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
-			InsertEntryExitSnippets(i, funcCalls);
-		}
-	}
-	BPatch_image * img = _addrSpace->getImage();
 	std::vector<BPatch_object *> objects;
-	img->getObjects(objects);
-	for (auto i : objects)
-		std::cerr << "[MYOBJS] " << i->pathName() << std::endl;
+	_img->getObjects(objects);
+
+	for (auto i : syncStacks) {
+		std::vector<StackPoint> points = i.second.GetStackpoints();
+		for (auto z : points) {
+			BPatch_object * obj = NULL;
+			for (auto n : objects) {
+				if (n->pathName == z.libname) {
+					obj = n;
+					break;
+				}
+			}
+			if (obj == NULL) {
+				std::cerr << "[LoadStoreInst] Could not find object - " << z.libname << std::endl;
+				continue;
+			}
+			BPatch_function * func = _img->findFunction(obj->fileOffsetToAddr(z.funcOffset));
+			if (func == NULL){
+				std::cerr << "[LoadStoreInst] Could not find function - " << z.funcName << std::endl;
+				continue;
+			}
+			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
+			if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
+				InsertEntryExitSnippets(i, funcCalls);
+			}			
+		}
+	}		
+
+	// std::vector<BPatch_function *> all_functions;
+	// _img->getProcedures(all_functions);
+	// std::cerr << "[LoadStoreInst] Number of functions to instriment - " << all_functions.size() << std::endl;
+	// for (auto i : all_functions) {
+		// std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
+		// if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
+		// 	InsertEntryExitSnippets(i, funcCalls);
+		// }
+	// }
+	// BPatch_image * img = _addrSpace->getImage();
+	// std::vector<BPatch_object *> objects;
+	// img->getObjects(objects);
+	// for (auto i : objects)
+	// 	std::cerr << "[MYOBJS] " << i->pathName() << std::endl;
 }	
 
 void LoadStoreInst::InsertSyncNotifierSnippet(BPatch_function * func, uint64_t offset) {
@@ -268,7 +297,7 @@ void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFuncti
 	_instTracker.AddAlreadyInstrimented(wrappedFunctions);
 }
 
-bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points) {
+bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
 	Setup();
 	BeginInsertionSet();
 	WrapEntryAndExit();

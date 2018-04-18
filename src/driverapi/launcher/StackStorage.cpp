@@ -23,6 +23,10 @@ StackPoint StackRecord::GetFirstCudaCall() {
 	return empty;
 }
 
+std::vector<StackPoint> StackRecord::GetStackpoints() {
+	return _points;
+}
+
 // Walking out of instrimented frames causes the frame being walked out of to look like it is
 // coming from libdyninstAPI_RT.so, we need to get that position
 uint64_t StackRecord::GetFirstLibDynRTPosition() {

@@ -60,6 +60,7 @@ public:
 	StackPoint GetFirstCudaCall();
 	uint64_t GetFirstLibDynRTPosition();
 	bool IsEqual(StackRecord & other);
+	std::vector<StackPoint> GetStackpoints();
 	void ReturnPreCudaCalls(std::vector<StackPoint> & ret);
 private:
 	uint64_t _id;

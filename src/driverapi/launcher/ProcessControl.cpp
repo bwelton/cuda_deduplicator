@@ -336,7 +336,7 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 	}
 
 	_loadStore->SetWrappedFunctions(wrappedFunctionNames);
-	_loadStore->InstrimentAllModules(true, skips, instUntil, synchFunctions, points);
+	_loadStore->InstrimentAllModules(true, skips, instUntil, synchFunctions, points,syncStacks);
 }
 
 

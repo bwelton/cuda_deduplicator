@@ -176,6 +176,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 	for (auto i : syncStacks) {
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
+			std::cerr << "[LoadStoreInst] Attempting to find - " << z.funcName << std::endl;
 			BPatch_function * func;
 			if(_dynOps.FindFuncByStackPoint(_addrSpace, func, z) <= 0){
 				std::cerr << "[LoadStoreInst] Could not find function - " << z.funcName << std::endl;
@@ -187,6 +188,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				InsertEntryExitSnippets(func, funcCalls);
 			}			
 		}
+		break;
 	}		
 
 	//BPatch_object * obj = NULL;

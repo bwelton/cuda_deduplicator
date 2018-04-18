@@ -1,4 +1,6 @@
 #include "DynOpsClass.h"
+DynOpsClass::DynOpsClass() {}
+
 int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_function * & ret, StackPoint & point) {
 	if (aspace == NULL) 
 		return -1;

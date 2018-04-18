@@ -55,6 +55,7 @@ using namespace SymtabAPI;
 // Perform common operations on dyninst objects
 class DynOpsClass {
 public:
+	DynOpsClass();
 	int FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_function * & ret, StackPoint & point);
 	int FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string name);
 	int FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string libname, uint64_t offset);

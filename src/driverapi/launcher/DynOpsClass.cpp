@@ -14,9 +14,9 @@ int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_funct
 int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string name) {
 	if (aspace == NULL) 
 		return -1;
-	BPatch_image * img = _addrSpace->getImage();
+	BPatch_image * img = aspace->getImage();
 	std::vector<BPatch_function *> tmp;
-	_img->findFunction(name.c_str(), tmp);
+	img->findFunction(name.c_str(), tmp);
 	if (tmp.size() > 0) 
 		ret = tmp[0];
 	return tmp.size();
@@ -25,7 +25,7 @@ int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * 
 BPatch_object * DynOpsClass::FindObjectByName(BPatch_addressSpace * aspace, std::string & name) {
 	if (aspace == NULL) 
 		return NULL;
-	BPatch_image * img = _addrSpace->getImage();
+	BPatch_image * img = aspace->getImage();
 	std::vector<BPatch_object *> objects;
 	img->getObjects(objects);
 	for (auto i : objects) 
@@ -37,7 +37,7 @@ BPatch_object * DynOpsClass::FindObjectByName(BPatch_addressSpace * aspace, std:
 int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string libname, uint64_t offset) {
 	if (aspace == NULL) 
 		return -1;
-	BPatch_image * img = _addrSpace->getImage();
+	BPatch_image * img = aspace->getImage();
 	BPatch_object * obj = FindObjectByName(aspace, libname);
 	
 	if (obj == NULL)

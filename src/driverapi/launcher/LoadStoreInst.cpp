@@ -67,7 +67,7 @@ uint64_t InstrimentationTracker::HashPoint(BPatch_function * func, BPatch_point 
 }
 
 bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, InstType t) {
-	static StringVector callTracingSkips  = {"targ130a20","targ130a30", "targ2c21f0","targ2c2550","__run_exit_handlers","exit","libc","__GI_"," __malloc","abort","__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
+	static StringVector callTracingSkips  = {"dyninst","Dyninst","targ130a20","targ130a30", "targ2c21f0","targ2c2550","__run_exit_handlers","exit","libc","__GI_"," __malloc","abort","__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
 	static StringVector loadStoreSkips =  {"_fini","atexit",
 	"__libc_csu_init", "__libc_csu_fini","malloc","printf","fwrite","strlen","abort","assert","strnlen","new_heap","fflush",
 	"__static_initialization_and_destruction_0","_start", "__GI___backtrace","__GI___libc_secure_getenv","__GI_exit","cudart","_IO_puts","__new_fopen","fopen","_Unwind_Resume","__run_exit_handlers","free","open",
@@ -176,22 +176,9 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 	for (auto i : syncStacks) {
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
-			BPatch_object * obj = NULL;
-			for (auto n : objects) {
-				if (n->pathName() == z.libname) {
-					obj = n;
-					break;
-				}
-			}
-			if (obj == NULL) {
-				std::cerr << "[LoadStoreInst] Could not find object - " << z.libname << std::endl;
-				continue;
-			}
-			BPatch_function * func = _img->findFunction(obj->fileOffsetToAddr(z.funcOffset));
-			if (func == NULL){
+			BPatch_function * func;
+			if(_dynOps.FindFuncByStackPoint(_addrSpace, func, z) <= 0)
 				std::cerr << "[LoadStoreInst] Could not find function - " << z.funcName << std::endl;
-				continue;
-			}
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
 				InsertEntryExitSnippets(func, funcCalls);
@@ -199,6 +186,27 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 		}
 	}		
 
+	//BPatch_object * obj = NULL;
+	// for (auto n : objects) {
+	// 	if (n->pathName() == z.libname) {
+	// 		obj = n;
+	// 		break;
+	// 	}
+	// }
+	// if (obj == NULL) {
+	// 	std::cerr << "[LoadStoreInst] Could not find object - " << z.libname << std::endl;
+	// 	continue;
+	// }
+	// BPatch_function * func = NULL;
+	// if (!_img->findFunction(obj->fileOffsetToAddr(z.funcOffset))) 
+	// 	func = _img->findFunction(obj->fileOffsetToAddr(z.funcOffset));
+	// else {
+	// 	find
+	// }
+	// if (func == NULL){
+	// 	std::cerr << "[LoadStoreInst] Could not find function - " << z.funcName << std::endl;
+	// 	continue;
+	// }
 	// std::vector<BPatch_function *> all_functions;
 	// _img->getProcedures(all_functions);
 	// std::cerr << "[LoadStoreInst] Number of functions to instriment - " << all_functions.size() << std::endl;

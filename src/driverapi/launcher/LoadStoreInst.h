@@ -45,6 +45,7 @@
 #include "Constants.h"
 #include "StackPoint.h"
 #include "StackStorage.h"
+#include "DynOpsClass.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -145,6 +146,7 @@ private:
 	BPatch_function * _entryFunction;
 	BPatch_function * _exitingFunction;
 
+	DynOpsClass _dynOps;
 	BinaryLocationIDMap _binLoc;
 	InstrimentationTracker _instTracker;
 	std::map<BPatch_object::Region, std::pair<std::string,std::string> > _regionToLibname;

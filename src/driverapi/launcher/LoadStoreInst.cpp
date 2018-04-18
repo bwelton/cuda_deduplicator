@@ -178,7 +178,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 		for (auto z : points) {
 			BPatch_object * obj = NULL;
 			for (auto n : objects) {
-				if (n->pathName == z.libname) {
+				if (n->pathName() == z.libname) {
 					obj = n;
 					break;
 				}
@@ -193,8 +193,8 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				continue;
 			}
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
-			if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
-				InsertEntryExitSnippets(i, funcCalls);
+			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
+				InsertEntryExitSnippets(func, funcCalls);
 			}			
 		}
 	}		

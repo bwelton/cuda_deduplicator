@@ -184,7 +184,6 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
 				InsertEntryExitSnippets(func, funcCalls);
-				break;
 			}			
 		}
 		break;

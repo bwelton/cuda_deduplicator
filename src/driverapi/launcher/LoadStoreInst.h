@@ -100,6 +100,7 @@ private:
 	std::map<InstType, std::set<uint64_t> > _alreadyInstrimented;
 };
 
+class DynOpsClass;
 
 class LoadStoreInst {
 public: 

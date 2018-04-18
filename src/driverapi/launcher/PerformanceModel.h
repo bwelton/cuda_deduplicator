@@ -48,6 +48,7 @@ public:
 	void ExtractLineInfo(std::map<uint64_t, StackRecord> & rec);
 	void ProcessStacks();
 	void CaptureSyncTime();
+	std::map<uint64_t, StackRecord> GetTimingStackRecords();
 	void GetTimingList(std::vector<StackPoint> & timingList);
 	void AddFirstUses(std::map<uint64_t, StackPoint> uses);
 	void FinalProcessing();

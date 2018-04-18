@@ -106,32 +106,32 @@ void PerformanceModel::CaptureSyncTime() {
 
 	std::cerr << "[PerformanceModel] Checking if stacks line up " << std::endl;
 
-	std::map<uint64_t, std::vector<uint64_t> > timingBins;
-	assert(_timingData.size() > 1);
+	// std::map<uint64_t, std::vector<uint64_t> > timingBins;
+	// assert(_timingData.size() > 1);
 
-	for(int64_t i = _timingData.size() - 1; i >= 0; i = i - 1) {
-		if (timingBins.find(_timingData[i].stackId) ==timingBins.end())
-			timingBins[_timingData[i].stackId] = std::vector<uint64_t>();
-		timingBins[_timingData[i].stackId].push_back(i);
-	}
+	// for(int64_t i = _timingData.size() - 1; i >= 0; i = i - 1) {
+	// 	if (timingBins.find(_timingData[i].stackId) ==timingBins.end())
+	// 		timingBins[_timingData[i].stackId] = std::vector<uint64_t>();
+	// 	timingBins[_timingData[i].stackId].push_back(i);
+	// }
 
-	std::map<uint64_t,uint64_t> stackToTiming = MatchStackTraces(_stackRecords, _timingStackRecords);
-	uint64_t notFound = 0;
-	for (uint64_t i = 0; i < _orderingInfo.size(); i++) {
-		if (stackToTiming.find(i) != stackToTiming.end()){
-			if (timingBins.find(stackToTiming[i]) != timingBins.end()){
-				if (timingBins[stackToTiming[i]].size() != 0){
-					_timingData[timingBins[stackToTiming[i]].back()].count--;
-					if (_timingData[timingBins[stackToTiming[i]].back()].count == 0)
-						timingBins[stackToTiming[i]].pop_back();
-					continue;
-				}
-			}
-		}
-		notFound++;
-	}
+	// std::map<uint64_t,uint64_t> stackToTiming = MatchStackTraces(_stackRecords, _timingStackRecords);
+	// uint64_t notFound = 0;
+	// for (uint64_t i = 0; i < _orderingInfo.size(); i++) {
+	// 	if (stackToTiming.find(i) != stackToTiming.end()){
+	// 		if (timingBins.find(stackToTiming[i]) != timingBins.end()){
+	// 			if (timingBins[stackToTiming[i]].size() != 0){
+	// 				_timingData[timingBins[stackToTiming[i]].back()].count--;
+	// 				if (_timingData[timingBins[stackToTiming[i]].back()].count == 0)
+	// 					timingBins[stackToTiming[i]].pop_back();
+	// 				continue;
+	// 			}
+	// 		}
+	// 	}
+	// 	notFound++;
+	// }
 
-	std::cerr << "[PerformanceModel] Number of elements in ordering info not found - " << notFound << std::endl;
+	//std::cerr << "[PerformanceModel] Number of elements in ordering info not found - " << notFound << std::endl;
 
 	//_callMapper.GeneralToName()
 	// FILE * inFile = fopen("callDelay.out","rb");
@@ -456,6 +456,9 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
 	// 	_stackPoints[hash] = stack;	
 }
 
+ std::map<uint64_t, StackRecord> PerformanceModel::GetTimingStackRecords() {
+ 	return _timingStackRecords;
+ }
 
 void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelineFile) {
 	std::cerr << "[PerformanceModel] Reading Timing Information" << std::endl;

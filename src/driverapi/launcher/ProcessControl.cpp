@@ -321,7 +321,7 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 	_addrSpace->finalizeInsertionSet(false);	
 }
 
-void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points) {
+void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
 	// Check this....
 	//LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStubLib.so"));
 	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so"));

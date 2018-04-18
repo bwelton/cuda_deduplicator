@@ -33,7 +33,7 @@ public:
 	TimeApplications(boost::program_options::variables_map vm);
 	~TimeApplications();
 	double RunWithLSInstrimentation(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras,
-				std::vector<StackPoint> & points);
+				std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks);
 	double Run();
 	double InternalRun();
 	double InternalRunWithTiming(std::vector<StackPoint> points);

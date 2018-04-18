@@ -101,7 +101,7 @@ double TimeApplications::RunWithInstrimentation(std::string wrapperDef, std::vec
 }
 
 double TimeApplications::RunWithLSInstrimentation(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras,
-				std::vector<StackPoint> & points) {
+				std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
 	LogInfo log(std::string("InstRun.txt"), std::string("[InstRun]"), true);
 	ProcessController proc(_vm, &log);
 	proc.DontFinalize();
@@ -111,7 +111,7 @@ double TimeApplications::RunWithLSInstrimentation(std::string wrapperDef, std::v
 	proc.InsertInstrimentation(wrapperDef);
 	std::vector<uint64_t> skips;
 	uint64_t total_functions = 0;
-	proc.InsertLoadStores(skips, total_functions, points);
+	proc.InsertLoadStores(skips, total_functions, points, syncStacks);
 	proc.ContinueExecution();
 	auto start = std::chrono::high_resolution_clock::now();
 	while (!proc.IsTerminated()){

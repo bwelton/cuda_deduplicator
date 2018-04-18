@@ -174,6 +174,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 	_img->getObjects(objects);
 
 	for (auto i : syncStacks) {
+		bool ni = false;
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
 			std::cerr << "[LoadStoreInst] Attempting to find - " << z.funcName << std::endl;
@@ -186,9 +187,11 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
 				std::cerr << "[LoadStoreInst] Inserting exit/entry info into - " << z.funcName << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
+				ni = true;
 			}			
 		}
-		break;
+		if (ni == true)
+			break;
 	}		
 
 	//BPatch_object * obj = NULL;

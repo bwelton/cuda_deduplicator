@@ -53,7 +53,6 @@ using namespace ParseAPI;
 using namespace PatchAPI;
 using namespace SymtabAPI;
 
-#define StringVector std::vector<std::string>
 #define INTERNAL_SYNC_LS 0x2864C0
 
 

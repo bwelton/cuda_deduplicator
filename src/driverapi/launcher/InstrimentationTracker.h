@@ -44,6 +44,7 @@ using namespace ParseAPI;
 using namespace PatchAPI;
 using namespace SymtabAPI;
 
+#define StringVector std::vector<std::string>
 enum InstType {
 	LOAD_STORE_INST = 0,
 	CALL_TRACING

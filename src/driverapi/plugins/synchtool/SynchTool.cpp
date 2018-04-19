@@ -105,17 +105,18 @@ extern "C" {
 	}
 
 	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
-		std::cerr << "In hidden call enter for id " << id << std::endl;
-		if (_inTrackedCall == false) {
-			//SYNC_RECORD_FUNCTION_ENTRY(id); 
-		}
+		_currentStack.push_back(id);
 	}
 
 	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
-		std::cerr << "In hidden call exit for id " << id << std::endl;
-		if (_inTrackedCall == false) {
-			//PLUG_FACTORY_PTR->RecordSynchronization(id);
-			//SYNC_RECORD_FUNCTION_EXIT(id);
+		if (_currentStack.back() == id)
+			_currentStack.pop();
+		else{
+			for (int i = _currentStack.size() - 1; i >= 0; i = i - 1)
+				if (_currentStack[i] == id) {
+					_currentStack.erase(_currentStack.begin() + i);
+					break;
+				}
 		}
 	}
 

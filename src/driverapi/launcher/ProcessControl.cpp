@@ -375,7 +375,7 @@ bool ProcessController::IsTerminated() {
 }
 
 bool ProcessController::ContinueExecution() {
-	_loadStore->RunOneTimeCode();
+//	_loadStore->RunOneTimeCode();
 	if (_binaryEdit)
 		return false;
 	return _appProc->continueExecution();

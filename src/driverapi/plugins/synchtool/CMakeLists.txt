@@ -1,4 +1,4 @@
-add_library(SynchTool SHARED "SynchTool.cpp")
+add_library(SynchTool SHARED "SynchTool.cpp" "CheckAccesses.cpp")
 add_compile_options(-O3 -g)
 target_link_libraries(SynchTool ${Boost_LIBRARIES})
 target_link_libraries(SynchTool ${DYNINST_LIBRARIES})

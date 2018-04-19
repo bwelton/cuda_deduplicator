@@ -15,7 +15,7 @@
 #include <sys/mman.h>
 #include <signal.h>
 #include <sstream>
-
+#include "MemoryRange.h"
 #define SYNCH_DEBUG 1
 
 extern "C" {
@@ -23,21 +23,6 @@ extern "C" {
 	PluginReturn Precall(std::shared_ptr<Parameters> params);
 	PluginReturn Postcall(std::shared_ptr<Parameters> params);
 }
-
-struct MemoryRange {
-	uint64_t begin;
-	uint64_t end; 
-	uint64_t size; 
-	uint64_t transferID;
-	uint64_t unifiedMemory;
-	int stream;
-
-	bool IsInRange(uint64_t addr) {
-		if (addr >= begin && addr <= end)
-			return true;
-		return false;
-	}
-};
 
 class SynchTool {
 public:

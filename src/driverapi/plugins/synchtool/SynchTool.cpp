@@ -66,22 +66,19 @@ extern "C" {
 
 
 
-	void TESTING_RECORD_FUNCTION_ENTRY(uint64_t ident) {
-		_currentStack.push_back(ident);
-		std::cerr << "[SyncTesting] Entering function - " << ident << std::endl;
+	void TESTING_RECORD_FUNCTION_ENTRY(uint64_t id) {
+		_currentStack.push_back(id);
 	}
-	void TESTING_RECORD_FUNCTION_EXIT(uint64_t ident) {
-		std::cerr << "[SyncTesting] Exiting function - " << ident << std::endl;
-		if (_currentStack.size() == 0)
-			std::cerr << "[SyncTesting] No Elements on the stack..." << std::endl;
-		else {
-			if (_currentStack.back() != ident)
-				std::cerr << "[SyncTesting] Ending element does not match stackhead" << std::endl;
-			else {
-				_currentStack.pop_back();
-			}
+	void TESTING_RECORD_FUNCTION_EXIT(uint64_t id) {
+		if (_currentStack.back() == id)
+			_currentStack.pop_back();
+		else{
+			for (int i = _currentStack.size() - 1; i >= 0; i = i - 1)
+				if (_currentStack[i] == id) {
+					_currentStack.erase(_currentStack.begin() + i);
+					break;
+				}
 		}
-
 	}
 
 
@@ -101,7 +98,6 @@ extern "C" {
 		}
 		else
 			_currentStack.pop_back();
-//		std::cerr << "At function entry: " << id << std::endl;
 	}
 
 	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {

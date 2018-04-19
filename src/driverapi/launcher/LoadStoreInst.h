@@ -42,7 +42,7 @@
 #include "dynC.h"
 #include "set"
 #include "LogInfo.h"
-#include "BinaryLoactionIDMap.h"
+#include "BinaryLocationIDMap.h"
 #include "Constants.h"
 #include "StackPoint.h"
 #include "StackStorage.h"

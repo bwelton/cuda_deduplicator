@@ -1,3 +1,4 @@
+#include "CheckAccesses.h"
 CheckAccesses::CheckAccesses() {};
 
 void CheckAccesses::AddMemoryTransfer(MemoryRange & range) {

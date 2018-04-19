@@ -159,9 +159,9 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);
 		BPatch_funcCallExpr exitExpr(*_exitingFunction, recordArgs);
 		std::cerr << id << ",";
-		// if (_addrSpace->insertSnippet(entryExpr,singlePoint, BPatch_callBefore) == NULL) {
-		// 	std::cerr << "[LoadStoreInst] Could not insert entry tracking into " << func->getName() << std::endl;
-		// }
+		if (_addrSpace->insertSnippet(entryExpr,singlePoint, BPatch_callBefore) == NULL) {
+			std::cerr << "[LoadStoreInst] Could not insert entry tracking into " << func->getName() << std::endl;
+		}
 		if (_addrSpace->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
 			std::cerr << "[LoadStoreInst] Could not insert exit tracking into " << func->getName() << std::endl;
 		}		

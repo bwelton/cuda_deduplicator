@@ -106,7 +106,7 @@ extern "C" {
 
 	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
 		if (_currentStack.back() == id)
-			_currentStack.pop();
+			_currentStack.pop_back();
 		else{
 			for (int i = _currentStack.size() - 1; i >= 0; i = i - 1)
 				if (_currentStack[i] == id) {

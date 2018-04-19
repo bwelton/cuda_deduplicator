@@ -4,7 +4,8 @@
 #include <vector>
 #include <map>
 #include <memory>
-
+#include <functional>
+#include <sstream> 
 struct OutputFile {
 	FILE * outFile;
 	OutputFile(std::string filename) {
@@ -39,3 +40,5 @@ private:
 	std::shared_ptr<OutputFile> _accessFile;
 	std::shared_ptr<OutputFile> _stackKeyFile;
 };
+
+typedef std::shared_ptr<OutputWriter> OutputWriterPtr;

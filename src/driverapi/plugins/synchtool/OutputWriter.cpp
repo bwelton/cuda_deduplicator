@@ -1,8 +1,8 @@
 #include "OutputWriter.h"
 
 OutputWriter::OutputWriter() : _curPos(1) {
-	_accessFile.reset(new OutputFile("firstAccesses.bin"));
-	_stackKeyFile.reset(new OutputFile("accessKeyFile.bin"));
+	_accessFile.reset(new OutputFile(std::string("firstAccesses.bin")));
+	_stackKeyFile.reset(new OutputFile(std::string("accessKeyFile.bin")));
 }
 
 void OutputWriter::RecordAccess(uint64_t id, std::vector<uint64_t> & currentStack) {

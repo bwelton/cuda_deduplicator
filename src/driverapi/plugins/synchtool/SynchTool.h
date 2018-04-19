@@ -28,6 +28,10 @@
 #include "Symtab.h"
 #include "BPatch.h"
 #include "BPatch_process.h"
+
+#include "MemoryRange.h"
+#include "CheckAccesses.h"
+#include "LoadStoreDriver.h"
 using namespace Dyninst;
 using namespace Dyninst::Stackwalker;
 using namespace SymtabAPI;

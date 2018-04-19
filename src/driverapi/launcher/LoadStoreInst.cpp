@@ -38,7 +38,7 @@ InstrimentationTracker::InstrimentationTracker() {
 }
 
 void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & wrappedFunctions) {
-	_prevWrappedFunctions = wrappedFunctions;
+	//_prevWrappedFunctions = wrappedFunctions;
 }
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
 	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t))

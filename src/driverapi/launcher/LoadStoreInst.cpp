@@ -30,7 +30,7 @@ std::string * BinaryLocationIDMap::GetLibnameForID(uint64_t id) {
 StackPoint BinaryLocationIDMap::BuildStackPoint(uint64_t id) {
 	StackPoint ret;
 	ret.libOffset = GetOffsetForID(id);
-	ret.libname = GetLibnameForID(id);
+	ret.libname = *GetLibnameForID(id);
 	return ret;
 }
 

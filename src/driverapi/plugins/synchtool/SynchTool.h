@@ -16,6 +16,21 @@
 #include <signal.h>
 #include <sstream>
 #include "MemoryRange.h"
+#include "HelperFunctions.h"
+#include <stdlib.h>
+#include "framestepper.h"
+#include "walker.h"
+#include "procstate.h"
+#include "swk_errors.h"
+#include "steppergroup.h"
+#include "frame.h"
+#include "sw_c.h"
+#include "Symtab.h"
+#include "BPatch.h"
+#include "BPatch_process.h"
+using namespace Dyninst;
+using namespace Dyninst::Stackwalker;
+using namespace SymtabAPI;
 #define SYNCH_DEBUG 1
 
 extern "C" {
@@ -32,14 +47,6 @@ public:
 	PluginReturn Postcall(std::shared_ptr<Parameters> params);
 	void UnifiedAllocation(std::shared_ptr<Parameters> params);
 	void GetLiveTransfer(std::shared_ptr<Parameters> params);
-	void MemoryFree(std::shared_ptr<Parameters> params);
-	void SignalToParent(uint64_t stream);
-	void ClearExisting(uint64_t stream);
-	uint64_t * SeralizeMemRanges(size_t & size);
-	void UnprotectMemory();
-	void MemProtectAddrs();
-	void SetThreadLocals();
-	void RecordSynchronization(uint64_t id);
 private:
 	std::shared_ptr<LogInfo> _sync_log;
 	std::map<uint64_t, MemoryRange> _ranges;

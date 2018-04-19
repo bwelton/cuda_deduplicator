@@ -1,160 +1,48 @@
 #include "SynchTool.h"
-#include "HelperFunctions.h"
-#include <stdlib.h>
-
-#include "framestepper.h"
-#include "walker.h"
-#include "procstate.h"
-#include "swk_errors.h"
-#include "steppergroup.h"
-#include "frame.h"
-#include "sw_c.h"
-#include "Symtab.h"
-#include "BPatch.h"
-#include "BPatch_process.h"
-using namespace Dyninst;
-using namespace Dyninst::Stackwalker;
-using namespace SymtabAPI;
-
-thread_local std::shared_ptr<Parameters> prevCall;
-thread_local pid_t my_thread_id = -1; 
-thread_local int my_process_id = -1;
-thread_local std::vector<uint64_t> _currentStack;
-thread_local bool _stackSync = false;
-thread_local bool _inTrackedCall = false;
-thread_local bool _startCapture = true;
-thread_local uint64_t _SyncCount = 0;
-thread_local std::vector<MemoryRange> _MemRanges; 
-thread_local std::vector<std::pair<uint64_t, uint64_t> > _SynchResults;
-thread_local FILE * _fdes = NULL;
-
-Walker *  local_walker;
-
-std::shared_ptr<SynchTool> Worker;
 int exited = 0;
-uint64_t testingInteger = 0;
-
-
-//thread_local std::vector<uint64_t> _currentStack;
+thread_local std::shared_ptr<SynchTool> Worker;
+thread_local LoadStoreDriverPtr _LoadStoreDriver;
+thread_local CheckAccessesPtr _dataAccessManager;
 
 extern "C" {
 
-	__attribute__ ((noinline)) void SYNCH_SIGNAL_DYNINST(void * memoryRanges, size_t bsize) {
-		// Do nothing here, this just delivers a pointer to dyninst to do its magic
-		
+
+	void INIT_SYNC_COMMON() {
+		if (_dataAccessManager.get() != NULL)
+			return;
+		_dataAccessManager.reset(new CheckAccesses());
+		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager));
+
 	}
 
-	__attribute__ ((noinline)) void SYNCH_FIRST_FAULT() {
-
+	void RECORD_FUNCTION_ENTRY(uint64_t id) {
+		INIT_SYNC_COMMON();
+		_LoadStoreDriver->PushStack(id);
+	}
+	void RECORD_FUNCTION_EXIT(uint64_t id) {
+		INIT_SYNC_COMMON();
+		_LoadStoreDriver->PopStack(id);
 	}
 
-	__attribute__((noinline)) void WRITE_SYNCRONIZATIONS() {
-		std::cerr << "In one time call" << std::endl;
-		FILE * fdes = fopen("syncResults.txt","w");
-		for (auto i : _SynchResults)
-			fprintf(fdes, "%llu,%llu\n", i.first,i.second);
-		fclose(fdes);
+	void SYNC_CAPTURE_SYNC_CALL() {
+		INIT_SYNC_COMMON();
+		_LoadStoreDriver->SyncCalled();
 	}
-
-	static void sync_mem_handler(int sig, siginfo_t *si, void *unused)
-	{
-		//PLUG_BUILD_FACTORY(std::vector<std::string>())
-		PLUG_FACTORY_PTR->UnprotectMemory();
-		SYNCH_FIRST_FAULT();
-	}
-
-
-
-
-	void TESTING_RECORD_FUNCTION_ENTRY(uint64_t id) {
-		_currentStack.push_back(id);
-	}
-	void TESTING_RECORD_FUNCTION_EXIT(uint64_t id) {
-		if (_currentStack.back() == id)
-			_currentStack.pop_back();
-		else{
-			for (int i = _currentStack.size() - 1; i >= 0; i = i - 1)
-				if (_currentStack[i] == id) {
-					_currentStack.erase(_currentStack.begin() + i);
-					break;
-				}
-		}
-	}
-
-
-	void SYNC_RECORD_SYNC_CALL() {
-		_stackSync = true;
-	}
-
-	void SYNC_RECORD_FUNCTION_ENTRY(uint64_t id) {
-		_currentStack.push_back(id);
-//		std::cerr << "At function entry: " << id << std::endl;
-	}
-
-	void SYNC_RECORD_FUNCTION_EXIT(uint64_t id) {
-		if (_currentStack.back() != id){
-			std::cerr << "ERROR! For some reason function Exit != top of entry stack" << std::endl;
-			std::cerr << "This entry: " << id << " Top of stack: " << _currentStack.back() << std::endl;
-		}
-		else
-			_currentStack.pop_back();
-	}
-
-	void HIDDEN_SYNC_CALL_ENTRY(uint64_t id) {
-		_currentStack.push_back(id);
-	}
-
-	void HIDDEN_SYNC_CALL_EXIT(uint64_t id) {
-		if (_currentStack.back() == id)
-			_currentStack.pop_back();
-		else{
-			for (int i = _currentStack.size() - 1; i >= 0; i = i - 1)
-				if (_currentStack[i] == id) {
-					_currentStack.erase(_currentStack.begin() + i);
-					break;
-				}
-		}
-	}
-
-
-
-	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t progCounter) {
-		if (_startCapture) {
-			for (auto i : _MemRanges){
-				if (i.IsInRange(addr)){
-					if (_fdes == NULL) {
-						_fdes =  fopen("syncResults.txt","w");
-					}
-					fprintf(_fdes, "%llu,%llu\n", _SyncCount - 1,progCounter);
-					fflush(_fdes);
-
-					_SynchResults.push_back(std::make_pair(_SyncCount - 1, progCounter));
-					_startCapture = false;
-					std::cerr << "First use identified after synchronization - " << std::hex << progCounter << std::dec << std::endl;
-					break;
-				}
-			}
-		}
-		// std::cerr << "Address: " << std::hex << addr << std::dec << " read at location: " << std::hex 
-		//           << progCounter << std::dec << std::endl;
+	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
+		INIT_SYNC_COMMON();
+		_LoadStoreDriver->RecordAccess(id, addr);
 	}
 }
 
 SynchTool::SynchTool(std::vector<std::string> & cmd_list) {
+	INIT_SYNC_COMMON();
 	_cmd_list = cmd_list;
 	exited = 0;
-	local_walker = Walker::newWalker();
 	_sync_log.reset(new LogInfo(fopen("synch_log.out", "w")));
 }
 
 SynchTool::~SynchTool() {
 	exited = 1;
-	FILE * fdes = fopen("synchronous_calls.txt","w");
-	for (auto i : _callsContainingSynch)
-		fprintf(fdes, "%s\n", _cmd_list[(int)i].c_str());
-	fclose(fdes);
-	_sync_log.get()->Flush();
-	_sync_log.reset();
 }
 
 
@@ -186,12 +74,8 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 	tmp.transferID = params.get()->GetInstID();
 	tmp.unifiedMemory = 0;
 	tmp.stream = stream;
+	_dataAccessManager->AddMemoryTransfer(tmp);
 
-	if (_ranges.find(tmp.begin) != _ranges.end()){
-		std::cerr << "[SynchTool] Transfer with same CPU starting address, Potential Duplicate Transfer?" << std::endl;
-	} else {
-		_ranges[tmp.begin] = tmp;
-	}
 #ifdef SYNCH_DEBUG
 	std::stringstream ss;
 	ss << "[SynchTool] Adding Memory Transfer - " << params.get()->GetName() << " with the following info\n" 
@@ -202,111 +86,10 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 #endif
 }
 
-void SynchTool::MemoryFree(std::shared_ptr<Parameters> params) {
-	// std::tuple<PT_cuMemFree> pvalues = GetParams<PT_cuMemFree>(params);
-	// uint64_t addr = (uint64_t)(std::get<0>(pvalues)[0]);
-	// if (_ranges.find(addr) != _ranges.end())
-	// 	_ranges.erase(addr);
-}
-
-void SynchTool::SetThreadLocals() {
-	if (my_thread_id == -1) 
-		my_thread_id = (pid_t) syscall(__NR_gettid);
-	if (my_process_id == -1)
-		my_process_id = (int) getpid();	
-}
-
-void SynchTool::MemProtectAddrs() {
- //    struct sigaction sa;
- //    sa.sa_flags = SA_SIGINFO;
- //    sigemptyset(&sa.sa_mask);
- //    sa.sa_sigaction = sync_mem_handler;
- //    if(sigaction(SIGSEGV, &sa, NULL) == -1) 
- //    	std::cerr << "[SYNCH TOOL] - Could not set signal handler" << std::endl;
-
-	// for (auto i : _ranges) {
-	// 	uint64_t addr = i.first;
-	// 	uint64_t size = i.second.size;
-	// 	uint64_t pageAligned = (size_t)addr + (size_t)addr % 4096;
-	// 	size = size + ((size_t)addr % 4096);
-	// 	_protectedMem[pageAligned] = size;
-	// 	if (mprotect((void*)pageAligned, size, PROT_NONE) == -1) 
-	// 		std::cerr << "[SYNCH TOOL] Could not set signal handler on location: " << std::hex << pageAligned << std::dec << std::endl;
-	// }
-}
-
-void SynchTool::UnprotectMemory() {
-	// for (auto i : _protectedMem) {
-	// 	mprotect((void*)i.first, i.second, PROT_READ | PROT_WRITE | PROT_EXEC);
-	// }
-	// _protectedMem.clear();
-}
-
-uint64_t * SynchTool::SeralizeMemRanges(size_t & size) {
-	uint64_t * mem = (uint64_t*)malloc(_ranges.size() * 6 * sizeof(uint64_t));
-	size_t pos = 0;
-	_MemRanges.clear();
-	for (auto i : _ranges) {
-		_MemRanges.push_back(i.second);
-		mem[pos] = i.second.begin;
-		mem[pos + 1] = i.second.end;
-		mem[pos + 2] = i.second.size;
-		mem[pos + 3] = i.second.transferID;
-		mem[pos + 4] = i.second.unifiedMemory;
-		mem[pos + 5] = i.second.stream;
-		pos += 6;
-	}
-	size = _ranges.size() * 6 * sizeof(uint64_t);
-	return mem;
-}
-
-void SynchTool::ClearExisting(uint64_t stream) {
-	std::vector<uint64_t> memAddrs;
-	for (auto & i : _ranges) {
-		if (stream == 0){
-			if (i.second.unifiedMemory == 0) {
-				memAddrs.push_back(i.first);
-			}
-		} else {
-			if (i.second.unifiedMemory == 0 && i.second.stream == int(stream)) {
-				memAddrs.push_back(i.first);
-			}
-		}
-	}
-	for (auto i : memAddrs) {
-		_ranges.erase(i);
-	}
-}
-
-void SynchTool::SignalToParent(uint64_t stream) {
-	size_t size;
-	uint64_t * mem = SeralizeMemRanges(size);
-	std::vector<Frame> stackwalk;
-	local_walker->walkStack(stackwalk);
-	std::cerr << "We got " << stackwalk.size() << " frames" << std::endl;
-	std::string s;
-	void * sym; 
-	Dyninst::Offset offset;
-	for (auto i : stackwalk) {
-		if (i.getLibOffset(s, offset, sym) == false)
-			continue;
-		std::cerr << "INTERNAL_STACKWALK - frames: " << s << " " << std::hex << offset << std::dec << std::endl;
-	}
-	SYNCH_SIGNAL_DYNINST(mem, size);
-	free(mem);
-	//MemProtectAddrs();
-	ClearExisting(0);
-}
-
-
 PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
-	_inTrackedCall = true;
 	Parameters * p = params.get();
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
-		// Stash its value in TLS
-		//prevCall = params;
-		// If this is a memory transfer, we must store its information.
 		MemoryTransfer * mem = p->GetMemtrans();
 		if (mem->IsTransfer() == true){
 			// Disable hash checking for performance.  
@@ -317,67 +100,13 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 			// This is a unified memory address allocation, for now
 			// we assume that these are always live
 		}
-	} else {
-		// This is a synchronization, Signal to Dyninst to begin load store instrimentation. 
-		uint64_t stream = 0;
-		if (prevCall.get() != NULL) {
-			if (prevCall.get()->GetID() == ID_cuStreamSynchronize) {
-				std::tuple<PT_cuStreamSynchronize> pvalues = GetParams<PT_cuStreamSynchronize>(prevCall);
-				stream = uint64_t(std::get<0>(pvalues)[0]);
-			} else {
-				MemoryTransfer * mem = prevCall.get()->GetMemtrans();
-				if (mem->IsTransfer() == true)
-					stream = uint64_t(mem->GetStream());
-			}
-			// Record calls which performed synchronizations.
-			_callsContainingSynch.insert(prevCall.get()->GetID());
-		}
-		#ifdef SYNCH_DEBUG
-		std::stringstream ss;
-		ss << "[SynchTool] Captured Synchronization";
-		_sync_log.get()->Write(ss.str());
-		#endif
-		SignalToParent(stream);
-		//prevCall.reset();
 	}
 
 	return NO_ACTION;
 }
 
-void SynchTool::RecordSynchronization(uint64_t id) {
-	_startCapture = true;
-	std::stringstream ss;
-	ss << "[SynchTool] Captured Synchronization " << id << "," << _SyncCount;
-	std::cerr << ss.str() << std::endl;
-	_sync_log.get()->Write(ss.str());
-	SignalToParent(0);
-	_SyncCount += 1;
-	_stackSync = false;
-}
-
 PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
-	_inTrackedCall = false;
-	if (_stackSync == true){
-		_stackSync = false;
-		std::cerr << "We have synchronized in this call - " << params.get()->GetName() << std::endl;
-		// Uncomment this....
-		//RecordSynchronization(0);
-		
-	// SetThreadLocals();
-	// Parameters * p = params.get();
-	// CallID ident = p->GetID();
-	// if (ident != ID_InternalSynchronization){
-	// 	GetLiveTransfer(params);
-	// 	if (ident == ID_cuMemHostAlloc) 
-	// 		UnifiedAllocation(params);
-	// 	else if (ident == ID_cuMemFree) 
-	// 		MemoryFree(params);
-	// } else {
-	// 	// Synchronization is complete, signal to 
-	// 	SignalToParent();	
-	// }
-	// return NO_ACTION;
-	}
+
 }
 
 extern "C"{

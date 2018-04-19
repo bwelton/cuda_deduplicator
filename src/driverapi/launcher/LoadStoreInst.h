@@ -110,7 +110,6 @@ public:
 	bool InstrimentNewModule(BPatch_object * obj, bool finalize);
 	void Finalize();
 	void BeginInsertionSet();
-	bool RunOneTimeCode();
 	void SetWrappedFunctions(std::vector<std::string> & wrappedFunctions);
 	std::map<uint64_t, StackPoint> _firstUses;
 	void WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStacks);
@@ -119,16 +118,7 @@ public:
 	void InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);
 	void InsertLoadStoreInstrimentation();
 private:
-	bool IsSkipUnlessCalled(BPatch_function * func, BPatch_object::Region reg);
-	bool IsNeverInstriment(BPatch_function * func, BPatch_object::Region reg);
-	bool IsSkipExact(BPatch_function * func);
-	BPatch_object::Region FindRegion(BPatch_function * func);
-	void IdentifyRegions();
 	void Setup();
-	StringVector & GetSkipPaths();
-	StringVector & GetSkipFunctions();
-	StringVector & GetNeverInstrimentLibs();
-	StringVector & SkipExact();
 	void InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);
 	BPatch_image * _img;
 	BPatch_addressSpace * _addrSpace;

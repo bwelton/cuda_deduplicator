@@ -12,6 +12,7 @@ public:
 private:
 	std::vector<MemoryRange> _prev;
 	std::vector<MemoryRange> _current;	
+	bool _doNotCheck;
 };
 
 typedef std::shared_ptr<CheckAccesses> CheckAccessesPtr;

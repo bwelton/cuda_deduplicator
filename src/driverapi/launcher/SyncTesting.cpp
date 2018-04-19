@@ -92,8 +92,8 @@ void SyncTesting::Run() {
 	{	
 		std::vector<std::string> pluginNames = {"libSynchTool"};
 		CreatePluginFile(pluginNames);
-		//std::string def(WRAPPER_DEF);
-		std::string def("");
+		std::string def(WRAPPER_DEF);
+		//std::string def("");
 		TimeApplications base(_vm);
 		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 		std::map<uint64_t, StackRecord> stackSyncs = _model.GetTimingStackRecords();

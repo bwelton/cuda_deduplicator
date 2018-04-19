@@ -27,6 +27,11 @@ std::string * BinaryLocationIDMap::GetLibnameForID(uint64_t id) {
 	return (std::string *)NULL;
 }
 
+StackPoint BinaryLocationIDMap::BuildStackPoint(uint64_t id) {
+	StackPoint ret;
+	ret.libOffset = GetOffsetForID
+}
+
 InstrimentationTracker::InstrimentationTracker() {
 }
 
@@ -127,8 +132,7 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 
 void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
-	std::cerr << "[LoadStoreInst] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
-	uint64_t count = 0;
+	std::cout << "[LoadStoreInst][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
 	for (auto i : *points) {
 		if (i->getCalledFunction() == NULL)
 			continue;
@@ -148,29 +152,27 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 			continue;
 		if (instString.find("call") == std::string::npos)
 			continue;
-		std:cerr << "[PointInst] Inserting instrimentation into - " << instString << " at position " << std::hex << (uint64_t) i->getAddress() << std::dec << std::endl;
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
-		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
-		std::cerr << "[LoadStoreInst] Instruction at point " 
-			      << id << " , " << std::hex << (uint64_t) i->getAddress() << std::dec << std::endl;
+		uint64_t id;
+		uint64_t libOffsetAddr = 0;
+		if (_dynOps.GetFileOffset(_addrSpace, i, libOffsetAddr))
+			id = _binLoc.StorePosition(libname, libOffsetAddr);
+		else
+			id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
+		std::cout << "[LoadStoreInst][EntryExit] \tInstruction at point " << id << " , " << std::hex << (uint64_t) i->getAddress() << std::dec << std::endl;
 		std::vector<BPatch_snippet*> recordArgs;
 		recordArgs.push_back(new BPatch_constExpr(id));
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);
 		BPatch_funcCallExpr exitExpr(*_exitingFunction, recordArgs);
-		std::cerr << id << ",";
+		//std::cout << id << ",";
 		if (_addrSpace->insertSnippet(entryExpr,singlePoint, BPatch_callBefore) == NULL) {
-			std::cerr << "[LoadStoreInst] Could not insert entry tracking into " << func->getName() << std::endl;
+			std::cout << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert entry tracking into " << func->getName() << std::endl;
 		}
 		if (_addrSpace->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
-			std::cerr << "[LoadStoreInst] Could not insert exit tracking into " << func->getName() << std::endl;
+			std::cout << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert exit tracking into " << func->getName() << std::endl;
 		}		
-		count++;
-		// if (func->getName().find("targ31cea0") != std::string::npos)
-		// 	if (count >= 2)
-		// 		break;
 	}
-	std::cerr << std::endl;
 }
 
 void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStacks) {
@@ -181,60 +183,20 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 	for (auto i : syncStacks) {
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
-			std::cerr << "[LoadStoreInst] Attempting to find - " << z.funcName << std::endl;
+			std::cout << "[LoadStoreInst][EntryExit] Attempting to find - " << z.funcName << std::endl;
 			BPatch_function * func;
 			if(_dynOps.FindFuncByStackPoint(_addrSpace, func, z) <= 0){
-				std::cerr << "[LoadStoreInst] Could not find function - " << z.funcName << std::endl;
+				std::cout << "[LoadStoreInst][EntryExit] Could not find function - " << z.funcName << std::endl;
 				continue;
 			}
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
-				std::cerr << "[LoadStoreInst] Inserting exit/entry info into - " << z.funcName << std::endl;
+				std::cout << "[LoadStoreInst][EntryExit] Inserting exit/entry info into - " << z.funcName << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
 				count++;
-				// if (count > 11)
-				// 	break;
 			}			
 		}
-		// if (count > 11)
-		// 	break;
 	}		
-
-	//BPatch_object * obj = NULL;
-	// for (auto n : objects) {
-	// 	if (n->pathName() == z.libname) {
-	// 		obj = n;
-	// 		break;
-	// 	}
-	// }
-	// if (obj == NULL) {
-	// 	std::cerr << "[LoadStoreInst] Could not find object - " << z.libname << std::endl;
-	// 	continue;
-	// }
-	// BPatch_function * func = NULL;
-	// if (!_img->findFunction(obj->fileOffsetToAddr(z.funcOffset))) 
-	// 	func = _img->findFunction(obj->fileOffsetToAddr(z.funcOffset));
-	// else {
-	// 	find
-	// }
-	// if (func == NULL){
-	// 	std::cerr << "[LoadStoreInst] Could not find function - " << z.funcName << std::endl;
-	// 	continue;
-	// }
-	// std::vector<BPatch_function *> all_functions;
-	// _img->getProcedures(all_functions);
-	// std::cerr << "[LoadStoreInst] Number of functions to instriment - " << all_functions.size() << std::endl;
-	// for (auto i : all_functions) {
-		// std::vector<BPatch_point*> * funcCalls = i->findPoint(BPatch_locSubroutine);
-		// if (_instTracker.ShouldInstriment(i, funcCalls, CALL_TRACING)) {
-		// 	InsertEntryExitSnippets(i, funcCalls);
-		// }
-	// }
-	// BPatch_image * img = _addrSpace->getImage();
-	// std::vector<BPatch_object *> objects;
-	// img->getObjects(objects);
-	// for (auto i : objects)
-	// 	std::cerr << "[MYOBJS] " << i->pathName() << std::endl;
 }	
 
 void LoadStoreInst::InsertSyncNotifierSnippet(BPatch_function * func, uint64_t offset) {

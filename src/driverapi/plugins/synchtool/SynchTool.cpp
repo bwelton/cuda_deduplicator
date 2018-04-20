@@ -1,6 +1,6 @@
 #include "SynchTool.h"
 int exited = 0;
-thread_local std::shared_ptr<SynchTool> Worker;
+std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
 

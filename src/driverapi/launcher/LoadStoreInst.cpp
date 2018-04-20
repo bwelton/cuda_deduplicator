@@ -98,7 +98,7 @@ void LoadStoreInst::InsertSyncCallNotifier() {
 
 void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
-	std::cerr << "[LoadStoreInst] Inserting load store instrimentation into - " << func->getName() << " with ids: ";
+	std::cerr << "[LoadStoreInst][LoadStoreSnippet] Inserting load store instrimentation into - " << func->getName() << " with ids: ";
 	for (auto i : *points) {
 		uint64_t libOffsetAddr = 0;
 		uint64_t id = 0;

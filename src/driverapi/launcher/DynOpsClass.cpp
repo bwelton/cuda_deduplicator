@@ -24,23 +24,29 @@ int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * 
 	return tmp.size();
 }
 
-BPatch_object * DynOpsClass::FindObjectByName(BPatch_addressSpace * aspace, std::string & name) {
+BPatch_object * DynOpsClass::FindObjectByName(BPatch_addressSpace * aspace, std::string & name, bool exact) {
 	if (aspace == NULL) 
 		return NULL;
 	BPatch_image * img = aspace->getImage();
 	std::vector<BPatch_object *> objects;
 	img->getObjects(objects);
-	for (auto i : objects) 
-		if (i->pathName() == name)
-			return i;
+	for (auto i : objects){ 
+		if (exact) {
+			if (i->pathName() == name)
+				return i;
+		} else {
+			if (i->pathName().find(name) != std::string::npos)
+				return i;
+		}
+	}
 	return NULL;
 }
 
-int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string libname, uint64_t offset) {
+int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string libname, uint64_t offset, bool exact) {
 	if (aspace == NULL) 
 		return -1;
 	BPatch_image * img = aspace->getImage();
-	BPatch_object * obj = FindObjectByName(aspace, libname);
+	BPatch_object * obj = FindObjectByName(aspace, libname, exact);
 	
 	if (obj == NULL)
 		return -1;

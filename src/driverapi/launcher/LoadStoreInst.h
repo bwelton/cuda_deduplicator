@@ -95,15 +95,11 @@ private:
 	uint64_t _funcId;
 	std::map<uint64_t, std::string> _idToFunction;
 
-	BPatch_function * _recordMemAccess;
-	BPatch_function * _tracerFunction;
-	BPatch_function * _endFuncCall;
 	BPatch_function * _enterSync;
-	BPatch_function * _exitSync;
-	BPatch_function * _syncLibNotify;
-
+	BPatch_function * _recordMemAccess;
 	BPatch_function * _entryFunction;
 	BPatch_function * _exitingFunction;
+	BPatch_function * _libcudaSync;
 
 	DynOpsClass _dynOps;
 	BinaryLocationIDMap _binLoc;

@@ -62,7 +62,6 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 	// Get all the functions in the binary
 	std::vector<BPatch_object *> objects;
 	_img->getObjects(objects);
-	uint64_t count = 0;
 	for (auto i : syncStacks) {
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
@@ -76,46 +75,25 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
 				std::cout << "[LoadStoreInst][EntryExit] Inserting exit/entry info into - " << z.funcName << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
-				count++;
 			}			
 		}
 	}		
 }	
 
 void LoadStoreInst::InsertSyncNotifierSnippet(BPatch_function * func, uint64_t offset) {
-	if (func == NULL)
-		return;
+	assert(func != NULL);
 	std::vector<BPatch_point*> * entryPoints = func->findPoint(BPatch_locEntry);
-	std::vector<BPatch_point*> * exitPoints = func->findPoint(BPatch_locExit);
 	std::string tmp = func->getModule()->getObject()->pathName();
 	uint64_t id = _binLoc.StorePosition(tmp,offset);
 	std::vector<BPatch_snippet*> recordArgs;
-	recordArgs.push_back(new BPatch_constExpr(id));
 	BPatch_funcCallExpr entryExpr(*_enterSync, recordArgs);
-	BPatch_funcCallExpr exitExpr(*_exitSync, recordArgs);
 	if (_addrSpace->insertSnippet(entryExpr,*entryPoints) == NULL) {
-		std::cerr << "[LoadStoreInst] Could not insert entry tracking into " << func->getName() << std::endl;
-	}
-	if (_addrSpace->insertSnippet(exitExpr,*exitPoints) == NULL) {
-		std::cerr << "[LoadStoreInst] Could not insert exit tracking into " << func->getName() << std::endl;
+		std::cerr << "[LoadStoreInst][SyncNotifier] FATAL ERROR! Insertion of notifier into libcuda.so - failed! Callname: " << func->getName() << std::endl;
 	}
 }
 
-void LoadStoreInst::InsertSyncCallNotifier(std::vector<StackPoint> & points) {
-	BPatch_image * img = _addrSpace->getImage();
-	std::vector<BPatch_object *> objects;
-	img->getObjects(objects);
-	for (auto i : objects) {
-		if (i->pathName().find("libcuda.so") != std::string::npos) {
-			for (auto n : points) {
-				BPatch_function * func = img->findFunction(i->fileOffsetToAddr(n.libOffset));
-				if(std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),func->getName()) != _wrappedFunctions.end() || 
-				   std::find(_wrappedFunctions.begin(), _wrappedFunctions.end(),n.funcName) != _wrappedFunctions.end())
-					continue;
-				InsertSyncNotifierSnippet(func, n.libOffset);
-			}
-		}
-	}
+void LoadStoreInst::InsertSyncCallNotifier() {
+	InsertSyncNotifierSnippet(_libcudaSync, INTERNAL_SYNC_LS);
 }
 
 void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
@@ -163,6 +141,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 	Setup();
 	BeginInsertionSet();
 	WrapEntryAndExit(syncStacks);
+	InsertSyncCallNotifier();
 	//InsertSyncCallNotifier(points);
 	//InsertLoadStoreInstrimentation();
 	// _runOneTime = true;
@@ -385,6 +364,7 @@ void LoadStoreInst::Setup() {
 	assert(_dynOps.FindFuncByName(_addrSpace, _exitingFunction, std::string("RECORD_FUNCTION_EXIT")) == 1);
 	assert(_dynOps.FindFuncByName(_addrSpace, _enterSync, std::string("SYNC_CAPTURE_SYNC_CALL")) == 1);
 	assert(_dynOps.FindFuncByName(_addrSpace, _recordMemAccess, std::string("SYNC_RECORD_MEM_ACCESS")) == 1);
+	assert(_dynOps.FindFuncByLibnameOffset(_addrSpace, _libcudaSync, std::string("libcuda.so"), INTERNAL_SYNC_LS, false) == 1);
 }
 
 

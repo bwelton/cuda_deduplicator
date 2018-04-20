@@ -77,10 +77,10 @@ bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, Inst
     std::string modname = func->getModule()->getObject()->pathName();
     std::transform(modname.begin(), modname.end(), modname.begin(), ::tolower);
     for (auto i : *toSkip) {
-    	//if (modname.find(i) != std::string::npos)
-    	//	return false;
-    	if (modname.find("libcuda.so") == std::string::npos)
+    	if (modname.find(i) != std::string::npos)
     		return false;
+    	//if (modname.find("libcuda.so") == std::string::npos)
+    	//	return false;
     }
     return true;
 }

@@ -17,18 +17,18 @@ extern "C" {
 
 	void RECORD_FUNCTION_ENTRY(uint64_t id) {
 		INIT_SYNC_COMMON();
-		std::cerr << "[SynchTool] Captured function entry - " << id << std::end;
+		std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		_LoadStoreDriver->PushStack(id);
 	}
 	void RECORD_FUNCTION_EXIT(uint64_t id) {
 		INIT_SYNC_COMMON();
-		std::cerr << "[SynchTool] Captured function exit - " << id << std::end;
+		std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
 		_LoadStoreDriver->PopStack(id);
 	}
 
 	void SYNC_CAPTURE_SYNC_CALL() {
 		INIT_SYNC_COMMON();
-		std::cerr << "[SynchTool] Captured Synchronization call" << std::end;
+		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
 		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {

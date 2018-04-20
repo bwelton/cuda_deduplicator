@@ -148,7 +148,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 	WrapEntryAndExit(syncStacks);
 	InsertSyncCallNotifier();
 	//InsertSyncCallNotifier(points);
-	InsertLoadStoreInstrimentation();
+	//InsertLoadStoreInstrimentation();
 	// _runOneTime = true;
 	// std::stringstream ss;
 	// // Parameters for Record Memory Function

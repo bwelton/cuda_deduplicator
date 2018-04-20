@@ -32,9 +32,10 @@ std::map<uint64_t, std::vector<StackPoint> > ReadLoadStoreFiles::ReadKeyFile(std
 }	
 
 void ReadLoadStoreFiles::OutputTraceKey(std::string inDataFile, std::string outFile) {
+	std::set<uint64_t> seenIds;
 	FILE * inFile = fopen(inDataFile.c_str(), "rb");
 	if (inFile == NULL)
-		return ret;
+		return;
 	FILE * out = fopen(outFile.c_str(), "rb");
 	StackKeyWriter writer(out);
 	fseek(inFile, 0, SEEK_END);
@@ -46,8 +47,11 @@ void ReadLoadStoreFiles::OutputTraceKey(std::string inDataFile, std::string outF
 		fread(&locationId, 1, sizeof(uint64_t), inFile);
 		fread(&stackId, 1, sizeof(uint64_t), inFile);
 		std::vector<StackPoint> tmp;
-		tmp.push_back(_map->BuildStackPoint(locationId))
-		writer.InsertStack(locationId, tmp);
+		if(seenIds.find(locationId) == seenIds.end()){
+			tmp.push_back(_map->BuildStackPoint(locationId))
+			writer.InsertStack(locationId, tmp);
+			seenIds.insert(locationId);
+		}
 		readCount += (sizeof(uint64_t) * 2);
 	}
 	fclose(inFile);
@@ -55,7 +59,7 @@ void ReadLoadStoreFiles::OutputTraceKey(std::string inDataFile, std::string outF
 
 void ReadLoadStoreFiles::CreateStackKey(std::string inFile, std::string outFile) {
 	std::map<uint64_t, std::vector<StackPoint> > keys = ReadKeyFile(inFile);
-	if (ret.size() == 0)
+	if (keys.size() == 0)
 		return;
 	FILE * out = fopen(outFile.c_str(), "rb");
 	StackKeyWriter writer(out);

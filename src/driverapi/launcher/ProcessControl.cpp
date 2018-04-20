@@ -327,9 +327,11 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 	// Check this....
 	//LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStubLib.so"));
 	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so"));
-	for (auto i : StackPoint) {
-		if (i.libname.find(".so") != std::string::npos)
-			LoadWrapperLibrary(i.libname);
+	for (auto i : syncStacks) {
+		for (auto z : i.second.GetStackpoints()) {
+		 	if (z.libname.find(".so") != std::string::npos)
+		 		LoadWrapperLibrary(z.libname);
+		}
 	}
 	std::vector<std::string> synchFunctions;
 	std::vector<std::string> wrappedFunctionNames;

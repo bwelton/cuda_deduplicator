@@ -48,7 +48,7 @@ void ReadLoadStoreFiles::OutputTraceKey(std::string inDataFile, std::string outF
 		fread(&stackId, 1, sizeof(uint64_t), inFile);
 		std::vector<StackPoint> tmp;
 		if(seenIds.find(locationId) == seenIds.end()){
-			tmp.push_back(_map->BuildStackPoint(locationId))
+			tmp.push_back(_map->BuildStackPoint(locationId));
 			writer.InsertStack(locationId, tmp);
 			seenIds.insert(locationId);
 		}

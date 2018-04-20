@@ -115,7 +115,7 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 		BPatch_funcCallExpr recordAddrCall(*_recordMemAccess, recordArgs);
 		std::cerr << id << ",";
 		if (_addrSpace->insertSnippet(recordAddrCall,singlePoint) == NULL) {
-			std::cerr << "[LoadStoreInst] Could not insert load store instrimentation into " << func->getName() << std::endl;
+			std::cerr << "[LoadStoreInst][LoadStoreSnippet]\t\tCould not insert load store instrimentation into " << id << std::endl;
 		}
 	}
 	std::cerr << std::endl;

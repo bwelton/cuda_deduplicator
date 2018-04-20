@@ -162,6 +162,23 @@ struct StackKeyWriter {
 		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
 		return hash;
 	}
+	void InsertStack(uint64_t id, std::vector<StackPoint> & points){
+		uint64_t hash = id;
+		int pos = 0;
+		std::stringstream outStr;
+		outStr << hash << "$";
+		for (auto i : points)
+			outStr << i.libname << "@" << i.libOffset << "$";
+
+		std::string t = outStr.str();
+		t.pop_back();
+		t = t + std::string("\n");
+		do {
+			const char * myString = t.c_str();
+			pos += fwrite(&myString[pos], 1, t.size() - pos, out);
+		} while(pos != t.size());
+		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
+	}
 };
 
 struct StackKeyReader {

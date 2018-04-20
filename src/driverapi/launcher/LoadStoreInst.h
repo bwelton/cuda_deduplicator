@@ -48,6 +48,8 @@
 #include "StackStorage.h"
 #include "DynOpsClass.h"
 #include "InstrimentationTracker.h"
+#include "ReadLoadStoreFiles.h"
+
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -72,6 +74,7 @@ namespace std
 
 class LoadStoreInst {
 public: 
+	~LoadStoreInst();
 	LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img);
 	bool InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points,std::map<uint64_t, StackRecord> & syncStacks);
 	bool InstrimentNewModule(BPatch_object * obj, bool finalize);

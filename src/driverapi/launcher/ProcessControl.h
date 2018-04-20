@@ -53,9 +53,6 @@ using namespace PatchAPI;
 using namespace SymtabAPI;
 
 
-
-
-
 class ProcessController {
 public:
 	ProcessController(boost::program_options::variables_map vm, LogInfo * log );
@@ -104,5 +101,6 @@ private:
 	BPatch_binaryEdit * _appBE;
 	bool _dontFin;
 
+	bool _WithLoadStore;
 	StacktraceInst * _stackTracer;
 };

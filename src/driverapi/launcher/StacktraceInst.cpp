@@ -6,7 +6,6 @@ StacktraceInst::StacktraceInst(BPatch_addressSpace * addrSpace, BPatch_image * i
 
 }
 
-
 void StacktraceInst::InsertStackInst() {
 	Setup();
 	// Begin the insertion set

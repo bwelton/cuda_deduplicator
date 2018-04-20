@@ -2,7 +2,7 @@
 static BPatch bpatch;
 static ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm, LogInfo * log) :
-	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false) {
+	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false), _WithLoadStore(false) {
 }
 
 BPatch_addressSpace * ProcessController::LaunchProcess() {
@@ -327,6 +327,10 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 	// Check this....
 	//LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStubLib.so"));
 	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libSynchTool.so"));
+	for (auto i : StackPoint) {
+		if (i.libname.find(".so") != std::string::npos)
+			LoadWrapperLibrary(i.libname);
+	}
 	std::vector<std::string> synchFunctions;
 	std::vector<std::string> wrappedFunctionNames;
 	for (auto i : _wrapFunctions)
@@ -339,8 +343,8 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 
 	_loadStore->SetWrappedFunctions(wrappedFunctionNames);
 	_loadStore->InstrimentAllModules(true, skips, instUntil, synchFunctions, points,syncStacks);
+	_WithLoadStore = true;
 }
-
 
 BPatch * ProcessController::GetBPatch() {
 	return &bpatch;
@@ -574,6 +578,8 @@ void ProcessController::InsertBreakpoints(std::vector<std::string> functionNames
 }
 
 bool ProcessController::LoadWrapperLibrary(std::string libname) {
+	if (_loadedLibraries.find(libname) != _loadedLibraries.end())
+		return true;
 	_log->Write(std::string("Loading library ") + libname + std::string(" into address space"));
 	BPatch_object * tmp;
 	if (_binaryEdit == false)

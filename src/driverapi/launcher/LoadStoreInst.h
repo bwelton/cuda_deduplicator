@@ -81,7 +81,7 @@ public:
 	std::map<uint64_t, StackPoint> _firstUses;
 	void WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStacks);
 	void InsertSyncNotifierSnippet(BPatch_function * func, uint64_t offset);
-	void InsertSyncCallNotifier(std::vector<StackPoint> & points);
+	void InsertSyncCallNotifier();
 	void InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);
 	void InsertLoadStoreInstrimentation();
 private:

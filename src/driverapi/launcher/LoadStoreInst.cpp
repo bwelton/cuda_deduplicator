@@ -100,9 +100,14 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 	std::string libname = func->getModule()->getObject()->pathName();
 	std::cerr << "[LoadStoreInst] Inserting load store instrimentation into - " << func->getName() << " with ids: ";
 	for (auto i : *points) {
+		uint64_t libOffsetAddr = 0;
+		uint64_t id = 0;
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
-		uint64_t id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
+		if (_dynOps.GetFileOffset(_addrSpace, i, libOffsetAddr))
+			id = _binLoc.StorePosition(libname, libOffsetAddr);
+		else
+			id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
 		std::vector<BPatch_snippet*> recordArgs;
 		BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
 		recordArgs.push_back(loadAddr);

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "StackPoint.h"
-
+#include "BinaryLocationIDMap.h"
 class ReadLoadStoreFiles {
 public:
 	ReadLoadStoreFiles(BinaryLocationIDMap * locationMap);

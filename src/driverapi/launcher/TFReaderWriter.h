@@ -103,12 +103,12 @@ struct TFReaderWriter {
 		if (_file == NULL)
 			return false;
 		return true;
-	}
+	};
 	bool Write(TF_Record & rec) {
 		rec.Write(_file);
 		return true;
-	}
+	};
 	bool Read(TF_Record & rec) {
 		return rec.Read(_file)
-	}
+	};
 };

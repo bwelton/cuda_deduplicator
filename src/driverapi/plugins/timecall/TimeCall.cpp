@@ -58,7 +58,7 @@ void INIT_TIMERS() {
 		_tfRecord.type = TF_SYNCRECORD;
 		alreadyStarted = 0;
 		std::cerr << "Starting timing log" << std::endl;
-		_outFile.reset(new OutputFile());
+		_outFile.reset(new TFReaderWriter());
 		_outFile->Open("TF_trace.bin", TF_WRITE);
 	}
 	if (keyFile.get() == NULL) {

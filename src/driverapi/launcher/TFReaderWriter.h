@@ -66,7 +66,7 @@ struct TF_Record {
 				break;
 			case TF_TRANSFERREC: 
 				r.Write(fp);
-				break
+				break;
 			default:
 				std::cerr << "[TFRECORD] Unknown record write type, doing nothing" << std::endl;
 				break;
@@ -83,7 +83,7 @@ struct TF_Record {
 				break;
 			case TF_TRANSFERREC: 
 				r.Read(fp);
-				break
+				break;
 			default:
 				std::cerr << "[TFRECORD] Unknown record read type, doing nothing" << std::endl;
 				break;

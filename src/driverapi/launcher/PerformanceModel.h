@@ -72,10 +72,10 @@ private:
 	//std::vector<SyncRangeRecord> _orderingInfo;
 
 	CudaCallMap _callMapper;
-	std::vector<TimingData> _orderingInfo;
+	std::vector<TF_SyncRecord> _orderingInfo;
 
 	std::map<std::string, uint64_t> _nameMap;
-	std::vector<TimingData> _timingData;
+	std::vector<TF_SyncRecord> _timingData;
 	std::map<uint64_t, StackRecord> _stackRecords; 
 	std::map<uint64_t, StackRecord> _timingStackRecords; 
 	std::map<uint64_t, uint64_t> _stackToDynId;

@@ -500,7 +500,7 @@ void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelin
 		fread(&count, 1, sizeof(uint64_t), inFile); 
 		fread(&time, 1, sizeof(double), inFile);
 
-		_timingData[i].genId = dynId;
+		_timingData[i].dynId = dynId;
 		_timingData[i].stackId = stackId;
 		_timingData[i].time = time;
 		_timingData[i].count = count;
@@ -560,10 +560,9 @@ void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 			}
 		}
 		if (start == true || found == false){
-			TimingData tmp;
+			TF_SyncRecord tmp;
 			tmp.stackId = hash;
-			
-			tmp.genId = _callMapper.StackIDToGeneral(hash);
+			tmp.dynId = _callMapper.StackIDToGeneral(hash);
 			tmp.count = 1;
 			_orderingInfo.push_back(tmp);
 			start = false;

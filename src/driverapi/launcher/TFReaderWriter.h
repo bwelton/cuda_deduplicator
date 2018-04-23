@@ -104,6 +104,10 @@ struct TFReaderWriter {
 			return false;
 		return true;
 	};
+	~TFReaderWriter() {
+		if (_file != NULL)
+			fclose(_file);
+	};
 	bool Write(TF_Record & rec) {
 		rec.Write(_file);
 		return true;

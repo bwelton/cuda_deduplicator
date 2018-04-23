@@ -42,7 +42,7 @@ std::map<uint64_t,uint64_t> PerformanceModel::MatchStackTraces(std::map<uint64_t
 void PerformanceModel::CaptureSyncTime() {
 
 	std::cerr << "[PerformanceModel] In capture sync time" << std::endl;
-	ReadTimingStacks(std::string("timeKey.out"),std::string("callDelay.out"));
+	ReadTimingStacks(std::string("TF_timekey.bin"),std::string("TF_trace.bin"));
 
 	// Because for timing we instrument the entries into libcuda, 
 	// we do not get the correct function names at those locations. We must
@@ -73,38 +73,45 @@ void PerformanceModel::CaptureSyncTime() {
 		}
 	}
 
-	std::cerr << "[PerformanceModel] Timing stacks after correction" << std::endl;
-	for (auto i : _timingStackRecords) 
-		i.second.PrintStack();	
-	
-	// Find Identical Stacks. 
-	std::map<uint64_t,uint64_t> s = MatchStackTraces(_timingStackRecords, _stackRecords);
-
-	// Check for stacks that were not found matching...
-	std::set<uint64_t> timeStackIDs;
-	std::set<uint64_t> stackRecordIDs;
-
-	for (auto i : _timingStackRecords)
-		timeStackIDs.insert(i.first);
-	for (auto i : _stackRecords) 
-		stackRecordIDs.insert(i.first);
-
-	for (auto i : s) {
-		std::cerr << "[PerformanceModel] Timing Stack of " << i.first << " matches with stack record " << i.second << std::endl;
-		timeStackIDs.erase(i.first);
-		stackRecordIDs.erase(i.first);
+	StackKeyWriter outKey(fopen("TF_timekey.txt","wb"));
+	for (auto i : _timingStackRecords) {
+		outKey.InsertStack(i.first, i.second);
 	}
+
+
+
+	// std::cerr << "[PerformanceModel] Timing stacks after correction" << std::endl;
+	// for (auto i : _timingStackRecords) 
+	// 	i.second.PrintStack();	
 	
-	for (auto i : timeStackIDs)
-		std::cerr << "[PerformanceModel] Error: Could not find timing stack that matched - " << i << std::endl;
+	// // Find Identical Stacks. 
+	// std::map<uint64_t,uint64_t> s = MatchStackTraces(_timingStackRecords, _stackRecords);
 
-	for (auto i : stackRecordIDs) 
-		std::cerr << "[PerformanceModel] Error: Could not find stack record that matched - " << i << std::endl;
+	// // Check for stacks that were not found matching...
+	// std::set<uint64_t> timeStackIDs;
+	// std::set<uint64_t> stackRecordIDs;
 
-	if (timeStackIDs.size() == stackRecordIDs.size())
-		std::cerr << "[PerformanceModel] Backtraces match between timing and stack record ids" << std::endl;
+	// for (auto i : _timingStackRecords)
+	// 	timeStackIDs.insert(i.first);
+	// for (auto i : _stackRecords) 
+	// 	stackRecordIDs.insert(i.first);
 
-	std::cerr << "[PerformanceModel] Checking if stacks line up " << std::endl;
+	// for (auto i : s) {
+	// 	std::cerr << "[PerformanceModel] Timing Stack of " << i.first << " matches with stack record " << i.second << std::endl;
+	// 	timeStackIDs.erase(i.first);
+	// 	stackRecordIDs.erase(i.first);
+	// }
+	
+	// for (auto i : timeStackIDs)
+	// 	std::cerr << "[PerformanceModel] Error: Could not find timing stack that matched - " << i << std::endl;
+
+	// for (auto i : stackRecordIDs) 
+	// 	std::cerr << "[PerformanceModel] Error: Could not find stack record that matched - " << i << std::endl;
+
+	// if (timeStackIDs.size() == stackRecordIDs.size())
+	// 	std::cerr << "[PerformanceModel] Backtraces match between timing and stack record ids" << std::endl;
+
+	// std::cerr << "[PerformanceModel] Checking if stacks line up " << std::endl;
 
 	// std::map<uint64_t, std::vector<uint64_t> > timingBins;
 	// assert(_timingData.size() > 1);

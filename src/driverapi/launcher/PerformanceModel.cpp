@@ -465,9 +465,6 @@ void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelin
 	std::cerr << "[PerformanceModel] Reading timing stack file: " << timelineFile << std::endl;
 	std::cerr << "[PerformanceModel] Reading timing key file: " << keyFile << std::endl;
 
-	FILE * inFile = fopen(timelineFile.c_str(), "rb");
-	assert(inFile != NULL);
-
 	FILE * kf = fopen(keyFile.c_str(), "rb");
 	assert(kf != NULL);
 
@@ -482,32 +479,43 @@ void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelin
 	for (auto i : _timingStackRecords) 
 		std::cerr << "Adding " << i.second.GetFirstCudaCall().funcName << " with hash id " << i.first << std::endl;
 
+	FILE * inFile = fopen(timelineFile.c_str(), "rb");
+	assert(inFile != NULL);
 	fseek(inFile, 0, SEEK_END);
 	uint64_t elementCount = ftell(inFile);
 	fseek(inFile, 0, SEEK_SET);
+	fclose(inFile);
 
 	elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t) + sizeof(uint64_t));
 	_timingData = std::vector<TimingData>(elementCount);
 
-	uint64_t dynId;
-	uint64_t stackId;
-	uint64_t count;
-	uint64_t total;
-	double time; 
-	for (int i = 0; i < elementCount; i++) {
-		fread(&dynId, 1, sizeof(uint64_t), inFile);
-		fread(&stackId, 1, sizeof(uint64_t), inFile);
-		fread(&count, 1, sizeof(uint64_t), inFile); 
-		fread(&time, 1, sizeof(double), inFile);
-
-		_timingData[i].dynId = dynId;
-		_timingData[i].stackId = stackId;
-		_timingData[i].time = time;
-		_timingData[i].count = count;
-		_stackToDynId[stackId] = dynId;
-		total += count;
+	TFReaderWriter rw;
+	TF_Record rec;
+	uint64_t pos = 0;
+	assert(rw.Open(timelineFile.c_str(), TF_READ) == true);
+	while (rw.Read(rec)) {
+		if (rec.type == TF_SYNCRECORD) {
+			_timingData[pos] = rec.s;
+			_stackToDynId[rec.s.stackId] = rec.s.dynId;
+			total += rec.s.count;
+			pos++;
+		}
 	}
-	std::cerr << "[PerformanceModel] Captured " << total << " synchronizations from timing " << std::endl;
+
+	// for (int i = 0; i < elementCount; i++) {
+	// 	fread(&dynId, 1, sizeof(uint64_t), inFile);
+	// 	fread(&stackId, 1, sizeof(uint64_t), inFile);
+	// 	fread(&count, 1, sizeof(uint64_t), inFile); 
+	// 	fread(&time, 1, sizeof(double), inFile);
+
+	// 	_timingData[i].dynId = dynId;
+	// 	_timingData[i].stackId = stackId;
+	// 	_timingData[i].time = time;
+	// 	_timingData[i].count = count;
+	// 	_stackToDynId[stackId] = dynId;
+	// 	total += count;
+	// }
+	// std::cerr << "[PerformanceModel] Captured " << total << " synchronizations from timing " << std::endl;
 }
 
 void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {

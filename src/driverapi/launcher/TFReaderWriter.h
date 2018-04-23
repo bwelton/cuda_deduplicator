@@ -109,6 +109,6 @@ struct TFReaderWriter {
 		return true;
 	};
 	bool Read(TF_Record & rec) {
-		return rec.Read(_file)
+		return rec.Read(_file);
 	};
 };

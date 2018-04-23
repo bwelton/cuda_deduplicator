@@ -26,6 +26,7 @@
 #include "SymbolLookup.h"
 #include "StackPoint.h"
 #include "StackStorage.h"
+#include "TFReaderWriter.h"
 struct CallPoint {
 	std::string libCudaCallname;
 	std::vector<uint64_t> callStacks;

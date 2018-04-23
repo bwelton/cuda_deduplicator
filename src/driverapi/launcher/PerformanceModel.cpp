@@ -75,7 +75,8 @@ void PerformanceModel::CaptureSyncTime() {
 
 	StackKeyWriter outKey(fopen("TF_timekey.txt","wb"));
 	for (auto i : _timingStackRecords) {
-		outKey.InsertStack(i.first, i.second.GetStackpoints());
+		std::vector<StackPoint> tmp = i.second.GetStackpoints();
+		outKey.InsertStack(i.first, tmp);
 	}
 
 

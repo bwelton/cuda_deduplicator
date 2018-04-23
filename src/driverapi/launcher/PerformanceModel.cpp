@@ -494,10 +494,11 @@ void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelin
 	fclose(inFile);
 
 	elementCount = elementCount / (sizeof(uint64_t) + sizeof(double) + sizeof(uint64_t) + sizeof(uint64_t));
-	_timingData = std::vector<TimingData>(elementCount);
+	_timingData = std::vector<TF_SyncRecord>(elementCount);
 
 	TFReaderWriter rw;
 	TF_Record rec;
+	uint64_t total = 0;
 	uint64_t pos = 0;
 	assert(rw.Open(timelineFile.c_str(), TF_READ) == true);
 	while (rw.Read(rec)) {

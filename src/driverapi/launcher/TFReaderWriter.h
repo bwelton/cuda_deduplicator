@@ -95,7 +95,7 @@ struct TF_Record {
 struct TFReaderWriter {
 	FILE * _file;
 	TFReaderWriter() : _file(NULL) {}
-	bool Open(char * name, TF_MODE mode) {
+	bool Open(const char * name, TF_MODE mode) {
 		if (mode == TF_READ)
 			_file = fopen(name, "rb");
 		else if (mode == TF_WRITE)

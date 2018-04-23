@@ -40,7 +40,7 @@ uint64_t InstrimentationTracker::HashPoint(BPatch_function * func, BPatch_point 
 
 bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, InstType t) {
 	static StringVector callTracingSkips  = {"main","dyninst","Dyninst","targ130a20","targ130a30", "targ2c21f0","targ2c2550","__run_exit_handlers","exit","libc","__GI_"," __malloc","abort","__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
-	static StringVector loadStoreSkips =  {"_fini","atexit","main",
+	static StringVector loadStoreSkips =  {"_fini","atexit","main", "dyninst", "boost","pthread",
 	"__libc_csu_init", "__libc_csu_fini","malloc","printf","fwrite","strlen","abort","assert","strnlen","new_heap","fflush",
 	"__static_initialization_and_destruction_0","_start", "__GI___backtrace","__GI___libc_secure_getenv","__GI_exit","cudart","_IO_puts","__new_fopen","fopen","_Unwind_Resume","__run_exit_handlers","free","open",
 	"_init", "cudart::cuosInitializeCriticalSection","cudart::", "cudaLaunch",
@@ -67,7 +67,7 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
 }
 
 bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, InstType t) {
-	static StringVector loadStoreModSkips = {"libc","cudadedup","libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so","libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libcuptieventhandler.so","libecho.so","libsynchtool.so","libtimecall.so","libtransfertimeline.so","libstublib.so", "dyninst", "dyninst"};
+	static StringVector loadStoreModSkips = {"libc","pthread","boost","Dyninst", "dyninst", "cudadedup","libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so","libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libcuptieventhandler.so","libecho.so","libsynchtool.so","libtimecall.so","libtransfertimeline.so","libstublib.so", "dyninst", "dyninst"};
 	static StringVector callTracingModSkips = {"libc","ld-linux-x86-64","libgcc_s.so","libstdc++.so", "libdl.so", "libpthread.so", "cudadedup", "libdl-2.23.so","dyninst","dyninst","boost", "libc.so", "linux-vdso.so", "libpthread-2.23.so","libcuptieventhandler.so","libecho.so","libsynchtool.so","libtimecall.so","libtransfertimeline.so","libstublib.so", "dyninst","Dyninst"};
     StringVector * toSkip;
     if (t == LOAD_STORE_INST)

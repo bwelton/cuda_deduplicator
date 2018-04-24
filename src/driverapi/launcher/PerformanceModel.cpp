@@ -11,7 +11,7 @@ void PerformanceModel::AddExecutionTime(double secs) {
 		_fastestExecTime = secs;
 		std::ofstream tmp("PM_totaltime.txt", std::ofstream::out);
 		tmp << secs << std::endl;
-		tmp.close()
+		tmp.close();
 	}
 }
 

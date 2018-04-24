@@ -15,9 +15,11 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 	std::set<uint64_t> removeList;
 
 	for (int i = 0; i < points->size(); i++) {
-		if ((*points)[i]->getCalledFunction() != NULL)
-			if (ShouldInstrimentPoint((*points)[i]->getCalledFunction(), t) == false)
-				continue;
+		if ((*points)[i]->getCalledFunction() != NULL) {
+			if (ShouldInstrimentPoint((*points)[i]->getCalledFunction(), t) == false){
+				removeList.insert(i);
+			}
+		}
 		uint64_t hashValue = HashPoint(func, (*points)[i]);
 		if (_alreadyInstrimented[t].find(hashValue) != _alreadyInstrimented[t].end())
 			removeList.insert(i);

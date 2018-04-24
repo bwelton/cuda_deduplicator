@@ -56,6 +56,7 @@ public:
 	InstrimentationTracker();
 	void AddAlreadyInstrimented(std::vector<std::string> & wrappedFunctions);
 	bool ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t);
+	bool ShouldInstrimentPoint(BPatch_function * func, InstType t);
 private:
 
 	uint64_t HashPoint(BPatch_function * func, BPatch_point * point);

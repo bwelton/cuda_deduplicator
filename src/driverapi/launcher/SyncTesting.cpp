@@ -55,7 +55,7 @@ void SyncTesting::Run() {
 		_model.AddExecutionTime(time);
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
 	}
-	// _model.ReadStackFiles();
+	 _model.ReadStackFiles();
 	//_model.ExtractLineInfo();
 	//InstrumentProgram();
 	std::vector<StackPoint> timingList;
@@ -97,8 +97,10 @@ void SyncTesting::Run() {
 		TimeApplications base(_vm);
 		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 		std::map<uint64_t, StackRecord> stackSyncs = _model.GetTimingStackRecords();
+
 		//extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 		double time = base.RunWithLSInstrimentation(def, extras, timingList, stackSyncs);
+		std::cerr << "[Base] We are setting up syncs checking with " << stackSyncs.size() << std::endl;
 		//_model.AddFirstUses(base._firstUses);
 	}
 	//_model.FixLSStackFiles();

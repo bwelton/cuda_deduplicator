@@ -16,6 +16,7 @@
 #include <set> 
 #include <iomanip>
 #include <string>
+#include <memory>
 #include <sys/types.h>
 #include <unistd.h>
 #include <mutex>
@@ -85,7 +86,7 @@ public:
 	std::map<uint64_t, StackPoint> GetFirstUse();
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
-	LoadStoreInst * _loadStore;
+	std::shared_ptr<LoadStoreInst> _loadStore;
 	LogInfo * _log;
 	double _instrimentationOverhead;
 	boost::program_options::variables_map _vm;

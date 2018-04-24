@@ -35,7 +35,7 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	_addrSpace = handle;
 	_launched = true;
 	_appProc = dynamic_cast<BPatch_process*>(_addrSpace);
-	_loadStore = new LoadStoreInst(_addrSpace, _addrSpace->getImage());
+	_loadStore.reset(new LoadStoreInst(_addrSpace, _addrSpace->getImage()));
 	_stackTracer = new StacktraceInst(_addrSpace, _addrSpace->getImage());
 	return handle;
 }
@@ -69,7 +69,7 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 	_addrSpace = app;
 	_launched = true;
 	_appProc =  NULL;//dynamic_cast<BPatch_process*>(_addrSpace);
-	_loadStore = new LoadStoreInst(_addrSpace, app->getImage());
+	_loadStore.reset(new LoadStoreInst(_addrSpace, app->getImage()));
 	_appBE = dynamic_cast<BPatch_binaryEdit*>(app);
 	_stackTracer = new StacktraceInst(_addrSpace, _addrSpace->getImage());
 	return handle;

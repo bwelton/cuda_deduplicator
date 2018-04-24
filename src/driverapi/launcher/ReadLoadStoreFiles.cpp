@@ -36,7 +36,7 @@ void ReadLoadStoreFiles::OutputTraceKey(std::string inDataFile, std::string outF
 	FILE * inFile = fopen(inDataFile.c_str(), "rb");
 	if (inFile == NULL)
 		return;
-	FILE * out = fopen(outFile.c_str(), "rb");
+	FILE * out = fopen(outFile.c_str(), "wb");
 	StackKeyWriter writer(out);
 	fseek(inFile, 0, SEEK_END);
 	uint64_t elementCount = ftell(inFile);

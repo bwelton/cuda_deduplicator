@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <iostream>
 #include <functional>
 #include <sstream> 
 struct OutputFile {
@@ -20,6 +21,7 @@ struct OutputFile {
 		uint64_t size = sizeof(uint64_t) + currentStack.size() * sizeof(uint64_t);
 		fwrite(&size, 1, sizeof(uint64_t), outFile);
 		fwrite(&stackId, 1, sizeof(uint64_t), outFile);
+		std::cerr << "[OutputFile] Writing currentStack of size - " << currentStack.size() << std::endl;
 		for (auto i : currentStack)
 			fwrite(&i, 1, sizeof(uint64_t), outFile);
 	}

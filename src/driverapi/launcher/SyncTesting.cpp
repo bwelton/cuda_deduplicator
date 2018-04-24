@@ -43,41 +43,41 @@ void SyncTesting::Run() {
 	// Find out what user called functions actually contain a synchronization.
 	// This also captures secret entries into libcuda with synchronizations and relates them back
 	// to user level calls. 
-	{
-		// Remove all previous stack files from this directory.
-		system("exec rm -rf ./stackOut.*");
-		TimeApplications base(_vm);
-		std::cerr << "Running " << _programName << " with stacktrace information enabled" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".stacktrace.out" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".stacktrace.out"));
-		time = base.RunWithStackTracing();
-		base.ReturnToTerminal();
-		_model.AddExecutionTime(time);
-		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
-	}
-	_model.ReadStackFiles();
+	// {
+	// 	// Remove all previous stack files from this directory.
+	// 	system("exec rm -rf ./stackOut.*");
+	// 	TimeApplications base(_vm);
+	// 	std::cerr << "Running " << _programName << " with stacktrace information enabled" << std::endl;
+	// 	std::cerr << "Saving application output to file : " << _programName << ".stacktrace.out" << std::endl;
+	// 	base.RedirectOutToFile(_programName + std::string(".stacktrace.out"));
+	// 	time = base.RunWithStackTracing();
+	// 	base.ReturnToTerminal();
+	// 	_model.AddExecutionTime(time);
+	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
+	// }
+	// _model.ReadStackFiles();
 	//_model.ExtractLineInfo();
 	//InstrumentProgram();
 	std::vector<StackPoint> timingList;
-	_model.GetTimingList(timingList);
+	//_model.GetTimingList(timingList);
 	std::cout << "Timing list of size - " << timingList.size() << std::endl;
 
 	// Get timing for these functions
-	{
-		TimeApplications base(_vm);
-		std::cerr << "Running " << _programName << " with timing information enabled" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".time.out" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".time.out"));		
-		double mytime = base.InternalRunWithTiming(timingList);
-		base.ReturnToTerminal();
-		_model.AddExecutionTime(mytime);	
-		std::cerr << "Application executed with runtime of - " << mytime << "s" << std::endl;	
-	}
+	// {
+	// 	TimeApplications base(_vm);
+	// 	std::cerr << "Running " << _programName << " with timing information enabled" << std::endl;
+	// 	std::cerr << "Saving application output to file : " << _programName << ".time.out" << std::endl;
+	// 	base.RedirectOutToFile(_programName + std::string(".time.out"));		
+	// 	double mytime = base.InternalRunWithTiming(timingList);
+	// 	base.ReturnToTerminal();
+	// 	_model.AddExecutionTime(mytime);	
+	// 	std::cerr << "Application executed with runtime of - " << mytime << "s" << std::endl;	
+	// }
 
 
 	// Check that our timing run matches the synchronizations identified.
 	// If so, this program is very likely deterministic given the same inputs in relation to cuda calls.
-	_model.CaptureSyncTime();
+//	_model.CaptureSyncTime();
 	// return;
 
 	// Load Store Instrimentation.

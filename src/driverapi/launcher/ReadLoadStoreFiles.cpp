@@ -61,7 +61,7 @@ void ReadLoadStoreFiles::CreateStackKey(std::string inFile, std::string outFile)
 	std::map<uint64_t, std::vector<StackPoint> > keys = ReadKeyFile(inFile);
 	if (keys.size() == 0)
 		return;
-	FILE * out = fopen(outFile.c_str(), "rb");
+	FILE * out = fopen(outFile.c_str(), "wb");
 	StackKeyWriter writer(out);
 	for (auto i : keys) {
 		writer.InsertStack(i.first, i.second);

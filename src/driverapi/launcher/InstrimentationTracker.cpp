@@ -46,9 +46,9 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
 	static StringVector loadStoreInstSkips = {"EMPTY_VECTOR_DONT"};
     StringVector * toSkip;
     if (t == LOAD_STORE_INST)
-    	toSkip = &loadStoreSkips;
+    	toSkip = &loadStoreInstSkips;
     else
-    	toSkip = &callTracingSkips;	
+    	toSkip = &callTracingInstSkips;	
     std::string funcName = func->getName();
     for (auto i : *toSkip) {
     	if (funcName.find(i) != std::string::npos)

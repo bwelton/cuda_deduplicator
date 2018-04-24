@@ -17,10 +17,9 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 	for (int i = 0; i < points->size(); i++) {
 		if ((*points)[i]->getCalledFunction() != NULL) {
 			if (ShouldInstrimentPoint((*points)[i]->getCalledFunction(), t) == false){
-				std::cerr << "Found a funciton we shouldn't instriment!" << std::endl;
 				removeList.insert(i);
 			} else {
-				std::cerr << "Instrumenting function call - " << (*points)[i]->getCalledFunction()->getName() << "@" << std::hex << (uint64_t)(*points)[i]->getAddress() << std::dec <<std::endl;
+				//std::cerr << "Instrumenting function call - " << (*points)[i]->getCalledFunction()->getName() << "@" << std::hex << (uint64_t)(*points)[i]->getAddress() << std::dec <<std::endl;
 			}
 		}
 		uint64_t hashValue = HashPoint(func, (*points)[i]);
@@ -47,7 +46,7 @@ uint64_t InstrimentationTracker::HashPoint(BPatch_function * func, BPatch_point 
 }
 
 bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstType t) {
-	static StringVector callTracingInstSkips  = {"___stack_chk_fail", "_Unwind_Resume"};
+	static StringVector callTracingInstSkips  = {"__stack_chk_fail", "_Unwind_Resume"};
 	static StringVector loadStoreInstSkips = {"EMPTY_VECTOR_DONT"};
     StringVector * toSkip;
     if (t == LOAD_STORE_INST)

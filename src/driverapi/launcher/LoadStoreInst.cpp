@@ -134,6 +134,7 @@ void LoadStoreInst::FixLSStackFiles() {
 	// Converts:
 	// LS_trace.bin -> {LS_trace.bin, LS_tracekey.txt}
 	// LS_stackkey.bin -> LS_stackkey.txt
+	std::cerr << "Runing onetime code on exit of LS" << std::endl;
 	ReadLoadStoreFiles tmp(&_binLoc);
 	tmp.OutputTraceKey(std::string("LS_trace.bin"), std::string("LS_tracekey.txt"));
 	tmp.CreateStackKey(std::string("LS_stackkey.bin"), std::string("LS_stackkey.txt"));

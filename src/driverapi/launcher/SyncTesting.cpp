@@ -59,7 +59,7 @@ void SyncTesting::Run() {
 	//_model.ExtractLineInfo();
 	//InstrumentProgram();
 	std::vector<StackPoint> timingList;
-	model.GetTimingList(timingList);
+	_model.GetTimingList(timingList);
 	std::cout << "Timing list of size - " << timingList.size() << std::endl;
 
 	// Get timing for these functions
@@ -101,7 +101,7 @@ void SyncTesting::Run() {
 		double time = base.RunWithLSInstrimentation(def, extras, timingList, stackSyncs);
 		//_model.AddFirstUses(base._firstUses);
 	}
-	_model.FixLSStackFiles();
+	//_model.FixLSStackFiles();
 	// We are done running. Perform Analysis.
 	//_model.FinalProcessing();
 

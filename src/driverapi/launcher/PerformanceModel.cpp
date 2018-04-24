@@ -9,6 +9,9 @@ void PerformanceModel::AddExecutionTime(double secs) {
 	if (secs < _fastestExecTime) {
 		std::cerr << "[PerfModel] Updating lowest execution time - " << _fastestExecTime << "=>" << secs << std::endl;
 		_fastestExecTime = secs;
+		std::ofstream tmp("PM_totaltime.txt", std::ofstream::out);
+		tmp << secs << std::endl;
+		tmp.close()
 	}
 }
 

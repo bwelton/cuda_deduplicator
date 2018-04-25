@@ -6,8 +6,10 @@ void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & w
 	//_prevWrappedFunctions = wrappedFunctions;
 }
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
-	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t))
+	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t)){
+		std::cerr << "[InstrimentationTracker] We are rejecting function " << func->getName() <<  " because module/function is labeled as uninstrimentable" << std::endl;
 		return false;
+	}
 	
 	if (_alreadyInstrimented.find(t) == _alreadyInstrimented.end())
 		_alreadyInstrimented[t] = std::set<uint64_t>();

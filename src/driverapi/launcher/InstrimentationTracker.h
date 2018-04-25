@@ -21,7 +21,7 @@
 #include <mutex>
 #include <queue>
 #include <boost/program_options.hpp>
-
+#include <fstream>
 // Dyninst includes
 #include "CodeObject.h"
 #include "CFG.h"
@@ -65,5 +65,5 @@ private:
 	std::vector<std::string> _prevWrappedFunctions;
 	std::map<InstType, std::set<uint64_t> > _alreadyInstrimented;
 	std::ofstream _logFile;
-	
+
 };

@@ -69,7 +69,9 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
 				std::cout << "[LoadStoreInst][EntryExit] Inserting exit/entry info into - " << z.funcName << "," << func->getModule()->getObject()->pathName() << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
-			}			
+			} else {
+				std::cout << "[LoadStoreInst][EntryExit] Rejected function - " << z.funcName << std::endl;
+			}		
 		}
 	}		
 }	

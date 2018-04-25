@@ -70,8 +70,10 @@ void PerformanceModel::CaptureSyncTime() {
 		std::cerr << "[PerformanceModel] For stack record " << stackIDTiming << " first cuda position is " << cudaPos << std::endl;
 		if (cudaPos != 0){
 			uint64_t tmpStackID = _callMapper.GeneralToStackID(genericID);
-			if (tmpStackID == 0)
+			if (tmpStackID == 0){
+				std::cerr << "[PerformanceModel] Cannot insert new cuda call into timing trace " << std::endl;
 				continue;
+			}
 			_timingStackRecords[stackIDTiming].ChangePointAtPosition(_stackRecords[tmpStackID].GetFirstCudaCall(), cudaPos);
 		}
 	}

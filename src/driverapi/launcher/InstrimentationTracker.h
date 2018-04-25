@@ -64,4 +64,6 @@ private:
 	bool ShouldInstrimentModule(BPatch_function * func, InstType t);
 	std::vector<std::string> _prevWrappedFunctions;
 	std::map<InstType, std::set<uint64_t> > _alreadyInstrimented;
+	std::ofstream _logFile;
+	
 };

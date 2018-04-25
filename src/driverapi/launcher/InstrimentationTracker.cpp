@@ -1,5 +1,5 @@
 #include "InstrimentationTracker.h"
-InstrimentationTracker::InstrimentationTracker() {
+InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::ofstream::out | std::ofstream::app) {
 }
 
 void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & wrappedFunctions) {
@@ -7,11 +7,11 @@ void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & w
 }
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
 	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t)){
-		std::cerr << "[InstrimentationTracker] We are rejecting function " << func->getName() <<  " because module/function is labeled as uninstrimentable" << std::endl;
+		_logFile << "[InstrimentationTracker] We are rejecting function " << func->getName() <<  " because module/function is labeled as uninstrimentable" << std::endl;
 		if (!ShouldInstrimentModule(func, t))
-			std::cerr << "[InstrimentationTracker]\tRejected because module is set to skip" << std::endl;
+			_logFile << "[InstrimentationTracker]\tRejected because module is set to skip" << std::endl;
 		if (!ShouldInstrimentFunciton(func, t))
-			std::cerr << "[InstrimentationTracker]\tRejected because function is set to skip" << std::endl;
+			_logFile << "[InstrimentationTracker]\tRejected because function is set to skip" << std::endl;
 		return false;
 	}
 	

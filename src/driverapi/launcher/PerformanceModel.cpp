@@ -83,7 +83,7 @@ void PerformanceModel::CaptureSyncTime() {
 	for (auto i : _timingStackRecords) {
 		i.second.PrintStack();
 		std::vector<StackPoint> tmp_map = i.second.GetStackpoints();
-		outKey.InsertStack(i.first, tmp);
+		outKey.InsertStack(i.first, tmp_map);
 	}
 
 

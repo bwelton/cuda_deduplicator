@@ -75,12 +75,14 @@ void PerformanceModel::CaptureSyncTime() {
 				continue;
 			}
 			_timingStackRecords[stackIDTiming].ChangePointAtPosition(_stackRecords[tmpStackID].GetFirstCudaCall(), cudaPos);
+			_timingStackRecords[stackIDTiming].PrintStack();
 		}
 	}
 
 	StackKeyWriter outKey(fopen("TF_timekey.txt","wb"));
 	for (auto i : _timingStackRecords) {
-		std::vector<StackPoint> tmp = i.second.GetStackpoints();
+		i.second.PrintStack();
+		std::vector<StackPoint> tmp_map = i.second.GetStackpoints();
 		outKey.InsertStack(i.first, tmp);
 	}
 

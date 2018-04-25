@@ -63,7 +63,7 @@ bool StackRecord::IsEqual(StackRecord & other) {
 
 void StackRecord::ChangePointAtPosition(StackPoint p, uint64_t pos) {
 	if (pos < _points.size()) {
-		std::cerr << "Inserting " << p.libname << " into position " << pos << std::endl;
+		//std::cerr << "Inserting " << p.libname << " into position " << pos << std::endl;
 		_points[pos] = p;
 	}
 }

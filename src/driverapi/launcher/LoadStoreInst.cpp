@@ -9,7 +9,7 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 
 void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
-	std::cout << "[LoadStoreInst][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
+	_logFile << "[LoadStoreInst][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
 	for (auto i : *points) {
 		if (i->getCalledFunction() == NULL)
 			continue;
@@ -37,17 +37,17 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 			id = _binLoc.StorePosition(libname, libOffsetAddr);
 		else
 			id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
-		std::cout << "[LoadStoreInst][EntryExit] \tInstruction at point " << id << " , " << std::hex << (uint64_t) i->getAddress() << std::dec << std::endl;
+		_logFile << "[LoadStoreInst][EntryExit] \tInstruction at point " << id << " , " << std::hex << (uint64_t) i->getAddress() << std::dec << std::endl;
 		std::vector<BPatch_snippet*> recordArgs;
 		recordArgs.push_back(new BPatch_constExpr(id));
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);
 		BPatch_funcCallExpr exitExpr(*_exitingFunction, recordArgs);
-		//std::cout << id << ",";
+		//_logFile << id << ",";
 		if (_addrSpace->insertSnippet(entryExpr,singlePoint, BPatch_callBefore) == NULL) {
-			std::cout << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert entry tracking into " << func->getName() << std::endl;
+			_logFile << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert entry tracking into " << func->getName() << std::endl;
 		}
 		if (_addrSpace->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
-			std::cout << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert exit tracking into " << func->getName() << std::endl;
+			_logFile << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert exit tracking into " << func->getName() << std::endl;
 		}		
 	}
 }
@@ -59,18 +59,18 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 	for (auto i : syncStacks) {
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
-			std::cout << "[LoadStoreInst][EntryExit] Attempting to find - " << z.funcName << std::endl;
+			_logFile << "[LoadStoreInst][EntryExit] Attempting to find - " << z.funcName << std::endl;
 			BPatch_function * func;
 			if(_dynOps.FindFuncByStackPoint(_addrSpace, func, z) <= 0){
-				std::cout << "[LoadStoreInst][EntryExit] Could not find function - " << z.funcName << std::endl;
+				_logFile << "[LoadStoreInst][EntryExit] Could not find function - " << z.funcName << std::endl;
 				continue;
 			}
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
-				std::cout << "[LoadStoreInst][EntryExit] Inserting exit/entry info into - " << z.funcName << "," << func->getModule()->getObject()->pathName() << std::endl;
+				_logFile << "[LoadStoreInst][EntryExit] Inserting exit/entry info into - " << z.funcName << "," << func->getModule()->getObject()->pathName() << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
 			} else {
-				std::cout << "[LoadStoreInst][EntryExit] Rejected function - " << z.funcName << std::endl;
+				_logFile << "[LoadStoreInst][EntryExit] Rejected function - " << z.funcName << std::endl;
 			}		
 		}
 	}		
@@ -94,7 +94,7 @@ void LoadStoreInst::InsertSyncCallNotifier() {
 
 void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
-	std::cerr << "[LoadStoreInst][LoadStoreSnippet] Inserting load store instrimentation into - " << func->getName() << "," << func->getModule()->getObject()->pathName() << " with ids: ";
+	_logFile << "[LoadStoreInst][LoadStoreSnippet] Inserting load store instrimentation into - " << func->getName() << "," << func->getModule()->getObject()->pathName() << "\n";
 	for (auto i : *points) {
 		uint64_t libOffsetAddr = 0;
 		uint64_t id = 0;
@@ -109,12 +109,10 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 		recordArgs.push_back(loadAddr);
 		recordArgs.push_back(new BPatch_constExpr(id));
 		BPatch_funcCallExpr recordAddrCall(*_recordMemAccess, recordArgs);
-		std::cerr << id << ",";
 		if (_addrSpace->insertSnippet(recordAddrCall,singlePoint) == NULL) {
-			std::cerr << "[LoadStoreInst][LoadStoreSnippet]\t\tCould not insert load store instrimentation into " << id << std::endl;
+			std::cerr << "[LoadStoreInst][LoadStoreSnippet]\t\tCould not insert load store instrimentation into " << id << " in function " << func->getName() << std::endl;
 		}
 	}
-	std::cerr << std::endl;
 }
 
 
@@ -169,6 +167,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 
 
 void LoadStoreInst::Setup() {
+	_logFile.open("LS_log.txt", std::ofstream::out)
 	assert(_dynOps.FindFuncByName(_addrSpace, _entryFunction, std::string("RECORD_FUNCTION_ENTRY")) == 1);
 	assert(_dynOps.FindFuncByName(_addrSpace, _exitingFunction, std::string("RECORD_FUNCTION_EXIT")) == 1);
 	assert(_dynOps.FindFuncByName(_addrSpace, _enterSync, std::string("SYNC_CAPTURE_SYNC_CALL")) == 1);

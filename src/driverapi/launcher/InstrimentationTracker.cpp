@@ -8,6 +8,10 @@ void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & w
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
 	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t)){
 		std::cerr << "[InstrimentationTracker] We are rejecting function " << func->getName() <<  " because module/function is labeled as uninstrimentable" << std::endl;
+		if (!ShouldInstrimentModule(func, t))
+			std::cerr << "[InstrimentationTracker]\tRejected because module is set to skip" << std::endl;
+		if (!ShouldInstrimentFunciton(func, t))
+			std::cerr << "[InstrimentationTracker]\tRejected because function is set to skip" << std::endl;
 		return false;
 	}
 	
@@ -84,10 +88,11 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
     	if (funcName.find(i) != std::string::npos)
     		return false;
     }
-    for (auto i : _prevWrappedFunctions) {
-    	if (funcName.find(i) != std::string::npos)
-    		return false;
-    }
+    if (t == LOAD_STORE_INST)
+	    for (auto i : _prevWrappedFunctions) {
+	    	if (funcName.find(i) != std::string::npos)
+	    		return false;
+	    }
     return true;
 }
 

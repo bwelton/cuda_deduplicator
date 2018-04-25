@@ -9,7 +9,7 @@ void LoadStoreDriver::RecordAccess(uint64_t id, uint64_t addr) {
 			if (_firstWrite)
 				_writer.reset(new OutputWriter());
 			_firstWrite = false;
-			_writer->RecordAccess(id,_storedStack);
+			_writer->RecordAccess(id,_stackAtSync);
 			_found = true;
 		}
 	}
@@ -30,6 +30,7 @@ bool LoadStoreDriver::ShouldSignalSync(bool inSync) {
 	// Dont stop on the first sync, record the stack depth and continue.
 	if(_firstSync) {
 		_syncStackDepth = _storedStack.size();
+		_stackAtSync = _storedStack;
 		_firstSync = false;
 		return false;
 	} 

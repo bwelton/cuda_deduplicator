@@ -15,6 +15,7 @@ public:
 	void SignalSync();
 private:
 	std::vector<uint64_t> _storedStack;
+	std::vector<uint64_t> _stackAtSync;
 	OutputWriterPtr _writer;
 	CheckAccessesPtr _access;
 	bool _syncTriggered;

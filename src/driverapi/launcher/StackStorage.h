@@ -56,6 +56,7 @@ public:
 	void GetStackSymbols(SymbolMap & m);
 	void AddStackRecord(uint64_t pos);
 	void PrintStack();
+	void PrintStack(std::ofstream & outStream);
 	//void AddTimingData(uint64_t start, uint64_t len, double time);
 	StackPoint GetFirstCudaCall();
 	uint64_t GetFirstLibDynRTPosition();

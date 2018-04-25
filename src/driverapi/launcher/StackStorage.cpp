@@ -113,6 +113,13 @@ void StackRecord::PrintStack() {
 }
 
 
+void StackRecord::PrintStack(std::ofstream & outStream) {
+	outStream << "[StackRecord] Decoded Stack for ID - " << _id << std::endl;
+	for (auto i : _points)
+		outStream << "[StackRecord]\t" << i.funcName << "@" << i.libOffset << " in " << i.libname << std::endl;
+}
+
+
 CudaCallMap::CudaCallMap() : _pos(1) {
 	_nameToGeneralID[std::string("unknown")] = 0;
 	_stackToGeneral[0] = 0;

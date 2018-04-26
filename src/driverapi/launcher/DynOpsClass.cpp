@@ -59,10 +59,12 @@ int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_fu
 }
 
 bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * point, uint64_t & addr) {
+	char tmp[32];
 	if (point->getFunction() == NULL)
 		return false;
+	int size = point->getDisplacedInstructions(32, &tmp);
 	if (point->getFunction()->getModule()->isSharedLib())
-		addr = (uint64_t)point->getAddress() - (uint64_t)point->getFunction()->getModule()->getBaseAddr();
+		addr = (uint64_t)point->getAddress() - (uint64_t)point->getFunction()->getModule()->getBaseAddr() + size;
 	else
 		addr = (uint64_t)point->getAddress();
 	return true;

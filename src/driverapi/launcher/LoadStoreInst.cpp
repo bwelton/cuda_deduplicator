@@ -37,7 +37,8 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 			id = _binLoc.StorePosition(libname, libOffsetAddr);
 		else
 			id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
-		_logFile << "[LoadStoreInst][EntryExit] \tInstruction at point " << id << " , " << std::hex << (uint64_t) i->getAddress() << std::dec << std::endl;
+		_logFile << "[LoadStoreInst][EntryExit] \tInstruction at point " << id << " , " << std::hex << (uint64_t) i->getAddress() << std::dec 
+				 << " with libOffsetPosition: " << std::hex << libOffsetAddr << std::dec << std::endl;
 		std::vector<BPatch_snippet*> recordArgs;
 		recordArgs.push_back(new BPatch_constExpr(id));
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);

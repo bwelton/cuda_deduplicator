@@ -55,6 +55,7 @@ int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_fu
 	if (func == NULL)
 		return 0;
 	ret = func;
+
 	return 1;
 }
 
@@ -79,11 +80,13 @@ bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * poi
 		return false;
 	auto inst = FindInstructionAtPoint(point);
 	size_t size = 0;
-	if (inst != NULL)
+	if (inst != NULL){
 		size = inst->size();
+		std::cerr << "[DynOpsClass] Setting instruction size to - " << size << std::endl;
+	}
 	if (point->getFunction()->getModule()->isSharedLib())
 		addr = (uint64_t)point->getAddress() - (uint64_t)point->getFunction()->getModule()->getBaseAddr() + size;
 	else
-		addr = (uint64_t)point->getAddress();
+		addr = (uint64_t)point->getAddress() + size;
 	return true;
 }

@@ -58,10 +58,31 @@ int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_fu
 	return 1;
 }
 
+// Hack to get around point->getInsnAtPoint() not wokring
+Dyninst::InstructionAPI::Instruction::Ptr DynOpsClass::FindInstructionAtPoint(BPatch_point * point) {
+	std::vector<std::pair<Dyninst::InstructionAPI::Instruction::Ptr, Dyninst::Address> > instructionVector;
+	point->getBlock()->getInstructions(instructionVector);
+	bool found = false;
+	for (auto z : instructionVector) {
+		if(z.second == (uint64_t)i->getAddress()) {
+			pointInstruction = z.first;
+			found = true;
+			break;
+		} else if (found == true) {
+			return z.first; 
+		}
+	}
+	return NULL;
+}
+
+
 bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * point, uint64_t & addr) {
 	if (point->getFunction() == NULL)
 		return false;
-	int size = point->getInsnAtPoint()->size();
+	auto inst = FindInstructionAtPoint(point);
+	size_t size = 0;
+	if (inst != NULL)
+		size = inst->size();
 	if (point->getFunction()->getModule()->isSharedLib())
 		addr = (uint64_t)point->getAddress() - (uint64_t)point->getFunction()->getModule()->getBaseAddr() + size;
 	else

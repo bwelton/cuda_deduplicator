@@ -64,7 +64,7 @@ Dyninst::InstructionAPI::Instruction::Ptr DynOpsClass::FindInstructionAtPoint(BP
 	point->getBlock()->getInstructions(instructionVector);
 	bool found = false;
 	for (auto z : instructionVector) {
-		if(z.second == (uint64_t)i->getAddress()) {
+		if(z.second == (uint64_t)point->getAddress()) {
 			pointInstruction = z.first;
 			found = true;
 			break;

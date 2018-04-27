@@ -76,12 +76,12 @@ Dyninst::InstructionAPI::Instruction::Ptr DynOpsClass::FindInstructionAtPoint(BP
 }
 
 
-bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * point, uint64_t & addr) {
+bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * point, uint64_t & addr, bool addInstSize) {
 	if (point->getFunction() == NULL)
 		return false;
 	auto inst = FindInstructionAtPoint(point);
 	size_t size = 0;
-	if (inst != NULL){
+	if (inst != NULL && addInstSize){
 		size = inst->size();
 	}
 	if (point->getFunction()->getModule()->isSharedLib())

@@ -22,6 +22,7 @@ std::map<uint64_t, std::vector<StackPoint> > ReadLoadStoreFiles::ReadKeyFile(std
 		size -= sizeof(uint64_t);
 		while (size > 0)  {
 			fread(&locationId,1,sizeof(uint64_t), inFile);
+			std::cerr << "[ReadLoadStoreFiles] Stack Location ID: " << locationId << std::endl;
 			ret[stackId].push_back(_map->BuildStackPoint(locationId));
 			size -= sizeof(uint64_t);
 			readCount += sizeof(uint64_t);

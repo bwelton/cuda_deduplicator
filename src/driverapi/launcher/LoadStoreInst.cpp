@@ -33,7 +33,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		singlePoint.push_back(i);
 		uint64_t id;
 		uint64_t libOffsetAddr = 0;
-		if (_dynOps.GetFileOffset(_addrSpace, i, libOffsetAddr))
+		if (_dynOps.GetFileOffset(_addrSpace, i, libOffsetAddr, true))
 			id = _binLoc.StorePosition(libname, libOffsetAddr);
 		else
 			id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());

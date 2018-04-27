@@ -88,6 +88,5 @@ bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * poi
 		addr = (uint64_t)point->getAddress() - (uint64_t)point->getFunction()->getModule()->getBaseAddr() + size;
 	else
 		addr = (uint64_t)point->getAddress() + size;
-	std::cerr << "[DynOpsClass] Setting instruction size to - " << size  << " at point : " << addr << std::endl;
 	return true;
 }

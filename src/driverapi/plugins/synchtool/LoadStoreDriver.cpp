@@ -51,7 +51,7 @@ void LoadStoreDriver::PopStack(uint64_t stack) {
 	else {
 		for (int i = _storedStack.size() - 1; i >= 0; i = i - 1) {
 			if (_storedStack[i] == stack){
-				_storedStack.erase(_storedStack.begin() + i);
+				_storedStack.erase(_storedStack.begin() + i, _storedStack.end());
 				break;
 			}
 		}

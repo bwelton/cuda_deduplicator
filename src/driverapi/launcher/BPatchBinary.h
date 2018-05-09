@@ -3,7 +3,7 @@
 class BPatchBinary {
 public:
 	BPatchBinary(std::string binName, bool output = false, std::string outName = std::string(""));
-	BPatch_Image * GetImage();
+	BPatch_image * GetImage();
 	BPatch_addressSpace * GetAddressSpace();
 	~BPatchBinary();
 

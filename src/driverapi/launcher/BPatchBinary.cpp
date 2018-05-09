@@ -13,7 +13,7 @@ BPatchBinary::~BPatchBinary() {
 			std::cerr << "Could not generate output binary - " << _outName << std::endl;
 }
 
-BPatch_Image * BPatchBinary::GetImage() {
+BPatch_image * BPatchBinary::GetImage() {
 	return _be->getImage();
 }
 

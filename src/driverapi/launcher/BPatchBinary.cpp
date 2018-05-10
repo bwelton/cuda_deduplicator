@@ -21,6 +21,10 @@ BPatch_image * BPatchBinary::GetImage() {
 
 
 bool BPatchBinary::LoadLibrary(std::string libName) {
+	std::vector<std::string> tmp = _ops.GetLibraryNames(GetAddressSpace());
+	for (auto i : tmp) 
+		if (libName.find(i) != std::string::npos || i.find(libName) != std::string::npos || i == libName)
+			return true;
 	if(GetAddressSpace()->loadLibrary(libName.c_str()))
 		return true;
 	return false;

@@ -27,7 +27,7 @@ struct DependsFile {
 			char tmpStr = '\n';
 			_alreadyWritten.insert(name);
 			fwrite(name.c_str(), sizeof(char), name.size(), f);
-			fwrite(&tmpStr, sizeof(char), 1, fp);
+			fwrite(&tmpStr, sizeof(char), 1, f);
 		}
 	};
 	std::vector<std::string> ReadLibraries() { 

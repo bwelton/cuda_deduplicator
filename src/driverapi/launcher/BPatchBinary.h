@@ -1,5 +1,6 @@
 #pragma once
 #include "DyninstIncludes.h"
+#include "DynOpsClass.h"
 class BPatchBinary {
 public:
 	BPatchBinary(std::string binName, bool output = false, std::string outName = std::string(""));
@@ -8,6 +9,7 @@ public:
 	~BPatchBinary();
 	bool LoadLibrary(std::string libName);
 private:
+	DynOpsClass _ops;
 	BPatch_addressSpace * _as;
 	BPatch_binaryEdit * _be;
 	std::string _binName;

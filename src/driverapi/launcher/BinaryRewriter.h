@@ -7,18 +7,19 @@
 #include <array>
 #include <boost/filesystem.hpp>
 
+typedef std::shared_ptr<BPatchBinary> BPatchBinaryPtr;
 class BinaryRewriter{
 public:
 	BinaryRewriter(std::string appName, bool openWriteable, std::string outDir = std::string(""), bool readDepends = false);
 	void OpenLibrary(std::string libname);
-
+	BPatchBinaryPtr GetAppBinary();
 private:
 	void Init();
 	std::string _appName;
 	std::string _outDir;
 	bool _write;
 	bool _readDepends;
-	std::vector<std::shared_ptr<BPatchBinary> > _OpenBinaries;
+	std::vector<BPatchBinaryPtr > _OpenBinaries;
 };
 
 

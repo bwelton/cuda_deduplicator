@@ -25,11 +25,15 @@ void BinaryRewriter::Init() {
 		boost::filesystem::path outName(_outDir);
 		outName /= p.filename();
 		// Open the application
-		_OpenBinaries.push_back(std::shared_ptr<BPatchBinary>(new BPatchBinary(_appName,true,outName.string())));
+		_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(_appName,true,outName.string())));
 	} else {
-		_OpenBinaries.push_back(std::shared_ptr<BPatchBinary>(new BPatchBinary(_appName,false)));
+		_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(_appName,false)));
 	}
 	for (auto i : depedencies)
 		if(!_OpenBinaries[0]->LoadLibrary(i))
 			std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
+}
+
+BPatchBinaryPtr BinaryRewriter::GetAppBinary() {
+	return _OpenBinaries[0];
 }

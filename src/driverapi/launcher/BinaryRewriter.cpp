@@ -1,33 +1,14 @@
-#pragma once
-#include "DyninstIncludes.h"
-#include "DependsFile.h"
-#include "BPatchBinary.h"
-#include <memory>
-#include <iostream>
-#include <array>
-//#include <boost/filesystem.hpp>
-//using namespace boost::filesystem;
-
-class BinaryRewriter{
-public:
-	BinaryRewriter(std::string appName, bool openWriteable, std::string outDir = std::string(""), bool readDepends = false);
-	void OpenLibrary(std::string libname);
-
-private:
-	void Init();
-	std::string _appName;
-	std::string _outDir;
-	bool _write;
-	bool _readDepends;
-	std::vector<std::shared_ptr<BPatchBinary> > _OpenBinaries;
-};
-
-
+#include "BinaryRewriter.h"
 BinaryRewriter::BinaryRewriter(std::string appName, bool openWriteable,  std::string outDir, bool readDepends)  :
 	_appName(appName), _write(openWriteable), _outDir(outDir), _readDepends(readDepends) {
 	Init();
 }
 
+void BinaryRewriter::OpenLibrary(std::string libname) {
+	assert(_OpenBinaries.size() > 0)
+	if(!_OpenBinaries[0]->LoadLibrary(libname))
+		std::cout << "[BinaryRewriter] OpenLibrary Could not load library - " << libname << std::endl;
+}
 
 void BinaryRewriter::Init() {
 	std::vector<std::string> depedencies;
@@ -48,5 +29,7 @@ void BinaryRewriter::Init() {
 	} else {
 		_OpenBinaries.push_back(std::shared_ptr<BPatchBinary>(new BPatchBinary(_appName,false)));
 	}
-	
+	for (auto i : depedencies)
+		if(!_OpenBinaries[0]->LoadLibrary(i))
+			std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
 }

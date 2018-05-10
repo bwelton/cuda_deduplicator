@@ -8,9 +8,11 @@ BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName
 }
 
 BPatchBinary::~BPatchBinary() {
-	if(_output)
+	if(_output){
+		std::cout << "[BPatchBinary] Saving binary to file - " << _outName << std::endl;
 		if(!_be->writeFile(_outName.c_str()))
-			std::cerr << "Could not generate output binary - " << _outName << std::endl;
+			std::cout << "[BPatchBinary] Could not generate output binary - " << _outName << std::endl;
+	}
 }
 
 BPatch_image * BPatchBinary::GetImage() {
@@ -19,7 +21,7 @@ BPatch_image * BPatchBinary::GetImage() {
 
 
 bool BPatchBinary::LoadLibrary(std::string libName) {
-	if(GetAddressSpace()->LoadLibrary(libName.c_str()))
+	if(GetAddressSpace()->loadLibrary(libName.c_str()))
 		return true;
 	return false;
 }

@@ -6,7 +6,6 @@
 #include <iostream>
 #include <array>
 #include <boost/filesystem.hpp>
-using namespace boost::filesystem;
 
 class BinaryRewriter{
 public:

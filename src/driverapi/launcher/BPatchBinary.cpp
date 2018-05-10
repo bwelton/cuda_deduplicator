@@ -17,6 +17,12 @@ BPatch_image * BPatchBinary::GetImage() {
 	return _be->getImage();
 }
 
+
+bool BPatchBinary::LoadLibrary(std::string libName) {
+	if(GetAddressSpace()->LoadLibrary(libName.c_str()))
+		return true;
+	return false;
+}
 BPatch_addressSpace * BPatchBinary::GetAddressSpace() {
 	return _as;
 }

@@ -6,7 +6,7 @@ public:
 	BPatch_image * GetImage();
 	BPatch_addressSpace * GetAddressSpace();
 	~BPatchBinary();
-
+	bool LoadLibrary(std::string libName);
 private:
 	BPatch_addressSpace * _as;
 	BPatch_binaryEdit * _be;

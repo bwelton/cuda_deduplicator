@@ -24,6 +24,17 @@ int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * 
 	return tmp.size();
 }
 
+std::vector<std::string> DynOpsClass::GetLibraryNames(BPatch_addressSpace * aspace) {
+	std::vector<std::string> ret;
+	BPatch_image * img = aspace->getImage();
+	std::vector<BPatch_object *> objects;
+	img->getObjects(objects);
+	for (auto i : objects){  
+		ret.push_back(i->pathName());
+	}		
+	return ret;
+}
+
 BPatch_object * DynOpsClass::FindObjectByName(BPatch_addressSpace * aspace, std::string & name, bool exact) {
 	if (aspace == NULL) 
 		return NULL;

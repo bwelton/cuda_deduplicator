@@ -13,7 +13,7 @@ configure_file (
 add_executable(LaunchCUInstriment "main.cpp" "ProcessControl.cpp" "TimeApplications.cpp" "SyncTesting.cpp" "LoadStoreInst.cpp" "PerformanceModel.cpp" "SymbolLookup.cpp" "StacktraceInst.cpp" "StackStorage.cpp" "DynOpsClass.cpp" "BinaryLocationIDMap.cpp" "InstrimentationTracker.cpp" "ReadLoadStoreFiles.cpp" "BPatchBinary.cpp" "BinaryRewriter.cpp")
 target_link_libraries(LaunchCUInstriment ${DYNINST_LIBRARIES})
 target_link_libraries(LaunchCUInstriment ${Boost_LIBRARIES})
-target_link_libraries(LaunchCUInstriment "-lpthread")
+target_link_libraries(LaunchCUInstriment "-lpthread -lboost_filesystem -lboost_system")
 target_link_libraries(LaunchCUInstriment "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -lboost_program_options")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/driverapi")

@@ -68,10 +68,15 @@ bool BPatchBinary::RunUntilCompletion() {
 bool BPatchBinary::LoadLibrary(std::string libName) {
 	std::vector<std::string> tmp = _ops.GetLibraryNames(GetAddressSpace());
 	for (auto i : tmp) 
-		if (libName.find(i) != std::string::npos || i.find(libName) != std::string::npos || i == libName)
+		if (libName.find(i) != std::string::npos || i.find(libName) != std::string::npos || i == libName){
+			std::cout << "[BPatchBinary] Library already loaded - " << libName.c_str() << std::endl;
 			return true;
-	if(GetAddressSpace()->loadLibrary(libName.c_str()))
+		}
+	if(GetAddressSpace()->loadLibrary(libName.c_str())){
+		std::cout << "[BPatchBinary] Successfully loaded library - " << libName.c_str() << std::endl;
 		return true;
+	}
+	std::cout << "[BPatchBinary] Failed to load library - " << libName.c_str() << std::endl;
 	return false;
 }
 BPatch_addressSpace * BPatchBinary::GetAddressSpace() {

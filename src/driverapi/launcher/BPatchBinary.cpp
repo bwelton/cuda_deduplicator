@@ -53,12 +53,12 @@ BPatch_image * BPatchBinary::GetImage() {
 bool BPatchBinary::RunUntilCompletion() {
 	if (!_procEdit)
 		return false;
+	std::cout << "[BPatchBinary] Running program until compleation" << std::endl;
 	if (!_pe->continueExecution()) {
 	    fprintf(stderr, "continueExecution failed\n");
 	}
 	while (!_pe->isTerminated()) {
 		bpatch.waitForStatusChange();
-		_pe->continueExecution();
 	}
 	return true;
 }

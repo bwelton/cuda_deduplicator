@@ -1,6 +1,6 @@
 #include "BinaryRewriter.h"
 BinaryRewriter::BinaryRewriter(std::string appName, bool openWriteable,  std::string outDir, bool readDepends)  :
-	_appName(appName), _write(openWriteable), _outDir(outDir), _readDepends(readDepends) {
+	BinaryManagerBase::_appName(appName), BinaryManagerBase::_write(openWriteable), BinaryManagerBase::_outDir(outDir), BinaryManagerBase::_readDepends(readDepends) {
 	Init();
 }
 

@@ -2,9 +2,13 @@
 
 BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName)  :
 	_binName(binName), _output(output), _outName(outName) {
+	bpatch.setInstrStackFrames(true);
+	bpatch.setLivenessAnalysis(false);
 	_as = bpatch.openBinary(_binName.c_str(), true);
 	assert(_as != NULL);
 	_be = dynamic_cast<BPatch_binaryEdit*>(_as);
+	bpatch.setInstrStackFrames(true);
+	bpatch.setLivenessAnalysis(false);
 }
 
 BPatchBinary::~BPatchBinary() {

@@ -38,8 +38,8 @@ private:
 };
 
 
-class ProcessRewriter : public BinaryManagerBase {
-public:
-	ProcessRewriter(std::vector<std::string> appAndParams, )
+// class ProcessRewriter : public BinaryManagerBase {
+// public:
+// 	ProcessRewriter(std::vector<std::string> appAndParams, )
 
-};
+// };

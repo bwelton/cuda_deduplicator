@@ -38,7 +38,7 @@ BPatchBinaryPtr BinaryManagerBase::GetAppBinary() {
 	return _OpenBinaries[0];
 }
 
-ProcessRewriter::ProcessRewriter(std::vector<std::string> appAndParams, bool readDepends) {
+ProcessRewriter::ProcessRewriter(std::vector<std::string> appAndParams) {
 	std::cout << "[ProcessRewriter] Attempting to start application - " << appAndParams[0] << std::endl;
-
+	BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(appAndParams)));
 }

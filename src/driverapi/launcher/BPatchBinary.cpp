@@ -58,10 +58,10 @@ bool BPatchBinary::RunUntilCompletion() {
 	    fprintf(stderr, "continueExecution failed\n");
 	}
 	bpatch.waitForStatusChange();
-	while (!_pe->isTerminated()) {
-		bpatch.waitForStatusChange();
-		_pe->continueExecution();
-	}
+	// while (!_pe->isTerminated()) {
+	// 	bpatch.waitForStatusChange();
+	// 	_pe->continueExecution();
+	// }
 	return true;
 }
 

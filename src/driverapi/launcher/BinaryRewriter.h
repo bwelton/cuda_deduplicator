@@ -14,10 +14,6 @@ public:
 	void OpenLibrary(std::string libname);
 	BPatchBinaryPtr GetAppBinary();
 protected:
-	std::string _appName;
-	std::string _outDir;
-	bool _write;
-	bool _readDepends;
 	std::vector<BPatchBinaryPtr > _OpenBinaries;
 };
 
@@ -30,6 +26,10 @@ public:
 	// BPatchBinaryPtr GetAppBinary();
 private:
 	void Init();
+	std::string _appName;
+	std::string _outDir;
+	bool _write;
+	bool _readDepends;
 	// std::string _appName;
 	// std::string _outDir;
 	// bool _write;
@@ -38,3 +38,8 @@ private:
 };
 
 
+class ProcessRewriter : public BinaryManagerBase {
+public:
+	ProcessRewriter(std::vector<std::string> appAndParams, )
+
+};

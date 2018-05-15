@@ -1,6 +1,6 @@
 #include "BinaryRewriter.h"
 BinaryRewriter::BinaryRewriter(std::string appName, bool openWriteable,  std::string outDir, bool readDepends)  :
-	BinaryManagerBase::_appName(appName), BinaryManagerBase::_write(openWriteable), BinaryManagerBase::_outDir(outDir), BinaryManagerBase::_readDepends(readDepends) {
+	_appName(appName), _write(openWriteable), _outDir(outDir), _readDepends(readDepends) {
 	Init();
 }
 
@@ -25,12 +25,12 @@ void BinaryRewriter::Init() {
 		boost::filesystem::path outName(_outDir);
 		outName /= p.filename();
 		// Open the application
-		_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(_appName,true,outName.string())));
+		BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(_appName,true,outName.string())));
 	} else {
-		_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(_appName,false)));
+		BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(_appName,false)));
 	}
 	for (auto i : depedencies)
-		if(!_OpenBinaries[0]->LoadLibrary(i))
+		if(!BinaryManagerBase::_OpenBinaries[0]->LoadLibrary(i))
 			std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
 }
 

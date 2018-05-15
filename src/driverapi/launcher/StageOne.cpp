@@ -1,7 +1,7 @@
 #include "StageOne.h"
 StageOne::StageOne(boost::program_options::variables_map vm) : _vm(vm) {
 	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
-	_rw = ProcessRewriter(progName);
+	_rw = BinaryRewriter(progName[0], true, std::string("stageOne"),false);
 }
 
 bool StageOne::Run() {

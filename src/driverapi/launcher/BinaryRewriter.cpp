@@ -4,6 +4,7 @@ BinaryRewriter::BinaryRewriter(std::string appName, bool openWriteable,  std::st
 	Init();
 }
 
+BinaryRewriter::BinaryRewriter() {}
 void BinaryManagerBase::OpenLibrary(std::string libname) {
 	assert(_OpenBinaries.size() > 0);
 	if(!_OpenBinaries[0]->LoadLibrary(libname))
@@ -37,6 +38,7 @@ void BinaryRewriter::Init() {
 BPatchBinaryPtr BinaryManagerBase::GetAppBinary() {
 	return _OpenBinaries[0];
 }
+ProcessRewriter::ProcessRewriter() {}
 
 ProcessRewriter::ProcessRewriter(std::vector<std::string> appAndParams) {
 	std::cout << "[ProcessRewriter] Attempting to start application - " << appAndParams[0] << std::endl;

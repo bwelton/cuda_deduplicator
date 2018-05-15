@@ -1,7 +1,7 @@
 #include "BPatchBinary.h"
 
 BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName)  :
-	_binName(binName), _output(output), _outName(outName) {
+	_binName(binName), _output(output), _outName(outName), _procEdit(false) {
 	bpatch.setInstrStackFrames(true);
 	bpatch.setLivenessAnalysis(false);
 	_as = bpatch.openBinary(_binName.c_str(), true);
@@ -10,6 +10,31 @@ BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName
 	bpatch.setInstrStackFrames(true);
 	bpatch.setLivenessAnalysis(false);
 }
+
+BPatchBinary::BPatchBinary(std::vector<std::string> appAndArgs)  :
+	_binName(appAndArgs[0]), _output(false), _outName(std::string("")), _procEdit(true) {
+	bpatch.setInstrStackFrames(true);
+	bpatch.setLivenessAnalysis(false);
+
+	char ** argv = (char**)malloc(appAndArgs.size() * sizeof(char *)+1);
+	for (int i = 0; i < appAndArgs.size(); i++) 
+		argv[i] = strdup(appAndArgs[i].c_str());
+
+	argv[appAndArgs.size()] = NULL;
+	for (int i = 0; i < appAndArgs.size(); i++)
+		std::cout << "[BPatchBinary] Launch arguments for program - " << argv[i] << std::endl;
+
+	_as = bpatch.processCreate(argv[0],(const char **)argv);
+
+	for (int i = 0; i < progName.size(); i++)
+		free(argv[i]);
+	free(argv);
+	assert(_as != NULL);
+	_pe = dynamic_cast<BPatch_process*>(_as);
+	bpatch.setInstrStackFrames(true);
+	bpatch.setLivenessAnalysis(false);
+}
+
 
 BPatchBinary::~BPatchBinary() {
 	if(_output){
@@ -20,7 +45,9 @@ BPatchBinary::~BPatchBinary() {
 }
 
 BPatch_image * BPatchBinary::GetImage() {
-	return _be->getImage();
+	if (!_procEdit)
+		return _be->getImage();
+	return _pe->getImage();
 }
 
 

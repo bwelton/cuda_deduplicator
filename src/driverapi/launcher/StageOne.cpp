@@ -10,6 +10,5 @@ bool StageOne::Run() {
 	StacktraceInst inst(_rw.GetAppBinary()->GetAddressSpace(), _rw.GetAppBinary()->GetImage());
 	inst.InsertStackInst();
 	// Run application until completion
-	_rw.GetAppBinary()->RunUntilCompletion();
-	
+	_rw.GetAppBinary()->RunUntilCompletion();	
 }

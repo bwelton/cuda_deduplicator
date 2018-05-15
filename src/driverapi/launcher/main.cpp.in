@@ -3,6 +3,7 @@
 #include <iostream> 
 #include "SyncTesting.h"
 #include "LogInfo.h"
+#include "StageOne.h"
 
 int main(int argc, char * argv[]) {
 	using namespace boost::program_options;
@@ -15,7 +16,8 @@ int main(int argc, char * argv[]) {
 		("prog,p", value<std::vector<std::string> >()->multitoken(), "Program to instrument with all parameters")
 		("plugindir", value<std::string>()->default_value(std::string("@CMAKE_INSTALL_PREFIX@/lib")), "Directory containing the plugins (install lib directory)")
 		("synch,s", bool_switch()->default_value(false), "Enable synchronization checker")
-		("reevaluate,r", bool_switch()->default_value(false), "Reevaluate existing synchronization trace files");
+		("reevaluate,r", bool_switch()->default_value(false), "Reevaluate existing synchronization trace files")
+		("firststage,f", bool_switch()->default_value(false), "Run the first stage of the program");
 
 		store(parse_command_line(argc, argv, desc), vm);
 		notify(vm);
@@ -23,7 +25,7 @@ int main(int argc, char * argv[]) {
 		if (vm.count("prog") == 0 && vm["reevaluate"].as<bool>() == false) {
 			std::cerr << "Program to instriment is not set, specify with -p or -prog" << std::endl; 
 			exit(-1);
-		} else if (vm["reevaluate"].as<bool>() == false) {
+		} else if (vm["reevaluate"].as<bool>() == false && vm["firststage"].as<bool>() == false) {
 			std::vector<std::string> progName = vm["prog"].as<std::vector<std::string> >();
 			std::string pluginDirectory = vm["plugindir"].as<std::string>();
 			std::cerr << "Beginning Instrimentation of Program - " << progName[0] << std::endl;
@@ -36,9 +38,12 @@ int main(int argc, char * argv[]) {
 				SyncTesting runSync(vm);
 				runSync.Run();
 			}
-		} else if (vm["reevaluate"].as<bool>() == true) {
+		} else if (vm["reevaluate"].as<bool>() == true && vm["firststage"].as<bool>() == false) {
 			SyncTesting runSync(vm);
 			runSync.ReprocessModel();
+		} else if (vm["firststage"].as<bool>() == true) {
+			StageOne one(vm);
+			one.Run();
 		}
 	} catch (const error &ex) {
 		std::cerr << ex.what() << '\n';

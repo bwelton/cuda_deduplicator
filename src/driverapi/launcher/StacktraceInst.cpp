@@ -46,7 +46,7 @@ void StacktraceInst::Setup() {
 		cudaSync = _img->findFunction(offsetAddress);
 		// Altenate method of discovery
 		if (cudaSync == NULL) {
-			cudaSync = _ops->FindFunctionByOffset(_addrSpace, i, offsetAddress);
+			cudaSync = _ops.FindFunctionByOffset(_addrSpace, i, offsetAddress);
 		}
 		break;
 	}

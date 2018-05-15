@@ -26,7 +26,7 @@ BPatchBinary::BPatchBinary(std::vector<std::string> appAndArgs)  :
 
 	_as = bpatch.processCreate(argv[0],(const char **)argv);
 
-	for (int i = 0; i < progName.size(); i++)
+	for (int i = 0; i < appAndArgs.size(); i++)
 		free(argv[i]);
 	free(argv);
 	assert(_as != NULL);

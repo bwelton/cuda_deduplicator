@@ -22,9 +22,10 @@ void BinaryRewriter::Init() {
 		}
 	}
 	if (_write) {
+		boost::filesystem::path outName(boost::filesystem::current_path());
 		boost::filesystem::path p(_appName);
-		boost::filesystem::path outName(p.parent_path());
-		outName /= _outDir
+		//boost::filesystem::path outName(p.parent_path());
+		outName /= _outDir;
 		outName /= p.filename();
 		std::cout << "[BinaryRewriter] Output filename is - " << outName.string() << std::endl;
 		// Open the application

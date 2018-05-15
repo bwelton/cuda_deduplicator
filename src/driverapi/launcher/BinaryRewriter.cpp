@@ -4,7 +4,7 @@ BinaryRewriter::BinaryRewriter(std::string appName, bool openWriteable,  std::st
 	Init();
 }
 
-void BinaryRewriter::OpenLibrary(std::string libname) {
+void BinaryManagerBase::OpenLibrary(std::string libname) {
 	assert(_OpenBinaries.size() > 0);
 	if(!_OpenBinaries[0]->LoadLibrary(libname))
 		std::cout << "[BinaryRewriter] OpenLibrary Could not load library - " << libname << std::endl;
@@ -34,6 +34,6 @@ void BinaryRewriter::Init() {
 			std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
 }
 
-BPatchBinaryPtr BinaryRewriter::GetAppBinary() {
+BPatchBinaryPtr BinaryManagerBase::GetAppBinary() {
 	return _OpenBinaries[0];
 }

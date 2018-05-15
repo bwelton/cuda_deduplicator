@@ -44,6 +44,10 @@ void StacktraceInst::Setup() {
 		uint64_t offsetAddress = i->fileOffsetToAddr(INTERNAL_SYNC_ST);
 		std::cout << "[StacktraceInst] Offset Address: 0x" << std::hex << offsetAddress << std::dec << std::endl;
 		cudaSync = _img->findFunction(offsetAddress);
+		// Altenate method of discovery
+		if (cudaSync == NULL) {
+			cudaSync = _ops->FindFunctionByOffset(_addrSpace, i, offsetAddress);
+		}
 		break;
 	}
 	assert(cudaSync != NULL);

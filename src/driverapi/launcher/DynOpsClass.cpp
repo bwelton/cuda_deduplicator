@@ -24,6 +24,20 @@ int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * 
 	return tmp.size();
 }
 
+BPatch_function * DynOpsClass::FindFunctionByOffset(BPatch_addressSpace * aspace, BPatch_object * obj, uint64_t offset) {
+	std::vector<BPatch_module *> mods;
+	obj->modules(mods);
+	for (auto i : mods) {
+		BPatch_Vector<BPatch_function*> procs;
+		i->getProcedures(procs, true);
+		for (auto z : procs) {
+			if((uint64_t)z->getBaseAddr() == offset)
+				return z;
+		}
+	}
+	return NULL;
+}
+
 std::vector<std::string> DynOpsClass::GetLibraryNames(BPatch_addressSpace * aspace) {
 	std::vector<std::string> ret;
 	BPatch_image * img = aspace->getImage();

@@ -45,6 +45,8 @@
 #include "StackPoint.h"
 #include "Symbol.h"
 #include "Module.h"
+#include "DynOpsClass.h"
+
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -61,7 +63,7 @@ private:
 	BPatch_function * _wrapperFunc;
 	BPatch_function * _cudaSync;
 	Dyninst::SymtabAPI::Symbol * _wrapSym;
-
+	DynOpsClass _ops;
 	BPatch_addressSpace * _addrSpace;
 	BPatch_image * _img;
 	// Stores the current id

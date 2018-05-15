@@ -62,4 +62,5 @@ public:
 	bool GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * point, uint64_t & addr, bool addInstSize = false);
 	Dyninst::InstructionAPI::Instruction::Ptr FindInstructionAtPoint(BPatch_point * point);
 	std::vector<std::string> GetLibraryNames(BPatch_addressSpace * aspace);
+	BPatch_function * FindFunctionByOffset(BPatch_addressSpace * aspace, BPatch_object * obj, uint64_t offset);
 };

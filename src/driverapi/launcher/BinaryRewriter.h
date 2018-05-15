@@ -22,6 +22,7 @@ protected:
 class BinaryRewriter : public BinaryManagerBase { 
 public:
 	BinaryRewriter(std::string appName, bool openWriteable, std::string outDir = std::string(""), bool readDepends = false);
+	BinaryRewriter();
 	// void OpenLibrary(std::string libname);
 	// BPatchBinaryPtr GetAppBinary();
 private:
@@ -41,5 +42,5 @@ private:
 class ProcessRewriter : public BinaryManagerBase {
 public:
 	ProcessRewriter(std::vector<std::string> appAndParams);
-
+	ProcessRewriter();
 };

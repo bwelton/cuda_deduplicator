@@ -1,4 +1,6 @@
 #pragma once
+#include <unistd.h>
+#include <boost/filesystem.hpp>
 #include "DyninstIncludes.h"
 #include "DynOpsClass.h"
 class BPatchBinary {

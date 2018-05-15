@@ -38,9 +38,13 @@ BPatchBinary::BPatchBinary(std::vector<std::string> appAndArgs)  :
 
 BPatchBinary::~BPatchBinary() {
 	if(_output){
+		boost::filesystem::path curDir(boost::filesystem::current_path());
+		boost::filesystem::path p(_outName);
+		chdir(p.pathname().string().c_str());
 		std::cout << "[BPatchBinary] Saving binary to file - " << _outName << std::endl;
 		if(!_be->writeFile(_outName.c_str()))
 			std::cout << "[BPatchBinary] Could not generate output binary - " << _outName << std::endl;
+		chdir(curDir.pathname().string().c_str());
 	}
 }
 

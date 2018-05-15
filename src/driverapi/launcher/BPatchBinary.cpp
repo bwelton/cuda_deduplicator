@@ -50,6 +50,18 @@ BPatch_image * BPatchBinary::GetImage() {
 	return _pe->getImage();
 }
 
+bool BPatchBinary::RunUntilCompletion() {
+	if (!_procEdit)
+		return false;
+	if (!_pe->continueExecution()) {
+	    fprintf(stderr, "continueExecution failed\n");
+	}
+	while (!_pe->isTerminated()) {
+		bpatch.waitForStatusChange();
+		_pe->continueExecution();
+	}
+	return true;
+}
 
 bool BPatchBinary::LoadLibrary(std::string libName) {
 	std::vector<std::string> tmp = _ops.GetLibraryNames(GetAddressSpace());

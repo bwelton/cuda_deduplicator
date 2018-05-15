@@ -9,6 +9,7 @@ public:
 	BPatch_addressSpace * GetAddressSpace();
 	~BPatchBinary();
 	bool LoadLibrary(std::string libName);
+	bool RunUntilCompletion();
 private:
 	DynOpsClass _ops;
 	BPatch_addressSpace * _as;

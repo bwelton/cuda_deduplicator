@@ -12,7 +12,7 @@ public:
 	bool Run();
 private:
 	boost::program_options::variables_map _vm;
-	ProcessRewriter _rw;
+	BinaryRewriter _rw;
 };
 
 

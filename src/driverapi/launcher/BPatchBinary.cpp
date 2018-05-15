@@ -16,7 +16,7 @@ BPatchBinary::BPatchBinary(std::vector<std::string> appAndArgs)  :
 	bpatch.setInstrStackFrames(true);
 	bpatch.setLivenessAnalysis(false);
 
-	char ** argv = (char**)malloc(appAndArgs.size() * sizeof(char *)+1);
+	char ** argv = (char**)malloc(appAndArgs.size() * sizeof(char *)+sizeof(char *));
 	for (int i = 0; i < appAndArgs.size(); i++) 
 		argv[i] = strdup(appAndArgs[i].c_str());
 

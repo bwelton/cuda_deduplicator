@@ -28,7 +28,7 @@ BPatch_function * DynOpsClass::FindFunctionByOffset(BPatch_addressSpace * aspace
 	std::vector<BPatch_module *> mods;
 	obj->modules(mods);
 	for (auto i : mods) {
-		BPatch_Vector<BPatch_function*> procs;
+		std::vector<BPatch_function*> procs;
 		i->getProcedures(procs, true);
 		for (auto z : procs) {
 			if((uint64_t)z->getBaseAddr() == offset)

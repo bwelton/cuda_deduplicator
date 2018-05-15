@@ -40,7 +40,9 @@ void StacktraceInst::Setup() {
 		if (i->name().find("libcuda.so") == std::string::npos)
 			continue;
 		// Found libcuda
+		std::cout << "[StacktraceInst] Found libcuda.so - Seaching for Synchronization" << std::endl;
 		uint64_t offsetAddress = i->fileOffsetToAddr(INTERNAL_SYNC_ST);
+		std::cout << "[StacktraceInst] Offset Address: 0x" << std::hex << offsetAddress << std::dec << std::endl;
 		cudaSync = _img->findFunction(offsetAddress);
 		break;
 	}

@@ -32,3 +32,35 @@ StackPoint BinaryLocationIDMap::BuildStackPoint(uint64_t id) {
 	ret.libname = *GetLibnameForID(id);
 	return ret;
 }
+
+void BinaryLocationIDMap::WriteMap(std::string outdir) {
+	// libraryNameId,Libname = BM_library.key (txt)
+	// libraryNameId(uint16_t),offset(uint64_t),libid(uint64_t) = BM_library.bin
+	boost::filesystem::path libBin(outdir);
+	boost::filesystem::path libKey(outdir);
+	
+	libBin /= "BM_library.bin";
+	libKey /= "BM_library.key";
+	std::ofstream bin(libBin.string(), std::ios::binary);
+	std::ofstream key(libKey.string(), std::ios::binary);
+
+	for (auto i : _libIdtoLibname) {
+		assert(i.first < std::numeric_limits<uint16_t>::max());
+		key << i.first << "$" << i.second << std::endl;
+	}
+	key.close();
+
+	for (auto i : _idToLibOffset) {
+		uint64_t iden = i.first;
+		uint16_t libId = uint16_t(i.second.first);
+		uint64_t offset =  i.second.second;
+		bin.write((char *)&libId, sizeof(uint16_t));
+		bin.write((char *)&offset, sizeof(uint64_t));
+		bin.write((char *)&iden, sizeof(uint64_t));
+	}
+	bin.close();
+
+
+
+
+}

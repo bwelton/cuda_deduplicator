@@ -47,17 +47,17 @@ std::shared_ptr<OutputLibraries> WriteLibraryCalls;
 
 
 extern "C" {
-
-	void INTERCEPT_DL_OPEN(const char * name) {
-		SETUP_LIBRARY_FILE();
-		WriteLibraryCalls->WriteLibraryName(name);
-	}
 	// Capture libraries that are loaded as well, useful when stacktracing
 	void SETUP_LIBRARY_FILE() {
 		if(WriteLibraryCalls.get() != NULL)
 			return;
 		WriteLibraryCalls.reset(new OutputLibraries(std::string("NI_dependencies.txt")));
 	}
+	void INTERCEPT_DL_OPEN(const char * name) {
+		SETUP_LIBRARY_FILE();
+		WriteLibraryCalls->WriteLibraryName(name);
+	}
+
 
 	void SETUP_INTERCEPTOR() {
 		if (outputFile.get() != NULL)

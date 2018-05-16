@@ -41,8 +41,8 @@ struct OutputLibraries {
 
 thread_local uint64_t skippedStacks;
 thread_local pid_t my_thread_id = -1;
-thread_local std::shared_ptr<OutputFile> outputFile;
-thread_local std::shared_ptr<StackKeyWriter> keyFile;
+std::shared_ptr<OutputFile> outputFile;
+std::shared_ptr<StackKeyWriter> keyFile;
 std::shared_ptr<OutputLibraries> WriteLibraryCalls;
 
 
@@ -70,11 +70,11 @@ extern "C" {
 			my_thread_id = (pid_t) syscall(__NR_gettid);
 
 		std::stringstream ss;
-		ss << "stackOut." << my_thread_id << ".bin";
+		ss << "NI_synchronizations" << ".bin";
 		outputFile.reset(new OutputFile(ss.str()));
 		assert(outputFile.get() != NULL);
 		ss.str(std::string());
-		ss << "stackOut." << my_thread_id << ".key";
+		ss << "NI_synchronizations" << ".key";
 		keyFile.reset(new StackKeyWriter(fopen(ss.str().c_str(),"w")));
 		assert(keyFile.get() != NULL);
 	}

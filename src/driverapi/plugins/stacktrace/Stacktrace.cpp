@@ -55,6 +55,7 @@ extern "C" {
 	}
 	void INTERCEPT_DL_OPEN(const char * name) {
 		SETUP_LIBRARY_FILE();
+		std::cout << name << " was loaded" << std::endl;
 		WriteLibraryCalls->WriteLibraryName(name);
 	}
 

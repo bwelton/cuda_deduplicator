@@ -33,6 +33,37 @@ StackPoint BinaryLocationIDMap::BuildStackPoint(uint64_t id) {
 	return ret;
 }
 
+void BinaryLocationIDMap::ReadMap(std::string indir) {
+	boost::filesystem::path libBin(indir);
+	boost::filesystem::path libKey(indir);
+	
+	libBin /= "BM_library.bin";
+	libKey /= "BM_library.key";
+	std::ifstream bin(libBin.string(), std::ios::binary);
+	std::ifstream key(libKey.string(), std::ios::binary);
+
+	for (std::string line; std::getline(key, line); ){
+		std::vector<std::string> items = GetTokensFromLine(line, std::string("$"));
+		assert(items.size() == 2);
+		_libnameToLibID[items[1]] = std::stoull(items[0]);
+		_libIdtoLibname[std::stoull(items[0])] = items[1];
+	}
+
+	key.close();
+	while (!bin.eof()) {
+		uint16_t libId = 0;
+		uint64_t iden = 0;
+		uint64_t offset = 0;
+		bin.read((char *)&libId, sizeof(uint16_t));
+		if (bin.eof())
+			break;
+		bin.read((char *)&offset, sizeof(uint64_t));
+		bin.read((char *)&iden, sizeof(uint64_t));
+		_idToLibOffset[iden] = std::make_pair(uint64_t(libId), offset);
+	} 
+	bin.close();
+}
+
 void BinaryLocationIDMap::WriteMap(std::string outdir) {
 	// libraryNameId,Libname = BM_library.key (txt)
 	// libraryNameId(uint16_t),offset(uint64_t),libid(uint64_t) = BM_library.bin
@@ -59,8 +90,5 @@ void BinaryLocationIDMap::WriteMap(std::string outdir) {
 		bin.write((char *)&iden, sizeof(uint64_t));
 	}
 	bin.close();
-
-
-
 
 }

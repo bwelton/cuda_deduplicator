@@ -7,7 +7,7 @@ StacktraceInst::StacktraceInst(BPatch_addressSpace * addrSpace, BPatch_image * i
 }
 
 void StacktraceInst::InsertDLOpenCapture() {
-	FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string name)
+	// FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string name)
 	assert(1 == _ops.FindFuncByName(_addrSpace, dlopen, std::string("dlopen")));
 	assert(1 == _ops.FindFuncByName(_addrSpace, entryCapture, std::string("INTERCEPT_DL_OPEN")));
 	std::vector<BPatch_point*> * entryLocations = dlopen->findPoint(BPatch_locEntry);

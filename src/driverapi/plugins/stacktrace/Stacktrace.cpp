@@ -28,7 +28,7 @@ struct OutputFile {
 struct OutputLibraries {
 	std::ofstream _out;
 	OutputLibraries(std::string filename) {
-		_out.open(filename,std::ios::binary);
+		_out.open(filename.c_str(),std::ofstream::out);
 	};
 	void WriteLibraryName(const char * name) {
 		_out << name << std::endl;

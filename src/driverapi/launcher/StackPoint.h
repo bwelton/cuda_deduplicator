@@ -43,6 +43,18 @@
 #include "set"
 #include "LogInfo.h"
 #include "Constants.h"
+#include <boost/tokenizer.hpp>
+
+
+std::vector<std::string> GetTokensFromLine(std::string line, std::string seperator) {
+	std::vector<std::string> ret;
+	boost::char_separator<char> seperators(seperator.c_str());
+	boost::tokenizer<boost::char_separator<char>> tokens(line, seperators);
+    for (const auto& t : tokens) {
+    	ret.push_back(std::string(t));
+    }
+    return ret;
+};
 
 //#define SP_DEBUG 1
 

@@ -15,6 +15,7 @@ public:
 	std::string * GetLibnameForID(uint64_t id);
 	StackPoint BuildStackPoint(uint64_t id);
 	void WriteMap(std::string outdir);
+	void ReadMap(std::string indir);
 private:
 	uint64_t _curPos, _libids;
 	std::map<uint64_t,std::pair<uint64_t, uint64_t>> _idToLibOffset;

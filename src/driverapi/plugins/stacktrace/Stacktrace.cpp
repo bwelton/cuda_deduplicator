@@ -25,13 +25,39 @@ struct OutputFile {
 	}
 };
 
+struct OutputLibraries {
+	std::ofstream _out;
+	OutputLibraries(std::string filename) {
+		_out.open(filename,std::ios::binary);
+	};
+	void WriteLibraryName(const char * name) {
+		_out << name << std::endl;
+	};
+	~OutputLibraries() {
+		_out.close();
+	};
+};
+
+
 thread_local uint64_t skippedStacks;
 thread_local pid_t my_thread_id = -1;
 thread_local std::shared_ptr<OutputFile> outputFile;
 thread_local std::shared_ptr<StackKeyWriter> keyFile;
+std::shared_ptr<OutputLibraries> WriteLibraryCalls;
 
 
 extern "C" {
+
+	void INTERCEPT_DL_OPEN(const char * name) {
+		SETUP_LIBRARY_FILE();
+		WriteLibraryCalls->WriteLibraryName(name);
+	}
+	// Capture libraries that are loaded as well, useful when stacktracing
+	void SETUP_LIBRARY_FILE() {
+		if(WriteLibraryCalls.get() != NULL)
+			return;
+		WriteLibraryCalls.reset(new OutputLibraries(std::string("NI_dependencies.txt")));
+	}
 
 	void SETUP_INTERCEPTOR() {
 		if (outputFile.get() != NULL)

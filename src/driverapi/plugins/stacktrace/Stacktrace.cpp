@@ -54,6 +54,7 @@ extern "C" {
 		WriteLibraryCalls.reset(new OutputLibraries(std::string("NI_dependencies.txt")));
 	}
 	void INTERCEPT_DL_OPEN(const char * name) {
+		std::cerr << "In DLOPEN Wrapper" << std::endl;
 		SETUP_LIBRARY_FILE();
 		std::cerr << name << " was loaded" << std::endl;
 		WriteLibraryCalls->WriteLibraryName(name);

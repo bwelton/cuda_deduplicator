@@ -9,6 +9,7 @@ bool StageOne::Run() {
 	_rw.OpenLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStacktrace.so"));	
 	StacktraceInst inst(_rw.GetAppBinary()->GetAddressSpace(), _rw.GetAppBinary()->GetImage());
 	inst.InsertStackInst();
+	inst.InsertDLOpenCapture();
 	// Run application until completion
 	_rw.GetAppBinary()->RunUntilCompletion();	
 }

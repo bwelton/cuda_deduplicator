@@ -59,6 +59,7 @@ public:
 	StacktraceInst(BPatch_addressSpace * addrSpace, BPatch_image * img);
 	void Setup();
 	void InsertStackInst();
+	void InsertDLOpenCapture();
 private:
 	BPatch_function * _wrapperFunc;
 	BPatch_function * _cudaSync;

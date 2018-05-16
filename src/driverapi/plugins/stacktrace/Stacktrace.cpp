@@ -55,7 +55,7 @@ extern "C" {
 	}
 	void INTERCEPT_DL_OPEN(const char * name) {
 		std::cerr << "In DLOPEN Wrapper" << std::endl;
-		std::cerr << name << " was loaded" << std::endl;
+		fprintf(stderr, "%s: %p\n", "Name passed to this function:", name);
 		SETUP_LIBRARY_FILE();
 		WriteLibraryCalls->WriteLibraryName(name);
 	}

@@ -33,6 +33,17 @@ StackPoint BinaryLocationIDMap::BuildStackPoint(uint64_t id) {
 	return ret;
 }
 
+
+std::vector<std::string> GetTokensFromLine(std::string line, std::string seperator) {
+	std::vector<std::string> ret;
+	boost::char_separator<char> seperators(seperator.c_str());
+	boost::tokenizer<boost::char_separator<char>> tokens(line, seperators);
+    for (const auto& t : tokens) {
+    	ret.push_back(std::string(t));
+    }
+    return ret;
+}
+
 void BinaryLocationIDMap::ReadMap(std::string indir) {
 	boost::filesystem::path libBin(indir);
 	boost::filesystem::path libKey(indir);

@@ -3,6 +3,7 @@
 #include <map> 
 #include <utility>
 #include <algorithm>
+#include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include "StackPoint.h"

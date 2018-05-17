@@ -4,7 +4,7 @@
 #include "SyncTesting.h"
 #include "LogInfo.h"
 #include "StageOne.h"
-
+#include "StageTwo.h"
 int main(int argc, char * argv[]) {
 	using namespace boost::program_options;
 	variables_map vm;
@@ -17,7 +17,8 @@ int main(int argc, char * argv[]) {
 		("plugindir", value<std::string>()->default_value(std::string("@CMAKE_INSTALL_PREFIX@/lib")), "Directory containing the plugins (install lib directory)")
 		("synch,s", bool_switch()->default_value(false), "Enable synchronization checker")
 		("reevaluate,r", bool_switch()->default_value(false), "Reevaluate existing synchronization trace files")
-		("firststage,f", bool_switch()->default_value(false), "Run the first stage of the program");
+		("firststage,f", bool_switch()->default_value(false), "Run the first stage of the program")
+		("secondstage,m", bool_switch()->default_value(false), "Run the second stage of the program");;
 
 		store(parse_command_line(argc, argv, desc), vm);
 		notify(vm);
@@ -44,7 +45,11 @@ int main(int argc, char * argv[]) {
 		} else if (vm["firststage"].as<bool>() == true) {
 			StageOne one(vm);
 			one.Run();
+		} else if (vm["secondstage"].as<bool>() == true) {
+			StageTwo one(vm);
+			one.Run();
 		}
+
 	} catch (const error &ex) {
 		std::cerr << ex.what() << '\n';
 	}

@@ -3,7 +3,7 @@
 #include "StackPoint.h"
 #include "DynOpsClass.h"
 #include <map>
-#include "BPatchRewriter.h"
+#include "BinaryRewriter.h"
 
 class TimerInstrimentation {
 public:

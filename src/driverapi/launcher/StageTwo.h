@@ -15,10 +15,10 @@
 class StageTwo {
 public:
 	StageTwo(boost::program_options::variables_map vm);
-	bool Run();
+	void Run();
 	void ExtractLineInfo(std::map<uint64_t, StackRecord> & rec);
 	std::map<uint64_t, std::vector<StackPoint> >  ReadStackKey();
-	void GetTimingList(std::vector<StackPoint> & timingList);
+	void GetTimingList(std::vector<StackPoint> & timingList, CallIDGenerator & cmap);
 private:
 	boost::program_options::variables_map _vm;	
 	BinaryRewriter _rw;

@@ -57,7 +57,7 @@ void StageTwo::Run() {
 	CallIDGenerator cmap(idMap.string(), true);
 	for (auto & i : _stackRecords) {
 		std::cout << "[StageTwo] Adding " << i.second.GetFirstCudaCall().funcName << " with hash id " << i.first << std::endl;
-		cmap.InsertCallname(i.second.GetFirstCudaCall().funcName, i.first);
+		cmap.InsertCallname(i.second.GetFirstCudaCall().funcName);
 	}
 	std::vector<StackPoint> instPoints;
 	GetTimingList(instPoints, cmap);

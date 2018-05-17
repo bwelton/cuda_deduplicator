@@ -19,10 +19,10 @@ private:
 // What each stage needs to output:
 // 1. Stage One:
 //    - NI_Dependencies.txt (\n seperated text list of libraries)
-//    - NI_Synchronizations.txt StackKeyWriter/Reader (key file from libstacktrace.so)
+//    - NI_Synchronizations.key/bin StackKeyWriter/Reader (key file from libstacktrace.so)
 // 2. Stage Two - Timing the synchroization calls:
 //     Required Inputs:
-//    - NI_Synchronizations.txt (keyfile from libstacktrace.so)
+//    - NI_Synchronizations.key/bin (keyfile from libstacktrace.so)
 //     Outputs:
 //    - TF_timekey.bin - StackKeyWriter/Reader
 //    - TF_trace.bin - TFReaderWriter output (synch: dynId -> TF_timerIDMap, stackId ->  TF_timekey.bin, count, time) 

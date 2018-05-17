@@ -21,13 +21,14 @@ protected:
 
 class BinaryRewriter : public BinaryManagerBase { 
 public:
-	BinaryRewriter(std::string appName, bool openWriteable, std::string outDir = std::string(""), bool readDepends = false);
+	BinaryRewriter(std::string appName, bool openWriteable, std::string outDir = std::string(""), bool readDepends = false, std::string dpFilename = std::string(""));
 	BinaryRewriter();
 	// void OpenLibrary(std::string libname);
 	// BPatchBinaryPtr GetAppBinary();
 private:
 	void Init();
 	std::string _appName;
+	std::string _dpFilename;
 	std::string _outDir;
 	bool _write;
 	bool _readDepends;

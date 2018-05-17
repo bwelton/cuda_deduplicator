@@ -1,6 +1,6 @@
 #include "BinaryRewriter.h"
-BinaryRewriter::BinaryRewriter(std::string appName, bool openWriteable,  std::string outDir, bool readDepends)  :
-	_appName(appName), _write(openWriteable), _outDir(outDir), _readDepends(readDepends) {
+BinaryRewriter::BinaryRewriter(std::string appName, bool openWriteable,  std::string outDir, bool readDepends, std::string dpFilename)  :
+	_appName(appName), _write(openWriteable), _outDir(outDir), _readDepends(readDepends), _dpFilename(dpFilename) {
 	Init();
 }
 
@@ -14,7 +14,7 @@ void BinaryManagerBase::OpenLibrary(std::string libname) {
 void BinaryRewriter::Init() {
 	std::vector<std::string> depedencies;
 	if (_readDepends){
-		DependsFile readDepends("NI_dependencies.txt", false);
+		DependsFile readDepends(_dpFilename.c_str(), false);
 		depedencies = readDepends.ReadLibraries();
 		std::cout << "[BinaryRewriter] Dependency file contains the following entries : " << std::endl;
 		for (auto i : depedencies) {

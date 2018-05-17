@@ -6,7 +6,7 @@ void StageTwo::GetTimingList(std::vector<StackPoint> & timingList, CallIDGenerat
 		if (p.libname.find("libcuda.so") != std::string::npos)
 			if (alreadyPresent.find(p.libOffset) == alreadyPresent.end()) {
 				alreadyPresent.insert(p.libOffset);
-				p.timerID = cmap.InsertStackID(p.funcName);
+				p.timerID = cmap.InsertCallname(p.funcName);
 				timingList.push_back(p);
 			}
 	}
@@ -57,7 +57,7 @@ void StageTwo::Run() {
 	CallIDGenerator cmap(idMap.string(), true);
 	for (auto & i : _stackRecords) {
 		std::cout << "[StageTwo] Adding " << i.second.GetFirstCudaCall().funcName << " with hash id " << i.first << std::endl;
-		cmap.InsertStackID(i.second.GetFirstCudaCall().funcName, i.first);
+		cmap.InsertCallname(i.second.GetFirstCudaCall().funcName, i.first);
 	}
 	std::vector<StackPoint> instPoints;
 	GetTimingList(instPoints, cmap);

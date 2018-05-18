@@ -5,7 +5,8 @@ BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName
 	bpatch.setInstrStackFrames(true);
 	bpatch.setLivenessAnalysis(false);
 	_be = bpatch.openBinary(_binName.c_str(), true);
-	_be->getAS(_multiAs);
+	_as = _be->getImage()->getAddressSpace();
+	//_be->getAS(_multiAs);
 	std::cout << "[BPatchBinary] Loaded " << _multiAs.size() << " address spaces" << std::endl;
 	// assert(_as != NULL);
 	//_as = dynamic_cast<BPatch_binaryEdit*>(_as);
@@ -86,9 +87,10 @@ bool BPatchBinary::LoadLibrary(std::string libName) {
 	return false;
 }
 BPatch_addressSpace * BPatchBinary::GetAddressSpace() {
-	if (_procEdit)
-		return _as;
-	else if {
-		return _multiAs[0];
-	}
+	return _as;
+	// if (_procEdit)
+	// 	return _as;
+	// else if {
+	// 	return _multiAs[0];
+	// }
 }

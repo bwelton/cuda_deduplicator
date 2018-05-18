@@ -11,7 +11,7 @@
 #include "SymbolLookup.h"
 #include "StackStorage.h"
 #include "CallIDGenerator.h"
-
+#include "GeneralFunctions.h"
 class StageTwo {
 public:
 	StageTwo(boost::program_options::variables_map vm);
@@ -20,6 +20,7 @@ public:
 	std::map<uint64_t, std::vector<StackPoint> >  ReadStackKey();
 	void GetTimingList(std::vector<StackPoint> & timingList, CallIDGenerator & cmap);
 private:
+	GeneralFunctions _gen;
 	boost::program_options::variables_map _vm;	
 	BinaryRewriter _rw;
 	std::map<uint64_t, StackRecord> _stackRecords;

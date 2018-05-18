@@ -11,6 +11,7 @@ std::vector<std::string> GeneralFunctions::GetTokensFromLine(std::string line, s
 };
 
 std::string GeneralFunctions::FindLibCuda() {
+	std::cout << "[GeneralFunctions] Searching for libcuda.so.1" << std::endl;
 	// Search LD_LIBRARY_PATH for Libcuda
 	const char* env_p = std::getenv("LD_LIBRARY_PATH");
 	std::vector<std::string> pathsToTry = GetTokensFromLine(std::string(env_p), std::string(":"));
@@ -21,7 +22,7 @@ std::string GeneralFunctions::FindLibCuda() {
 		if(boost::filesystem::is_directory(directory))
 			for(auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(directory), {}))
 				if(entry.path().string().find("libcuda.so.1") != std::string::npos)
-					return std::string(entry.path().string());
+					return entry.path().string();
 	}
 	return std::string("");
 

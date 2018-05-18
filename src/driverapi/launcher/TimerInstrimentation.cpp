@@ -70,7 +70,9 @@ void TimerInstrimentation::InsertTimers(std::vector<StackPoint> points) {
 
 		BPatch_function * instFunc = NULL;
 		assert(curObj != NULL);
+		std::cout << "[TimerInstrimentation] Looking at function offset - " << i.funcOffset << std::endl;
 		instFunc = _ops.FindFunctionByOffset(_addrSpace, curObj, curObj->fileOffsetToAddr(i.funcOffset) );
+		assert(instFunc != NULL);
 		// if (i.inMain)
 		// 	instFunc = img->findFunction(i.funcOffset);
 		// else{

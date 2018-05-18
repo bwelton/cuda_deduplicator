@@ -27,15 +27,23 @@ struct DependsFile {
 			char tmpStr = '\n';
 			_alreadyWritten.insert(name);
 			fwrite(name.c_str(), sizeof(char), name.size(), f);
-			fwrite(&tmpStr, sizeof(char), 1, f);
+			fwrite(&tmpStr, sizeof(char), 1, fp);
 		}
 	};
 	std::vector<std::string> ReadLibraries() { 
-		std::vector<std::string> ret;
+		std::vector<std::string> ret;		
 		if (_write == false) {
-			for (std::string line; std::getline(f, line); ){
-				ret.push_back(line);
-			}
+			fseek(f, 0L, SEEK_END);
+			size_t sz = ftell(f);
+			fseek(f, 0L, SEEK_SET);
+			char * tmp = (char *) malloc(sz * sizeof(char));
+			assert(fread(tmp, sz, 1, f) == 1);
+			// char * line = NULL;
+   //  		size_t len = 0;
+   //  		ssize_t read;
+			// while ((read = getline(&line, &len, f)) != -1) {
+			// 	ret.push_back(std::string(line, len));
+			// }
 		}
 		return ret;
 	};

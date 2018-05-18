@@ -76,7 +76,8 @@ void TimerInstrimentation::InsertTimers(std::vector<StackPoint> points) {
 			std::string tmp_funcName = i.funcName;
 			tmp_funcName.erase(0,4);
 			std::cout << "[TimerInstrimentation] Looking for targ function at location: " << tmp_funcName << std::endl;
-			instFunc = _ops.FindFunctionByOffset(_addrSpace, curObj, curObj->fileOffsetToAddr(std::stoull(tmp_funcName)));
+			tmp_funcName = std::string("0x") + tmp_funcName;
+			instFunc = _ops.FindFunctionByOffset(_addrSpace, curObj, curObj->fileOffsetToAddr(std::stoull(tmp_funcName, NULL, 16)));
 		}
 		assert(instFunc != NULL);
 		// if (i.inMain)

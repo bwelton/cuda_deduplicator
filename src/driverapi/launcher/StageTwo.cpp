@@ -51,11 +51,14 @@ void StageTwo::ExtractLineInfo(std::map<uint64_t, StackRecord> & rec) {
 
 void StageTwo::Run() {
 	std::map<uint64_t, std::vector<StackPoint> > ret = ReadStackKey();
+	boost::filesystem::path stageOneLibCuda = _stageOnePath;
+	stageOneLibCuda /= "libcuda.so.1";
+
 	std::string libcudaLocation = _gen.FindLibCuda();
 	for (auto & i : ret)
 		for (auto & z : i.second)
 			if (z.libname.find("libcuda.so.1") != std::string::npos)
-				z.libname = libcudaLocation;
+				z.libname = stageOneLibCuda.string();
 
 	for (auto & i : ret)
 		_stackRecords[i.first] = StackRecord(i.first, i.second);

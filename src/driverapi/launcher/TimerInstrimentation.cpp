@@ -71,7 +71,7 @@ void TimerInstrimentation::InsertTimers(std::vector<StackPoint> points) {
 		BPatch_function * instFunc = NULL;
 		assert(curObj != NULL);
 		if (i.funcName.find("targ") == std::string::npos)
-			assert(_ops->FindFuncByName(_addrSpace, instFunc, i.funcName));
+			assert(_ops.FindFuncByName(_addrSpace, instFunc, i.funcName));
 		else {
 			std::string tmp_funcName = i.funcName;
 			tmp_funcName.erase(0,4);

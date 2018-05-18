@@ -14,6 +14,7 @@ public:
 	bool RunUntilCompletion();
 private:
 	DynOpsClass _ops;
+	std::vector<BPatch_addressSpace*> _multiAs;
 	BPatch_addressSpace * _as;
 	BPatch_binaryEdit * _be;
 	std::string _binName;

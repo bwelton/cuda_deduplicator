@@ -71,12 +71,12 @@ void TimerInstrimentation::InsertTimers(std::vector<StackPoint> points) {
 		BPatch_function * instFunc = NULL;
 		assert(curObj != NULL);
 		if (i.funcName.find("targ") == std::string::npos)
-			assert(_ops->FindFuncByName(_addrSpace, instFunc, i.funcName);
+			assert(_ops->FindFuncByName(_addrSpace, instFunc, i.funcName));
 		else {
 			std::string tmp_funcName = i.funcName;
 			tmp_funcName.erase(0,4);
 			std::cout << "[TimerInstrimentation] Looking for targ function at location: " << tmp_funcName << std::endl;
-			instFunc = _ops.FindFunctionByOffset(_addrSpace, curObj, curObj->fileOffsetToAddr(std::stoull(tmp_funcName)) );
+			instFunc = _ops.FindFunctionByOffset(_addrSpace, curObj, curObj->fileOffsetToAddr(std::stoull(tmp_funcName)));
 		}
 		assert(instFunc != NULL);
 		// if (i.inMain)

@@ -19,7 +19,7 @@ std::string GeneralFunctions::FindLibCuda() {
 		boost::filesystem::path directory(i);
 		std::cout << "[GeneralFunctions] Searching Directory " << directory.string() << " for libcuda.so.1" << std::endl;
 		if(boost::filesystem::is_directory(directory))
-			for(auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(p), {}))
+			for(auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(directory), {}))
 				if(std::string(entry).find("libcuda.so.1") != std::string::npos)
 					return std::string(entry);
 	}

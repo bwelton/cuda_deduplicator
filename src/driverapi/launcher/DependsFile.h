@@ -38,13 +38,12 @@ struct DependsFile {
 			fseek(f, 0L, SEEK_SET);
 			char * tmp = (char *) malloc(sz * sizeof(char));
 			assert(fread(tmp, sz, 1, f) == 1);
-
-			// char * line = NULL;
-   //  		size_t len = 0;
-   //  		ssize_t read;
-			// while ((read = getline(&line, &len, f)) != -1) {
-			// 	ret.push_back(std::string(line, len));
-			// }
+  			std::string tmpToken = std::string(tmp);
+  			std::istringstream ifstring(tmpToken);
+  			std::string line;
+  			while (getline(ifstring, line, '\n')) {
+  				ret.push_back(line);
+  			}
 		}
 		return ret;
 	};

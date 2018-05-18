@@ -20,9 +20,9 @@ int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * 
 	std::vector<BPatch_object *> objs;
 	img->getObjects(objs);
 	std::vector<BPatch_function *> tmp;
-
 	for (auto i : objs) {
 		std::vector<BPatch_function *> candidates;
+		std::cout << "[DynOpsClass] SO Name: " << i->pathName() << std::endl;
 		i->findFunction(name, candidates, false, false, false, false);
 		for (auto z : candidates)
 			tmp.push_back(z);

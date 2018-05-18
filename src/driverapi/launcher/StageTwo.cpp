@@ -76,4 +76,5 @@ void StageTwo::Run() {
 	for (auto i : instPoints)
 		std::cout << "[StageTwo] Timing Instrumentation will be inserted into - " << i.funcName << std::endl;
 	TimerInstrimentation TI(_rw.GetAppBinary()->GetAddressSpace(), _rw.GetAppBinary());
+	TI.InsertTimers(instPoints);
 }

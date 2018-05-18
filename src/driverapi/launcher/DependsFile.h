@@ -27,7 +27,7 @@ struct DependsFile {
 			char tmpStr = '\n';
 			_alreadyWritten.insert(name);
 			fwrite(name.c_str(), sizeof(char), name.size(), f);
-			fwrite(&tmpStr, sizeof(char), 1, fp);
+			fwrite(&tmpStr, sizeof(char), 1, f);
 		}
 	};
 	std::vector<std::string> ReadLibraries() { 
@@ -38,6 +38,7 @@ struct DependsFile {
 			fseek(f, 0L, SEEK_SET);
 			char * tmp = (char *) malloc(sz * sizeof(char));
 			assert(fread(tmp, sz, 1, f) == 1);
+
 			// char * line = NULL;
    //  		size_t len = 0;
    //  		ssize_t read;

@@ -33,11 +33,8 @@ struct DependsFile {
 	std::vector<std::string> ReadLibraries() { 
 		std::vector<std::string> ret;
 		if (_write == false) {
-			char * line = NULL;
-    		size_t len = 0;
-    		ssize_t read;
-			while ((read = getline(&line, &len, f)) != -1) {
-				ret.push_back(std::string(line, len));
+			for (std::string line; std::getline(f, line); ){
+				ret.push_back(line);
 			}
 		}
 		return ret;

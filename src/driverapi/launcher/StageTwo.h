@@ -12,6 +12,7 @@
 #include "StackStorage.h"
 #include "CallIDGenerator.h"
 #include "GeneralFunctions.h"
+#include "TimerInstrimentation.h"
 class StageTwo {
 public:
 	StageTwo(boost::program_options::variables_map vm);

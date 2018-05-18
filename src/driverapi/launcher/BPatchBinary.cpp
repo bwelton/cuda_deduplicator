@@ -89,6 +89,6 @@ BPatch_addressSpace * BPatchBinary::GetAddressSpace() {
 	if (_procEdit)
 		return _as;
 	else if {
-
+		return _multiAs[0];
 	}
 }

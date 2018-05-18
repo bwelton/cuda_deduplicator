@@ -75,6 +75,7 @@ void StageTwo::Run() {
 	std::cout << "[StageTwo] Timing Instrimentation will be inserted into " << instPoints.size() << " libcuda functions" << std::endl;
 	for (auto i : instPoints)
 		std::cout << "[StageTwo] Timing Instrumentation will be inserted into - " << i.funcName << std::endl;
+	_rw.OpenLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeCall.so"));
 	TimerInstrimentation TI(_rw.GetAppBinary()->GetAddressSpace(), _rw.GetAppBinary());
 	TI.InsertTimers(instPoints);
 }

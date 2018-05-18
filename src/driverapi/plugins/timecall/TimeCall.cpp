@@ -113,7 +113,7 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		_tfRecord.s.dynId = id;
 		_tfRecord.s.count = TimingCount[TimingCount.size() - 1];
 		_tfRecord.s.time = diff.count();
-		std::cout << "[TIMER_SIMPLE_TIME_STOP] Writing synchronization with DynID - " << id << " and count " << _tfRecord.s.count << std::endl;
+		//std::cout << "[TIMER_SIMPLE_TIME_STOP] Writing synchronization with DynID - " << id << " and count " << _tfRecord.s.count << std::endl;
 		if (ret == false) {
 			std::cout << "unknown timing stack, discarding time" << std::endl;
 			_tfRecord.s.stackId  = 0;

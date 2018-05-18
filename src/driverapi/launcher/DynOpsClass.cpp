@@ -21,6 +21,7 @@ int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * 
 	img->findFunction(name.c_str(), tmp);
 	if (tmp.size() > 0) 
 		ret = tmp[0];
+	std::cout << "[DynOpsClass] Found function " << name << " " << tmp.size() << " times" << std::endl;
 	return tmp.size();
 }
 

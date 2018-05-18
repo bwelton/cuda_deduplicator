@@ -36,6 +36,7 @@ struct DependsFile {
 			fseek(f, 0L, SEEK_END);
 			size_t sz = ftell(f);
 			fseek(f, 0L, SEEK_SET);
+			std::cout << "Size: " << sz << std::endl;
 			char * tmp = (char *) malloc(sz * sizeof(char));
 			assert(fread(tmp, sz, 1, f) == 1);
   			std::string tmpToken = std::string(tmp);

@@ -79,7 +79,7 @@ void StageTwo::Run() {
 		std::cout << "[StageTwo] Setting Libcuda Location to - " << libcudaLocation << std::endl;
 		i.libname = libcudaLocation;
 	}
-	_rw.OpenLibrary(libcudaLocation);
+	//_rw.OpenLibrary(libcudaLocation);
 	_rw.OpenLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeCall.so"));
 	TimerInstrimentation TI(_rw.GetAppBinary()->GetAddressSpace(), _rw.GetAppBinary());
 	TI.InsertTimers(instPoints);

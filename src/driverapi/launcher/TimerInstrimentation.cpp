@@ -26,9 +26,10 @@ void TimerInstrimentation::InsertTimers(std::vector<StackPoint> points) {
 	std::map<std::string, BPatch_object *> objs;
 	GetModules(objs);
 	_addrSpace->beginInsertionSet();
+	BPatch_object * libcudaObj = NULL;
 	// Insert timer to add one every time a syncrhonization is called
 	{
-		BPatch_object * libcudaObj = NULL;
+
 		for (auto z : objs) {
 			if (z.first.find("libcuda.so") != std::string::npos){
 				libcudaObj = z.second;
@@ -60,6 +61,9 @@ void TimerInstrimentation::InsertTimers(std::vector<StackPoint> points) {
 				break;
 			}
 		}
+		if (curObj == NULL && i.libname.find("libcuda.so") != std::string::npos)
+			curObj = libcudaObj;
+		
 		if (curObj == NULL) {
 			std::cout << "[TimerInstrimentation] Could not find - " << i.libname << " resorting to manual insertion" << std::endl;
 			_bpBinary->LoadLibrary(i.libname);

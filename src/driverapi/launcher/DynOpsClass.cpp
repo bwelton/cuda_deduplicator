@@ -17,8 +17,16 @@ int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * 
 	if (aspace == NULL) 
 		return -1;
 	BPatch_image * img = aspace->getImage();
+	std::vector<BPatch_object *> objs;
+	img->getObjects(objs);
 	std::vector<BPatch_function *> tmp;
-	img->findFunction(name.c_str(), tmp);
+
+	for (auto i : objs) {
+		std::vector<BPatch_function *> candidates;
+		i->findFunction(name, candidates, false, false, false, false);
+		for (auto z : candidates)
+			tmp.push_back(z);
+	}
 	if (tmp.size() > 0) 
 		ret = tmp[0];
 	std::cout << "[DynOpsClass] Found function " << name << " " << tmp.size() << " times" << std::endl;

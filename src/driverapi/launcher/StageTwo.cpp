@@ -27,7 +27,7 @@ StageTwo::StageTwo(boost::program_options::variables_map vm) :
 
 std::map<uint64_t, std::vector<StackPoint> >  StageTwo::ReadStackKey() {
 	boost::filesystem::path keyFile = _stageOnePath;
-	_stageOnePath /= "NI_synchronizations.key";
+	keyFile /= "NI_synchronizations.key";
 	std::cout << "[StageTwo] Reading Stack Key from file - " << keyFile.string() << std::endl;
 	StackKeyReader reader(fopen(keyFile.string().c_str(), "rb"));
 	return reader.ReadStacks();

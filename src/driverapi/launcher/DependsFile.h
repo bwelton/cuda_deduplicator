@@ -43,6 +43,8 @@ struct DependsFile {
   			std::istringstream ifstring(tmpToken);
   			std::string line;
   			while (getline(ifstring, line, '\n')) {
+  				if (line.size() < 2)
+  					continue;
   				ret.push_back(line);
   			}
 		}

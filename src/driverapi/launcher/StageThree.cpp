@@ -83,9 +83,9 @@ void StageThree::Run() {
 	// _rw.OpenLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeCall.so"));
 	// TimerInstrimentation TI(_rw.GetAppBinary()->GetAddressSpace(), _rw.GetAppBinary());
 	// TI.InsertTimers(instPoints);
-	std::string def(WRAPPER_DEF)
+	std::string def(WRAPPER_DEF);
 	InstWrapper instWrapper(&_rw,def);
-
+	instWrapper.Run();
 	// _rw.LoadObject(std::string("libcuda.so.1"));
 
 	std::vector<std::string> pluginNames = {"libSynchTool"};

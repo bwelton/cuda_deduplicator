@@ -23,7 +23,7 @@ void InstWrapper::InsertWrappers() {
 		if (funcNameToWrap.find("0x") != std::string::npos) 
 			continue;
 
-		BPatch_object * wrapperLibrary = libcuda->GetObject(wrapperLib);
+		BPatch_object * wrapperLibrary = libCuda->GetObject(wrapperLib);
 		BPatch_function * orig = NULL;
 		BPatch_function * newWrap = NULL;
 
@@ -36,7 +36,7 @@ void InstWrapper::InsertWrappers() {
 		symt->getAllSymbols(tmp);
 		for(auto sym : tmp) {
 			if (sym->getPrettyName() == symbolToReplace) {
-				if (libCuda->GetAddressSpace()->wrapFunction(funcToWrap,  wrappedFunc, sym) == true){
+				if (libCuda->GetAddressSpace()->wrapFunction(orig,  newWrap, sym) == true){
 					std::cout << "[InstWrapper] Succesfully wrapped function - " << funcNameToWrap << std::endl;
 				} else {
 					std::cout << "[InstWrapper] FAILED to wrap funciton - " << funcNameToWrap << std::endl;

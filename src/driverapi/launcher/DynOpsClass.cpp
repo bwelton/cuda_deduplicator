@@ -79,16 +79,24 @@ BPatch_object * DynOpsClass::FindObjectByName(BPatch_addressSpace * aspace, std:
 int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string libname, uint64_t offset, bool exact) {
 	if (aspace == NULL) 
 		return -1;
-	BPatch_image * img = aspace->getImage();
-	BPatch_object * obj = FindObjectByName(aspace, libname, exact);
-	
+
+	BPatch_object * obj = FindObjectByName(aspace, libname, false);
 	if (obj == NULL)
 		return -1;
+	ret = FindFunctionByOffset(aspace, obj, offset);
+	if (ret == NULL)
+		return -1;
 
-	BPatch_function * func = img->findFunction(obj->fileOffsetToAddr(offset));
-	if (func == NULL)
-		return 0;
-	ret = func;
+	// BPatch_image * img = aspace->getImage();
+	// BPatch_object * obj = FindObjectByName(aspace, libname, exact);
+	
+	// if (obj == NULL)
+	// 	return -1;
+
+	// BPatch_function * func = img->findFunction(obj->fileOffsetToAddr(offset));
+	// if (func == NULL)
+	// 	return 0;
+	//ret = func;
 
 	return 1;
 }

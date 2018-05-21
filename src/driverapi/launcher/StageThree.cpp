@@ -89,7 +89,7 @@ void StageThree::Run() {
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	LogInfo log(std::string("InstRun.txt"), std::string("[InstRun]"), true);
 	ProcessController proc(_vm, &log);
-	proc.SetRewriterMode(_rw);
+	proc.SetRewriterMode(_rw.GetAppBinary());
 	proc.InsertInstrimentation(wrapperDef);
 	std::vector<uint64_t> skips;
 	uint64_t total_functions = 0;

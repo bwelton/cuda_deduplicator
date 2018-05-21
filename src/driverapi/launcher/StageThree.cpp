@@ -85,7 +85,7 @@ void StageThree::Run() {
 	// TI.InsertTimers(instPoints);
 	std::string def(WRAPPER_DEF);
 	InstWrapper instWrapper(&_rw,def);
-	instWrapper.Run();
+	instWrapper.Run(libcudaLocation);
 	// _rw.LoadObject(std::string("libcuda.so.1"));
 
 	std::vector<std::string> pluginNames = {"libSynchTool"};

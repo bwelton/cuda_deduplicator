@@ -22,7 +22,6 @@ private:
 	std::string _binName;
 	bool _output;
 	std::string _outName;
-	BPatch bpatch;
 	BPatch_process * _pe;
 	bool _procEdit;
 };

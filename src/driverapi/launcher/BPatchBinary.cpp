@@ -1,5 +1,5 @@
 #include "BPatchBinary.h"
-
+BPatch bpatch;
 BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName)  :
 	_binName(binName), _output(output), _outName(outName), _procEdit(false) {
 	bpatch.setInstrStackFrames(true);

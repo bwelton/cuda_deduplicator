@@ -65,7 +65,7 @@ std::vector<BPatch_object *> BinaryRewriter::GetAllObjects() {
 	for (auto i : BinaryManagerBase::_OpenBinaries) {
 		std::vector<BPatch_object *> tmp;
 		i->GetImage()->getObjects(tmp);
-		ret = ret + tmp;
+		ret.insert(ret.end(), tmp.begin(), tmp.end());
 	}	
 	return ret;
 }

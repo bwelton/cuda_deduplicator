@@ -520,7 +520,7 @@ void ProcessController::InstrimentApplication() {
 			continue;
 		}
 
-		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(wrapperLibrary);
+		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(stubLib);
 		std::vector<Dyninst::SymtabAPI::Symbol *> tmp;
 		symt->getAllSymbols(tmp);
 

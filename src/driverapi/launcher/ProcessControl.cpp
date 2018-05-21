@@ -526,7 +526,7 @@ void ProcessController::InstrimentApplication() {
 
 		for(auto sym : tmp) {
 			if (sym->getPrettyName() == symbolToReplace) {
-				if (_addrSpace->wrapFunction(funcToWrap,  wrapperFunction, sym) == true){
+				if (_addrSpace->wrapFunction(funcToWrap,  wrappedFunc, sym) == true){
 					std::cout << "[ProcessControl] Succesfully wrapped function - " << funcNameToWrap << std::endl;
 					wrapCount += 1;
 				} else {

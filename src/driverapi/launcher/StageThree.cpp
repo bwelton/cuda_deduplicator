@@ -90,7 +90,7 @@ void StageThree::Run() {
 	LogInfo log(std::string("InstRun.txt"), std::string("[InstRun]"), true);
 	ProcessController proc(_vm, &log);
 	proc.SetRewriterMode(_rw.GetAppBinary());
-	proc.InsertInstrimentation(wrapperDef);
+	proc.InsertInstrimentation(def);
 	std::vector<uint64_t> skips;
 	uint64_t total_functions = 0;
 	proc.InsertLoadStores(skips, total_functions, instPoints, _stackRecords);

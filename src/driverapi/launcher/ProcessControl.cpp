@@ -11,7 +11,6 @@ void ProcessController::SetRewriterMode(BPatchBinaryPtr in) {
 	_addrSpace = in->GetAddressSpace();
 	_appProc = NULL;
 	_loadStore.reset(new LoadStoreInst(_addrSpace, _addrSpace->getImage()));
-
 }
 
 
@@ -105,7 +104,7 @@ void ProcessController::InsertStacktracing() {
 	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStacktrace.so"));
 	_stackTracer->InsertStackInst();
 
-	_appProc->dumpImage("currentImage");
+	//_appProc->dumpImage("currentImage");
 }
 
 void ProcessController::InsertTimers(std::vector<StackPoint> points) {
@@ -356,6 +355,9 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 	_loadStore->SetWrappedFunctions(wrappedFunctionNames);
 	_loadStore->InstrimentAllModules(true, skips, instUntil, synchFunctions, points,syncStacks);
 	_WithLoadStore = true;
+}
+std::shared_ptr<LoadStoreInst> ProcessController::GetLoadStorePtr() {
+	return _loadStore;
 }
 
 BPatch * ProcessController::GetBPatch() {

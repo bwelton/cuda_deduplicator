@@ -48,7 +48,6 @@ void StageThree::ExtractLineInfo(std::map<uint64_t, StackRecord> & rec) {
 }
 
 
-
 void StageThree::Run() {
 	std::map<uint64_t, std::vector<StackPoint> > ret = ReadStackKey();
 	boost::filesystem::path stageOneLibCuda = _stageOnePath;
@@ -79,8 +78,40 @@ void StageThree::Run() {
 		std::cout << "[StageThree] Setting Libcuda Location to - " << libcudaLocation << std::endl;
 		i.libname = libcudaLocation;
 	}
-	//_rw.OpenLibrary(libcudaLocation);
-	_rw.OpenLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeCall.so"));
-	TimerInstrimentation TI(_rw.GetAppBinary()->GetAddressSpace(), _rw.GetAppBinary());
-	TI.InsertTimers(instPoints);
+
+	// //_rw.OpenLibrary(libcudaLocation);
+	// _rw.OpenLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeCall.so"));
+	// TimerInstrimentation TI(_rw.GetAppBinary()->GetAddressSpace(), _rw.GetAppBinary());
+	// TI.InsertTimers(instPoints);
+	std::vector<std::string> pluginNames = {"libSynchTool"};
+	CreatePluginFile(pluginNames);
+	std::string def(WRAPPER_DEF);	
+	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
+	LogInfo log(std::string("InstRun.txt"), std::string("[InstRun]"), true);
+	ProcessController proc(_vm, &log);
+	proc.SetRewriterMode(_rw);
+	proc.InsertInstrimentation(wrapperDef);
+	std::vector<uint64_t> skips;
+	uint64_t total_functions = 0;
+	proc.InsertLoadStores(skips, total_functions, instPoints, _stackRecords);
+	{
+		std::shared_ptr<LoadStoreInst> lsPtr = proc.GetLoadStorePtr();
+		lsPtr->WriteBinLocation(_stageThreePath.string());
+	}
+}
+
+//#define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeCall.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libSynchTool.so"};
+void StageThree::CreatePluginFile(std::vector<std::string> plugins) {
+	std::vector<std::string> PluginList = PLUGIN_LIST;
+	std::ofstream pfile;
+	pfile.open("pluginlist.txt");
+	for (auto i : plugins) {
+		for (auto z : PluginList) {
+			if (z.find(i) != std::string::npos){
+				pfile << z << std::endl;
+				break;
+			}
+		}
+	}
+	pfile.close();
 }

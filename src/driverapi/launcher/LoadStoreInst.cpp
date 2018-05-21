@@ -131,6 +131,10 @@ void LoadStoreInst::InsertLoadStoreInstrimentation() {
 	}
 }
 
+void LoadStoreInst::WriteBinLocation(std::string outDir){
+	_binLoc.WriteMap(outDir);
+}
+
 void LoadStoreInst::FixLSStackFiles() {
 	// Converts:
 	// LS_trace.bin -> {LS_trace.bin, LS_tracekey.txt}
@@ -143,8 +147,8 @@ void LoadStoreInst::FixLSStackFiles() {
 }
 
 LoadStoreInst::~LoadStoreInst() {
-	if(_runOneTime)
-		FixLSStackFiles();
+	// if(_runOneTime)
+	// 	FixLSStackFiles();
 }
 
 void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFunctions ) {

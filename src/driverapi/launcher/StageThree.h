@@ -13,6 +13,9 @@
 #include "CallIDGenerator.h"
 #include "GeneralFunctions.h"
 #include "TimerInstrimentation.h"
+#include "SyncTesting.h"
+#include "ProcessController.h"
+
 class StageThree {
 public:
 	StageThree(boost::program_options::variables_map vm);
@@ -20,6 +23,7 @@ public:
 	void ExtractLineInfo(std::map<uint64_t, StackRecord> & rec);
 	std::map<uint64_t, std::vector<StackPoint> >  ReadStackKey();
 	void GetTimingList(std::vector<StackPoint> & timingList, CallIDGenerator & cmap);
+	void CreatePluginFile(std::vector<std::string> plugins);
 private:
 	GeneralFunctions _gen;
 	boost::program_options::variables_map _vm;	

@@ -88,6 +88,7 @@ public:
 	std::map<uint64_t, StackPoint> GetFirstUse();
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 	void SetRewriterMode(BPatchBinaryPtr in);
+	std::shared_ptr<LoadStoreInst> GetLoadStorePtr();
 private:
 	std::shared_ptr<LoadStoreInst> _loadStore;
 	LogInfo * _log;

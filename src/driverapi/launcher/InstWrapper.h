@@ -10,7 +10,7 @@
 class InstWrapper{
 public:
 	InstWrapper(BinaryRewriter * rw, std::string def);
-	void Run(std::stirng libcudaTouse);
+	void Run(std::string libcudaTouse);
 	void ReadDefinition(std::string WrapperDef);
 	void InsertWrappers();
 private:

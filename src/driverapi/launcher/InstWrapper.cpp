@@ -7,8 +7,8 @@ void InstWrapper::Run() {
 	InsertWrappers();
 }
 
-void InstWrapper::InsertWrappers() {
-	BPatchBinaryPtr libCuda = _rw->LoadObject(std::string("libcuda.so.1"));
+void InstWrapper::InsertWrappers(std::stirng libcudaTouse) {
+	BPatchBinaryPtr libCuda = _rw->LoadObject(libcudaTouse);
 	for (auto i : _wrapFunctions){
 		std::string instType, funcNameToWrap, wrapperFunction, wrapperLib, symbolToReplace;
 		instType = std::get<0>(i);

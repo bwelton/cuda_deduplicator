@@ -486,7 +486,8 @@ void ProcessController::InstrimentApplication() {
 	for (auto i : _wrapFunctions) {
 		//wrap,cuInit,INTER_cuInit,@CMAKE_INSTALL_PREFIX@/lib/libDriverAPIWrapper.so,ORIGINAL_cuInit
 		std::string instType, funcNameToWrap, wrapperFunction, wrapperLib, symbolToReplace;
-		BPatch_function * funcToWrap = NULL, wrappedFunc = NULL;
+		BPatch_function * funcToWrap = NULL; 
+		BPatch_function * wrappedFunc = NULL;
 
 		instType = std::get<0>(i);
 		funcNameToWrap = std::get<1>(i);
@@ -498,7 +499,7 @@ void ProcessController::InstrimentApplication() {
 		if (instType.find("wrap") == std::string::npos)
 			continue;
 
-		if (funcToWrap.find("0x") != std::string::npos) {
+		if (funcNameToWrap.find("0x") != std::string::npos) {
 			funcToWrap = _ops.FindFunctionByOffset(_addrSpace,cudaObj,uint64_t(std::stoull(funcNameToWrap,0,16)));
 		} else {
 			_ops.FindFuncByName(_addrSpace, funcToWrap, funcNameToWrap);

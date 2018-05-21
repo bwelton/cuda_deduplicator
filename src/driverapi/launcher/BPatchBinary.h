@@ -12,6 +12,8 @@ public:
 	~BPatchBinary();
 	bool LoadLibrary(std::string libName);
 	bool RunUntilCompletion();
+	BPatch_object * GetObject(std::string libname);
+	std::string GetName();
 private:
 	DynOpsClass _ops;
 	std::vector<BPatch_addressSpace*> _multiAs;

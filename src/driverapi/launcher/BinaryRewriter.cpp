@@ -47,7 +47,15 @@ BPatchBinaryPtr BinaryRewriter::FindAppBinary(std::string libname) {
 	return BPatchBinaryPtr();
 }
 BPatchBinaryPtr BinaryRewriter::LoadObject(std::string obj) {
-	BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(obj,false)));
+	if (FindAppBinary(obj).get() != NULL)
+		return FindAppBinary(obj);
+	std::cout << "[BinaryRewriter] Loading library - " << obj << std::endl;
+	boost::filesystem::path outName(boost::filesystem::current_path());
+	boost::filesystem::path p(obj);
+	//boost::filesystem::path outName(p.parent_path());
+	outName /= _outDir;
+	outName /= p.filename();
+	BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(obj,true,outName.string())));
 	return BinaryManagerBase::_OpenBinaries[BinaryManagerBase::_OpenBinaries.size() - 1];
 }
 

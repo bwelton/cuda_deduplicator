@@ -109,5 +109,5 @@ private:
 	bool _WithLoadStore;
 	StacktraceInst * _stackTracer;
 	BPatchBinaryPtr _binaryEditPointer;
-
+	DynOpsClass _ops;
 };

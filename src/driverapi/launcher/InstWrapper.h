@@ -12,7 +12,7 @@ public:
 	InstWrapper(BinaryRewriter * rw, std::string def);
 	void Run(std::string libcudaTouse);
 	void ReadDefinition(std::string WrapperDef);
-	void InsertWrappers();
+	void InsertWrappers(std::string libcudaTouse);
 private:
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapFunctions;
 	BinaryRewriter * _rw;

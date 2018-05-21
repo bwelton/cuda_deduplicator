@@ -2,9 +2,9 @@
 
 InstWrapper::InstWrapper(BinaryRewriter * rw, std::string def) : _rw(rw), _def(def) { }
 
-void InstWrapper::Run() {
+void InstWrapper::Run(std::string libcudaTouse) {
 	ReadDefinition(_def);
-	InsertWrappers();
+	InsertWrappers(libcudaTouse);
 }
 
 void InstWrapper::InsertWrappers(std::string libcudaTouse) {

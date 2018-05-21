@@ -104,7 +104,10 @@ void StageThree::Run() {
 void StageThree::CreatePluginFile(std::vector<std::string> plugins) {
 	std::vector<std::string> PluginList = PLUGIN_LIST;
 	std::ofstream pfile;
-	pfile.open("pluginlist.txt");
+	boost::filesystem::path pluginPath(_stageThreePath);
+	_stageThreePath /= "pluginlist.txt";
+
+	pfile.open(_stageThreePath.string().c_str());
 	for (auto i : plugins) {
 		for (auto z : PluginList) {
 			if (z.find(i) != std::string::npos){

@@ -14,7 +14,7 @@
 #include "GeneralFunctions.h"
 #include "TimerInstrimentation.h"
 #include "SyncTesting.h"
-#include "ProcessController.h"
+#include "ProcessControl.h"
 
 class StageThree {
 public:

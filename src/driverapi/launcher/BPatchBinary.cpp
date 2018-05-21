@@ -3,7 +3,7 @@ BPatch bpatch;
 BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName)  :
 	_binName(binName), _output(output), _outName(outName), _procEdit(false) {
 	bpatch.setInstrStackFrames(true);
-	bpatch.setLivenessAnalysis(false);
+	//bpatch.setLivenessAnalysis(false);
 	_be = bpatch.openBinary(_binName.c_str(), true);
 	assert(_be != NULL);
 	_as = _be->getImage()->getAddressSpace();
@@ -12,7 +12,7 @@ BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName
 	// assert(_as != NULL);
 	//_as = dynamic_cast<BPatch_binaryEdit*>(_as);
 	bpatch.setInstrStackFrames(true);
-	bpatch.setLivenessAnalysis(false);
+	//bpatch.setLivenessAnalysis(false);
 }
 
 BPatchBinary::BPatchBinary(std::vector<std::string> appAndArgs)  :

@@ -15,7 +15,7 @@
 #include "TimerInstrimentation.h"
 #include "SyncTesting.h"
 #include "ProcessControl.h"
-#include "instWrapper.h"
+#include "InstWrapper.h"
 class StageThree {
 public:
 	StageThree(boost::program_options::variables_map vm);

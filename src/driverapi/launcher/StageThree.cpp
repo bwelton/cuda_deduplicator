@@ -83,16 +83,21 @@ void StageThree::Run() {
 	// _rw.OpenLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeCall.so"));
 	// TimerInstrimentation TI(_rw.GetAppBinary()->GetAddressSpace(), _rw.GetAppBinary());
 	// TI.InsertTimers(instPoints);
+	std::string def(WRAPPER_DEF)
+	InstWrapper instWrapper(&_rw,def);
+
+	// _rw.LoadObject(std::string("libcuda.so.1"));
+
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);
-	std::string def(WRAPPER_DEF);	
-	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
-	LogInfo log(std::string("InstRun.txt"), std::string("[InstRun]"), true);
-	ProcessController proc(_vm, &log);
-	proc.SetRewriterMode(_rw.GetAppBinary());
-	proc.InsertInstrimentation(def);
-	std::vector<uint64_t> skips;
-	uint64_t total_functions = 0;
+	// std::string def(WRAPPER_DEF);	
+	// std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
+	// LogInfo log(std::string("InstRun.txt"), std::string("[InstRun]"), true);
+	// ProcessController proc(_vm, &log);
+	// proc.SetRewriterMode(_rw.GetAppBinary());
+	// proc.InsertInstrimentation(def);
+	// std::vector<uint64_t> skips;
+	// uint64_t total_functions = 0;
 	// proc.InsertLoadStores(skips, total_functions, instPoints, _stackRecords);
 	// {
 	// 	std::shared_ptr<LoadStoreInst> lsPtr = proc.GetLoadStorePtr();

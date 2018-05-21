@@ -592,6 +592,13 @@ void ProcessController::InsertBreakpoints(std::vector<std::string> functionNames
 }
 
 bool ProcessController::LoadWrapperLibrary(std::string libname) {
+	if (libname.find("libcuda.so") != std::string::npos){
+		if (_loadedLibraries.find("libcuda.so.1") != _loadedLibraries.end())
+		{
+			_loadedLibraries[libname] = _loadedLibraries["libcuda.so.1"];
+		}
+		libname = std::string("libcuda.so.1");
+	}
 	if (_loadedLibraries.find(libname) != _loadedLibraries.end())
 		return true;
 	_log->Write(std::string("Loading library ") + libname + std::string(" into address space"));

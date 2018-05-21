@@ -48,6 +48,7 @@
 #include "StacktraceInst.h"
 #include "StackStorage.h"
 #include "BinaryRewriter.h"
+#include "DynOpsClass.h"
 
 #define INTERNAL_SYNC_C 0x2864C0
 using namespace Dyninst;

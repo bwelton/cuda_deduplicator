@@ -5,6 +5,7 @@ BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName
 	bpatch.setInstrStackFrames(true);
 	bpatch.setLivenessAnalysis(false);
 	_be = bpatch.openBinary(_binName.c_str(), false);
+	assert(_be != NULL);
 	_as = _be->getImage()->getAddressSpace();
 	//_be->getAS(_multiAs);
 	std::cout << "[BPatchBinary] Loaded " << _multiAs.size() << " address spaces" << std::endl;

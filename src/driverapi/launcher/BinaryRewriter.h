@@ -6,7 +6,7 @@
 #include <iostream>
 #include <array>
 #include <boost/filesystem.hpp>
-
+#include "GeneralFunctions.h"
 typedef std::shared_ptr<BPatchBinary> BPatchBinaryPtr;
 class BinaryManagerBase {
 public: 
@@ -34,6 +34,7 @@ private:
 	std::string _dpFilename;
 	std::string _outDir;
 	bool _write;
+	GeneralFunctions _gen;
 	bool _readDepends;
 	// std::string _appName;
 	// std::string _outDir;

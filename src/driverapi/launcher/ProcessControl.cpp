@@ -5,6 +5,16 @@ ProcessController::ProcessController(boost::program_options::variables_map vm, L
 	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false), _WithLoadStore(false) {
 }
 
+void ProcessController::SetRewriterMode(BPatchBinaryPtr in) {
+	_binaryEdit = true;
+	_binaryEditPointer = in;
+	_addrSpace = in->GetAddressSpace();
+	_appProc = NULL;
+	_loadStore.reset(new LoadStoreInst(_addrSpace, _addrSpace->getImage()));
+
+}
+
+
 BPatch_addressSpace * ProcessController::LaunchProcess() {
 	_binaryEdit = false;
 	BPatch_addressSpace * handle = NULL;

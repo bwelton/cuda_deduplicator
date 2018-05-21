@@ -152,7 +152,8 @@ void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFuncti
 	_instTracker.AddAlreadyInstrimented(wrappedFunctions);
 }
 
-bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
+bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, 
+										 std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
 	Setup();
 	BeginInsertionSet();
 	WrapEntryAndExit(syncStacks);

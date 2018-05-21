@@ -23,6 +23,9 @@ class BinaryRewriter : public BinaryManagerBase {
 public:
 	BinaryRewriter(std::string appName, bool openWriteable, std::string outDir = std::string(""), bool readDepends = false, std::string dpFilename = std::string(""));
 	BinaryRewriter();
+	BPatchBinaryPtr FindAppBinary(std::string libname);
+	std::vector<BPatch_object *> GetAllObjects();
+	BPatchBinaryPtr LoadObject(std::string obj);
 	// void OpenLibrary(std::string libname);
 	// BPatchBinaryPtr GetAppBinary();
 private:

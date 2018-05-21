@@ -34,9 +34,35 @@ void BinaryRewriter::Init() {
 		BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(_appName,false)));
 	}
 	for (auto i : depedencies)
-		if(!BinaryManagerBase::_OpenBinaries[0]->LoadLibrary(i))
-			std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
+		BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(i,false)));
+		// if(!BinaryManagerBase::_OpenBinaries[0]->LoadLibrary(i))
+		// 	std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
 }
+
+BPatchBinaryPtr BinaryRewriter::FindAppBinary(std::string libname) {
+	for (auto i : BinaryManagerBase::_OpenBinaries) {
+		if (i->GetName().find(libname) != std::string::npos)
+			return i;
+	}
+	return BPatchBinaryPtr();
+}
+BPatchBinaryPtr BinaryRewriter::LoadObject(std::string obj) {
+	BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(obj,false)));
+	return BinaryManagerBase::_OpenBinaries[BinaryManagerBase::_OpenBinaries.size() - 1];
+}
+
+
+std::vector<BPatch_object *> BinaryRewriter::GetAllObjects() {
+	std::vector<BPatch_object *> ret;
+	for (auto i : BinaryManagerBase::_OpenBinaries) {
+		std::vector<BPatch_object *> tmp;
+		i->GetImage()->getObjects(tmp);
+		ret = ret + tmp;
+	}	
+	return ret;
+}
+
+
 
 BPatchBinaryPtr BinaryManagerBase::GetAppBinary() {
 	return _OpenBinaries[0];

@@ -502,7 +502,12 @@ void ProcessController::InstrimentApplication() {
 		if (funcNameToWrap.find("0x") != std::string::npos) {
 			funcToWrap = _ops.FindFunctionByOffset(_addrSpace,cudaObj,uint64_t(std::stoull(funcNameToWrap,0,16)));
 		} else {
-			_ops.FindFuncByName(_addrSpace, funcToWrap, funcNameToWrap);
+			std::vector<BPatch_function *> ret = findFuncByName(img, funcToWrap.c_str(), _log);
+			for (auto n : ret) {
+				std::cout << n->getName() << "," << n->getModule()->getObject()->pathName() << std::endl;
+			}
+			funcToWrap = ret[0];
+			//_ops.FindFuncByName(_addrSpace, funcToWrap, funcNameToWrap);
 		}
 		if (funcToWrap == NULL){
 			std::cout << "[ProcessControl] Could not find func to wrap - " << funcToWrap << std::endl;

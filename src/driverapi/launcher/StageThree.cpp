@@ -71,9 +71,9 @@ void StageThree::Run() {
 	}
 	std::vector<StackPoint> instPoints;
 	GetTimingList(instPoints, cmap);
-	std::cout << "[StageThree] Timing Instrimentation will be inserted into " << instPoints.size() << " libcuda functions" << std::endl;
-	for (auto i : instPoints)
-		std::cout << "[StageThree] Timing Instrumentation will be inserted into - " << i.funcName << std::endl;
+	//std::cout << "[StageThree] Timing Instrimentation will be inserted into " << instPoints.size() << " libcuda functions" << std::endl;
+	// for (auto i : instPoints)
+	// 	std::cout << "[StageThree] Timing Instrumentation will be inserted into - " << i.funcName << std::endl;
 	for (auto & i : instPoints) {
 		std::cout << "[StageThree] Setting Libcuda Location to - " << libcudaLocation << std::endl;
 		i.libname = libcudaLocation;
@@ -93,11 +93,11 @@ void StageThree::Run() {
 	proc.InsertInstrimentation(def);
 	std::vector<uint64_t> skips;
 	uint64_t total_functions = 0;
-	proc.InsertLoadStores(skips, total_functions, instPoints, _stackRecords);
-	{
-		std::shared_ptr<LoadStoreInst> lsPtr = proc.GetLoadStorePtr();
-		lsPtr->WriteBinLocation(_stageThreePath.string());
-	}
+	// proc.InsertLoadStores(skips, total_functions, instPoints, _stackRecords);
+	// {
+	// 	std::shared_ptr<LoadStoreInst> lsPtr = proc.GetLoadStorePtr();
+	// 	lsPtr->WriteBinLocation(_stageThreePath.string());
+	// }
 }
 
 //#define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeCall.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libSynchTool.so"};

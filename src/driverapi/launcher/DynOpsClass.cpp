@@ -58,6 +58,11 @@ std::vector<std::string> DynOpsClass::GetLibraryNames(BPatch_addressSpace * aspa
 	return ret;
 }
 
+int DynOpsClass::FindFunctionInLibrary(BinaryRewriter * _rw, BPatch_function *& ret,  std::string fname, std::string libname) {
+	BPatchBinaryPtr ptr = _rw->FindAppBinary(libname);
+	return FindFuncByName(ptr->GetAddressSpace(), ret, fname);
+}
+
 BPatch_object * DynOpsClass::FindObjectByName(BPatch_addressSpace * aspace, std::string & name, bool exact) {
 	if (aspace == NULL) 
 		return NULL;

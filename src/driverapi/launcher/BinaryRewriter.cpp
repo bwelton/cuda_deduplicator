@@ -58,7 +58,8 @@ void BinaryRewriter::OpenAllDependencies() {
 			tmp.find("linux-vdso.so") != std::string::npos || 
 			tmp.find("librt.so") != std::string::npos ||
 			tmp.find("libpthread.so") != std::string::npos || 
-			tmp.find("libdl.so") != std::string::npos)
+			tmp.find("libdl.so") != std::string::npos ||
+			tmp == std::string(""))
 			continue; 
 		if (FindAppBinary(tmp).get())
 			continue;

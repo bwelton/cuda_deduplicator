@@ -26,6 +26,8 @@ public:
 	BPatchBinaryPtr FindAppBinary(std::string libname);
 	std::vector<BPatch_object *> GetAllObjects();
 	BPatchBinaryPtr LoadObject(std::string obj);
+	void OpenAllDependencies();
+	std::vector<std::string> GetDependencies(BPatchBinaryPtr file);
 	// void OpenLibrary(std::string libname);
 	// BPatchBinaryPtr GetAppBinary();
 private:

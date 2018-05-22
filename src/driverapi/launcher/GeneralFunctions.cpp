@@ -15,7 +15,7 @@ std::vector<std::string> GeneralFunctions::GetTokensFromLine(std::string line, s
 
 std::string GeneralFunctions::FindLibraryInPath(std::string libname) {
 	boost::filesystem::path fname(libname);
-	libname = fname.pathname().string();
+	libname = fname.filename().string();
 	std::cout << "[GeneralFunctions] Searching for " << libname << std::endl;
 	// Search LD_LIBRARY_PATH for Libcuda
 	const char* env_p = std::getenv("LD_LIBRARY_PATH");

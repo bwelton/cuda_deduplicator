@@ -36,11 +36,39 @@ void BinaryRewriter::Init() {
 	for (auto i : depedencies) {
 		if (i.find("libcuda.so") != std::string::npos)
 			continue;
-
 		//BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(i,false)));
 		//if(!BinaryManagerBase::_OpenBinaries[0]->LoadLibrary(i))
 		// 	std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
 	}
+
+
+}
+
+void BinaryRewriter::OpenAllDependencies() {
+	std::vector<std::string> curList;
+	for (auto i : BinaryManagerBase::_OpenBinaries) 
+		curList = curList + GetDependencies(i);
+	while (curList.size() > 0) {
+		std::string tmp = curList.back();
+		curList.pop_back();
+		if (FindAppBinary(tmp).get())
+			continue;
+		BPatchBinaryPtr l = LoadObject(tmp);
+		curList = curList + GetDependencies(l);		
+	}
+}
+
+std::vector<std::string> BinaryRewriter::GetDependencies(BPatchBinaryPtr file) {
+	std::vector<std::string> ret;
+	std::vector<BPatch_object *> objs;
+	file->GetAddressSpace()->getImage()->getObjects(objs);
+	for (auto i : objs) {
+		Symtab *symtab =  Dyninst::SymtabAPI::convert(i);
+		std::vector<std::string> tmp = symtab->getDependencies();
+		for (auto n : tmp)
+			ret.push_back(_gen.FindLibraryInPath(n));
+	}
+	return ret;
 }
 
 BPatchBinaryPtr BinaryRewriter::FindAppBinary(std::string libname) {

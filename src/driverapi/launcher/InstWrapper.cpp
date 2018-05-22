@@ -69,7 +69,7 @@ void InstWrapper::ReadDefinition(std::string WrapperDef) {
 	    	std::cout << "[InstWrapper] Could not read line of wrapper def" << std::endl;
 	    } else {
 	    	std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::tolower);
-	    	std::cout << "[InstWrapper] Inserting function wrapping line for function - " << tokens[0] << std::endl;
+	    	std::cout << "[InstWrapper] Inserting function wrapping line for function - " << tokens[1] << std::endl;
 	    	_wrapFunctions.push_back(std::make_tuple(tokens[0],tokens[1],tokens[2],tokens[3], tokens[4]));
 	    }
 	}

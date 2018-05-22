@@ -212,7 +212,7 @@ void LoadStoreInstBinaryRewrite::InsertLoadStoresInit(std::vector<uint64_t> & sk
 	//LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStubLib.so"));
 	for (auto i : syncStacks) {
 		for (auto z : i.second.GetStackpoints()) {
-		 	if (z.libname.find(".so") != std::string::npos && z.libname.find("cudadedup") != std::string::npos)
+		 	if (z.libname.find(".so") != std::string::npos && z.libname.find("cudadedup") == std::string::npos)
 		 		if (z.libname.find("libcuda.so") == std::string::npos)
 		 			_rw->LoadObject(z.libname);
 		}

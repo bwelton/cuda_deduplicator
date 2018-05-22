@@ -102,6 +102,8 @@ BPatchBinaryPtr BinaryRewriter::FindAppBinary(std::string libname) {
 BPatchBinaryPtr BinaryRewriter::LoadObject(std::string obj) {
 	if (FindAppBinary(obj).get() != NULL)
 		return FindAppBinary(obj);
+	if (obj.find("libcuda.so") != std::string::npos)
+		obj = _gen.FindLibCuda();
 	std::cout << "[BinaryRewriter] Loading library - " << obj << std::endl;
 	boost::filesystem::path outName(boost::filesystem::current_path());
 	boost::filesystem::path p(obj);

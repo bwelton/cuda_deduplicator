@@ -3055,14 +3055,15 @@ extern "C" void DefineBinders() {
 	//
 	//
 	void * handle = dlopen("libcuda.so.1", RTLD_LAZY);
-
+	assert(handle !+ NULL);
+	
 	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);
 	Bound_cuGetErrorString = std::bind(&ORIGINAL_cuGetErrorString,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuGetErrorName = std::bind(&ORIGINAL_cuGetErrorName,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);
 	// int (tester) (int *);
 	// tester = (int (*)(int *))dlsym(handle, "cuDriverGetVersion_dyninst");
-	int (*tester)(int*) = (int (*)(int *))dlsym(handle, "cuDriverGetVersion_dyninst");
+	int (*tester)(int*) = (int (*)(int *))dlsym(handle, "ORIGINAL_cuDriverGetVersion");
 	assert(tester != NULL);
 	//Bound_cuDriverGetVersion = std::bind(&ORIGINAL_cuDriverGetVersion,std::placeholders::_1);
 	Bound_cuDriverGetVersion = std::bind(tester,std::placeholders::_1);

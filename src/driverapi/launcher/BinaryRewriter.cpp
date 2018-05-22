@@ -37,9 +37,9 @@ void BinaryRewriter::Init() {
 		if (i.find("libcuda.so") != std::string::npos)
 			continue;
 
-		BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(i,false)));
-		// if(!BinaryManagerBase::_OpenBinaries[0]->LoadLibrary(i))
-		// 	std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
+		//BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(i,false)));
+		if(!BinaryManagerBase::_OpenBinaries[0]->LoadLibrary(i))
+		 	std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
 	}
 }
 
@@ -51,6 +51,8 @@ BPatchBinaryPtr BinaryRewriter::FindAppBinary(std::string libname) {
 	return BPatchBinaryPtr();
 }
 BPatchBinaryPtr BinaryRewriter::LoadObject(std::string obj) {
+	BinaryManagerBase::_OpenBinaries[0]->LoadLibrary(obj);
+	return BinaryManagerBase::_OpenBinaries[0];
 	if (FindAppBinary(obj).get() != NULL)
 		return FindAppBinary(obj);
 	std::cout << "[BinaryRewriter] Loading library - " << obj << std::endl;

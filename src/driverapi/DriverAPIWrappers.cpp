@@ -3055,8 +3055,8 @@ extern "C" void DefineBinders() {
 	//
 	//
 	void * handle = dlopen("libcuda.so.1", RTLD_LAZY);
-	assert(handle !+ NULL);
-	
+	assert(handle != NULL);
+
 	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);
 	Bound_cuGetErrorString = std::bind(&ORIGINAL_cuGetErrorString,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuGetErrorName = std::bind(&ORIGINAL_cuGetErrorName,std::placeholders::_1,std::placeholders::_2);

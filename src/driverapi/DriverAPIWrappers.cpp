@@ -3053,10 +3053,17 @@ extern "C" void DefineBinders() {
 	//MANUALLY ADDED
 	Bound_InternalSynchronization = std::bind(&ORIGINAL_InternalSynchronization,std::placeholders::_1,std::placeholders::_2, std::placeholders::_3);
 	//
+	//
+	void * handle = dlopen("libcuda.so.1", RTLD_LAZY);
+
+	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);
 	Bound_cuGetErrorString = std::bind(&ORIGINAL_cuGetErrorString,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuGetErrorName = std::bind(&ORIGINAL_cuGetErrorName,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);
-	Bound_cuDriverGetVersion = std::bind(&ORIGINAL_cuDriverGetVersion,std::placeholders::_1);
+
+
+	//Bound_cuDriverGetVersion = std::bind(&ORIGINAL_cuDriverGetVersion,std::placeholders::_1);
+	Bound_cuDriverGetVersion = std::bind((int(int *))dlsym(handle, "cuDriverGetVersion_dyninst"),std::placeholders::_1);
 	Bound_cuDeviceGet = std::bind(&ORIGINAL_cuDeviceGet,std::placeholders::_1,std::placeholders::_2);
 	Bound_cuDeviceGetCount = std::bind(&ORIGINAL_cuDeviceGetCount,std::placeholders::_1);
 	Bound_cuDeviceGetName = std::bind(&ORIGINAL_cuDeviceGetName,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);

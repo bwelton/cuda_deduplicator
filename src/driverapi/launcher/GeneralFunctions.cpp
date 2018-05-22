@@ -22,7 +22,7 @@ std::string GeneralFunctions::FindLibraryInPath(std::string libname) {
 	std::vector<std::string> pathsToTry = GetTokensFromLine(std::string(env_p), std::string(":"));
 	for (auto i : pathsToTry) {
 		boost::filesystem::path directory(i);
-		std::cout << "[GeneralFunctions] Searching Directory " << directory.string() << " for " << libname << std::endl;
+		//std::cout << "[GeneralFunctions] Searching Directory " << directory.string() << " for " << libname << std::endl;
 		if(boost::filesystem::is_directory(directory))
 			for(auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(directory), {})){
 				//std::cout << entry.path().filename().string() << std::endl;

@@ -25,8 +25,8 @@ std::string GeneralFunctions::FindLibraryInPath(std::string libname) {
 		std::cout << "[GeneralFunctions] Searching Directory " << directory.string() << " for " << libname << std::endl;
 		if(boost::filesystem::is_directory(directory))
 			for(auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(directory), {})){
-				std::cout << entry.path().string() << std::endl;
-				if(entry.path().string().find(libname) != std::string::npos)
+				std::cout << entry.path().filename().string() << std::endl;
+				if(entry.path().filename().string() == libname)
 					return entry.path().string();
 			}
 	}

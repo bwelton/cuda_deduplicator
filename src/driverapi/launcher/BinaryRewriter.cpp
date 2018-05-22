@@ -46,16 +46,20 @@ void BinaryRewriter::Init() {
 
 void BinaryRewriter::OpenAllDependencies() {
 	std::vector<std::string> curList;
-	for (auto i : BinaryManagerBase::_OpenBinaries) 
-		curList = curList + GetDependencies(i);
+	for (auto i : BinaryManagerBase::_OpenBinaries) {
+		std::vector<std::string> tmp_list = GetDependencies(i);
+		curList.insert(curList.end(), tmp_list.begin(), tmp_list.end());
+	}
 	while (curList.size() > 0) {
 		std::string tmp = curList.back();
 		curList.pop_back();
 		if (FindAppBinary(tmp).get())
 			continue;
 		BPatchBinaryPtr l = LoadObject(tmp);
-		curList = curList + GetDependencies(l);		
+		std::vector<std::string> tmp_list = GetDependencies(l);
+		curList.insert(curList.end(), tmp_list.begin(), tmp_list.end());
 	}
+
 }
 
 std::vector<std::string> BinaryRewriter::GetDependencies(BPatchBinaryPtr file) {

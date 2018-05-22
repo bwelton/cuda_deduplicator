@@ -60,16 +60,16 @@ using namespace SymtabAPI;
 #define INTERNAL_SYNC_LS 0x2864C0
 
 
-namespace std
-{
-    template<> struct less<BPatch_object::Region>
-    {
-       bool operator() (const BPatch_object::Region& lhs, const BPatch_object::Region& rhs) const
-       {
-           return (uint64_t)lhs.base < (uint64_t)rhs.base;
-       }
-    };
-}
+// namespace std
+// {
+//     template<> struct less<BPatch_object::Region>
+//     {
+//        bool operator() (const BPatch_object::Region& lhs, const BPatch_object::Region& rhs) const
+//        {
+//            return (uint64_t)lhs.base < (uint64_t)rhs.base;
+//        }
+//     };
+// }
 
 
 //class DynOpsClass;
@@ -78,7 +78,7 @@ class LoadStoreInstBinaryRewrite {
 public: 
 	~LoadStoreInstBinaryRewrite();
 	void FixLSStackFiles();
-	LoadStoreInstBinaryRewrite(BPatch_addressSpace * addrSpace, BPatch_image * img);
+	LoadStoreInstBinaryRewrite(BinaryRewriter * rw);
 	bool InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points,std::map<uint64_t, StackRecord> & syncStacks);
 	bool InstrimentNewModule(BPatch_object * obj, bool finalize);
 	void Finalize();
@@ -107,7 +107,7 @@ private:
 	BPatch_function * _entryFunction;
 	BPatch_function * _exitingFunction;
 	BPatch_function * _libcudaSync;
-
+	BinaryRewriter * _rw;
 	std::ofstream _logFile;
 	DynOpsClass _dynOps;
 	BinaryLocationIDMap _binLoc;

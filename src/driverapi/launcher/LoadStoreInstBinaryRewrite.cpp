@@ -10,24 +10,6 @@ void LoadStoreInstBinaryRewrite::InsertEntryExitSnippets(BPatch_function * func,
 	std::string libname = func->getModule()->getObject()->pathName();
 	std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
 	for (auto i : *points) {
-		// if (i->getCalledFunction() == NULL)
-		// 	continue;
-		// std::vector<std::pair<Dyninst::InstructionAPI::Instruction::Ptr, Dyninst::Address> > instructionVector;
-		// i->getBlock()->getInstructions(instructionVector);
-		// Dyninst::InstructionAPI::Instruction::Ptr pointInstruction = NULL;
-		// for (auto z : instructionVector)
-		// 	if(z.second == (uint64_t)i->getAddress())
-		// 	{
-		// 		pointInstruction = z.first;
-		// 		break;
-		// 	}
-		// std::string instString;
-		// if (pointInstruction != NULL)
-		// 	instString = pointInstruction->format();
-		// else 
-		// 	continue;
-		// if (instString.find("call") == std::string::npos)
-		// 	continue;
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
 		uint64_t id;

@@ -7,12 +7,12 @@
 #include <vector>
 #include <iomanip>
 #include <boost/filesystem.hpp>
-
+#include <sstream>   
 enum INST_TYPE_INSERTED {
 	NO_TYPE = -1,
 	ENTRY_INST = 0,
 	EXIT_INST = 1,
-	LOAD_STORE_INST = 2,
+	LOAD_STORE_INST_TRACK = 2,
 	INST_END = 3,
 };
 
@@ -26,3 +26,4 @@ private:
 	std::map<std::string, std::vector<bool> > _storage;
 };
 
+typedef std::shared_ptr<InstrimentationLogger> InstrimentationLoggerPtr;

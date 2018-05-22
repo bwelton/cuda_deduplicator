@@ -50,6 +50,8 @@ void StageThree::ExtractLineInfo(std::map<uint64_t, StackRecord> & rec) {
 
 
 void StageThree::Run() {
+	logger.reset(new InstrimentationLogger());
+
 	std::map<uint64_t, std::vector<StackPoint> > ret = ReadStackKey();
 	boost::filesystem::path stageOneLibCuda = _stageOnePath;
 	stageOneLibCuda /= "libcuda.so.1";
@@ -89,12 +91,15 @@ void StageThree::Run() {
 	uint64_t total_functions = 0;
 	std::string def(WRAPPER_DEF);
 	InstWrapper instWrapper(&_rw,def);
-	LoadStoreInstBinaryRewrite ls_rw(&_rw);
+	LoadStoreInstBinaryRewrite ls_rw(&_rw, logger);
 	ls_rw.InsertLoadStoresInit(skips, total_functions, instPoints, _stackRecords, instWrapper.GetWrappedFuncNames());
 	// instWrapper.Run(libcudaLocation);
 
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);
+	std::string outData;
+	logger->WriteToString(outData);
+	std::cout << outData << std::endl;
 	// std::string def(WRAPPER_DEF);	
 	// std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	// LogInfo log(std::string("InstRun.txt"), std::string("[InstRun]"), true);

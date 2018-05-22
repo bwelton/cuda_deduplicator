@@ -1,15 +1,23 @@
 #include "LoadStoreInstBinaryRewrite.h"
 #include "Instruction.h"
 
-LoadStoreInstBinaryRewrite::LoadStoreInstBinaryRewrite(BinaryRewriter * rw) :
+LoadStoreInstBinaryRewrite::LoadStoreInstBinaryRewrite(BinaryRewriter * rw, InstrimentationLoggerPtr logger) :
 	_addrSpace(NULL), _img(NULL), _started(false), _funcId(0), _rw(rw) {
 	_runOneTime = false;	
+	if (logger == NULL)
+		_instLogger.reset(new InstrimentationLogger());
+	else 
+		_instLogger = logger;
+	
+
 }
 
 void LoadStoreInstBinaryRewrite::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
 	std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
+
 	for (auto i : *points) {
+
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
 		uint64_t id;
@@ -32,10 +40,14 @@ void LoadStoreInstBinaryRewrite::InsertEntryExitSnippets(BPatch_function * func,
 		//std::cout << id << ",";
 		if (func->getAddSpace()->insertSnippet(entryExpr,singlePoint, BPatch_callBefore) == NULL) {
 			std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] \t\t ERROR! Could not insert entry tracking into " << func->getName() << std::endl;
+		} else {
+			_instLogger->Log(libname, func->getName(), ENTRY_INST);
 		}
 		if (func->getAddSpace()->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
 			std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] \t\t ERROR! Could not insert exit tracking into " << func->getName() << std::endl;
-		}		
+		} else {
+			_instLogger->Log(libname, func->getName(), EXIT_INST);
+		}	
 	}
 }
 
@@ -80,6 +92,8 @@ void LoadStoreInstBinaryRewrite::InsertSyncNotifierSnippet(BPatch_function * fun
 	BPatch_funcCallExpr entryExpr(*_enterSync, recordArgs);
 	if (func->getAddSpace()->insertSnippet(entryExpr,*entryPoints) == NULL) {
 		std::cerr << "[LoadStoreInstBinaryRewrite][SyncNotifier] FATAL ERROR! Insertion of notifier into libcuda.so - failed! Callname: " << func->getName() << std::endl;
+	} else {
+		_instLogger->Log(func->getModule()->getObject()->pathName(), std::string("InternalSynchronization"), ENTRY_INST);
 	}
 }
 
@@ -108,6 +122,8 @@ void LoadStoreInstBinaryRewrite::InsertLoadStoreSnippets(BPatch_function * func,
 		BPatch_funcCallExpr recordAddrCall(*_recordMemAccess, recordArgs);
 		if (func->getAddSpace()->insertSnippet(recordAddrCall,singlePoint) == NULL) {
 			std::cerr << "[LoadStoreInstBinaryRewrite][LoadStoreSnippet]\t\tCould not insert load store instrimentation into " << id << " in function " << func->getName() << std::endl;
+		} else {
+			_instLogger->Log(libname, func->getName(), LOAD_STORE_INST_TRACK); 
 		}
 	}
 }

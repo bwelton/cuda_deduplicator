@@ -51,7 +51,7 @@
 #include "ReadLoadStoreFiles.h"
 #include "BinaryRewriter.h"
 #include "BPatchBinary.h"
-
+#include "InstrimentationLogger.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -78,7 +78,7 @@ class LoadStoreInstBinaryRewrite {
 public: 
 	~LoadStoreInstBinaryRewrite();
 	void FixLSStackFiles();
-	LoadStoreInstBinaryRewrite(BinaryRewriter * rw);
+	LoadStoreInstBinaryRewrite(BinaryRewriter * rw,  InstrimentationLoggerPtr logger);
 	bool InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points,std::map<uint64_t, StackRecord> & syncStacks);
 	bool InstrimentNewModule(BPatch_object * obj, bool finalize);
 	void Finalize();
@@ -102,7 +102,7 @@ private:
 	std::vector<std::string> _wrappedFunctions;
 	uint64_t _funcId;
 	std::map<uint64_t, std::string> _idToFunction;
-
+	InstrimentationLoggerPtr _instLogger;
 	BPatch_function * _enterSync;
 	BPatch_function * _recordMemAccess;
 	BPatch_function * _entryFunction;

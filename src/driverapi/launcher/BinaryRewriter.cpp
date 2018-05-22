@@ -61,7 +61,9 @@ void BinaryRewriter::OpenAllDependencies() {
 			tmp.find("libdl.so") != std::string::npos ||
 			tmp == std::string("") ||
 			tmp.find("libcuda.so") != std::string::npos ||
-			tmp.find("cudadedup-develop") != std::string::npos)
+			tmp.find("cudadedup-develop") != std::string::npos ||
+			tmp.find("dyninst") != std::string::npos ||
+			tmp.find("Dyninst") != std::string::npos)
 			continue; 
 		if (FindAppBinary(tmp).get())
 			continue;

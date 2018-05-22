@@ -13,6 +13,8 @@ public:
 	void Run(std::string libcudaTouse);
 	void ReadDefinition(std::string WrapperDef);
 	void InsertWrappers(std::string libcudaTouse);
+	std::vector<std::string> GetWrappedFuncNames();
+	
 private:
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapFunctions;
 	BinaryRewriter * _rw;

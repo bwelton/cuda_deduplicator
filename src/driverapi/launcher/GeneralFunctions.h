@@ -13,5 +13,5 @@ class GeneralFunctions {
 public:
 	std::vector<std::string> GetTokensFromLine(std::string line, std::string seperator);
 	std::string FindLibCuda();
-
+	std::string FindLibraryInPath(std::string libname);
 };

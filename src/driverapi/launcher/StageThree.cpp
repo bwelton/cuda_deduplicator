@@ -99,7 +99,12 @@ void StageThree::Run() {
 	CreatePluginFile(pluginNames);
 	std::string outData;
 	logger->WriteToString(outData);
+	boost::filesystem::path outImap = _stageThreePath; 
+	outImap /= "OutInstrimentation.txt";
 	std::cout << outData << std::endl;
+	std::ofstream outInst(outImap.string(), std::ios::binary);
+	outInst << outData << std::endl;
+	outInst.close();
 	// std::string def(WRAPPER_DEF);	
 	// std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	// LogInfo log(std::string("InstRun.txt"), std::string("[InstRun]"), true);

@@ -16,6 +16,7 @@
 #include "SyncTesting.h"
 #include "ProcessControl.h"
 #include "InstWrapper.h"
+#include "InstrimentationLogger.h"
 class StageThree {
 public:
 	StageThree(boost::program_options::variables_map vm);
@@ -25,6 +26,7 @@ public:
 	void GetTimingList(std::vector<StackPoint> & timingList, CallIDGenerator & cmap);
 	void CreatePluginFile(std::vector<std::string> plugins);
 private:
+	InstrimentationLoggerPtr logger;
 	GeneralFunctions _gen;
 	boost::program_options::variables_map _vm;	
 	BinaryRewriter _rw;

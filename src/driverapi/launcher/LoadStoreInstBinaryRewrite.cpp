@@ -122,7 +122,7 @@ void LoadStoreInstBinaryRewrite::InsertLoadStoreInstrimentation() {
 		std::set<BPatch_opCode> axs;
 		axs.insert(BPatch_opLoad);
 		axs.insert(BPatch_opStore);
-		std::cour << "[LoadStoreInstBinaryRewrite] Atteming to insert load stores into library - " << m->GetName() << std::endl;
+		std::cout << "[LoadStoreInstBinaryRewrite] Atteming to insert load stores into library - " << m->GetName() << std::endl;
 		for (auto i : all_functions) {
 			std::vector<BPatch_point*> * loadsAndStores = i->findPoint(axs);
 			if (_instTracker.ShouldInstriment(i, loadsAndStores, LOAD_STORE_INST)) {

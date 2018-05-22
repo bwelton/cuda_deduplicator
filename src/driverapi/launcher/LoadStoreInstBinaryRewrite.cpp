@@ -8,7 +8,7 @@ LoadStoreInstBinaryRewrite::LoadStoreInstBinaryRewrite(BinaryRewriter * rw) :
 
 void LoadStoreInstBinaryRewrite::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
-	_logFile << "[LoadStoreInstBinaryRewrite][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
+	std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
 	for (auto i : *points) {
 		// if (i->getCalledFunction() == NULL)
 		// 	continue;
@@ -36,7 +36,7 @@ void LoadStoreInstBinaryRewrite::InsertEntryExitSnippets(BPatch_function * func,
 			id = _binLoc.StorePosition(libname, libOffsetAddr);
 		else
 			id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
-		_logFile << "[LoadStoreInstBinaryRewrite][EntryExit] \tInstruction at point " << id << " , " << std::hex << (uint64_t) i->getAddress() << std::dec 
+		std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] \tInstruction at point " << id << " , " << std::hex << (uint64_t) i->getAddress() << std::dec 
 				 << " libname: " << libname << " libOffsetPosition: " << libOffsetAddr << std::endl;
 		std::vector<BPatch_snippet*> recordArgs;
 		recordArgs.push_back(new BPatch_constExpr(id));
@@ -47,12 +47,12 @@ void LoadStoreInstBinaryRewrite::InsertEntryExitSnippets(BPatch_function * func,
 
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);
 		BPatch_funcCallExpr exitExpr(*_exitingFunction, recordArgs);
-		//_logFile << id << ",";
+		//std::cout << id << ",";
 		if (func->getAddSpace()->insertSnippet(entryExpr,singlePoint, BPatch_callBefore) == NULL) {
-			_logFile << "[LoadStoreInstBinaryRewrite][EntryExit] \t\t ERROR! Could not insert entry tracking into " << func->getName() << std::endl;
+			std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] \t\t ERROR! Could not insert entry tracking into " << func->getName() << std::endl;
 		}
 		if (func->getAddSpace()->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
-			_logFile << "[LoadStoreInstBinaryRewrite][EntryExit] \t\t ERROR! Could not insert exit tracking into " << func->getName() << std::endl;
+			std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] \t\t ERROR! Could not insert exit tracking into " << func->getName() << std::endl;
 		}		
 	}
 }
@@ -66,18 +66,18 @@ void LoadStoreInstBinaryRewrite::WrapEntryAndExit(std::map<uint64_t, StackRecord
 		for (auto z : points) {
 			BPatchBinaryPtr obj = _rw->FindAppBinary(z.libname);
 			assert(obj.get() != NULL);
-			_logFile << "[LoadStoreInstBinaryRewrite][EntryExit] Attempting to find - " << z.funcName << std::endl;
+			std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] Attempting to find - " << z.funcName << std::endl;
 			BPatch_function * func;
 			if(_dynOps.FindFuncByStackPoint(obj->GetAddressSpace(), func, z) <= 0){
-				_logFile << "[LoadStoreInstBinaryRewrite][EntryExit] Could not find function - " << z.funcName << std::endl;
+				std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] Could not find function - " << z.funcName << std::endl;
 				continue;
 			}
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
-				_logFile << "[LoadStoreInstBinaryRewrite][EntryExit] Inserting exit/entry info into - " << z.funcName << "," << func->getModule()->getObject()->pathName() << std::endl;
+				std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] Inserting exit/entry info into - " << z.funcName << "," << func->getModule()->getObject()->pathName() << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
 			} else {
-				_logFile << "[LoadStoreInstBinaryRewrite][EntryExit] Rejected function - " << z.funcName << std::endl;
+				std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] Rejected function - " << z.funcName << std::endl;
 			}		
 		}
 	}		
@@ -103,7 +103,7 @@ void LoadStoreInstBinaryRewrite::InsertSyncCallNotifier() {
 
 void LoadStoreInstBinaryRewrite::InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
-	_logFile << "[LoadStoreInstBinaryRewrite][LoadStoreSnippet] Inserting load store instrimentation into - " << func->getName() << "," << func->getModule()->getObject()->pathName() << "\n";
+	std::cout << "[LoadStoreInstBinaryRewrite][LoadStoreSnippet] Inserting load store instrimentation into - " << func->getName() << "," << func->getModule()->getObject()->pathName() << "\n";
 	for (auto i : *points) {
 		uint64_t libOffsetAddr = 0;
 		uint64_t id = 0;

@@ -207,7 +207,8 @@ void LoadStoreInstBinaryRewrite::InsertLoadStoresInit(std::vector<uint64_t> & sk
 	for (auto i : syncStacks) {
 		for (auto z : i.second.GetStackpoints()) {
 		 	if (z.libname.find(".so") != std::string::npos)
-		 		_rw->LoadObject(z.libname);
+		 		if (z.libname.find("libcuda.so") == std::string::npos)
+		 			_rw->LoadObject(z.libname);
 		}
 	}
 	std::vector<std::string> synchFunctions;

@@ -20,7 +20,7 @@ add_library(DriverAPIWrapper SHARED "Parameters.cpp" "DriverWrapperBase.cpp" "Dr
 target_link_libraries(DriverAPIWrapper ${Boost_LIBRARIES})
 target_link_libraries(DriverAPIWrapper ${DYNINST_LIBRARIES})
 target_link_libraries(DriverAPIWrapper "-lpthread")
-target_link_libraries(DriverAPIWrapper StubLib)
+#target_link_libraries(DriverAPIWrapper StubLib)
 INCLUDE_DIRECTORIES(DriverAPIWrapper ${CUDA_TOOLKIT_ROOT_DIR}/include)
 INCLUDE_DIRECTORIES(DriverAPIWrapper ${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/include)
 INCLUDE_DIRECTORIES(DriverAPIWrapper ${Boost_INCLUDE_DIRS})

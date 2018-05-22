@@ -59,7 +59,8 @@ void BinaryRewriter::OpenAllDependencies() {
 			tmp.find("librt.so") != std::string::npos ||
 			tmp.find("libpthread.so") != std::string::npos || 
 			tmp.find("libdl.so") != std::string::npos ||
-			tmp == std::string(""))
+			tmp == std::string("") ||
+			tmp.find("libcuda.so") != std::string::npos)
 			continue; 
 		if (FindAppBinary(tmp).get())
 			continue;

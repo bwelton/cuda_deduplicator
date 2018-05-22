@@ -23,7 +23,11 @@ void InstrimentationLogger::WriteToString(std::string & ret) {
 	   << " | " << std::setfill(' ') << std::setw(10) << "LS Inst" << std::endl;
 	for (auto i : _storage) {
 		boost::filesystem::path p(i.first.substr(0,i.first.find("$")));
-		ss << std::setfill(' ') << std::setw(30) << p.filename().string() << " | " << std::setfill(' ') << std::setw(25) << i.first.substr(i.first.find("$"),i.first.size()) << " | " << std::setfill(' ') << std::setw(10) << i.second[0] << " | " <<  std::setfill(' ') << std::setw(10) <<  i.second[1]  << " | " << std::setfill(' ') << std::setw(10) << i.second[2]  << std::endl;
+		std::string tmp = i.first.substr(i.first.find("$")+1,i.first.size());
+		if (tmp.size() > 25)
+			tmp = tmp.substr(tmp.size()-24, tmp.size());
+
+		ss << std::setfill(' ') << std::setw(30) << p.filename().string() << " | " << std::setfill(' ') << std::setw(25) << tmp << " | " << std::setfill(' ') << std::setw(10) << i.second[0] << " | " <<  std::setfill(' ') << std::setw(10) <<  i.second[1]  << " | " << std::setfill(' ') << std::setw(10) << i.second[2]  << std::endl;
 	}
 	ret = ss.str();
 } 

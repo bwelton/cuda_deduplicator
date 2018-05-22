@@ -83,6 +83,7 @@ public:
 	bool InstrimentNewModule(BPatch_object * obj, bool finalize);
 	void Finalize();
 	void BeginInsertionSet();
+	void WriteBinLocation(std::string outDir);
 	void SetWrappedFunctions(std::vector<std::string> & wrappedFunctions);
 	std::map<uint64_t, StackPoint> _firstUses;
 	void WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStacks);

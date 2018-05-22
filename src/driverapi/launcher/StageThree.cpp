@@ -94,7 +94,7 @@ void StageThree::Run() {
 	InstWrapper instWrapper(&_rw,def, logger);
 	LoadStoreInstBinaryRewrite ls_rw(&_rw, logger);
 	ls_rw.InsertLoadStoresInit(skips, total_functions, instPoints, _stackRecords, instWrapper.GetWrappedFuncNames());
-	instWrapper.Run(libcudaLocation);
+	//instWrapper.Run(libcudaLocation);
 
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);

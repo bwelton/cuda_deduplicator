@@ -53,6 +53,12 @@ void BinaryRewriter::OpenAllDependencies() {
 	while (curList.size() > 0) {
 		std::string tmp = curList.back();
 		curList.pop_back();
+		if (tmp.find("ld-linux-x86-64") != std::string::npos || 
+			tmp.find("linux-vdso.so") != std::string::npos || 
+			tmp.find("librt.so") != std::string::npos ||
+			tmp.find("libpthread.so") != std::string::npos || 
+			tmp.find("libdl.so") != std::string::npos)
+			continue; 
 		if (FindAppBinary(tmp).get())
 			continue;
 		BPatchBinaryPtr l = LoadObject(tmp);
@@ -76,8 +82,12 @@ std::vector<std::string> BinaryRewriter::GetDependencies(BPatchBinaryPtr file) {
 }
 
 BPatchBinaryPtr BinaryRewriter::FindAppBinary(std::string libname) {
+	boost::filesystem::path tmpP(libname);
+	std::string libFileName = tmpP.filename().string();
+
 	for (auto i : BinaryManagerBase::_OpenBinaries) {
-		if (i->GetName().find(libname) != std::string::npos)
+		boost::filesystem::path tmp(i->GetName());
+		if (tmp.pathname().string().find(libFileName) != std::string::npos)
 			return i;
 	}
 	return BPatchBinaryPtr();

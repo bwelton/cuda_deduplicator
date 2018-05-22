@@ -13,6 +13,7 @@ BPatchBinary::BPatchBinary(std::string binName, bool output, std::string outName
 	//_as = dynamic_cast<BPatch_binaryEdit*>(_as);
 	bpatch.setInstrStackFrames(true);
 	bpatch.setLivenessAnalysis(false);
+	_as->beginInsertionSet();
 }
 
 BPatchBinary::BPatchBinary(std::vector<std::string> appAndArgs)  :
@@ -42,6 +43,7 @@ BPatchBinary::BPatchBinary(std::vector<std::string> appAndArgs)  :
 
 BPatchBinary::~BPatchBinary() {
 	if(_output){
+		_as->finalizeInsertionSet(false);
 		boost::filesystem::path curDir(boost::filesystem::current_path());
 		boost::filesystem::path p(_outName);
 		chdir(p.parent_path().string().c_str());

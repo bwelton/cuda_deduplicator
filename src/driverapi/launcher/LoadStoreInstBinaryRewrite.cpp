@@ -115,6 +115,8 @@ void LoadStoreInstBinaryRewrite::InsertLoadStoreSnippets(BPatch_function * func,
 
 void LoadStoreInstBinaryRewrite::InsertLoadStoreInstrimentation() {
 	for (auto m : _rw->GetAllBinaryObjects()) {
+		if (m->GetName().find("libcuda.so"))
+			continue;
 		std::vector<BPatch_function *> all_functions;
 		m->GetImage()->getProcedures(all_functions);
 		std::set<BPatch_opCode> axs;

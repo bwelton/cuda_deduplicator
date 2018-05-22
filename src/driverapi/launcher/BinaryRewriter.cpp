@@ -107,6 +107,9 @@ std::vector<BPatch_object *> BinaryRewriter::GetAllObjects() {
 }
 
 
+std::vector<BPatchBinaryPtr> BinaryRewriter::GetAllBinaryObjects() {
+	return BinaryManagerBase::_OpenBinaries;
+}
 
 BPatchBinaryPtr BinaryManagerBase::GetAppBinary() {
 	return _OpenBinaries[0];

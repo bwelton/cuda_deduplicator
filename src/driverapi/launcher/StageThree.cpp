@@ -1,4 +1,5 @@
 #include "StageThree.h"
+#include "LoadStoreInstBinaryRewrite.h"
 void StageThree::GetTimingList(std::vector<StackPoint> & timingList, CallIDGenerator & cmap) {
 	std::set<uint64_t> alreadyPresent;
 	for (auto i : _stackRecords) {
@@ -87,6 +88,10 @@ void StageThree::Run() {
 	InstWrapper instWrapper(&_rw,def);
 	instWrapper.Run(libcudaLocation);
 	// _rw.LoadObject(std::string("libcuda.so.1"));
+	std::vector<uint64_t> skips;
+	uint64_t total_functions = 0;
+	LoadStoreInstBinaryRewrite ls_rw(&_rw);
+	ls_rw.InsertLoadStoresInit(skips, total_functions, instPoints, _stackRecords, InstWrapper.GetWrappedFuncNames());
 
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);

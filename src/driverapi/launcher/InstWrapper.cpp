@@ -7,6 +7,14 @@ void InstWrapper::Run(std::string libcudaTouse) {
 	InsertWrappers(libcudaTouse);
 }
 
+std::vector<std::string> InstWrapper::GetWrappedFuncNames() {
+	std::vector<std::string> ret;
+	for (auto i : _wrapFunctions)
+		ret.push_back(std::get<1>(i));
+	return ret;
+	
+}
+
 void InstWrapper::InsertWrappers(std::string libcudaTouse) {
 	BPatchBinaryPtr libCuda = _rw->LoadObject(libcudaTouse);
 	for (auto i : _wrapFunctions){

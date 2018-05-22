@@ -47,7 +47,11 @@ void LoadStoreInstBinaryRewrite::WrapEntryAndExit(std::map<uint64_t, StackRecord
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
 			BPatchBinaryPtr obj = _rw->FindAppBinary(z.libname);
-			assert(obj.get() != NULL);
+			if (obj.get() == NULL){
+				std::cout << "[LoadStoreInstBinaryRewrite] Skipping library - " << z.libname << std::endl;
+				continue;
+			}
+			//assert(obj.get() != NULL);
 			std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] Attempting to find - " << z.funcName << std::endl;
 			BPatch_function * func;
 			if(_dynOps.FindFuncByStackPoint(obj->GetAddressSpace(), func, z) <= 0){
@@ -206,7 +210,7 @@ void LoadStoreInstBinaryRewrite::InsertLoadStoresInit(std::vector<uint64_t> & sk
 	//LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStubLib.so"));
 	for (auto i : syncStacks) {
 		for (auto z : i.second.GetStackpoints()) {
-		 	if (z.libname.find(".so") != std::string::npos)
+		 	if (z.libname.find(".so") != std::string::npos && z.libname.find("cudadedup") != std::string::npos)
 		 		if (z.libname.find("libcuda.so") == std::string::npos)
 		 			_rw->LoadObject(z.libname);
 		}

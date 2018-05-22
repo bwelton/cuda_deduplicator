@@ -46,7 +46,7 @@
 #include "StackPoint.h"
 #include "StackStorage.h"
 #include "BinaryRewriter.h"
-#include "BPatchBinary.h"
+//#include "BPatchBinary.h"
 
 using namespace Dyninst;
 using namespace ParseAPI;

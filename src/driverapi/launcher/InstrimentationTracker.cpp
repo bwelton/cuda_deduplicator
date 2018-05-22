@@ -68,7 +68,7 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
 }
 
 bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, InstType t) {
-	static StringVector callTracingSkips  = {"_main","main","dyninst","Dyninst","___stack_chk_fail","__run_exit_handlers","exit","libc","__GI_"," __malloc","abort","__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
+	static StringVector callTracingSkips  = {"_main","main","_start","dyninst","Dyninst","___stack_chk_fail","__run_exit_handlers","exit","libc","__GI_"," __malloc","abort","__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
 	static StringVector loadStoreSkips =  {"_fini","atexit","main", "dyninst", "boost","pthread", "clock","timer","__aio_",
 	"__libc_csu_init", "__libc_csu_fini","malloc","printf","fwrite","strlen","abort","assert","strnlen","new_heap","fflush",
 	"__static_initialization_and_destruction_0","_start", "__GI___backtrace","__GI___libc_secure_getenv","__GI_exit","cudart","_IO_puts","__new_fopen","fopen","_Unwind_Resume","__run_exit_handlers","free","open",

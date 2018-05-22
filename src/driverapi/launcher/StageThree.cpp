@@ -87,13 +87,12 @@ void StageThree::Run() {
 	// _rw.LoadObject(std::string("libcuda.so.1"));
 	std::vector<uint64_t> skips;
 	uint64_t total_functions = 0;
-	LoadStoreInstBinaryRewrite ls_rw(&_rw);
-	ls_rw.InsertLoadStoresInit(skips, total_functions, instPoints, _stackRecords, instWrapper.GetWrappedFuncNames());
-
 	std::string def(WRAPPER_DEF);
 	InstWrapper instWrapper(&_rw,def);
+	LoadStoreInstBinaryRewrite ls_rw(&_rw);
+	ls_rw.InsertLoadStoresInit(skips, total_functions, instPoints, _stackRecords, instWrapper.GetWrappedFuncNames());
 	instWrapper.Run(libcudaLocation);
-	
+
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);
 	// std::string def(WRAPPER_DEF);	

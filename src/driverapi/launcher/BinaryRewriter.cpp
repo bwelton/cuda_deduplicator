@@ -88,7 +88,7 @@ BPatchBinaryPtr BinaryRewriter::FindAppBinary(std::string libname) {
 
 	for (auto i : BinaryManagerBase::_OpenBinaries) {
 		boost::filesystem::path tmp(i->GetName());
-		if (tmp.pathname().string().find(libFileName) != std::string::npos)
+		if (tmp.filename().string().find(libFileName) != std::string::npos)
 			return i;
 	}
 	return BPatchBinaryPtr();

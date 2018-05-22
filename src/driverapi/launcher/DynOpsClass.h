@@ -45,7 +45,7 @@
 #include "Constants.h"
 #include "StackPoint.h"
 #include "StackStorage.h"
-#include "BinaryRewriter.h"
+//#include "BinaryRewriter.h"
 //#include "BPatchBinary.h"
 
 using namespace Dyninst;
@@ -65,5 +65,5 @@ public:
 	Dyninst::InstructionAPI::Instruction::Ptr FindInstructionAtPoint(BPatch_point * point);
 	std::vector<std::string> GetLibraryNames(BPatch_addressSpace * aspace);
 	BPatch_function * FindFunctionByOffset(BPatch_addressSpace * aspace, BPatch_object * obj, uint64_t offset);
-	int FindFunctionInLibrary(BinaryRewriter * _rw, BPatch_function *& ret,  std::string fname, std::string libname);
+
 };

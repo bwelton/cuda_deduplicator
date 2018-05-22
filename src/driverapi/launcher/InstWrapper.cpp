@@ -23,6 +23,7 @@ void InstWrapper::InsertWrappers(std::string libcudaTouse) {
 		wrapperFunction = std::get<2>(i);
 		wrapperLib = std::get<3>(i);
 		symbolToReplace = std::get<4>(i);
+		//BPatchBinaryPtr libDriverAPIWrapper = _rw->LoadObject(wrapperLib);
 
 		if (instType.find("wrap") == std::string::npos)
 			continue;
@@ -38,30 +39,25 @@ void InstWrapper::InsertWrappers(std::string libcudaTouse) {
 		_ops.FindFuncByName(libCuda->GetAddressSpace(), newWrap, wrapperFunction);
 		assert(orig != NULL);
 		assert(newWrap != NULL);
-		symbolToReplace = "SPICY_" + symbolToReplace;
-       Dyninst::SymtabAPI::Symbol *newSym = new Dyninst::SymtabAPI::Symbol(symbolToReplace.c_str(),
-                                   Symbol::ST_FUNCTION,
-                                   Symbol::SL_GLOBAL,
-                                   Symbol::SV_DEFAULT,
-                                   NULL,
-                                   NULL,
-                                   NULL,
-                                   0);  
-        assert(libCuda->GetAddressSpace()->wrapFunction(orig,  newWrap, newSym) == true);
-
-		// Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(wrapperLibrary);
-		// std::vector<Dyninst::SymtabAPI::Symbol *> tmp;
-		// symt->getAllSymbols(tmp);
-		// for(auto sym : tmp) {
-		// 	if (sym->getPrettyName() == symbolToReplace) {
-		// 		if (libCuda->GetAddressSpace()->wrapFunction(orig,  newWrap, sym) == true){
-		// 			std::cout << "[InstWrapper] Succesfully wrapped function - " << funcNameToWrap << std::endl;
-		// 		} else {
-		// 			std::cout << "[InstWrapper] FAILED to wrap funciton - " << funcNameToWrap << std::endl;
-		// 		}
-		// 		break;
-		// 	}
-		// }
+		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(wrapperLibrary);
+		std::vector<Dyninst::SymtabAPI::Symbol *> tmp;
+		symt->getAllSymbols(tmp);
+		for(auto sym : tmp) {
+			if (sym->getPrettyName() == symbolToReplace) {
+				std::cout << "[InstWrapper] Symbol Captured: " << symbolToReplace << "off:" << sym->getOffset() << ",PtrOffset: " << sym->getPtrOffset() << ", LocalTOC:" << sym->getLocalTOC() << ", size:" << sym->getSize() << std::endl;
+				if (libCuda->GetAddressSpace()->wrapFunction(orig,  newWrap, sym) == true){
+					std::cout << "[InstWrapper] Succesfully wrapped function - " << funcNameToWrap << std::endl;
+				} else {
+					std::cout << "[InstWrapper] FAILED to wrap funciton - " << funcNameToWrap << std::endl;
+				}
+				break;
+			}
+		}
+		tmp.clear();
+		symt->getAllSymbols(tmp);
+		for(auto sym : tmp) 
+			if (sym->getPrettyName() == symbolToReplace) 
+				std::cout << "[InstWrapper] POST Symbol Captured: " << symbolToReplace << "off:" << sym->getOffset() << ",PtrOffset: " << sym->getPtrOffset() << ", LocalTOC:" << sym->getLocalTOC() << ", size:" << sym->getSize() << std::endl;
 	}
 }
 

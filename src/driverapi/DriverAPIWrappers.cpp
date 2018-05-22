@@ -3063,7 +3063,7 @@ extern "C" void DefineBinders() {
 	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);
 	// int (tester) (int *);
 	// tester = (int (*)(int *))dlsym(handle, "cuDriverGetVersion_dyninst");
-	int (*tester)(int*) = (int (*)(int *))dlsym(handle, "cuDriverGetVersion_dyninst");
+	int (*tester)(int*) = (int (*)(int *))dlsym(handle, "SPICY_ORIGINAL_cuDriverGetVersion");
 	assert(tester != NULL);
 	//Bound_cuDriverGetVersion = std::bind(&ORIGINAL_cuDriverGetVersion,std::placeholders::_1);
 	Bound_cuDriverGetVersion = std::bind(tester,std::placeholders::_1);

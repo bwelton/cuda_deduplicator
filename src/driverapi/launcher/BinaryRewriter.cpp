@@ -38,8 +38,8 @@ void BinaryRewriter::Init() {
 			continue;
 
 		//BinaryManagerBase::_OpenBinaries.push_back(BPatchBinaryPtr(new BPatchBinary(i,false)));
-		if(!BinaryManagerBase::_OpenBinaries[0]->LoadLibrary(i))
-		 	std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
+		//if(!BinaryManagerBase::_OpenBinaries[0]->LoadLibrary(i))
+		// 	std::cout << "[BinaryRewriter] Could not load library - " << i << std::endl;
 	}
 }
 

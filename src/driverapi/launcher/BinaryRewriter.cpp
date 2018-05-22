@@ -52,6 +52,7 @@ void BinaryRewriter::OpenAllDependencies() {
 	}
 	while (curList.size() > 0) {
 		std::string tmp = curList.back();
+		std::cout << "[BinaryRewriter] Loading dependencies for - " << tmp << std::endl;
 		curList.pop_back();
 		if (tmp.find("ld-linux-x86-64") != std::string::npos || 
 			tmp.find("linux-vdso.so") != std::string::npos || 

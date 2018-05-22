@@ -6,10 +6,10 @@
 #include "BinaryRewriter.h"
 #include "BPatchBinary.h"
 #include "DynOpsClass.h"
-
+#include "InstrimentationLogger.h"
 class InstWrapper{
 public:
-	InstWrapper(BinaryRewriter * rw, std::string def);
+	InstWrapper(BinaryRewriter * rw, std::string def, InstrimentationLoggerPtr log);
 	void Run(std::string libcudaTouse);
 	void ReadDefinition(std::string WrapperDef);
 	void InsertWrappers(std::string libcudaTouse);
@@ -20,4 +20,6 @@ private:
 	BinaryRewriter * _rw;
 	std::string _def;
 	DynOpsClass _ops;
+	InstrimentationLoggerPtr _logger;
+	
 };

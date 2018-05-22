@@ -161,7 +161,7 @@ bool LoadStoreInstBinaryRewrite::InstrimentAllModules(bool finalize, std::vector
 	//BeginInsertionSet();
 	WrapEntryAndExit(syncStacks);
 	InsertSyncCallNotifier();
-	//InsertSyncCallNotifier(points);
+	InsertSyncCallNotifier(points);
 	InsertLoadStoreInstrimentation();
 	_runOneTime =true;
 	if (finalize)

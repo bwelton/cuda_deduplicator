@@ -102,7 +102,7 @@ void StageThree::Run() {
 	boost::filesystem::path outImap = _stageThreePath; 
 	outImap /= "OutInstrimentation.txt";
 	std::cout << outData << std::endl;
-	std::ofstream outInst(outImap.string().c_str(), std::ios::binary);
+	std::ofstream outInst(outImap.string().c_str(), std::ofstream::out);
 	outInst << outData << std::endl;
 	outInst.close();
 	// std::string def(WRAPPER_DEF);	

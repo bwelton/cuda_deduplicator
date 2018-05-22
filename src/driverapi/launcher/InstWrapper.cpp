@@ -38,7 +38,7 @@ void InstWrapper::InsertWrappers(std::string libcudaTouse) {
 		_ops.FindFuncByName(libCuda->GetAddressSpace(), newWrap, wrapperFunction);
 		assert(orig != NULL);
 		assert(newWrap != NULL);
-		symbolToReplace = "SPICY_" + symbolToReplace
+		symbolToReplace = "SPICY_" + symbolToReplace;
        Dyninst::SymtabAPI::Symbol *newSym = new Dyninst::SymtabAPI::Symbol(symbolToReplace.c_str(),
                                    Symbol::ST_FUNCTION,
                                    Symbol::SL_GLOBAL,

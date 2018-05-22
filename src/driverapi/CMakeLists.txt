@@ -16,7 +16,7 @@ install(TARGETS StubLib
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib/static)
 
-add_library(DriverAPIWrapper SHARED "StubLib.cpp" Parameters.cpp" "DriverWrapperBase.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp" "MemoryTransfer.cpp")
+add_library(DriverAPIWrapper SHARED "StubLib.cpp" "Parameters.cpp" "DriverWrapperBase.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp" "MemoryTransfer.cpp")
 target_link_libraries(DriverAPIWrapper ${Boost_LIBRARIES})
 target_link_libraries(DriverAPIWrapper ${DYNINST_LIBRARIES})
 target_link_libraries(DriverAPIWrapper "-lpthread")

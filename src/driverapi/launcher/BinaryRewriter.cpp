@@ -45,15 +45,15 @@ void BinaryRewriter::Init() {
 }
 
 void BinaryRewriter::OpenAllDependencies() {
-	std::vector<std::string> curList;
+	std::vector<std::string> depList;
 	for (auto i : BinaryManagerBase::_OpenBinaries) {
 		std::vector<std::string> tmp_list = GetDependencies(i);
-		curList.insert(curList.end(), tmp_list.begin(), tmp_list.end());
+		depList.insert(depList.end(), tmp_list.begin(), tmp_list.end());
 	}
-	while (curList.size() > 0) {
-		std::string tmp = curList.back();
+	while (depList.size() > 0) {
+		std::string tmp = depList.back();
 		std::cout << "[BinaryRewriter] Loading dependencies for - " << tmp << std::endl;
-		curList.pop_back();
+		depList.pop_back();
 		if (tmp.find("ld-linux-x86-64") != std::string::npos || 
 			tmp.find("linux-vdso.so") != std::string::npos || 
 			tmp.find("librt.so") != std::string::npos ||
@@ -64,7 +64,7 @@ void BinaryRewriter::OpenAllDependencies() {
 			continue;
 		BPatchBinaryPtr l = LoadObject(tmp);
 		std::vector<std::string> tmp_list = GetDependencies(l);
-		curList.insert(curList.end(), tmp_list.begin(), tmp_list.end());
+		depList.insert(depList.end(), tmp_list.begin(), tmp_list.end());
 	}
 
 }

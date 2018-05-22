@@ -1,5 +1,6 @@
 #include "StageThree.h"
 #include "LoadStoreInstBinaryRewrite.h"
+#include <fstream>
 void StageThree::GetTimingList(std::vector<StackPoint> & timingList, CallIDGenerator & cmap) {
 	std::set<uint64_t> alreadyPresent;
 	for (auto i : _stackRecords) {
@@ -102,6 +103,7 @@ void StageThree::Run() {
 	boost::filesystem::path outImap = _stageThreePath; 
 	outImap /= "OutInstrimentation.txt";
 	std::cout << outData << std::endl;
+	std::cout << "Saving outinstrimentation to : " << outImap.string() << std::endl;
 	std::ofstream outInst(outImap.string().c_str(), std::ofstream::out);
 	outInst << outData << std::endl;
 	outInst.close();

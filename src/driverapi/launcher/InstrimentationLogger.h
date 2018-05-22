@@ -13,7 +13,8 @@ enum INST_TYPE_INSERTED {
 	ENTRY_INST = 0,
 	EXIT_INST = 1,
 	LOAD_STORE_INST_TRACK = 2,
-	INST_END = 3,
+	WRAPPED_FUNCTION = 3,
+	INST_END = 4,
 };
 
 class InstrimentationLogger {

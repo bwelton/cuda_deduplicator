@@ -1,6 +1,6 @@
 #include "InstWrapper.h"
 
-InstWrapper::InstWrapper(BinaryRewriter * rw, std::string def) : _rw(rw), _def(def) { ReadDefinition(_def);}
+InstWrapper::InstWrapper(BinaryRewriter * rw, std::string def, InstrimentationLoggerPtr log) : _rw(rw), _def(def), _logger(log) { ReadDefinition(_def);}
 
 void InstWrapper::Run(std::string libcudaTouse) {
 	InsertWrappers(libcudaTouse);
@@ -44,8 +44,9 @@ void InstWrapper::InsertWrappers(std::string libcudaTouse) {
 		symt->getAllSymbols(tmp);
 		for(auto sym : tmp) {
 			if (sym->getPrettyName() == symbolToReplace) {
-				std::cout << "[InstWrapper] Symbol Captured: " << symbolToReplace << "off:" << sym->getOffset() << ",PtrOffset: " << sym->getPtrOffset() << ", LocalTOC:" << sym->getLocalTOC() << ", size:" << sym->getSize() << std::endl;
+				//std::cout << "[InstWrapper] Symbol Captured: " << symbolToReplace << "off:" << sym->getOffset() << ",PtrOffset: " << sym->getPtrOffset() << ", LocalTOC:" << sym->getLocalTOC() << ", size:" << sym->getSize() << std::endl;
 				if (libCuda->GetAddressSpace()->wrapFunction(orig,  newWrap, sym) == true){
+					_logger->Log(orig->getModule()->getObject()->pathName(), orig->getName(), WRAPPED_FUNCTION);
 					std::cout << "[InstWrapper] Succesfully wrapped function - " << funcNameToWrap << std::endl;
 				} else {
 					std::cout << "[InstWrapper] FAILED to wrap funciton - " << funcNameToWrap << std::endl;
@@ -53,11 +54,11 @@ void InstWrapper::InsertWrappers(std::string libcudaTouse) {
 				break;
 			}
 		}
-		tmp.clear();
-		symt->getAllSymbols(tmp);
-		for(auto sym : tmp) 
-			if (sym->getPrettyName() == symbolToReplace) 
-				std::cout << "[InstWrapper] POST Symbol Captured: " << symbolToReplace << "off:" << sym->getOffset() << ",PtrOffset: " << sym->getPtrOffset() << ", LocalTOC:" << sym->getLocalTOC() << ", size:" << sym->getSize() << std::endl;
+		// tmp.clear();
+		// symt->getAllSymbols(tmp);
+		// for(auto sym : tmp) 
+		// 	if (sym->getPrettyName() == symbolToReplace) 
+		// 		std::cout << "[InstWrapper] POST Symbol Captured: " << symbolToReplace << "off:" << sym->getOffset() << ",PtrOffset: " << sym->getPtrOffset() << ", LocalTOC:" << sym->getLocalTOC() << ", size:" << sym->getSize() << std::endl;
 	}
 }
 

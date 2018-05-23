@@ -129,8 +129,8 @@ void LoadStoreInst::FixLSStackFiles() {
 }
 
 LoadStoreInst::~LoadStoreInst() {
-	// if(_runOneTime)
-	// 	FixLSStackFiles();
+	if(_runOneTime)
+		FixLSStackFiles();
 }
 
 void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFunctions ) {

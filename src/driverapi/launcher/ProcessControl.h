@@ -47,9 +47,6 @@
 #include "LoadStoreInst.h"
 #include "StacktraceInst.h"
 #include "StackStorage.h"
-#include "BinaryRewriter.h"
-#include "DynOpsClass.h"
-
 #define INTERNAL_SYNC_C 0x2864C0
 using namespace Dyninst;
 using namespace ParseAPI;
@@ -88,8 +85,6 @@ public:
 	void InsertStacktracing();
 	std::map<uint64_t, StackPoint> GetFirstUse();
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
-	void SetRewriterMode(BPatchBinaryPtr in);
-	std::shared_ptr<LoadStoreInst> GetLoadStorePtr();
 private:
 	std::shared_ptr<LoadStoreInst> _loadStore;
 	LogInfo * _log;
@@ -106,8 +101,7 @@ private:
 	bool _binaryEdit;
 	BPatch_binaryEdit * _appBE;
 	bool _dontFin;
+
 	bool _WithLoadStore;
 	StacktraceInst * _stackTracer;
-	BPatchBinaryPtr _binaryEditPointer;
-	DynOpsClass _ops;
 };

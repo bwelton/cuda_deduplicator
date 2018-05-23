@@ -5,15 +5,6 @@ ProcessController::ProcessController(boost::program_options::variables_map vm, L
 	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false), _WithLoadStore(false) {
 }
 
-void ProcessController::SetRewriterMode(BPatchBinaryPtr in) {
-	_binaryEdit = true;
-	_binaryEditPointer = in;
-	_addrSpace = in->GetAddressSpace();
-	_appProc = NULL;
-	_loadStore.reset(new LoadStoreInst(_addrSpace, _addrSpace->getImage()));
-}
-
-
 BPatch_addressSpace * ProcessController::LaunchProcess() {
 	_binaryEdit = false;
 	BPatch_addressSpace * handle = NULL;
@@ -104,7 +95,7 @@ void ProcessController::InsertStacktracing() {
 	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStacktrace.so"));
 	_stackTracer->InsertStackInst();
 
-	//_appProc->dumpImage("currentImage");
+	_appProc->dumpImage("currentImage");
 }
 
 void ProcessController::InsertTimers(std::vector<StackPoint> points) {
@@ -356,9 +347,6 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 	_loadStore->InstrimentAllModules(true, skips, instUntil, synchFunctions, points,syncStacks);
 	_WithLoadStore = true;
 }
-std::shared_ptr<LoadStoreInst> ProcessController::GetLoadStorePtr() {
-	return _loadStore;
-}
 
 BPatch * ProcessController::GetBPatch() {
 	return &bpatch;
@@ -475,163 +463,92 @@ void ProcessController::InstrimentApplication() {
 	}
 	_addrSpace->beginInsertionSet();
 	std::stringstream ss;
-	std::string cudaLibname = std::string("libcuda.so");
-	BPatch_object * cudaObj = _ops.FindObjectByName(_addrSpace, cudaLibname, false);
-	cudaLibname = std::string("libStubLib.so");
-	BPatch_object * stubLib = _ops.FindObjectByName(_addrSpace, cudaLibname, false);
-
-	assert(cudaObj != NULL);
-	assert(stubLib != NULL);
-
 	for (auto i : _wrapFunctions) {
-		//wrap,cuInit,INTER_cuInit,@CMAKE_INSTALL_PREFIX@/lib/libDriverAPIWrapper.so,ORIGINAL_cuInit
-		std::string instType, funcNameToWrap, wrapperFunction, wrapperLib, symbolToReplace;
-		BPatch_function * funcToWrap = NULL; 
-		BPatch_function * wrappedFunc = NULL;
-
-		instType = std::get<0>(i);
-		funcNameToWrap = std::get<1>(i);
-		wrapperFunction = std::get<2>(i);
-		wrapperLib = std::get<3>(i);
-		symbolToReplace = std::get<4>(i);
-
-		// Not a wrapper type instrimentation
-		if (instType.find("wrap") == std::string::npos)
+		totalFunctions += 1;
+		if (std::get<0>(i).find("wrap") == std::string::npos)
 			continue;
+		BPatch_Vector<BPatch_function *> orig;
+		if (std::get<1>(i).find("0x") ==  std::string::npos)
+			orig = findFuncByName(img,std::get<1>(i).c_str(), _log);
+		else {
+			// This is an offset.....
+			// We must:
+			// 1. Convert the offset to an uint.
+			uint64_t offset = uint64_t(std::stoull(std::get<1>(i),0,16));
+			Dyninst::Address offsetAddress = 0;
+			bool foundCuda = false;
+			for (auto obj : _loadedLibraries){
+				if (obj.first.find(std::string("libcuda.so")) == std::string::npos)
+					continue;
+				// Potentially more stable method 
+				std::vector<BPatch_module *> soModules;
+				obj.second->modules(soModules);
+				assert(soModules.size() == 1);
+				offsetAddress = soModules[0]->getLoadAddr() + offset;
 
-		if (funcNameToWrap.find("0x") != std::string::npos) {
-			funcToWrap = _ops.FindFunctionByOffset(_addrSpace,cudaObj,uint64_t(std::stoull(funcNameToWrap,0,16)));
-		} else {
-			std::vector<BPatch_function *> ret = findFuncByName(img, funcNameToWrap.c_str(), _log);
-			for (auto n : ret) {
-				std::cout << n->getName() << "," << n->getModule()->getObject()->pathName() << std::endl;
-			}
-			funcToWrap = ret[0];
-			//_ops.FindFuncByName(_addrSpace, funcToWrap, funcNameToWrap);
+
+				// // We have found the cuda lib....
+				// // Find the function by offset within that library
+				// offsetAddress = obj.second->fileOffsetToAddr(offset);
+				std::stringstream ss;
+				ss << "Found offset for function " << offset << " at location " << offsetAddress;
+				_log->Write(ss.str());
+				assert(offsetAddress != 0);
+				//break;
+			}	
+			_addrSpace->findFunctionsByAddr(offsetAddress, orig);
+			std::stringstream ss;
+			ss << "Found function " << std::get<1>(i) << " at location " << offsetAddress << " " << orig.size() << " number of times";
+			_log->Write(ss.str());
+			assert(orig.size() != 0);
 		}
-		if (funcToWrap == NULL){
-			std::cout << "[ProcessControl] Could not find func to wrap - " << funcToWrap << std::endl;
+		//std::vector<BPatch_function *> * orig2 =  mod->findFunction(std::get<1>(i).c_str(), funcs, true, false, false, false);//findFuncByName(img,std::get<1>(i).c_str());
+		//std::vector<BPatch_function *> orig = *orig2;		
+		if (orig.size() == 0) {
+			std::cerr << "[PROCCTR] Could not find function with name - " << std::get<1>(i) << std::endl;
 			continue;
 		}
-
-		BPatch_object * wrapperLibrary = _ops.FindObjectByName(_addrSpace, wrapperLib, false);
-		if (wrapperLibrary == NULL) {
-			std::cout <<  "[ProcessControl] Could not find wrapper library - " << wrapperLib << std::endl;
+		std::vector<BPatch_function *> wrapfunc = findFuncByName(img,std::get<2>(i).c_str(), _log);
+		if (wrapfunc.size() == 0){
+			std::cerr << "[PROCCTR] Could not find wrapper function - " << std::get<2>(i) << std::endl;
 			continue;
 		}
-		_ops.FindFuncByName(_addrSpace, wrappedFunc, wrapperFunction);
-		if(wrappedFunc == NULL) {
-			std::cout << "[ProcessControl]  Could not find wrap funciton - " << wrapperFunction << std::endl;
-			continue;
+		
+		// Find Hook Symbol	
+		if (instLibSymbols.find(std::get<3>(i)) == instLibSymbols.end()) {
+			assert(1 == 0);
+			std::vector<Symbol *> tmp;
+			Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());	
+			instLibSymbols[std::get<3>(i)] = tmp;
 		}
 
-		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(wrapperLibrary);
-		std::vector<Dyninst::SymtabAPI::Symbol *> tmp;
-		symt->getAllSymbols(tmp);
+		ss << "Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i);
+		_log->Write(ss.str());
+		ss.clear();
 
-		for(auto sym : tmp) {
-			if (sym->getPrettyName() == symbolToReplace) {
-				if (_addrSpace->wrapFunction(funcToWrap,  wrappedFunc, sym) == true){
-					std::cout << "[ProcessControl] Succesfully wrapped function - " << funcNameToWrap << std::endl;
+		for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
+			if (sym->getPrettyName() == std::string(std::get<4>(i))) {
+				uint64_t ptr;
+				BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
+				Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
+
+				if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
+					ss << "Function " << orig[0]->getName() << " wrapped successful";
+					_log->Write(ss.str());
+					ss.clear();
 					wrapCount += 1;
 				} else {
-					std::cout << "[ProcessControl] FAILED to wrap funciton - " << funcNameToWrap << std::endl;
+					std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
+					ss << "Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
+					_log->Write(ss.str());
+					ss.clear();
 				}
 				break;
 			}
 		}
-
-
-
-
-		break;
-
-
-		totalFunctions += 1;
-		// if (std::get<0>(i).find("wrap") == std::string::npos)
-		// 	continue;
-		// BPatch_Vector<BPatch_function *> orig;
-		// if (std::get<1>(i).find("0x") ==  std::string::npos)
-		// 	orig = findFuncByName(img,std::get<1>(i).c_str(), _log);
-		// else {
-		// 	// This is an offset.....
-		// 	// We must:
-		// 	// 1. Convert the offset to an uint.
-		// 	uint64_t offset = uint64_t(std::stoull(std::get<1>(i),0,16));
-		// 	Dyninst::Address offsetAddress = 0;
-		// 	bool foundCuda = false;
-		// 	for (auto obj : _loadedLibraries){
-		// 		if (obj.first.find(std::string("libcuda.so")) == std::string::npos)
-		// 			continue;
-		// 		// Potentially more stable method 
-		// 		std::vector<BPatch_module *> soModules;
-		// 		obj.second->modules(soModules);
-		// 		assert(soModules.size() == 1);
-		// 		offsetAddress = soModules[0]->getLoadAddr() + offset;
-
-
-		// 		// // We have found the cuda lib....
-		// 		// // Find the function by offset within that library
-		// 		// offsetAddress = obj.second->fileOffsetToAddr(offset);
-		// 		std::stringstream ss;
-		// 		ss << "Found offset for function " << offset << " at location " << offsetAddress;
-		// 		_log->Write(ss.str());
-		// 		assert(offsetAddress != 0);
-		// 		//break;
-		// 	}	
-		// 	_addrSpace->findFunctionsByAddr(offsetAddress, orig);
-		// 	std::stringstream ss;
-		// 	ss << "Found function " << std::get<1>(i) << " at location " << offsetAddress << " " << orig.size() << " number of times";
-		// 	_log->Write(ss.str());
-		// 	assert(orig.size() != 0);
-		// }
-		//std::vector<BPatch_function *> * orig2 =  mod->findFunction(std::get<1>(i).c_str(), funcs, true, false, false, false);//findFuncByName(img,std::get<1>(i).c_str());
-		// //std::vector<BPatch_function *> orig = *orig2;		
-		// if (orig.size() == 0) {
-		// 	std::cerr << "[PROCCTR] Could not find function with name - " << std::get<1>(i) << std::endl;
-		// 	continue;
-		// }
-		// std::vector<BPatch_function *> wrapfunc = findFuncByName(img,std::get<2>(i).c_str(), _log);
-		// if (wrapfunc.size() == 0){
-		// 	std::cerr << "[PROCCTR] Could not find wrapper function - " << std::get<2>(i) << std::endl;
-		// 	continue;
-		// }
-		
-		// // Find Hook Symbol	
-		// if (instLibSymbols.find(std::get<3>(i)) == instLibSymbols.end()) {
-		// 	assert(1 == 0);
-		// 	std::vector<Symbol *> tmp;
-		// 	Dyninst::SymtabAPI::Module *symtab =  Dyninst::SymtabAPI::convert(wrapfunc[0]->getModule());	
-		// 	instLibSymbols[std::get<3>(i)] = tmp;
-		// }
-
-		// ss << "Replacing " << orig[0]->getName() << " with " << wrapfunc[0]->getName() << " and new hook " << std::get<4>(i);
-		// _log->Write(ss.str());
-		// ss.clear();
-
-		// for (Symbol * sym : instLibSymbols[std::get<3>(i)]) {
-		// 	if (sym->getPrettyName() == std::string(std::get<4>(i))) {
-		// 		uint64_t ptr;
-		// 		BPatch_object * obj = _loadedLibraries[std::get<3>(i)];
-		// 		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(obj);
-
-		// 		if (_addrSpace->wrapFunction(orig[0], wrapfunc[0], sym) == true){
-		// 			ss << "Function " << orig[0]->getName() << " wrapped successful";
-		// 			_log->Write(ss.str());
-		// 			ss.clear();
-		// 			wrapCount += 1;
-		// 		} else {
-		// 			std::cerr << "[PROCCTR] Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
-		// 			ss << "Function " << orig[0]->getName() << " WRAPPING FAILED" << std::endl;	
-		// 			_log->Write(ss.str());
-		// 			ss.clear();
-		// 		}
-		// 		break;
-		// 	}
-		// }
 	}
-	// if (!_dontFin)
-	// 	_addrSpace->finalizeInsertionSet(false);
+	if (!_dontFin)
+		_addrSpace->finalizeInsertionSet(false);
 	_insertedInstrimentation =  true;
 }
 
@@ -663,13 +580,6 @@ void ProcessController::InsertBreakpoints(std::vector<std::string> functionNames
 }
 
 bool ProcessController::LoadWrapperLibrary(std::string libname) {
-	if (libname.find("libcuda.so") != std::string::npos){
-		if (_loadedLibraries.find("libcuda.so.1") != _loadedLibraries.end())
-		{
-			_loadedLibraries[libname] = _loadedLibraries["libcuda.so.1"];
-		}
-		libname = std::string("libcuda.so.1");
-	}
 	if (_loadedLibraries.find(libname) != _loadedLibraries.end())
 		return true;
 	_log->Write(std::string("Loading library ") + libname + std::string(" into address space"));

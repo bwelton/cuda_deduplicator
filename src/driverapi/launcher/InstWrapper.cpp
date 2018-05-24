@@ -51,7 +51,7 @@ void InstWrapper::InsertWrappers(std::string libcudaTouse) {
    //                       Region *r = NULL, 
    //                       unsigned s = 0,
    		
-		Dyninst::SymtabAPI::Symbol * newSym = new Dyninst::SymtabAPI::Symbol(symbolToReplace,
+		Dyninst::SymtabAPI::Symbol * newSym = new Dyninst::SymtabAPI::Symbol(symbolToReplace + std::string("_TRIAL"),
 				                            		   Dyninst::SymtabAPI::Symbol::ST_FUNCTION,
 				                            		   Dyninst::SymtabAPI::Symbol::SL_GLOBAL,
 				                            		   Dyninst::SymtabAPI::Symbol::SV_DEFAULT,

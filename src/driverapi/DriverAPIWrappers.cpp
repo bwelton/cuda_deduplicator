@@ -3066,6 +3066,8 @@ extern "C" void DefineBinders() {
 	int (*tester)(int*) = (int (*)(int *))dlsym(handle, "ORIGINAL_cuDriverGetVersion_TRIAL");
 	assert(tester != NULL);
 	fprintf(stderr, "%s %p\n", "We found a symbol ORIGINAL_cuDriverGetVersion at location", tester);
+	int tmpn1;
+	tester(&tmpn1);
 	//Bound_cuDriverGetVersion = std::bind(&ORIGINAL_cuDriverGetVersion,std::placeholders::_1);
 	Bound_cuDriverGetVersion = std::bind(tester,std::placeholders::_1);
 	Bound_cuDeviceGet = std::bind(&ORIGINAL_cuDeviceGet,std::placeholders::_1,std::placeholders::_2);

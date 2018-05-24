@@ -3063,7 +3063,7 @@ extern "C" void DefineBinders() {
 	Bound_cuInit = std::bind(&ORIGINAL_cuInit,std::placeholders::_1);
 	//int (tester) (int *);
 	//tester = (int (*)(int *))dlsym(handle, "cuDriverGetVersion_dyninst");
-	int (*tester)(int*) = (int (*)(int *))dlsym(handle, "ORIGINAL_cuDriverGetVersion");
+	int (*tester)(int*) = (int (*)(int *))dlsym(handle, "ORIGINAL_cuDriverGetVersion_TRIAL");
 	assert(tester != NULL);
 	fprintf(stderr, "%s %p\n", "We found a symbol ORIGINAL_cuDriverGetVersion at location", tester);
 	//Bound_cuDriverGetVersion = std::bind(&ORIGINAL_cuDriverGetVersion,std::placeholders::_1);

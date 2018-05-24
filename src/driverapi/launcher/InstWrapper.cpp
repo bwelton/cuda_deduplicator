@@ -39,21 +39,42 @@ void InstWrapper::InsertWrappers(std::string libcudaTouse) {
 		_ops.FindFuncByName(libCuda->GetAddressSpace(), newWrap, wrapperFunction);
 		assert(orig != NULL);
 		assert(newWrap != NULL);
-		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(wrapperLibrary);
-		std::vector<Dyninst::SymtabAPI::Symbol *> tmp;
-		symt->getAllSymbols(tmp);
-		for(auto sym : tmp) {
-			if (sym->getPrettyName() == symbolToReplace) {
-				//std::cout << "[InstWrapper] Symbol Captured: " << symbolToReplace << "off:" << sym->getOffset() << ",PtrOffset: " << sym->getPtrOffset() << ", LocalTOC:" << sym->getLocalTOC() << ", size:" << sym->getSize() << std::endl;
-				if (libCuda->GetAddressSpace()->wrapFunction(orig,  newWrap, sym) == true){
-					_logger->Log(orig->getModule()->getObject()->pathName(), orig->getName(), WRAPPED_FUNCTION);
-					std::cout << "[InstWrapper] Succesfully wrapped function - " << funcNameToWrap << std::endl;
-				} else {
-					std::cout << "[InstWrapper] FAILED to wrap funciton - " << funcNameToWrap << std::endl;
-				}
-				break;
-			}
-		}
+		Dyninst::SymtabAPI::Symtab * symt = Dyninst::SymtabAPI::convert(orig->getModule()->getObject());
+		// std::vector<Dyninst::SymtabAPI::Symbol *> tmp;
+		// symt->getAllSymbols(tmp);
+   // Symbol (const std::string& name,
+   //                       SymbolType t,
+   //                       SymbolLinkage l,
+   //                       SymbolVisibility v,
+   //                       Offset o,
+   //                       Module *module = NULL, 
+   //                       Region *r = NULL, 
+   //                       unsigned s = 0,
+   		
+		Dyninst::SymtabAPI::Symbol * newSym = new Dyninst::SymtabAPI::Symbol(symbolToReplace,
+				                            		   Dyninst::SymtabAPI::Symbol::ST_FUNCTION,
+				                            		   Dyninst::SymtabAPI::Symbol::SL_GLOBAL,
+				                            		   Dyninst::SymtabAPI::Symbol::SV_DEFAULT,
+				                            		   0,
+				                            		   Dyninst::SymtabAPI::convert(orig->getModule()),
+				                            		   symt->findEnclosingRegion((uint64_t)orig->getBaseAddr()),
+				                            		   0);
+		assert(libCuda->GetAddressSpace()->wrapFunction(orig,  newWrap, newSym) == true);
+
+		symt->addSymbol(newSym);
+
+		// for(auto sym : tmp) {
+		// 	if (sym->getPrettyName() == symbolToReplace) {
+		// 		//std::cout << "[InstWrapper] Symbol Captured: " << symbolToReplace << "off:" << sym->getOffset() << ",PtrOffset: " << sym->getPtrOffset() << ", LocalTOC:" << sym->getLocalTOC() << ", size:" << sym->getSize() << std::endl;
+		// 		if (libCuda->GetAddressSpace()->wrapFunction(orig,  newWrap, sym) == true){
+		// 			_logger->Log(orig->getModule()->getObject()->pathName(), orig->getName(), WRAPPED_FUNCTION);
+		// 			std::cout << "[InstWrapper] Succesfully wrapped function - " << funcNameToWrap << std::endl;
+		// 		} else {
+		// 			std::cout << "[InstWrapper] FAILED to wrap funciton - " << funcNameToWrap << std::endl;
+		// 		}
+		// 		break;
+		// 	}
+		// }
 		// tmp.clear();
 		// symt->getAllSymbols(tmp);
 		// for(auto sym : tmp) 

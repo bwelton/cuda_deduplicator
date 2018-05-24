@@ -43,11 +43,11 @@ void LoadStoreInstBinaryRewrite::InsertEntryExitSnippets(BPatch_function * func,
 		} else {
 			_instLogger->Log(libname, func->getName(), ENTRY_INST);
 		}
-		if (func->getAddSpace()->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
-			std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] \t\t ERROR! Could not insert exit tracking into " << func->getName() << std::endl;
-		} else {
-			_instLogger->Log(libname, func->getName(), EXIT_INST);
-		}	
+		// if (func->getAddSpace()->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
+		// 	std::cout << "[LoadStoreInstBinaryRewrite][EntryExit] \t\t ERROR! Could not insert exit tracking into " << func->getName() << std::endl;
+		// } else {
+		// 	_instLogger->Log(libname, func->getName(), EXIT_INST);
+		// }	
 	}
 }
 

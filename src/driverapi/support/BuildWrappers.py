@@ -161,8 +161,9 @@ for x in protos:
 	hdr += Template(headerTemplate).substitute(variables)
 	defFile += Template(defTemplate).substitute(variables) + "\n"
 	externTemplates += Template(externTemplate).substitute(variables) + "\n"
+	defineBinders += "\tint (*TMP_PTR_"+variables["CALL_NAME"] +")(" + 	variables["PARAMETER_TYPES_ORIG"] +") = (int(*)(" + variables["PARAMETER_TYPES_ORIG"] + ")) dlsym(handle,\"" + "PTR_ORIGINAL_"+ variables["CALL_NAME"] +"\");\n"
 	defineBinders += "\tPTR_ORIGINAL_"+variables["CALL_NAME"] + " = (void *)dlsym(handle,\"" + "PTR_ORIGINAL_"+ variables["CALL_NAME"] +"\");\n"
-	defineBinders += "\tBound_" + variables["CALL_NAME"] + " = std::bind((int)(*)(" + variables["PARAMETER_TYPES_ORIG"] + ")PTR_ORIGINAL_" + variables["CALL_NAME"] + "," + variables["BINDER_PLACEHOLDERS"] + ");\n"
+	defineBinders += "\tBound_" + variables["CALL_NAME"] + " = std::bind(TMP_PTR_" +variables["CALL_NAME"] + "," + variables["BINDER_PLACEHOLDERS"] + ");\n"
 structFile = structFile[:-3] + "\n};\n" + externTemplates
 hdr += "\n}\n" + charVector
 outStr += "#define DEFINED_TEMPLATES 1" + externTemplates + "\n" + defineBinders + "\n}\n"

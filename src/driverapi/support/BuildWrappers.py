@@ -22,16 +22,35 @@ f = open("ExternTemplate.txt","r")
 externTemplate = f.read()
 f.close()
 
+if (len(sys.argv) < 2):
+	print "Please supply an output directory"
+	sys.exit(0)
+
+outputDirectory = os.path.abspath(sys.argv[1])
+print "Output will be forwarded to directory - " + str(outputDirectory)
+
 count = 0
 ## Build Header for Wrappers
 alreadyWritten = {}
 charVector = "static const std::vector<const char *> CallVector = {"
 outStr = '#include "'+ "DriverAPIHeader.h" +'"\n#include <tuple>\n#include "DriverWrapperBase.h"\n#include "DriverWrapperFactory.h"\n#include "cuda.h"\nstd::shared_ptr<DriverWrapperFactory> DriverFactory;\nextern "C" {'
-outStr+= """\nvoid JustGenStackTrace() {
+outStr+= """\n// MANUALLY ADDED.....
+extern int ORIGINAL_InternalSynchronization( void * a, void * b, void * c);
+
+int INTER_InternalSynchronization( void * a, void * b, void * c) {
+	BUILD_FACTORY
+	std::vector<void **> params = { (void **)&a,(void **)&b, (void**)&c };	
+	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_InternalSynchronization, (void*) &ORIGINAL_InternalSynchronization, params));
+	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return ret;
+}
+
+void JustGenStackTrace() {
 	BUILD_FACTORY
 	FACTORY_PTR->PrintStack();
 	return;
 }
+
 
 void CheckInit_DriverAPI() {
 	
@@ -90,6 +109,7 @@ structFile += 'enum PluginReturn {\n\tNO_ACTION = 0,\n\tNOTIFY_ON_CHANGE,	// Not
 structFile += "enum CallID {\n\t"
 externTemplates = "\n#ifndef DEFINED_TEMPLATES\n#define EXTERN_FLAG extern\n#else\n#define EXTERN_FLAG \n#endif\n"
 defineBinders = 'extern "C" void DefineBinders() {\n'
+defineBinders += '\t void * handle = (void *)dlopen("libcuda.so.1", RTLD_LAZY);\n\tassert(handle != NULL);\n'
 for x in protos:
 	variables = {"RETURN_TYPE" : None, "CALL_NAME" : None, "PARAMETERS_NAMES" : None,
 				"PARAMETERS_FULL" : None}
@@ -141,24 +161,25 @@ for x in protos:
 	hdr += Template(headerTemplate).substitute(variables)
 	defFile += Template(defTemplate).substitute(variables) + "\n"
 	externTemplates += Template(externTemplate).substitute(variables) + "\n"
-	defineBinders += "\tBound_" + variables["CALL_NAME"] + " = std::bind(&ORIGINAL_" + variables["CALL_NAME"] + "," + variables["BINDER_PLACEHOLDERS"] + ");\n"
+	defineBinders += "\tPTR_ORIGINAL_"+variables["CALL_NAME"] + " = (void *)dlsym(handle,\"" + "PTR_ORIGINAL_"+ variables["CALL_NAME"] +"\");\n"
+	defineBinders += "\tBound_" + variables["CALL_NAME"] + " = std::bind((int)(*)(" + variables["PARAMETER_TYPES_ORIG"] + ")PTR_ORIGINAL_" + variables["CALL_NAME"] + "," + variables["BINDER_PLACEHOLDERS"] + ");\n"
 structFile = structFile[:-3] + "\n};\n" + externTemplates
 hdr += "\n}\n" + charVector
 outStr += "#define DEFINED_TEMPLATES 1" + externTemplates + "\n" + defineBinders + "\n}\n"
 
-f = open(sys.argv[4],"w")
+f = open(os.path.join(outputDirectory, "PluginCommon.h"),"w")
 f.write(structFile)
 f.close()
 
-f = open(sys.argv[3], "w")
+f = open(os.path.join(outputDirectory, "DriverAPIWrapper.def.in"), "w")
 f.write(defFile)
 f.close()
 
-f = open(sys.argv[2], "w")
+f = open(os.path.join(outputDirectory, "DriverAPIHeader.h"), "w")
 f.write(hdr)
 f.close()
 
-f = open(sys.argv[1],"w")
+f = open(os.path.join(outputDirectory, "DriverAPIWrappers.cpp"),"w")
 f.write(outStr)
 f.close()
 

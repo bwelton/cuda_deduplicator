@@ -3349,7 +3349,7 @@ extern "C" void DefineBinders() {
 	Bound_cuCtxGetFlags = std::bind(TMP_PTR_cuCtxGetFlags,std::placeholders::_1);
 	int (*TMP_PTR_cuCtxSynchronize)(void) = (int(*)(void)) dlsym(handle,"PTR_ORIGINAL_cuCtxSynchronize");
 	PTR_ORIGINAL_cuCtxSynchronize = (void *)dlsym(handle,"PTR_ORIGINAL_cuCtxSynchronize");
-	Bound_cuCtxSynchronize = std::bind(TMP_PTR_cuCtxSynchronize,std::placeholders::_1);
+	Bound_cuCtxSynchronize = std::bind(TMP_PTR_cuCtxSynchronize);
 	int (*TMP_PTR_cuCtxSetLimit)(CUlimit,size_t) = (int(*)(CUlimit,size_t)) dlsym(handle,"PTR_ORIGINAL_cuCtxSetLimit");
 	PTR_ORIGINAL_cuCtxSetLimit = (void *)dlsym(handle,"PTR_ORIGINAL_cuCtxSetLimit");
 	Bound_cuCtxSetLimit = std::bind(TMP_PTR_cuCtxSetLimit,std::placeholders::_1,std::placeholders::_2);

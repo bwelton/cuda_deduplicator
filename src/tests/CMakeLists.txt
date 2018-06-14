@@ -89,16 +89,12 @@ install(TARGETS PerfEstimateCheck
 add_executable(DyninstSanity "DyninstSanity.cpp")
 target_link_libraries(DyninstSanity ${Boost_LIBRARIES})
 target_link_libraries(DyninstSanity "-lpthread")
-target_link_libraries(DyninstSanity "-L/opt/cray/nvidia/default/lib64 -lcuda")
-target_link_libraries(DyninstSanity "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
-INCLUDE_DIRECTORIES(DyninstSanity ${CUDA_TOOLKIT_ROOT_DIR}/include)
+target_link_libraries(DyninstSanity ${DYNINST_LIBRARIES})
 INCLUDE_DIRECTORIES(DyninstSanity ${Boost_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(DyninstSanity "${CMAKE_SOURCE_DIR}/src/common")
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
-
 install(TARGETS DyninstSanity
         RUNTIME DESTINATION tests)
+
 
 add_executable(DumpFunctionNames "DumpFunctionNames.cpp")
 target_link_libraries(DumpFunctionNames ${Boost_LIBRARIES})

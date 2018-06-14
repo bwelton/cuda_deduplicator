@@ -11,7 +11,7 @@ INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/driverapi")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/deduplicate")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/driverapi/launcher")
-target_link_libraries(PluginCommon "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti -lboost_timer -lunwind")
+target_link_libraries(PluginCommon "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti -lboost_timer")
 install(TARGETS PluginCommon
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib/plugins

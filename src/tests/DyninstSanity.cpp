@@ -60,7 +60,8 @@ BPatch_addressSpace * LaunchProcess(const char * name, const char * argv[]) {
 }
 
 void does_process_create_work(const char * name, const char * argv[]) {
-	BPatch_addressSpace * appProc = LaunchProcess(name, argv);
+	BPatch_addressSpace * addrs = LaunchProcess(name, argv);
+	BPatch_process* appProc = dynamic_cast<BPatch_process*>(addrs);
 	assert(appProc != NULL);
 	appProc->continueExecution();
 	while (!appProc->isTerminated()) {

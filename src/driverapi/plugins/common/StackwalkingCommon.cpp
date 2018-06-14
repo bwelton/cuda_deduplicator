@@ -10,9 +10,7 @@
 #include <cstring>
 #include <memory>
 #include <execinfo.h>
-#define UNW_LOCAL_ONLY  
-#include <libunwind.h>
-#define MAXIMUM_STACK 512
+
 #include "StackPoint.h"
 #include "framestepper.h"
 #include "walker.h"

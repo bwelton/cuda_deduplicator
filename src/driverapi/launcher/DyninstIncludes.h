@@ -47,7 +47,7 @@
 #include "LoadStoreInst.h"
 #include "StacktraceInst.h"
 #include "StackStorage.h"
-#define INTERNAL_SYNC_C 0x2864C0
+#define INTERNAL_SYNC_C 0x2B7E28
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;

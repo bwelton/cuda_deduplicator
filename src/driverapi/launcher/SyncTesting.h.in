@@ -29,7 +29,7 @@
 #define DRIVER_LIBRARY "@CMAKE_INSTALL_PREFIX@/lib/libDriverAPIWrapper.so"
 #define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeCall.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libSynchTool.so"};
 #define WRAPPER_DEF "@CMAKE_INSTALL_PREFIX@/defs/DriverAPIWrapper.def"
-#define INTERNAL_SYNC "0x2864C0"
+#define INTERNAL_SYNC "0x2B7E28"
 class SyncTesting {
 public:
 	SyncTesting(boost::program_options::variables_map vm);

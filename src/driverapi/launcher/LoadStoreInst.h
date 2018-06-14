@@ -55,7 +55,7 @@ using namespace ParseAPI;
 using namespace PatchAPI;
 using namespace SymtabAPI;
 
-#define INTERNAL_SYNC_LS 0x2864C0
+#define INTERNAL_SYNC_LS 0x2B7E28
 
 
 namespace std

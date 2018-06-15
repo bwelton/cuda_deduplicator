@@ -49,9 +49,9 @@ void SyncTesting::Run() {
 		TimeApplications base(_vm);
 		std::cerr << "Running " << _programName << " with stacktrace information enabled" << std::endl;
 		std::cerr << "Saving application output to file : " << _programName << ".stacktrace.out" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".stacktrace.out"));
+		//base.RedirectOutToFile(_programName + std::string(".stacktrace.out"));
 		time = base.RunWithStackTracing();
-		base.ReturnToTerminal();
+		//base.ReturnToTerminal();
 		_model.AddExecutionTime(time);
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
 	}

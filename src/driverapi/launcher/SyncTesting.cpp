@@ -30,9 +30,9 @@ void SyncTesting::Run() {
 		TimeApplications base(_vm);
 		std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
 		std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".base.out"));
+		//base.RedirectOutToFile(_programName + std::string(".base.out"));
 		time = base.Run();
-		base.ReturnToTerminal();
+		//base.ReturnToTerminal();
 		_model.AddExecutionTime(time);
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	}

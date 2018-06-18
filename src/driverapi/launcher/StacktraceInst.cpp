@@ -26,8 +26,8 @@ void StacktraceInst::InsertStackInst() {
 	_addrSpace->finalizeInsertionSet(false);
 
 	BPatch_process * tmpProc = dynamic_cast<BPatch_process*>(_addrSpace);	
-	tmpProc->dumpImage("processImage.img");
-	tmpProc->dumpCore("processCore.core", false);
+	// tmpProc->dumpImage("processImage.img");
+	// tmpProc->dumpCore("processCore.core", false);
 }
 
 void StacktraceInst::Setup() {

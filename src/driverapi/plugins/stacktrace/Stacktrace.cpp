@@ -54,6 +54,7 @@ extern "C" {
 
 
 	__attribute__ ((noinline)) void RecordStack() {
+		fprintf(stderr,"We are recording a stack position....\n");
 		SETUP_INTERCEPTOR();
 		uint64_t pos = 0;
 		std::vector<StackPoint> points;

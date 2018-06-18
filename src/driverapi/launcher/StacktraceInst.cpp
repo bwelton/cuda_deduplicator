@@ -12,7 +12,11 @@ void StacktraceInst::InsertStackInst() {
 	_addrSpace->beginInsertionSet();
 
 #ifdef USE_BPATCHINSERT
-	std::vector<BPatch_point*> * entryLocations = _cudaSync->findPoint(BPatch_locExit);
+	// Testing
+	//std::vector<BPatch_function *> cuCtxSync;
+	//_img->findFunction("RecordStack", cuCtxSync);
+	//assert(cuCtxSync.size() > 0);
+	std::vector<BPatch_point*> * entryLocations = _cudaSync->findPoint(BPatch_locEntry);//cuCtxSync[0]->findPoint(BPatch_locExit) //_cudaSync->findPoint(BPatch_locExit);
 	std::vector<BPatch_snippet*> testArgs;
 	BPatch_funcCallExpr recordFuncEntry(*_wrapperFunc, testArgs);
 	assert(_addrSpace->insertSnippet(recordFuncEntry,*entryLocations) != false);

@@ -62,65 +62,71 @@ int main(const int argc, const char * argv[]){
 	//patch.setSaveFPR(false);
 	//patch.setTrampRecursive(true);
 	BPatch_image * img = app->getImage();
-	app->loadLibrary("/nobackup/spack_repo/opt/spack/linux-ubuntu16.04-x86_64/gcc-6.4.0/cudadedup-develop-mbsbiqg2zylptsgokmkjiehitydyfwtq/lib/plugins/libStacktrace.so");
+	app->loadLibrary("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/lib/plugins/libStacktrace.so");
 	//BPatch_object * obj = app->loadLibrary("libcuda.so.1");
 	std::vector<BPatch_function *> tracerCall;
-	img->findFunction("SYNC_RECORD_SYNC_CALL", tracerCall);
-	std::vector<BPatch_function *> btcall;
+	std::vector<BPatch_function *> wrappingCall;
+	img->findFunction("RecordStack", tracerCall);
+	img->findFunction("funcWrapping", wrappingCall);
+	std::vector<BPatch_point*> * entryLocations = wrappingCall[0]->findPoint(BPatch_locEntry);//cuCtxSync[0]->findPoint(BPatch_locExit) //_cudaSync->findPoint(BPatch_locExit);
+	std::vector<BPatch_snippet*> testArgs;
+	BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
+	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*entryLocations) != false);
+
 	//img->findFunction("__backtrace", btcall);
 	//assert(btcall.size() > 0);
-	assert(tracerCall.size() > 0);
-	BPatch_function * cudaSync = NULL;
-	Dyninst::Address offsetAddress = 0;
-	std::vector<BPatch_object *> imgObjs;
-	std::vector<BPatch_module *> mods;
-	img->getModules(mods);
-	assert(mods.size() > 0);
+	// assert(tracerCall.size() > 0);
+	// BPatch_function * cudaSync = NULL;
+	// Dyninst::Address offsetAddress = 0;
+	// std::vector<BPatch_object *> imgObjs;
+	// std::vector<BPatch_module *> mods;
+	// img->getModules(mods);
+	// assert(mods.size() > 0);
 
-	for (auto i : mods){
-		// Found libcuda
-		std::vector<BPatch_function * > * internalFuncs = i->getProcedures();
-		for (auto z : *internalFuncs){
-			if ((uint64_t) z->getBaseAddr() == INTERNAL_SYNC_ST){
-				std::cerr << "Found" << std::endl;
-				cudaSync = z;
-				break;
-			}
-			if (z->getName() == std::string("INTERNAL_Synchronization"))
-			{
-				cudaSync = z;
-				break;
-			}
-		}
-		if (cudaSync != NULL)
-			break;
-		cudaSync = i->findFunctionByEntry(INTERNAL_SYNC_ST);
-		if (cudaSync != NULL)
-			break;
-	}
-	assert(cudaSync != NULL);
+	// for (auto i : mods){
+	// 	// Found libcuda
+	// 	std::vector<BPatch_function * > * internalFuncs = i->getProcedures();
+	// 	for (auto z : *internalFuncs){
+	// 		if ((uint64_t) z->getBaseAddr() == INTERNAL_SYNC_ST){
+	// 			std::cerr << "Found" << std::endl;
+	// 			cudaSync = z;
+	// 			break;
+	// 		}
+	// 		if (z->getName() == std::string("INTERNAL_Synchronization"))
+	// 		{
+	// 			cudaSync = z;
+	// 			break;
+	// 		}
+	// 	}
+	// 	if (cudaSync != NULL)
+	// 		break;
+	// 	cudaSync = i->findFunctionByEntry(INTERNAL_SYNC_ST);
+	// 	if (cudaSync != NULL)
+	// 		break;
+	// }
+	// assert(cudaSync != NULL);
 
-	img->getAddressSpace()->beginInsertionSet();
+	// img->getAddressSpace()->beginInsertionSet();
 
-	// {
-	// 	BPatch_variableExpr * voidPtr = img->getAddressSpace()->malloc(sizeof(uint64_t) * 1024, "stackTraceVar");
-	// 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
+	// // {
+	// // 	BPatch_variableExpr * voidPtr = img->getAddressSpace()->malloc(sizeof(uint64_t) * 1024, "stackTraceVar");
+	// // 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
+	// // 	std::vector<BPatch_snippet*> testArgs;
+	// // 	testArgs.push_back(voidPtr);
+	// // 	testArgs.push_back(new BPatch_constExpr(1024));
+	// // 	BPatch_funcCallExpr recordFuncEntry(*(btcall[0]), testArgs);
+	// // 	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
+	// // }
+	// std::cerr << cudaSync->getName() << std::endl;
+ // 	{
+	// 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locExit);
 	// 	std::vector<BPatch_snippet*> testArgs;
-	// 	testArgs.push_back(voidPtr);
-	// 	testArgs.push_back(new BPatch_constExpr(1024));
-	// 	BPatch_funcCallExpr recordFuncEntry(*(btcall[0]), testArgs);
+	// 	BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
+	// 	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
+	// 	funcEntry = cudaSync->findPoint(BPatch_locEntry);
 	// 	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
 	// }
-	std::cerr << cudaSync->getName() << std::endl;
- 	{
-		std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locExit);
-		std::vector<BPatch_snippet*> testArgs;
-		BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
-		assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
-		funcEntry = cudaSync->findPoint(BPatch_locEntry);
-		assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
-	}
-	img->getAddressSpace()->finalizeInsertionSet(false);	
+	// img->getAddressSpace()->finalizeInsertionSet(false);	
 	if(!app->writeFile(argv[2])) {
 		fprintf(stderr, "Could not write output file %s\n", argv[2]);
 		return -1;

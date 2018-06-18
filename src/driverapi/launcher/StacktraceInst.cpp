@@ -23,7 +23,11 @@ void StacktraceInst::InsertStackInst() {
 #else
 	assert(_addrSpace->wrapFunction(_cudaSync, _wrapperFunc, _wrapSym) != false);
 #endif
-	_addrSpace->finalizeInsertionSet(false);	
+	_addrSpace->finalizeInsertionSet(false);
+
+	BPatch_process * tmpProc = dynamic_cast<BPatch_process*>(_addrSpace);	
+	tmpProc->dumpImage("processImage.img");
+	tmpProc->dumpCore("processCore.core", false);
 }
 
 void StacktraceInst::Setup() {

@@ -14,7 +14,7 @@ void StacktraceInst::InsertStackInst() {
 #ifdef USE_BPATCHINSERT
 	// Testing
 	//assert(cuCtxSync.size() > 0);
-	std::vector<BPatch_point*> * entryLocations = _cudaSync->findPoint(BPatch_locExit);
+	std::vector<BPatch_point*> * entryLocations = _cudaSync->findPoint(BPatch_locEntry);
 	std::vector<BPatch_snippet*> testArgs;
 	BPatch_funcCallExpr recordFuncEntry(*_wrapperFunc, testArgs);
 	assert(_addrSpace->insertSnippet(recordFuncEntry,*entryLocations) != false);

@@ -21,10 +21,12 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 
 	// Create the bpatch process
 	bpatch.setInstrStackFrames(true);
+	bpatch.setTrampRecursive(false);
 	bpatch.setLivenessAnalysis(false);
 	handle = bpatch.processCreate(argv[0],(const char **)argv);
 	bpatch.setLivenessAnalysis(false);
 	bpatch.setInstrStackFrames(true);
+	bpatch.setTrampRecursive(false);
 	assert(handle != NULL);
 
 	// Free temporary argv

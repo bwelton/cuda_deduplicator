@@ -112,10 +112,11 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 	assert(stopFunc.size() > 0);
 	std::map<std::string, BPatch_object *> objs;
 	GetModules(objs);
+	BPatch_object * libcudaObj = NULL;
 	_addrSpace->beginInsertionSet();
 	// Insert timer to add one every time a syncrhonization is called
 	{
-		BPatch_object * libcudaObj = NULL;
+
 		for (auto z : objs) {
 			if (z.first.find("libcuda.so") != std::string::npos){
 				libcudaObj = z.second;
@@ -138,10 +139,17 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 	// Insert Entry/Exit calls for synchronous functions
 	for (auto i : points) {
 		BPatch_object * curObj = NULL;
-		for (auto z : objs) {
-			if (i.libname == z.first){
-				curObj = z.second;
-				break;
+		if (i.libname.find("libcuda.so") != std::string::npos){
+			// special case for libcuda
+			assert(libcudaObj != NULL);
+			curObj = libcudaObj;
+		} else {
+			// Manual search for the library
+			for (auto z : objs) {
+				if (i.libname == z.first){
+					curObj = z.second;
+					break;
+				}
 			}
 		}
 		if (curObj == NULL) {

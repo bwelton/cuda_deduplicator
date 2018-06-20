@@ -38,7 +38,7 @@ void StacktraceInst::Setup() {
 #endif
 	assert(wrapperFunc.size() > 0);
 	_wrapperFunc = wrapperFunc[0];
-
+	
 	BPatch_function * cudaSync = NULL;
 	std::vector<BPatch_object *> imgObjs;
 	_img->getObjects(imgObjs);

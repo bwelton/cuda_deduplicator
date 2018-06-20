@@ -108,7 +108,8 @@ double TimeApplications::RunWithLSInstrimentation(std::string wrapperDef, std::v
 	proc.LaunchProcess();
 	for (auto i : extras)
 		proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));
-	proc.InsertInstrimentation(wrapperDef);
+	proc.InsertInstrimentation(std::string(""));
+	//proc.InsertInstrimentation(wrapperDef);
 	std::vector<uint64_t> skips;
 	uint64_t total_functions = 0;
 	proc.InsertLoadStores(skips, total_functions, points, syncStacks);

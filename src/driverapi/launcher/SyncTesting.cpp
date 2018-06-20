@@ -26,16 +26,16 @@ void SyncTesting::ReprocessModel() {
 
 void SyncTesting::Run() {
 	double time;
-	// {
-	// 	TimeApplications base(_vm);
-	// 	std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
-	// 	std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
-	// 	//base.RedirectOutToFile(_programName + std::string(".base.out"));
-	// 	time = base.Run();
-	// 	//base.ReturnToTerminal();
-	// 	_model.AddExecutionTime(time);
-	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
-	// }
+	{
+		TimeApplications base(_vm);
+		std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
+		std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
+		//base.RedirectOutToFile(_programName + std::string(".base.out"));
+		time = base.Run();
+		//base.ReturnToTerminal();
+		_model.AddExecutionTime(time);
+		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	}
 	
 	
 	//RunWithCUPTI();
@@ -55,7 +55,7 @@ void SyncTesting::Run() {
 		_model.AddExecutionTime(time);
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
 	}
-	return;
+	//return;
 	 _model.ReadStackFiles();
 	//_model.ExtractLineInfo();
 	//InstrumentProgram();
@@ -79,7 +79,7 @@ void SyncTesting::Run() {
 	// Check that our timing run matches the synchronizations identified.
 	// If so, this program is very likely deterministic given the same inputs in relation to cuda calls.
 	_model.CaptureSyncTime();
-	// return;
+	return;
 
 	// Load Store Instrimentation.
 	// What needs to be captured:

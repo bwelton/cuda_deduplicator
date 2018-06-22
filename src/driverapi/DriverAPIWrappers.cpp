@@ -3,6 +3,7 @@
 #include "DriverWrapperBase.h"
 #include "DriverWrapperFactory.h"
 #include "cuda.h"
+#include "gotcha/gotcha.h"
 std::shared_ptr<DriverWrapperFactory> DriverFactory;
 extern "C" {
 

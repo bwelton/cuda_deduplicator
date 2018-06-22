@@ -125,7 +125,8 @@ void * PTR_ORIGINAL_cuDeviceGetName;
 int INTER_cuDeviceGetName( char * name, int len, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&name,(void **)&len,(void **)&dev };
+	std::vector<void *> tmpParams = {(void *)name, (void *)len, (void *) CUdevice};
+	std::vector<void **> params = { &(tmpParams[0]),&(tmpParams[1]),&(tmpParams[2]) };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetName, (void*) PTR_ORIGINAL_cuDeviceGetName, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3270,7 +3271,7 @@ int INTER_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int
 }
 //static const std::vector<const char *> CallVector = {"cuGetErrorString","cuGetErrorName","cuInit","cuDriverGetVersion","cuDeviceGet","cuDeviceGetCount","cuDeviceGetName","cuDeviceTotalMem","cuDeviceGetAttribute","cuDeviceGetProperties","cuDeviceComputeCapability","cuDevicePrimaryCtxRetain","cuDevicePrimaryCtxRelease","cuDevicePrimaryCtxSetFlags","cuDevicePrimaryCtxGetState","cuDevicePrimaryCtxReset","cuCtxCreate","cuCtxDestroy","cuCtxPushCurrent","cuCtxPopCurrent","cuCtxSetCurrent","cuCtxGetCurrent","cuCtxGetDevice","cuCtxGetFlags","cuCtxSynchronize","cuCtxSetLimit","cuCtxGetLimit","cuCtxGetCacheConfig","cuCtxSetCacheConfig","cuCtxGetSharedMemConfig","cuCtxSetSharedMemConfig","cuCtxGetApiVersion","cuCtxGetStreamPriorityRange","cuCtxAttach","cuCtxDetach","cuModuleLoad","cuModuleLoadData","cuModuleLoadDataEx","cuModuleLoadFatBinary","cuModuleUnload","cuModuleGetFunction","cuModuleGetGlobal","cuModuleGetTexRef","cuModuleGetSurfRef","cuLinkCreate","cuLinkAddData","cuLinkAddFile","cuLinkComplete","cuLinkDestroy","cuMemGetInfo","cuMemAlloc","cuMemAllocPitch","cuMemFree","cuMemGetAddressRange","cuMemAllocHost","cuMemFreeHost","cuMemHostAlloc","cuMemHostGetDevicePointer","cuMemHostGetFlags","cuMemAllocManaged","cuDeviceGetByPCIBusId","cuDeviceGetPCIBusId","cuIpcGetEventHandle","cuIpcOpenEventHandle","cuIpcGetMemHandle","cuIpcOpenMemHandle","cuIpcCloseMemHandle","cuMemHostRegister","cuMemHostUnregister","cuMemcpy","cuMemcpyPeer","cuMemcpyHtoD","cuMemcpyDtoH","cuMemcpyDtoD","cuMemcpyDtoA","cuMemcpyAtoD","cuMemcpyHtoA","cuMemcpyAtoH","cuMemcpyAtoA","cuMemcpy2D","cuMemcpy2DUnaligned","cuMemcpy3D","cuMemcpy3DPeer","cuMemcpyAsync","cuMemcpyPeerAsync","cuMemcpyHtoDAsync","cuMemcpyDtoHAsync","cuMemcpyDtoDAsync","cuMemcpyHtoAAsync","cuMemcpyAtoHAsync","cuMemcpy2DAsync","cuMemcpy3DAsync","cuMemcpy3DPeerAsync","cuMemsetD8","cuMemsetD16","cuMemsetD32","cuMemsetD2D8","cuMemsetD2D16","cuMemsetD2D32","cuMemsetD8Async","cuMemsetD16Async","cuMemsetD32Async","cuMemsetD2D8Async","cuMemsetD2D16Async","cuMemsetD2D32Async","cuArrayCreate","cuArrayGetDescriptor","cuArrayDestroy","cuArray3DCreate","cuArray3DGetDescriptor","cuMipmappedArrayCreate","cuMipmappedArrayGetLevel","cuMipmappedArrayDestroy","cuPointerGetAttribute","cuMemPrefetchAsync","cuMemAdvise","cuMemRangeGetAttribute","cuMemRangeGetAttributes","cuPointerSetAttribute","cuPointerGetAttributes","cuStreamCreate","cuStreamCreateWithPriority","cuStreamGetPriority","cuStreamGetFlags","cuStreamWaitEvent","cuStreamAddCallback","cuStreamAttachMemAsync","cuStreamQuery","cuStreamSynchronize","cuStreamDestroy","cuEventCreate","cuEventRecord","cuEventQuery","cuEventSynchronize","cuEventDestroy","cuEventElapsedTime","cuStreamWaitValue32","cuStreamWriteValue32","cuStreamBatchMemOp","cuFuncGetAttribute","cuFuncSetCacheConfig","cuFuncSetSharedMemConfig","cuLaunchKernel","cuFuncSetBlockShape","cuFuncSetSharedSize","cuParamSetSize","cuParamSeti","cuParamSetf","cuParamSetv","cuLaunch","cuLaunchGrid","cuLaunchGridAsync","cuParamSetTexRef","cuOccupancyMaxActiveBlocksPerMultiprocessor","cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags","cuOccupancyMaxPotentialBlockSize","cuOccupancyMaxPotentialBlockSizeWithFlags","cuTexRefSetArray","cuTexRefSetMipmappedArray","cuTexRefSetAddress","cuTexRefSetAddress2D","cuTexRefSetFormat","cuTexRefSetAddressMode","cuTexRefSetFilterMode","cuTexRefSetMipmapFilterMode","cuTexRefSetMipmapLevelBias","cuTexRefSetMipmapLevelClamp","cuTexRefSetMaxAnisotropy","cuTexRefSetBorderColor","cuTexRefSetFlags","cuTexRefGetAddress","cuTexRefGetArray","cuTexRefGetMipmappedArray","cuTexRefGetAddressMode","cuTexRefGetFilterMode","cuTexRefGetFormat","cuTexRefGetMipmapFilterMode","cuTexRefGetMipmapLevelBias","cuTexRefGetMipmapLevelClamp","cuTexRefGetMaxAnisotropy","cuTexRefGetBorderColor","cuTexRefGetFlags","cuTexRefCreate","cuTexRefDestroy","cuSurfRefSetArray","cuSurfRefGetArray","cuTexObjectCreate","cuTexObjectDestroy","cuTexObjectGetResourceDesc","cuTexObjectGetTextureDesc","cuTexObjectGetResourceViewDesc","cuSurfObjectCreate","cuSurfObjectDestroy","cuSurfObjectGetResourceDesc","cuDeviceCanAccessPeer","cuDeviceGetP2PAttribute","cuCtxEnablePeerAccess","cuCtxDisablePeerAccess","cuGraphicsUnregisterResource","cuGraphicsSubResourceGetMappedArray","cuGraphicsResourceGetMappedMipmappedArray","cuGraphicsResourceGetMappedPointer","cuGraphicsResourceSetMapFlags","cuGraphicsMapResources","cuGraphicsUnmapResources","cuGetExportTable","cuTexRefSetAddress2D_v2","cuMemcpyHtoD_v2","cuMemcpyDtoH_v2","cuMemcpyDtoD_v2","cuMemcpyDtoA_v2","cuMemcpyAtoD_v2","cuMemcpyHtoA_v2","cuMemcpyAtoH_v2","cuMemcpyAtoA_v2","cuMemcpyHtoAAsync_v2","cuMemcpyAtoHAsync_v2","cuMemcpy2D_v2","cuMemcpy2DUnaligned_v2","cuMemcpy3D_v2","cuMemcpyHtoDAsync_v2","cuMemcpyDtoHAsync_v2","cuMemcpyDtoDAsync_v2","cuMemcpy2DAsync_v2","cuMemcpy3DAsync_v2","cuMemsetD8_v2","cuMemsetD16_v2","cuMemsetD32_v2","cuMemsetD2D8_v2","cuMemsetD2D16_v2","cuMemsetD2D32_v2"};
 
-#define NUM_GOTFUNCS 230
+#define NUM_GOTFUNCS 231
 struct gotcha_binding_t gotfuncs[] = {
 	{"cuGetErrorString",(void *)INTER_cuGetErrorString,&GOTTCHA_cuGetErrorString},
 	{"cuGetErrorName",(void *)INTER_cuGetErrorName,&GOTTCHA_cuGetErrorName},
@@ -3278,7 +3279,7 @@ struct gotcha_binding_t gotfuncs[] = {
 	{"cuDriverGetVersion",(void *)INTER_cuDriverGetVersion,&GOTTCHA_cuDriverGetVersion},
 	{"cuDeviceGet",(void *)INTER_cuDeviceGet,&GOTTCHA_cuDeviceGet},
 	{"cuDeviceGetCount",(void *)INTER_cuDeviceGetCount,&GOTTCHA_cuDeviceGetCount},
-	//{"cuDeviceGetName",(void *)INTER_cuDeviceGetName,&GOTTCHA_cuDeviceGetName},
+	{"cuDeviceGetName",(void *)INTER_cuDeviceGetName,&GOTTCHA_cuDeviceGetName},
 	{"cuDeviceTotalMem",(void *)INTER_cuDeviceTotalMem,&GOTTCHA_cuDeviceTotalMem},
 	{"cuDeviceGetAttribute",(void *)INTER_cuDeviceGetAttribute,&GOTTCHA_cuDeviceGetAttribute},
 	{"cuDeviceGetProperties",(void *)INTER_cuDeviceGetProperties,&GOTTCHA_cuDeviceGetProperties},
@@ -3996,9 +3997,9 @@ extern "C" void DefineBinders() {
 	int (*TMP_PTR_cuDeviceGetCount)(int *) = (int(*)(int *)) gotcha_get_wrappee(GOTTCHA_cuDeviceGetCount);
 	PTR_ORIGINAL_cuDeviceGetCount = (void *) gotcha_get_wrappee(GOTTCHA_cuDeviceGetCount);
 	Bound_cuDeviceGetCount = std::bind(TMP_PTR_cuDeviceGetCount,std::placeholders::_1);
-	//int (*TMP_PTR_cuDeviceGetName)(char *,int,CUdevice) = (int(*)(char *,int,CUdevice)) gotcha_get_wrappee(GOTTCHA_cuDeviceGetName);
-	//PTR_ORIGINAL_cuDeviceGetName = (void *) gotcha_get_wrappee(GOTTCHA_cuDeviceGetName);
-	//Bound_cuDeviceGetName = std::bind(TMP_PTR_cuDeviceGetName,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
+	int (*TMP_PTR_cuDeviceGetName)(char *,int,CUdevice) = (int(*)(char *,int,CUdevice)) gotcha_get_wrappee(GOTTCHA_cuDeviceGetName);
+	PTR_ORIGINAL_cuDeviceGetName = (void *) gotcha_get_wrappee(GOTTCHA_cuDeviceGetName);
+	Bound_cuDeviceGetName = std::bind(TMP_PTR_cuDeviceGetName,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
 	int (*TMP_PTR_cuDeviceTotalMem)(size_t *,CUdevice) = (int(*)(size_t *,CUdevice)) gotcha_get_wrappee(GOTTCHA_cuDeviceTotalMem);
 	PTR_ORIGINAL_cuDeviceTotalMem = (void *) gotcha_get_wrappee(GOTTCHA_cuDeviceTotalMem);
 	Bound_cuDeviceTotalMem = std::bind(TMP_PTR_cuDeviceTotalMem,std::placeholders::_1,std::placeholders::_2);

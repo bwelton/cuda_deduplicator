@@ -7,6 +7,19 @@ LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img
 }
 
 
+void LoadStoreInst::InsertGotchaEntries() {
+	// Find function main and DefineBindings, insert call to DefineBindings into main.
+	BPatch_function * main;
+	BPatch_function * DefineBinders;
+	assert(1 == _dynOps.FindFuncByName(_addrSpace, main, std::string("main")));
+	assert(1 == _dynOps.FindFuncByName(_addrSpace, DefineBinders, std::string("DefineBinders")));
+	std::vector<BPatch_point*> * entryPoints = main->findPoint(BPatch_locEntry);
+
+	std::vector<BPatch_snippet*> recordArgs;
+	BPatch_funcCallExpr entryExpr(*DefineBinders, recordArgs);
+	assert(_addrSpace->insertSnippet(entryExpr,entryExpr) != NULL);
+}
+
 void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
 	_logFile << "[LoadStoreInst][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
@@ -155,6 +168,7 @@ void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFuncti
 bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
 	Setup();
 	BeginInsertionSet();
+	InsertGotchaEntries();
 	WrapEntryAndExit(syncStacks);
 	InsertSyncCallNotifier();
 	//InsertSyncCallNotifier(points);

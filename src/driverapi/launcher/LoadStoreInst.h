@@ -88,6 +88,7 @@ public:
 	void InsertSyncCallNotifier();
 	void InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);
 	void InsertLoadStoreInstrimentation();
+	void InsertGotchaEntries();
 private:
 	void Setup();
 	void InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);

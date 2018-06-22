@@ -55,6 +55,8 @@ void JustGenStackTrace() {
 void CheckInit_DriverAPI() {
 	
 }\n"""
+
+gottcha_struct = ""
 for x in protos:
 	variables = {"RETURN_TYPE" : None, "CALL_NAME" : None, "PARAMETERS_NAMES" : None,
 				"PARAMETERS_FULL" : None}
@@ -91,11 +93,15 @@ for x in protos:
 	variables["CALL_ID"] = str(count)
 	count+= 1
 	charVector += '"' + tmp[1] + '",'
+	gottcha_struct += '\n\t{"' + variables["CALL_NAME"] + '",INTER_' +  variables["CALL_NAME"]  +',&GOTTCHA_' + variables["CALL_NAME"]+'},'
 	outStr += Template(funcTemplate).substitute(variables)
 
 outStr += "\n}"
 charVector = charVector[:-1] + "};\n"
 outStr += charVector + "\n"
+outStr += "#define NUM_GOTFUNCS " + str(count) + "\nstruct gotcha_binding_t gotfuncs[] = {"
+outStr += gottcha_struct[:-1] + "\n};\n"
+
 
 ## Create The Header File
 hdr = '#pragma once\n#include "PluginCommon.h"\n#include <vector>\n#include "Parameters.h"\n#include "cuda.h"\n#include "DriverWrapperBase.h"\n#include <vector>\nextern "C"{\n'
@@ -109,7 +115,11 @@ structFile += 'enum PluginReturn {\n\tNO_ACTION = 0,\n\tNOTIFY_ON_CHANGE,	// Not
 structFile += "enum CallID {\n\t"
 externTemplates = "\n#ifndef DEFINED_TEMPLATES\n#define EXTERN_FLAG extern\n#else\n#define EXTERN_FLAG \n#endif\n"
 defineBinders = 'extern "C" void DefineBinders() {\n'
-defineBinders += '\t void * handle = (void *)dlopen("libcuda.so.1", RTLD_LAZY);\n\tassert(handle != NULL);\n'
+defineBinders += '\tgotcha_set_priority("cuda/driverapibinders", 1);\n'
+defineBinders += """\tresult = gotcha_wrap(gotfuncs, NUM_GOTFUNCS, "cuda/driverapibinders");
+	assert(result == GOTCHA_SUCCESS);\n"""
+
+##defineBinders += '\t void * handle = (void *)dlopen("libcuda.so.1", RTLD_LAZY);\n\tassert(handle != NULL);\n'
 for x in protos:
 	variables = {"RETURN_TYPE" : None, "CALL_NAME" : None, "PARAMETERS_NAMES" : None,
 				"PARAMETERS_FULL" : None}
@@ -161,8 +171,8 @@ for x in protos:
 	hdr += Template(headerTemplate).substitute(variables)
 	defFile += Template(defTemplate).substitute(variables) + "\n"
 	externTemplates += Template(externTemplate).substitute(variables) + "\n"
-	defineBinders += "\tint (*TMP_PTR_"+variables["CALL_NAME"] +")(" + 	variables["PARAMETER_TYPES_ORIG"] +") = (int(*)(" + variables["PARAMETER_TYPES_ORIG"] + ")) dlsym(handle,\"" + "PTR_ORIGINAL_"+ variables["CALL_NAME"] +"\");\n"
-	defineBinders += "\tPTR_ORIGINAL_"+variables["CALL_NAME"] + " = (void *)dlsym(handle,\"" + "PTR_ORIGINAL_"+ variables["CALL_NAME"] +"\");\n"
+	defineBinders += "\tint (*TMP_PTR_"+variables["CALL_NAME"] +")(" + 	variables["PARAMETER_TYPES_ORIG"] +") = (int(*)(" + variables["PARAMETER_TYPES_ORIG"] + ")) gotcha_get_wrappee(GOTTCHA_" + variables["CALL_NAME"] +");\n"
+	defineBinders += "\tPTR_ORIGINAL_"+variables["CALL_NAME"] + " = (void *) gotcha_get_wrappee(GOTTCHA_" + variables["CALL_NAME"] +");\n"
 	defineBinders += "\tBound_" + variables["CALL_NAME"] + " = std::bind(TMP_PTR_" +variables["CALL_NAME"] + "," + variables["BINDER_PLACEHOLDERS"] + ");\n"
 structFile = structFile[:-3] + "\n};\n" + externTemplates
 hdr += "\n}\n" + charVector

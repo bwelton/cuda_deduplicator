@@ -80,6 +80,9 @@ void * PTR_ORIGINAL_cuDriverGetVersion;
 int INTER_cuDriverGetVersion( int * driverVersion ) {
 	// Build the instriment factory
 	BUILD_FACTORY
+	int (*TMP_PTR_cuDriverGetVersion)(int *) = (int(*)(int *)) gotcha_get_wrappee(GOTTCHA_cuDriverGetVersion);
+	PTR_ORIGINAL_cuDriverGetVersion = (void *) gotcha_get_wrappee(GOTTCHA_cuDriverGetVersion);
+	//Bound_cuDriverGetVersion = std::bind(TMP_PTR_cuDriverGetVersion,std::placeholders::_1);
 	std::vector<void **> params = { (void **)&driverVersion };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDriverGetVersion, (void*) PTR_ORIGINAL_cuDriverGetVersion, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);

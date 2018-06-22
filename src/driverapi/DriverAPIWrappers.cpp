@@ -125,8 +125,8 @@ void * PTR_ORIGINAL_cuDeviceGetName;
 int INTER_cuDeviceGetName( char * name, int len, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> tmpParams = {(void *)name, (void *)len, (void *) CUdevice};
-	std::vector<void **> params = { &(tmpParams[0]),&(tmpParams[1]),&(tmpParams[2]) };
+	std::vector<void *> tmpParams = {(void *)name, (void *)len, (void *) dev};
+	std::vector<void **> params = { &(tmpParams[0]),&(tmpParams[1]),&(tmpParams[2])};
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetName, (void*) PTR_ORIGINAL_cuDeviceGetName, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;

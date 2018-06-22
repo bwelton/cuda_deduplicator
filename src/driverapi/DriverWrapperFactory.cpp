@@ -55,7 +55,7 @@ DriverWrapperFactory::DriverWrapperFactory() {
 	performAction = false;
 	atexit(ExitFunction);
 	InitParameterData();
-	DefineBinders();
+	//DefineBinders();
 	_globalID = 0;
 	std::string libraryFile = std::string("pluginlist.txt");
 	std::vector<std::string> libs = GetLibraryNames(libraryFile.c_str());

@@ -5,15 +5,17 @@
 #include "cuda.h"
 std::shared_ptr<DriverWrapperFactory> DriverFactory;
 extern "C" {
+void DefineBinders();
+
 // MANUALLY ADDED.....
-extern int ORIGINAL_InternalSynchronization( void * a, void * b, void * c);
+//extern int ORIGINAL_InternalSynchronization( void * a, void * b, void * c);
 
 int INTER_InternalSynchronization( void * a, void * b, void * c) {
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&a,(void **)&b, (void**)&c };	
-	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_InternalSynchronization, (void*) &ORIGINAL_InternalSynchronization, params));
-	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
-	return ret;
+	// std::vector<void **> params = { (void **)&a,(void **)&b, (void**)&c };	
+	// std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_InternalSynchronization, (void*) &ORIGINAL_InternalSynchronization, params));
+	// int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	return 0;
 }
 
 void JustGenStackTrace() {

@@ -4,6 +4,7 @@
 #include "DriverWrapperFactory.h"
 #include "cuda.h"
 std::shared_ptr<DriverWrapperFactory> DriverFactory;
+
 extern "C" {
 void DefineBinders();
 

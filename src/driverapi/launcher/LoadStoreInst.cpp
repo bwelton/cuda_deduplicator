@@ -17,7 +17,7 @@ void LoadStoreInst::InsertGotchaEntries() {
 
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*DefineBinders, recordArgs);
-	assert(_addrSpace->insertSnippet(entryExpr,entryExpr) != NULL);
+	assert(_addrSpace->insertSnippet(entryExpr,*entryPoints) != NULL);
 }
 
 void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {

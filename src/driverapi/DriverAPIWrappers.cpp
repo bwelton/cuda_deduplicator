@@ -1047,8 +1047,8 @@ int INTER_cuIpcOpenEventHandle( CUevent * phEvent, CUipcEventHandle handle ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 	// Gets around an issue on POWER
-	std::vector<void *> tmpParams = { (void *)phEvent,(void *)handle};
-	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
+	std::vector<void *> tmpParams = { (void *)phEvent};
+	std::vector<void **> params = { &tmpParams[0],(void**)&handle};
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcOpenEventHandle, (void*) PTR_ORIGINAL_cuIpcOpenEventHandle, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1079,8 +1079,8 @@ int INTER_cuIpcOpenMemHandle( CUdeviceptr * pdptr, CUipcMemHandle handle, unsign
 	// Build the instriment factory
 	BUILD_FACTORY
 	// Gets around an issue on POWER
-	std::vector<void *> tmpParams = { (void *)pdptr,(void *)handle,(void *)Flags};
-	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
+	std::vector<void *> tmpParams = { (void *)pdptr, (void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],(void **)&handle,&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcOpenMemHandle, (void*) PTR_ORIGINAL_cuIpcOpenMemHandle, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2391,7 +2391,12 @@ int INTER_cuParamSetf( CUfunction hfunc, int offset, float value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 	// Gets around an issue on POWER
-	std::vector<void *> tmpParams = { (void *)hfunc,(void *)offset,(void *)value};
+
+	// One off fix for float.... but likely doesn't work (FML). 
+	char * tmpFloat = (char *) malloc(1 * sizeof(float*));
+	memcpy(tmpFloat, &value, sizeof(float));
+
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)offset,(void *)tmpFloat};
 	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetf, (void*) PTR_ORIGINAL_cuParamSetf, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);

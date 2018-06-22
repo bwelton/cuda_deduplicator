@@ -6,7 +6,7 @@
 std::shared_ptr<DriverWrapperFactory> DriverFactory;
 
 extern "C" {
-void DefineBinders();
+
 
 // MANUALLY ADDED.....
 //extern int ORIGINAL_InternalSynchronization( void * a, void * b, void * c);

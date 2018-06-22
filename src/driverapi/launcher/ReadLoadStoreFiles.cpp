@@ -5,6 +5,7 @@ ReadLoadStoreFiles::ReadLoadStoreFiles(BinaryLocationIDMap * locationMap) : _map
 std::map<uint64_t, std::vector<StackPoint> > ReadLoadStoreFiles::ReadKeyFile(std::string ifname) {
 	std::map<uint64_t, std::vector<StackPoint> > ret;
 	FILE * inFile = fopen(ifname.c_str(), "rb");
+	std::cerr << "[ReadLoadStoreFiles::ReadKeyFile] Opening File.... " << ifname << std::endl;
 	if (inFile == NULL)
 		return ret;
 	fseek(inFile, 0, SEEK_END);
@@ -12,14 +13,17 @@ std::map<uint64_t, std::vector<StackPoint> > ReadLoadStoreFiles::ReadKeyFile(std
 	fseek(inFile, 0, SEEK_SET);
 	uint64_t readCount = 0;
 	uint64_t size, stackId, locationId;
+	std::cerr << "[ReadLoadStoreFiles::ReadKeyFile] Has  " << elementCount << " bytes of data...." << std::endl;
 	while (readCount < elementCount) {
 		size = 0;
 		fread(&size, 1, sizeof(uint64_t), inFile);
 		readCount += sizeof(uint64_t);
 		fread(&stackId, 1, sizeof(uint64_t), inFile);
+		std::cerr << "[ReadLoadStoreFiles::ReadKeyFile] Element has stack id of " << stackId << " and size of " << size << std::endl;
 		ret[stackId] = std::vector<StackPoint>();
 		readCount += sizeof(uint64_t);
 		size -= sizeof(uint64_t);
+
 		while (size > 0)  {
 			fread(&locationId,1,sizeof(uint64_t), inFile);
 			std::cerr << "[ReadLoadStoreFiles] Stack Location ID: " << locationId << std::endl;

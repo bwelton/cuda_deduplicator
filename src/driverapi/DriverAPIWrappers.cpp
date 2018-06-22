@@ -38,7 +38,9 @@ void * PTR_ORIGINAL_cuGetErrorString;
 int INTER_cuGetErrorString( CUresult error, const char * * pStr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&error,(void **)&pStr };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)error,(void *)pStr};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGetErrorString, (void*) PTR_ORIGINAL_cuGetErrorString, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -52,7 +54,9 @@ void * PTR_ORIGINAL_cuGetErrorName;
 int INTER_cuGetErrorName( CUresult error, const char * * pStr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&error,(void **)&pStr };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)error,(void *)pStr};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGetErrorName, (void*) PTR_ORIGINAL_cuGetErrorName, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -66,7 +70,9 @@ void * PTR_ORIGINAL_cuInit;
 int INTER_cuInit( unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)Flags};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuInit, (void*) PTR_ORIGINAL_cuInit, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -80,10 +86,9 @@ void * PTR_ORIGINAL_cuDriverGetVersion;
 int INTER_cuDriverGetVersion( int * driverVersion ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	int (*TMP_PTR_cuDriverGetVersion)(int *) = (int(*)(int *)) gotcha_get_wrappee(GOTTCHA_cuDriverGetVersion);
-	PTR_ORIGINAL_cuDriverGetVersion = (void *) gotcha_get_wrappee(GOTTCHA_cuDriverGetVersion);
-	//Bound_cuDriverGetVersion = std::bind(TMP_PTR_cuDriverGetVersion,std::placeholders::_1);
-	std::vector<void **> params = { (void **)&driverVersion };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)driverVersion};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDriverGetVersion, (void*) PTR_ORIGINAL_cuDriverGetVersion, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -97,7 +102,9 @@ void * PTR_ORIGINAL_cuDeviceGet;
 int INTER_cuDeviceGet( CUdevice * device, int ordinal ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&device,(void **)&ordinal };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)device,(void *)ordinal};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGet, (void*) PTR_ORIGINAL_cuDeviceGet, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -111,7 +118,9 @@ void * PTR_ORIGINAL_cuDeviceGetCount;
 int INTER_cuDeviceGetCount( int * count ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&count };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)count};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetCount, (void*) PTR_ORIGINAL_cuDeviceGetCount, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -125,8 +134,9 @@ void * PTR_ORIGINAL_cuDeviceGetName;
 int INTER_cuDeviceGetName( char * name, int len, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void *> tmpParams = {(void *)name, (void *)len, (void *) dev};
-	std::vector<void **> params = { &(tmpParams[0]),&(tmpParams[1]),&(tmpParams[2])};
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)name,(void *)len,(void *)dev};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetName, (void*) PTR_ORIGINAL_cuDeviceGetName, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -140,7 +150,9 @@ void * PTR_ORIGINAL_cuDeviceTotalMem;
 int INTER_cuDeviceTotalMem( size_t * bytes, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&bytes,(void **)&dev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)bytes,(void *)dev};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceTotalMem, (void*) PTR_ORIGINAL_cuDeviceTotalMem, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -154,7 +166,9 @@ void * PTR_ORIGINAL_cuDeviceGetAttribute;
 int INTER_cuDeviceGetAttribute( int * pi, CUdevice_attribute attrib, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pi,(void **)&attrib,(void **)&dev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pi,(void *)attrib,(void *)dev};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetAttribute, (void*) PTR_ORIGINAL_cuDeviceGetAttribute, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -168,7 +182,9 @@ void * PTR_ORIGINAL_cuDeviceGetProperties;
 int INTER_cuDeviceGetProperties( CUdevprop * prop, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&prop,(void **)&dev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)prop,(void *)dev};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetProperties, (void*) PTR_ORIGINAL_cuDeviceGetProperties, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -182,7 +198,9 @@ void * PTR_ORIGINAL_cuDeviceComputeCapability;
 int INTER_cuDeviceComputeCapability( int * major, int * minor, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&major,(void **)&minor,(void **)&dev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)major,(void *)minor,(void *)dev};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceComputeCapability, (void*) PTR_ORIGINAL_cuDeviceComputeCapability, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -196,7 +214,9 @@ void * PTR_ORIGINAL_cuDevicePrimaryCtxRetain;
 int INTER_cuDevicePrimaryCtxRetain( CUcontext * pctx, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pctx,(void **)&dev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pctx,(void *)dev};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxRetain, (void*) PTR_ORIGINAL_cuDevicePrimaryCtxRetain, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -210,7 +230,9 @@ void * PTR_ORIGINAL_cuDevicePrimaryCtxRelease;
 int INTER_cuDevicePrimaryCtxRelease( CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dev};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxRelease, (void*) PTR_ORIGINAL_cuDevicePrimaryCtxRelease, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -224,7 +246,9 @@ void * PTR_ORIGINAL_cuDevicePrimaryCtxSetFlags;
 int INTER_cuDevicePrimaryCtxSetFlags( CUdevice dev, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dev,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dev,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxSetFlags, (void*) PTR_ORIGINAL_cuDevicePrimaryCtxSetFlags, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -238,7 +262,9 @@ void * PTR_ORIGINAL_cuDevicePrimaryCtxGetState;
 int INTER_cuDevicePrimaryCtxGetState( CUdevice dev, unsigned int * flags, int * active ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dev,(void **)&flags,(void **)&active };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dev,(void *)flags,(void *)active};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxGetState, (void*) PTR_ORIGINAL_cuDevicePrimaryCtxGetState, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -252,7 +278,9 @@ void * PTR_ORIGINAL_cuDevicePrimaryCtxReset;
 int INTER_cuDevicePrimaryCtxReset( CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dev};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDevicePrimaryCtxReset, (void*) PTR_ORIGINAL_cuDevicePrimaryCtxReset, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -266,7 +294,9 @@ void * PTR_ORIGINAL_cuCtxCreate;
 int INTER_cuCtxCreate( CUcontext * pctx, unsigned int flags, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pctx,(void **)&flags,(void **)&dev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pctx,(void *)flags,(void *)dev};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxCreate, (void*) PTR_ORIGINAL_cuCtxCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -280,7 +310,9 @@ void * PTR_ORIGINAL_cuCtxDestroy;
 int INTER_cuCtxDestroy( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&ctx };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)ctx};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxDestroy, (void*) PTR_ORIGINAL_cuCtxDestroy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -294,7 +326,9 @@ void * PTR_ORIGINAL_cuCtxPushCurrent;
 int INTER_cuCtxPushCurrent( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&ctx };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)ctx};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxPushCurrent, (void*) PTR_ORIGINAL_cuCtxPushCurrent, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -308,7 +342,9 @@ void * PTR_ORIGINAL_cuCtxPopCurrent;
 int INTER_cuCtxPopCurrent( CUcontext * pctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pctx };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pctx};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxPopCurrent, (void*) PTR_ORIGINAL_cuCtxPopCurrent, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -322,7 +358,9 @@ void * PTR_ORIGINAL_cuCtxSetCurrent;
 int INTER_cuCtxSetCurrent( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&ctx };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)ctx};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSetCurrent, (void*) PTR_ORIGINAL_cuCtxSetCurrent, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -336,7 +374,9 @@ void * PTR_ORIGINAL_cuCtxGetCurrent;
 int INTER_cuCtxGetCurrent( CUcontext * pctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pctx };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pctx};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetCurrent, (void*) PTR_ORIGINAL_cuCtxGetCurrent, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -350,7 +390,9 @@ void * PTR_ORIGINAL_cuCtxGetDevice;
 int INTER_cuCtxGetDevice( CUdevice * device ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&device };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)device};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetDevice, (void*) PTR_ORIGINAL_cuCtxGetDevice, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -364,7 +406,9 @@ void * PTR_ORIGINAL_cuCtxGetFlags;
 int INTER_cuCtxGetFlags( unsigned int * flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)flags};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetFlags, (void*) PTR_ORIGINAL_cuCtxGetFlags, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -378,7 +422,9 @@ void * PTR_ORIGINAL_cuCtxSynchronize;
 int INTER_cuCtxSynchronize( void  ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = {  };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { };
+	std::vector<void **> params = { };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSynchronize, (void*) PTR_ORIGINAL_cuCtxSynchronize, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -392,7 +438,9 @@ void * PTR_ORIGINAL_cuCtxSetLimit;
 int INTER_cuCtxSetLimit( CUlimit limit, size_t value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&limit,(void **)&value };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)limit,(void *)value};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSetLimit, (void*) PTR_ORIGINAL_cuCtxSetLimit, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -406,7 +454,9 @@ void * PTR_ORIGINAL_cuCtxGetLimit;
 int INTER_cuCtxGetLimit( size_t * pvalue, CUlimit limit ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pvalue,(void **)&limit };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pvalue,(void *)limit};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetLimit, (void*) PTR_ORIGINAL_cuCtxGetLimit, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -420,7 +470,9 @@ void * PTR_ORIGINAL_cuCtxGetCacheConfig;
 int INTER_cuCtxGetCacheConfig( CUfunc_cache * pconfig ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pconfig };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pconfig};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetCacheConfig, (void*) PTR_ORIGINAL_cuCtxGetCacheConfig, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -434,7 +486,9 @@ void * PTR_ORIGINAL_cuCtxSetCacheConfig;
 int INTER_cuCtxSetCacheConfig( CUfunc_cache config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&config };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)config};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSetCacheConfig, (void*) PTR_ORIGINAL_cuCtxSetCacheConfig, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -448,7 +502,9 @@ void * PTR_ORIGINAL_cuCtxGetSharedMemConfig;
 int INTER_cuCtxGetSharedMemConfig( CUsharedconfig * pConfig ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pConfig };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pConfig};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetSharedMemConfig, (void*) PTR_ORIGINAL_cuCtxGetSharedMemConfig, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -462,7 +518,9 @@ void * PTR_ORIGINAL_cuCtxSetSharedMemConfig;
 int INTER_cuCtxSetSharedMemConfig( CUsharedconfig config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&config };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)config};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxSetSharedMemConfig, (void*) PTR_ORIGINAL_cuCtxSetSharedMemConfig, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -476,7 +534,9 @@ void * PTR_ORIGINAL_cuCtxGetApiVersion;
 int INTER_cuCtxGetApiVersion( CUcontext ctx, unsigned int * version ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&ctx,(void **)&version };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)ctx,(void *)version};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetApiVersion, (void*) PTR_ORIGINAL_cuCtxGetApiVersion, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -490,7 +550,9 @@ void * PTR_ORIGINAL_cuCtxGetStreamPriorityRange;
 int INTER_cuCtxGetStreamPriorityRange( int * leastPriority, int * greatestPriority ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&leastPriority,(void **)&greatestPriority };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)leastPriority,(void *)greatestPriority};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxGetStreamPriorityRange, (void*) PTR_ORIGINAL_cuCtxGetStreamPriorityRange, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -504,7 +566,9 @@ void * PTR_ORIGINAL_cuCtxAttach;
 int INTER_cuCtxAttach( CUcontext * pctx, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pctx,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pctx,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxAttach, (void*) PTR_ORIGINAL_cuCtxAttach, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -518,7 +582,9 @@ void * PTR_ORIGINAL_cuCtxDetach;
 int INTER_cuCtxDetach( CUcontext ctx ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&ctx };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)ctx};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxDetach, (void*) PTR_ORIGINAL_cuCtxDetach, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -532,7 +598,9 @@ void * PTR_ORIGINAL_cuModuleLoad;
 int INTER_cuModuleLoad( CUmodule * module, const char * fname ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&module,(void **)&fname };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)module,(void *)fname};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleLoad, (void*) PTR_ORIGINAL_cuModuleLoad, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -546,7 +614,9 @@ void * PTR_ORIGINAL_cuModuleLoadData;
 int INTER_cuModuleLoadData( CUmodule * module, const void * image ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&module,(void **)&image };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)module,(void *)image};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleLoadData, (void*) PTR_ORIGINAL_cuModuleLoadData, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -560,7 +630,9 @@ void * PTR_ORIGINAL_cuModuleLoadDataEx;
 int INTER_cuModuleLoadDataEx( CUmodule * module, const void * image, unsigned int numOptions, CUjit_option * options, void * * optionValues ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&module,(void **)&image,(void **)&numOptions,(void **)&options,(void **)&optionValues };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)module,(void *)image,(void *)numOptions,(void *)options,(void *)optionValues};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleLoadDataEx, (void*) PTR_ORIGINAL_cuModuleLoadDataEx, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -574,7 +646,9 @@ void * PTR_ORIGINAL_cuModuleLoadFatBinary;
 int INTER_cuModuleLoadFatBinary( CUmodule * module, const void * fatCubin ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&module,(void **)&fatCubin };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)module,(void *)fatCubin};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleLoadFatBinary, (void*) PTR_ORIGINAL_cuModuleLoadFatBinary, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -588,7 +662,9 @@ void * PTR_ORIGINAL_cuModuleUnload;
 int INTER_cuModuleUnload( CUmodule hmod ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hmod };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hmod};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleUnload, (void*) PTR_ORIGINAL_cuModuleUnload, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -602,7 +678,9 @@ void * PTR_ORIGINAL_cuModuleGetFunction;
 int INTER_cuModuleGetFunction( CUfunction * hfunc, CUmodule hmod, const char * name ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&hmod,(void **)&name };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)hmod,(void *)name};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleGetFunction, (void*) PTR_ORIGINAL_cuModuleGetFunction, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -616,7 +694,9 @@ void * PTR_ORIGINAL_cuModuleGetGlobal;
 int INTER_cuModuleGetGlobal( CUdeviceptr * dptr, size_t * bytes, CUmodule hmod, const char * name ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dptr,(void **)&bytes,(void **)&hmod,(void **)&name };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dptr,(void *)bytes,(void *)hmod,(void *)name};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleGetGlobal, (void*) PTR_ORIGINAL_cuModuleGetGlobal, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -630,7 +710,9 @@ void * PTR_ORIGINAL_cuModuleGetTexRef;
 int INTER_cuModuleGetTexRef( CUtexref * pTexRef, CUmodule hmod, const char * name ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pTexRef,(void **)&hmod,(void **)&name };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pTexRef,(void *)hmod,(void *)name};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleGetTexRef, (void*) PTR_ORIGINAL_cuModuleGetTexRef, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -644,7 +726,9 @@ void * PTR_ORIGINAL_cuModuleGetSurfRef;
 int INTER_cuModuleGetSurfRef( CUsurfref * pSurfRef, CUmodule hmod, const char * name ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pSurfRef,(void **)&hmod,(void **)&name };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pSurfRef,(void *)hmod,(void *)name};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuModuleGetSurfRef, (void*) PTR_ORIGINAL_cuModuleGetSurfRef, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -658,7 +742,9 @@ void * PTR_ORIGINAL_cuLinkCreate;
 int INTER_cuLinkCreate( unsigned int numOptions, CUjit_option * options, void * * optionValues, CUlinkState * stateOut ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&numOptions,(void **)&options,(void **)&optionValues,(void **)&stateOut };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)numOptions,(void *)options,(void *)optionValues,(void *)stateOut};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkCreate, (void*) PTR_ORIGINAL_cuLinkCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -672,7 +758,9 @@ void * PTR_ORIGINAL_cuLinkAddData;
 int INTER_cuLinkAddData( CUlinkState state, CUjitInputType type, void * data, size_t size, const char * name, unsigned int numOptions, CUjit_option * options, void * * optionValues ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&state,(void **)&type,(void **)&data,(void **)&size,(void **)&name,(void **)&numOptions,(void **)&options,(void **)&optionValues };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)state,(void *)type,(void *)data,(void *)size,(void *)name,(void *)numOptions,(void *)options,(void *)optionValues};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5],&tmpParams[6],&tmpParams[7] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkAddData, (void*) PTR_ORIGINAL_cuLinkAddData, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -686,7 +774,9 @@ void * PTR_ORIGINAL_cuLinkAddFile;
 int INTER_cuLinkAddFile( CUlinkState state, CUjitInputType type, const char * path, unsigned int numOptions, CUjit_option * options, void * * optionValues ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&state,(void **)&type,(void **)&path,(void **)&numOptions,(void **)&options,(void **)&optionValues };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)state,(void *)type,(void *)path,(void *)numOptions,(void *)options,(void *)optionValues};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkAddFile, (void*) PTR_ORIGINAL_cuLinkAddFile, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -700,7 +790,9 @@ void * PTR_ORIGINAL_cuLinkComplete;
 int INTER_cuLinkComplete( CUlinkState state, void * * cubinOut, size_t * sizeOut ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&state,(void **)&cubinOut,(void **)&sizeOut };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)state,(void *)cubinOut,(void *)sizeOut};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkComplete, (void*) PTR_ORIGINAL_cuLinkComplete, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -714,7 +806,9 @@ void * PTR_ORIGINAL_cuLinkDestroy;
 int INTER_cuLinkDestroy( CUlinkState state ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&state };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)state};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLinkDestroy, (void*) PTR_ORIGINAL_cuLinkDestroy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -728,7 +822,9 @@ void * PTR_ORIGINAL_cuMemGetInfo;
 int INTER_cuMemGetInfo( size_t * free, size_t * total ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&free,(void **)&total };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)free,(void *)total};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemGetInfo, (void*) PTR_ORIGINAL_cuMemGetInfo, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -742,7 +838,9 @@ void * PTR_ORIGINAL_cuMemAlloc;
 int INTER_cuMemAlloc( CUdeviceptr * dptr, size_t bytesize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dptr,(void **)&bytesize };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dptr,(void *)bytesize};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAlloc, (void*) PTR_ORIGINAL_cuMemAlloc, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -756,7 +854,9 @@ void * PTR_ORIGINAL_cuMemAllocPitch;
 int INTER_cuMemAllocPitch( CUdeviceptr * dptr, size_t * pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dptr,(void **)&pPitch,(void **)&WidthInBytes,(void **)&Height,(void **)&ElementSizeBytes };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dptr,(void *)pPitch,(void *)WidthInBytes,(void *)Height,(void *)ElementSizeBytes};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAllocPitch, (void*) PTR_ORIGINAL_cuMemAllocPitch, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -770,7 +870,9 @@ void * PTR_ORIGINAL_cuMemFree;
 int INTER_cuMemFree( CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dptr };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dptr};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemFree, (void*) PTR_ORIGINAL_cuMemFree, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -784,7 +886,9 @@ void * PTR_ORIGINAL_cuMemGetAddressRange;
 int INTER_cuMemGetAddressRange( CUdeviceptr * pbase, size_t * psize, CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pbase,(void **)&psize,(void **)&dptr };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pbase,(void *)psize,(void *)dptr};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemGetAddressRange, (void*) PTR_ORIGINAL_cuMemGetAddressRange, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -798,7 +902,9 @@ void * PTR_ORIGINAL_cuMemAllocHost;
 int INTER_cuMemAllocHost( void * * pp, size_t bytesize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pp,(void **)&bytesize };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pp,(void *)bytesize};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAllocHost, (void*) PTR_ORIGINAL_cuMemAllocHost, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -812,7 +918,9 @@ void * PTR_ORIGINAL_cuMemFreeHost;
 int INTER_cuMemFreeHost( void * p ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&p };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)p};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemFreeHost, (void*) PTR_ORIGINAL_cuMemFreeHost, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -826,7 +934,9 @@ void * PTR_ORIGINAL_cuMemHostAlloc;
 int INTER_cuMemHostAlloc( void * * pp, size_t bytesize, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pp,(void **)&bytesize,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pp,(void *)bytesize,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostAlloc, (void*) PTR_ORIGINAL_cuMemHostAlloc, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -840,7 +950,9 @@ void * PTR_ORIGINAL_cuMemHostGetDevicePointer;
 int INTER_cuMemHostGetDevicePointer( CUdeviceptr * pdptr, void * p, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pdptr,(void **)&p,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pdptr,(void *)p,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostGetDevicePointer, (void*) PTR_ORIGINAL_cuMemHostGetDevicePointer, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -854,7 +966,9 @@ void * PTR_ORIGINAL_cuMemHostGetFlags;
 int INTER_cuMemHostGetFlags( unsigned int * pFlags, void * p ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pFlags,(void **)&p };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pFlags,(void *)p};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostGetFlags, (void*) PTR_ORIGINAL_cuMemHostGetFlags, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -868,7 +982,9 @@ void * PTR_ORIGINAL_cuMemAllocManaged;
 int INTER_cuMemAllocManaged( CUdeviceptr * dptr, size_t bytesize, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dptr,(void **)&bytesize,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dptr,(void *)bytesize,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAllocManaged, (void*) PTR_ORIGINAL_cuMemAllocManaged, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -882,7 +998,9 @@ void * PTR_ORIGINAL_cuDeviceGetByPCIBusId;
 int INTER_cuDeviceGetByPCIBusId( CUdevice * dev, const char * pciBusId ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dev,(void **)&pciBusId };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dev,(void *)pciBusId};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetByPCIBusId, (void*) PTR_ORIGINAL_cuDeviceGetByPCIBusId, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -896,7 +1014,9 @@ void * PTR_ORIGINAL_cuDeviceGetPCIBusId;
 int INTER_cuDeviceGetPCIBusId( char * pciBusId, int len, CUdevice dev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pciBusId,(void **)&len,(void **)&dev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pciBusId,(void *)len,(void *)dev};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetPCIBusId, (void*) PTR_ORIGINAL_cuDeviceGetPCIBusId, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -910,7 +1030,9 @@ void * PTR_ORIGINAL_cuIpcGetEventHandle;
 int INTER_cuIpcGetEventHandle( CUipcEventHandle * pHandle, CUevent event ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pHandle,(void **)&event };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pHandle,(void *)event};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcGetEventHandle, (void*) PTR_ORIGINAL_cuIpcGetEventHandle, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -924,7 +1046,9 @@ void * PTR_ORIGINAL_cuIpcOpenEventHandle;
 int INTER_cuIpcOpenEventHandle( CUevent * phEvent, CUipcEventHandle handle ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&phEvent,(void **)&handle };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)phEvent,(void *)handle};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcOpenEventHandle, (void*) PTR_ORIGINAL_cuIpcOpenEventHandle, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -938,7 +1062,9 @@ void * PTR_ORIGINAL_cuIpcGetMemHandle;
 int INTER_cuIpcGetMemHandle( CUipcMemHandle * pHandle, CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pHandle,(void **)&dptr };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pHandle,(void *)dptr};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcGetMemHandle, (void*) PTR_ORIGINAL_cuIpcGetMemHandle, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -952,7 +1078,9 @@ void * PTR_ORIGINAL_cuIpcOpenMemHandle;
 int INTER_cuIpcOpenMemHandle( CUdeviceptr * pdptr, CUipcMemHandle handle, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pdptr,(void **)&handle,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pdptr,(void *)handle,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcOpenMemHandle, (void*) PTR_ORIGINAL_cuIpcOpenMemHandle, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -966,7 +1094,9 @@ void * PTR_ORIGINAL_cuIpcCloseMemHandle;
 int INTER_cuIpcCloseMemHandle( CUdeviceptr dptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dptr };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dptr};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuIpcCloseMemHandle, (void*) PTR_ORIGINAL_cuIpcCloseMemHandle, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -980,7 +1110,9 @@ void * PTR_ORIGINAL_cuMemHostRegister;
 int INTER_cuMemHostRegister( void * p, size_t bytesize, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&p,(void **)&bytesize,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)p,(void *)bytesize,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostRegister, (void*) PTR_ORIGINAL_cuMemHostRegister, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -994,7 +1126,9 @@ void * PTR_ORIGINAL_cuMemHostUnregister;
 int INTER_cuMemHostUnregister( void * p ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&p };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)p};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemHostUnregister, (void*) PTR_ORIGINAL_cuMemHostUnregister, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1008,7 +1142,9 @@ void * PTR_ORIGINAL_cuMemcpy;
 int INTER_cuMemcpy( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dst,(void **)&src,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dst,(void *)src,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy, (void*) PTR_ORIGINAL_cuMemcpy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1022,7 +1158,9 @@ void * PTR_ORIGINAL_cuMemcpyPeer;
 int INTER_cuMemcpyPeer( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstContext,(void **)&srcDevice,(void **)&srcContext,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstContext,(void *)srcDevice,(void *)srcContext,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyPeer, (void*) PTR_ORIGINAL_cuMemcpyPeer, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1036,7 +1174,9 @@ void * PTR_ORIGINAL_cuMemcpyHtoD;
 int INTER_cuMemcpyHtoD( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcHost,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcHost,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoD, (void*) PTR_ORIGINAL_cuMemcpyHtoD, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1050,7 +1190,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoH;
 int INTER_cuMemcpyDtoH( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstHost,(void *)srcDevice,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoH, (void*) PTR_ORIGINAL_cuMemcpyDtoH, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1064,7 +1206,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoD;
 int INTER_cuMemcpyDtoD( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcDevice,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcDevice,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoD, (void*) PTR_ORIGINAL_cuMemcpyDtoD, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1078,7 +1222,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoA;
 int INTER_cuMemcpyDtoA( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcDevice,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstArray,(void *)dstOffset,(void *)srcDevice,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoA, (void*) PTR_ORIGINAL_cuMemcpyDtoA, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1092,7 +1238,9 @@ void * PTR_ORIGINAL_cuMemcpyAtoD;
 int INTER_cuMemcpyAtoD( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcArray,(void *)srcOffset,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoD, (void*) PTR_ORIGINAL_cuMemcpyAtoD, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1106,7 +1254,9 @@ void * PTR_ORIGINAL_cuMemcpyHtoA;
 int INTER_cuMemcpyHtoA( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstArray,(void *)dstOffset,(void *)srcHost,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoA, (void*) PTR_ORIGINAL_cuMemcpyHtoA, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1120,7 +1270,9 @@ void * PTR_ORIGINAL_cuMemcpyAtoH;
 int INTER_cuMemcpyAtoH( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstHost,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstHost,(void *)srcArray,(void *)srcOffset,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoH, (void*) PTR_ORIGINAL_cuMemcpyAtoH, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1134,7 +1286,9 @@ void * PTR_ORIGINAL_cuMemcpyAtoA;
 int INTER_cuMemcpyAtoA( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstArray,(void *)dstOffset,(void *)srcArray,(void *)srcOffset,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoA, (void*) PTR_ORIGINAL_cuMemcpyAtoA, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1148,7 +1302,9 @@ void * PTR_ORIGINAL_cuMemcpy2D;
 int INTER_cuMemcpy2D( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2D, (void*) PTR_ORIGINAL_cuMemcpy2D, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1162,7 +1318,9 @@ void * PTR_ORIGINAL_cuMemcpy2DUnaligned;
 int INTER_cuMemcpy2DUnaligned( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2DUnaligned, (void*) PTR_ORIGINAL_cuMemcpy2DUnaligned, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1176,7 +1334,9 @@ void * PTR_ORIGINAL_cuMemcpy3D;
 int INTER_cuMemcpy3D( const CUDA_MEMCPY3D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3D, (void*) PTR_ORIGINAL_cuMemcpy3D, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1190,7 +1350,9 @@ void * PTR_ORIGINAL_cuMemcpy3DPeer;
 int INTER_cuMemcpy3DPeer( const CUDA_MEMCPY3D_PEER * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3DPeer, (void*) PTR_ORIGINAL_cuMemcpy3DPeer, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1204,7 +1366,9 @@ void * PTR_ORIGINAL_cuMemcpyAsync;
 int INTER_cuMemcpyAsync( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dst,(void **)&src,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dst,(void *)src,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAsync, (void*) PTR_ORIGINAL_cuMemcpyAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1218,7 +1382,9 @@ void * PTR_ORIGINAL_cuMemcpyPeerAsync;
 int INTER_cuMemcpyPeerAsync( CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstContext,(void **)&srcDevice,(void **)&srcContext,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstContext,(void *)srcDevice,(void *)srcContext,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyPeerAsync, (void*) PTR_ORIGINAL_cuMemcpyPeerAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1232,7 +1398,9 @@ void * PTR_ORIGINAL_cuMemcpyHtoDAsync;
 int INTER_cuMemcpyHtoDAsync( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcHost,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoDAsync, (void*) PTR_ORIGINAL_cuMemcpyHtoDAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1246,7 +1414,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoHAsync;
 int INTER_cuMemcpyDtoHAsync( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstHost,(void *)srcDevice,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoHAsync, (void*) PTR_ORIGINAL_cuMemcpyDtoHAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1260,7 +1430,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoDAsync;
 int INTER_cuMemcpyDtoDAsync( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcDevice,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoDAsync, (void*) PTR_ORIGINAL_cuMemcpyDtoDAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1274,7 +1446,9 @@ void * PTR_ORIGINAL_cuMemcpyHtoAAsync;
 int INTER_cuMemcpyHtoAAsync( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstArray,(void *)dstOffset,(void *)srcHost,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoAAsync, (void*) PTR_ORIGINAL_cuMemcpyHtoAAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1288,7 +1462,9 @@ void * PTR_ORIGINAL_cuMemcpyAtoHAsync;
 int INTER_cuMemcpyAtoHAsync( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstHost,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstHost,(void *)srcArray,(void *)srcOffset,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoHAsync, (void*) PTR_ORIGINAL_cuMemcpyAtoHAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1302,7 +1478,9 @@ void * PTR_ORIGINAL_cuMemcpy2DAsync;
 int INTER_cuMemcpy2DAsync( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2DAsync, (void*) PTR_ORIGINAL_cuMemcpy2DAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1316,7 +1494,9 @@ void * PTR_ORIGINAL_cuMemcpy3DAsync;
 int INTER_cuMemcpy3DAsync( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3DAsync, (void*) PTR_ORIGINAL_cuMemcpy3DAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1330,7 +1510,9 @@ void * PTR_ORIGINAL_cuMemcpy3DPeerAsync;
 int INTER_cuMemcpy3DPeerAsync( const CUDA_MEMCPY3D_PEER * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3DPeerAsync, (void*) PTR_ORIGINAL_cuMemcpy3DPeerAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1344,7 +1526,9 @@ void * PTR_ORIGINAL_cuMemsetD8;
 int INTER_cuMemsetD8( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&uc,(void **)&N };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)uc,(void *)N};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD8, (void*) PTR_ORIGINAL_cuMemsetD8, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1358,7 +1542,9 @@ void * PTR_ORIGINAL_cuMemsetD16;
 int INTER_cuMemsetD16( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&us,(void **)&N };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)us,(void *)N};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD16, (void*) PTR_ORIGINAL_cuMemsetD16, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1372,7 +1558,9 @@ void * PTR_ORIGINAL_cuMemsetD32;
 int INTER_cuMemsetD32( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&ui,(void **)&N };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)ui,(void *)N};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD32, (void*) PTR_ORIGINAL_cuMemsetD32, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1386,7 +1574,9 @@ void * PTR_ORIGINAL_cuMemsetD2D8;
 int INTER_cuMemsetD2D8( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&uc,(void **)&Width,(void **)&Height };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstPitch,(void *)uc,(void *)Width,(void *)Height};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D8, (void*) PTR_ORIGINAL_cuMemsetD2D8, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1400,7 +1590,9 @@ void * PTR_ORIGINAL_cuMemsetD2D16;
 int INTER_cuMemsetD2D16( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&us,(void **)&Width,(void **)&Height };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstPitch,(void *)us,(void *)Width,(void *)Height};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D16, (void*) PTR_ORIGINAL_cuMemsetD2D16, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1414,7 +1606,9 @@ void * PTR_ORIGINAL_cuMemsetD2D32;
 int INTER_cuMemsetD2D32( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&ui,(void **)&Width,(void **)&Height };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstPitch,(void *)ui,(void *)Width,(void *)Height};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D32, (void*) PTR_ORIGINAL_cuMemsetD2D32, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1428,7 +1622,9 @@ void * PTR_ORIGINAL_cuMemsetD8Async;
 int INTER_cuMemsetD8Async( CUdeviceptr dstDevice, unsigned char uc, size_t N, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&uc,(void **)&N,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)uc,(void *)N,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD8Async, (void*) PTR_ORIGINAL_cuMemsetD8Async, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1442,7 +1638,9 @@ void * PTR_ORIGINAL_cuMemsetD16Async;
 int INTER_cuMemsetD16Async( CUdeviceptr dstDevice, unsigned short us, size_t N, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&us,(void **)&N,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)us,(void *)N,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD16Async, (void*) PTR_ORIGINAL_cuMemsetD16Async, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1456,7 +1654,9 @@ void * PTR_ORIGINAL_cuMemsetD32Async;
 int INTER_cuMemsetD32Async( CUdeviceptr dstDevice, unsigned int ui, size_t N, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&ui,(void **)&N,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)ui,(void *)N,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD32Async, (void*) PTR_ORIGINAL_cuMemsetD32Async, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1470,7 +1670,9 @@ void * PTR_ORIGINAL_cuMemsetD2D8Async;
 int INTER_cuMemsetD2D8Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&uc,(void **)&Width,(void **)&Height,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstPitch,(void *)uc,(void *)Width,(void *)Height,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D8Async, (void*) PTR_ORIGINAL_cuMemsetD2D8Async, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1484,7 +1686,9 @@ void * PTR_ORIGINAL_cuMemsetD2D16Async;
 int INTER_cuMemsetD2D16Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&us,(void **)&Width,(void **)&Height,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstPitch,(void *)us,(void *)Width,(void *)Height,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D16Async, (void*) PTR_ORIGINAL_cuMemsetD2D16Async, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1498,7 +1702,9 @@ void * PTR_ORIGINAL_cuMemsetD2D32Async;
 int INTER_cuMemsetD2D32Async( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&ui,(void **)&Width,(void **)&Height,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstPitch,(void *)ui,(void *)Width,(void *)Height,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D32Async, (void*) PTR_ORIGINAL_cuMemsetD2D32Async, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1512,7 +1718,9 @@ void * PTR_ORIGINAL_cuArrayCreate;
 int INTER_cuArrayCreate( CUarray * pHandle, const CUDA_ARRAY_DESCRIPTOR * pAllocateArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pHandle,(void **)&pAllocateArray };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pHandle,(void *)pAllocateArray};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArrayCreate, (void*) PTR_ORIGINAL_cuArrayCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1526,7 +1734,9 @@ void * PTR_ORIGINAL_cuArrayGetDescriptor;
 int INTER_cuArrayGetDescriptor( CUDA_ARRAY_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pArrayDescriptor,(void **)&hArray };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pArrayDescriptor,(void *)hArray};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArrayGetDescriptor, (void*) PTR_ORIGINAL_cuArrayGetDescriptor, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1540,7 +1750,9 @@ void * PTR_ORIGINAL_cuArrayDestroy;
 int INTER_cuArrayDestroy( CUarray hArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hArray };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hArray};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArrayDestroy, (void*) PTR_ORIGINAL_cuArrayDestroy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1554,7 +1766,9 @@ void * PTR_ORIGINAL_cuArray3DCreate;
 int INTER_cuArray3DCreate( CUarray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pAllocateArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pHandle,(void **)&pAllocateArray };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pHandle,(void *)pAllocateArray};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArray3DCreate, (void*) PTR_ORIGINAL_cuArray3DCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1568,7 +1782,9 @@ void * PTR_ORIGINAL_cuArray3DGetDescriptor;
 int INTER_cuArray3DGetDescriptor( CUDA_ARRAY3D_DESCRIPTOR * pArrayDescriptor, CUarray hArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pArrayDescriptor,(void **)&hArray };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pArrayDescriptor,(void *)hArray};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuArray3DGetDescriptor, (void*) PTR_ORIGINAL_cuArray3DGetDescriptor, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1582,7 +1798,9 @@ void * PTR_ORIGINAL_cuMipmappedArrayCreate;
 int INTER_cuMipmappedArrayCreate( CUmipmappedArray * pHandle, const CUDA_ARRAY3D_DESCRIPTOR * pMipmappedArrayDesc, unsigned int numMipmapLevels ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pHandle,(void **)&pMipmappedArrayDesc,(void **)&numMipmapLevels };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pHandle,(void *)pMipmappedArrayDesc,(void *)numMipmapLevels};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMipmappedArrayCreate, (void*) PTR_ORIGINAL_cuMipmappedArrayCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1596,7 +1814,9 @@ void * PTR_ORIGINAL_cuMipmappedArrayGetLevel;
 int INTER_cuMipmappedArrayGetLevel( CUarray * pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pLevelArray,(void **)&hMipmappedArray,(void **)&level };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pLevelArray,(void *)hMipmappedArray,(void *)level};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMipmappedArrayGetLevel, (void*) PTR_ORIGINAL_cuMipmappedArrayGetLevel, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1610,7 +1830,9 @@ void * PTR_ORIGINAL_cuMipmappedArrayDestroy;
 int INTER_cuMipmappedArrayDestroy( CUmipmappedArray hMipmappedArray ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hMipmappedArray };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hMipmappedArray};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMipmappedArrayDestroy, (void*) PTR_ORIGINAL_cuMipmappedArrayDestroy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1624,7 +1846,9 @@ void * PTR_ORIGINAL_cuPointerGetAttribute;
 int INTER_cuPointerGetAttribute( void * data, CUpointer_attribute attribute, CUdeviceptr ptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&data,(void **)&attribute,(void **)&ptr };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)data,(void *)attribute,(void *)ptr};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuPointerGetAttribute, (void*) PTR_ORIGINAL_cuPointerGetAttribute, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1638,7 +1862,9 @@ void * PTR_ORIGINAL_cuMemPrefetchAsync;
 int INTER_cuMemPrefetchAsync( CUdeviceptr devPtr, size_t count, CUdevice dstDevice, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&devPtr,(void **)&count,(void **)&dstDevice,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)devPtr,(void *)count,(void *)dstDevice,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemPrefetchAsync, (void*) PTR_ORIGINAL_cuMemPrefetchAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1652,7 +1878,9 @@ void * PTR_ORIGINAL_cuMemAdvise;
 int INTER_cuMemAdvise( CUdeviceptr devPtr, size_t count, CUmem_advise advice, CUdevice device ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&devPtr,(void **)&count,(void **)&advice,(void **)&device };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)devPtr,(void *)count,(void *)advice,(void *)device};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemAdvise, (void*) PTR_ORIGINAL_cuMemAdvise, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1666,7 +1894,9 @@ void * PTR_ORIGINAL_cuMemRangeGetAttribute;
 int INTER_cuMemRangeGetAttribute( void * data, size_t dataSize, CUmem_range_attribute attribute, CUdeviceptr devPtr, size_t count ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&data,(void **)&dataSize,(void **)&attribute,(void **)&devPtr,(void **)&count };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)data,(void *)dataSize,(void *)attribute,(void *)devPtr,(void *)count};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemRangeGetAttribute, (void*) PTR_ORIGINAL_cuMemRangeGetAttribute, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1680,7 +1910,9 @@ void * PTR_ORIGINAL_cuMemRangeGetAttributes;
 int INTER_cuMemRangeGetAttributes( void * * data, size_t * dataSizes, CUmem_range_attribute * attributes, size_t numAttributes, CUdeviceptr devPtr, size_t count ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&data,(void **)&dataSizes,(void **)&attributes,(void **)&numAttributes,(void **)&devPtr,(void **)&count };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)data,(void *)dataSizes,(void *)attributes,(void *)numAttributes,(void *)devPtr,(void *)count};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemRangeGetAttributes, (void*) PTR_ORIGINAL_cuMemRangeGetAttributes, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1694,7 +1926,9 @@ void * PTR_ORIGINAL_cuPointerSetAttribute;
 int INTER_cuPointerSetAttribute( const void * value, CUpointer_attribute attribute, CUdeviceptr ptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&value,(void **)&attribute,(void **)&ptr };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)value,(void *)attribute,(void *)ptr};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuPointerSetAttribute, (void*) PTR_ORIGINAL_cuPointerSetAttribute, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1708,7 +1942,9 @@ void * PTR_ORIGINAL_cuPointerGetAttributes;
 int INTER_cuPointerGetAttributes( unsigned int numAttributes, CUpointer_attribute * attributes, void * * data, CUdeviceptr ptr ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&numAttributes,(void **)&attributes,(void **)&data,(void **)&ptr };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)numAttributes,(void *)attributes,(void *)data,(void *)ptr};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuPointerGetAttributes, (void*) PTR_ORIGINAL_cuPointerGetAttributes, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1722,7 +1958,9 @@ void * PTR_ORIGINAL_cuStreamCreate;
 int INTER_cuStreamCreate( CUstream * phStream, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&phStream,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)phStream,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamCreate, (void*) PTR_ORIGINAL_cuStreamCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1736,7 +1974,9 @@ void * PTR_ORIGINAL_cuStreamCreateWithPriority;
 int INTER_cuStreamCreateWithPriority( CUstream * phStream, unsigned int flags, int priority ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&phStream,(void **)&flags,(void **)&priority };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)phStream,(void *)flags,(void *)priority};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamCreateWithPriority, (void*) PTR_ORIGINAL_cuStreamCreateWithPriority, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1750,7 +1990,9 @@ void * PTR_ORIGINAL_cuStreamGetPriority;
 int INTER_cuStreamGetPriority( CUstream hStream, int * priority ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hStream,(void **)&priority };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hStream,(void *)priority};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamGetPriority, (void*) PTR_ORIGINAL_cuStreamGetPriority, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1764,7 +2006,9 @@ void * PTR_ORIGINAL_cuStreamGetFlags;
 int INTER_cuStreamGetFlags( CUstream hStream, unsigned int * flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hStream,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hStream,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamGetFlags, (void*) PTR_ORIGINAL_cuStreamGetFlags, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1778,7 +2022,9 @@ void * PTR_ORIGINAL_cuStreamWaitEvent;
 int INTER_cuStreamWaitEvent( CUstream hStream, CUevent hEvent, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hStream,(void **)&hEvent,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hStream,(void *)hEvent,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamWaitEvent, (void*) PTR_ORIGINAL_cuStreamWaitEvent, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1792,7 +2038,9 @@ void * PTR_ORIGINAL_cuStreamAddCallback;
 int INTER_cuStreamAddCallback( CUstream hStream, CUstreamCallback callback, void * userData, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hStream,(void **)&callback,(void **)&userData,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hStream,(void *)callback,(void *)userData,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamAddCallback, (void*) PTR_ORIGINAL_cuStreamAddCallback, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1806,7 +2054,9 @@ void * PTR_ORIGINAL_cuStreamAttachMemAsync;
 int INTER_cuStreamAttachMemAsync( CUstream hStream, CUdeviceptr dptr, size_t length, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hStream,(void **)&dptr,(void **)&length,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hStream,(void *)dptr,(void *)length,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamAttachMemAsync, (void*) PTR_ORIGINAL_cuStreamAttachMemAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1820,7 +2070,9 @@ void * PTR_ORIGINAL_cuStreamQuery;
 int INTER_cuStreamQuery( CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hStream};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamQuery, (void*) PTR_ORIGINAL_cuStreamQuery, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1834,7 +2086,9 @@ void * PTR_ORIGINAL_cuStreamSynchronize;
 int INTER_cuStreamSynchronize( CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hStream};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamSynchronize, (void*) PTR_ORIGINAL_cuStreamSynchronize, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1848,7 +2102,9 @@ void * PTR_ORIGINAL_cuStreamDestroy;
 int INTER_cuStreamDestroy( CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hStream};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamDestroy, (void*) PTR_ORIGINAL_cuStreamDestroy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1862,7 +2118,9 @@ void * PTR_ORIGINAL_cuEventCreate;
 int INTER_cuEventCreate( CUevent * phEvent, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&phEvent,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)phEvent,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventCreate, (void*) PTR_ORIGINAL_cuEventCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1876,7 +2134,9 @@ void * PTR_ORIGINAL_cuEventRecord;
 int INTER_cuEventRecord( CUevent hEvent, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hEvent,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hEvent,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventRecord, (void*) PTR_ORIGINAL_cuEventRecord, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1890,7 +2150,9 @@ void * PTR_ORIGINAL_cuEventQuery;
 int INTER_cuEventQuery( CUevent hEvent ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hEvent };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hEvent};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventQuery, (void*) PTR_ORIGINAL_cuEventQuery, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1904,7 +2166,9 @@ void * PTR_ORIGINAL_cuEventSynchronize;
 int INTER_cuEventSynchronize( CUevent hEvent ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hEvent };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hEvent};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventSynchronize, (void*) PTR_ORIGINAL_cuEventSynchronize, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1918,7 +2182,9 @@ void * PTR_ORIGINAL_cuEventDestroy;
 int INTER_cuEventDestroy( CUevent hEvent ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hEvent };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hEvent};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventDestroy, (void*) PTR_ORIGINAL_cuEventDestroy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1932,7 +2198,9 @@ void * PTR_ORIGINAL_cuEventElapsedTime;
 int INTER_cuEventElapsedTime( float * pMilliseconds, CUevent hStart, CUevent hEnd ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pMilliseconds,(void **)&hStart,(void **)&hEnd };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pMilliseconds,(void *)hStart,(void *)hEnd};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuEventElapsedTime, (void*) PTR_ORIGINAL_cuEventElapsedTime, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1946,7 +2214,9 @@ void * PTR_ORIGINAL_cuStreamWaitValue32;
 int INTER_cuStreamWaitValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&stream,(void **)&addr,(void **)&value,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)stream,(void *)addr,(void *)value,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamWaitValue32, (void*) PTR_ORIGINAL_cuStreamWaitValue32, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1960,7 +2230,9 @@ void * PTR_ORIGINAL_cuStreamWriteValue32;
 int INTER_cuStreamWriteValue32( CUstream stream, CUdeviceptr addr, cuuint32_t value, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&stream,(void **)&addr,(void **)&value,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)stream,(void *)addr,(void *)value,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamWriteValue32, (void*) PTR_ORIGINAL_cuStreamWriteValue32, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1974,7 +2246,9 @@ void * PTR_ORIGINAL_cuStreamBatchMemOp;
 int INTER_cuStreamBatchMemOp( CUstream stream, unsigned int count, CUstreamBatchMemOpParams * paramArray, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&stream,(void **)&count,(void **)&paramArray,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)stream,(void *)count,(void *)paramArray,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuStreamBatchMemOp, (void*) PTR_ORIGINAL_cuStreamBatchMemOp, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -1988,7 +2262,9 @@ void * PTR_ORIGINAL_cuFuncGetAttribute;
 int INTER_cuFuncGetAttribute( int * pi, CUfunction_attribute attrib, CUfunction hfunc ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pi,(void **)&attrib,(void **)&hfunc };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pi,(void *)attrib,(void *)hfunc};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncGetAttribute, (void*) PTR_ORIGINAL_cuFuncGetAttribute, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2002,7 +2278,9 @@ void * PTR_ORIGINAL_cuFuncSetCacheConfig;
 int INTER_cuFuncSetCacheConfig( CUfunction hfunc, CUfunc_cache config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&config };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)config};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncSetCacheConfig, (void*) PTR_ORIGINAL_cuFuncSetCacheConfig, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2016,7 +2294,9 @@ void * PTR_ORIGINAL_cuFuncSetSharedMemConfig;
 int INTER_cuFuncSetSharedMemConfig( CUfunction hfunc, CUsharedconfig config ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&config };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)config};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncSetSharedMemConfig, (void*) PTR_ORIGINAL_cuFuncSetSharedMemConfig, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2030,7 +2310,9 @@ void * PTR_ORIGINAL_cuLaunchKernel;
 int INTER_cuLaunchKernel( CUfunction f, unsigned int gridDimX, unsigned int gridDimY, unsigned int gridDimZ, unsigned int blockDimX, unsigned int blockDimY, unsigned int blockDimZ, unsigned int sharedMemBytes, CUstream hStream, void * * kernelParams, void * * extra ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&f,(void **)&gridDimX,(void **)&gridDimY,(void **)&gridDimZ,(void **)&blockDimX,(void **)&blockDimY,(void **)&blockDimZ,(void **)&sharedMemBytes,(void **)&hStream,(void **)&kernelParams,(void **)&extra };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)f,(void *)gridDimX,(void *)gridDimY,(void *)gridDimZ,(void *)blockDimX,(void *)blockDimY,(void *)blockDimZ,(void *)sharedMemBytes,(void *)hStream,(void *)kernelParams,(void *)extra};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5],&tmpParams[6],&tmpParams[7],&tmpParams[8],&tmpParams[9],&tmpParams[10] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLaunchKernel, (void*) PTR_ORIGINAL_cuLaunchKernel, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2044,7 +2326,9 @@ void * PTR_ORIGINAL_cuFuncSetBlockShape;
 int INTER_cuFuncSetBlockShape( CUfunction hfunc, int x, int y, int z ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&x,(void **)&y,(void **)&z };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)x,(void *)y,(void *)z};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncSetBlockShape, (void*) PTR_ORIGINAL_cuFuncSetBlockShape, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2058,7 +2342,9 @@ void * PTR_ORIGINAL_cuFuncSetSharedSize;
 int INTER_cuFuncSetSharedSize( CUfunction hfunc, unsigned int bytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&bytes };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)bytes};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuFuncSetSharedSize, (void*) PTR_ORIGINAL_cuFuncSetSharedSize, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2072,7 +2358,9 @@ void * PTR_ORIGINAL_cuParamSetSize;
 int INTER_cuParamSetSize( CUfunction hfunc, unsigned int numbytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&numbytes };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)numbytes};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetSize, (void*) PTR_ORIGINAL_cuParamSetSize, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2086,7 +2374,9 @@ void * PTR_ORIGINAL_cuParamSeti;
 int INTER_cuParamSeti( CUfunction hfunc, int offset, unsigned int value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&offset,(void **)&value };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)offset,(void *)value};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSeti, (void*) PTR_ORIGINAL_cuParamSeti, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2100,7 +2390,9 @@ void * PTR_ORIGINAL_cuParamSetf;
 int INTER_cuParamSetf( CUfunction hfunc, int offset, float value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&offset,(void **)&value };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)offset,(void *)value};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetf, (void*) PTR_ORIGINAL_cuParamSetf, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2114,7 +2406,9 @@ void * PTR_ORIGINAL_cuParamSetv;
 int INTER_cuParamSetv( CUfunction hfunc, int offset, void * ptr, unsigned int numbytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&offset,(void **)&ptr,(void **)&numbytes };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)offset,(void *)ptr,(void *)numbytes};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetv, (void*) PTR_ORIGINAL_cuParamSetv, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2128,7 +2422,9 @@ void * PTR_ORIGINAL_cuLaunch;
 int INTER_cuLaunch( CUfunction f ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&f };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)f};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLaunch, (void*) PTR_ORIGINAL_cuLaunch, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2142,7 +2438,9 @@ void * PTR_ORIGINAL_cuLaunchGrid;
 int INTER_cuLaunchGrid( CUfunction f, int grid_width, int grid_height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&f,(void **)&grid_width,(void **)&grid_height };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)f,(void *)grid_width,(void *)grid_height};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLaunchGrid, (void*) PTR_ORIGINAL_cuLaunchGrid, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2156,7 +2454,9 @@ void * PTR_ORIGINAL_cuLaunchGridAsync;
 int INTER_cuLaunchGridAsync( CUfunction f, int grid_width, int grid_height, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&f,(void **)&grid_width,(void **)&grid_height,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)f,(void *)grid_width,(void *)grid_height,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuLaunchGridAsync, (void*) PTR_ORIGINAL_cuLaunchGridAsync, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2170,7 +2470,9 @@ void * PTR_ORIGINAL_cuParamSetTexRef;
 int INTER_cuParamSetTexRef( CUfunction hfunc, int texunit, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hfunc,(void **)&texunit,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hfunc,(void *)texunit,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetTexRef, (void*) PTR_ORIGINAL_cuParamSetTexRef, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2184,7 +2486,9 @@ void * PTR_ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor;
 int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessor( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&numBlocks,(void **)&func,(void **)&blockSize,(void **)&dynamicSMemSize };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)numBlocks,(void *)func,(void *)blockSize,(void *)dynamicSMemSize};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuOccupancyMaxActiveBlocksPerMultiprocessor, (void*) PTR_ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessor, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2198,7 +2502,9 @@ void * PTR_ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags;
 int INTER_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags( int * numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&numBlocks,(void **)&func,(void **)&blockSize,(void **)&dynamicSMemSize,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)numBlocks,(void *)func,(void *)blockSize,(void *)dynamicSMemSize,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags, (void*) PTR_ORIGINAL_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2212,7 +2518,9 @@ void * PTR_ORIGINAL_cuOccupancyMaxPotentialBlockSize;
 int INTER_cuOccupancyMaxPotentialBlockSize( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&minGridSize,(void **)&blockSize,(void **)&func,(void **)&blockSizeToDynamicSMemSize,(void **)&dynamicSMemSize,(void **)&blockSizeLimit };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)minGridSize,(void *)blockSize,(void *)func,(void *)blockSizeToDynamicSMemSize,(void *)dynamicSMemSize,(void *)blockSizeLimit};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuOccupancyMaxPotentialBlockSize, (void*) PTR_ORIGINAL_cuOccupancyMaxPotentialBlockSize, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2226,7 +2534,9 @@ void * PTR_ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags;
 int INTER_cuOccupancyMaxPotentialBlockSizeWithFlags( int * minGridSize, int * blockSize, CUfunction func, CUoccupancyB2DSize blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&minGridSize,(void **)&blockSize,(void **)&func,(void **)&blockSizeToDynamicSMemSize,(void **)&dynamicSMemSize,(void **)&blockSizeLimit,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)minGridSize,(void *)blockSize,(void *)func,(void *)blockSizeToDynamicSMemSize,(void *)dynamicSMemSize,(void *)blockSizeLimit,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4],&tmpParams[5],&tmpParams[6] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuOccupancyMaxPotentialBlockSizeWithFlags, (void*) PTR_ORIGINAL_cuOccupancyMaxPotentialBlockSizeWithFlags, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2240,7 +2550,9 @@ void * PTR_ORIGINAL_cuTexRefSetArray;
 int INTER_cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&hArray,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)hArray,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetArray, (void*) PTR_ORIGINAL_cuTexRefSetArray, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2254,7 +2566,9 @@ void * PTR_ORIGINAL_cuTexRefSetMipmappedArray;
 int INTER_cuTexRefSetMipmappedArray( CUtexref hTexRef, CUmipmappedArray hMipmappedArray, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&hMipmappedArray,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)hMipmappedArray,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmappedArray, (void*) PTR_ORIGINAL_cuTexRefSetMipmappedArray, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2268,7 +2582,9 @@ void * PTR_ORIGINAL_cuTexRefSetAddress;
 int INTER_cuTexRefSetAddress( size_t * ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, size_t bytes ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&ByteOffset,(void **)&hTexRef,(void **)&dptr,(void **)&bytes };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)ByteOffset,(void *)hTexRef,(void *)dptr,(void *)bytes};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetAddress, (void*) PTR_ORIGINAL_cuTexRefSetAddress, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2282,7 +2598,9 @@ void * PTR_ORIGINAL_cuTexRefSetAddress2D;
 int INTER_cuTexRefSetAddress2D( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&desc,(void **)&dptr,(void **)&Pitch };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)desc,(void *)dptr,(void *)Pitch};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetAddress2D, (void*) PTR_ORIGINAL_cuTexRefSetAddress2D, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2296,7 +2614,9 @@ void * PTR_ORIGINAL_cuTexRefSetFormat;
 int INTER_cuTexRefSetFormat( CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&fmt,(void **)&NumPackedComponents };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)fmt,(void *)NumPackedComponents};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetFormat, (void*) PTR_ORIGINAL_cuTexRefSetFormat, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2310,7 +2630,9 @@ void * PTR_ORIGINAL_cuTexRefSetAddressMode;
 int INTER_cuTexRefSetAddressMode( CUtexref hTexRef, int dim, CUaddress_mode am ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&dim,(void **)&am };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)dim,(void *)am};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetAddressMode, (void*) PTR_ORIGINAL_cuTexRefSetAddressMode, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2324,7 +2646,9 @@ void * PTR_ORIGINAL_cuTexRefSetFilterMode;
 int INTER_cuTexRefSetFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&fm };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)fm};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetFilterMode, (void*) PTR_ORIGINAL_cuTexRefSetFilterMode, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2338,7 +2662,9 @@ void * PTR_ORIGINAL_cuTexRefSetMipmapFilterMode;
 int INTER_cuTexRefSetMipmapFilterMode( CUtexref hTexRef, CUfilter_mode fm ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&fm };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)fm};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmapFilterMode, (void*) PTR_ORIGINAL_cuTexRefSetMipmapFilterMode, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2352,7 +2678,9 @@ void * PTR_ORIGINAL_cuTexRefSetMipmapLevelBias;
 int INTER_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&bias };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)bias};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmapLevelBias, (void*) PTR_ORIGINAL_cuTexRefSetMipmapLevelBias, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2366,7 +2694,9 @@ void * PTR_ORIGINAL_cuTexRefSetMipmapLevelClamp;
 int INTER_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelClamp, float maxMipmapLevelClamp ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&minMipmapLevelClamp,(void **)&maxMipmapLevelClamp };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)minMipmapLevelClamp,(void *)maxMipmapLevelClamp};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmapLevelClamp, (void*) PTR_ORIGINAL_cuTexRefSetMipmapLevelClamp, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2380,7 +2710,9 @@ void * PTR_ORIGINAL_cuTexRefSetMaxAnisotropy;
 int INTER_cuTexRefSetMaxAnisotropy( CUtexref hTexRef, unsigned int maxAniso ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&maxAniso };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)maxAniso};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMaxAnisotropy, (void*) PTR_ORIGINAL_cuTexRefSetMaxAnisotropy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2394,7 +2726,9 @@ void * PTR_ORIGINAL_cuTexRefSetBorderColor;
 int INTER_cuTexRefSetBorderColor( CUtexref hTexRef, float * pBorderColor ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&pBorderColor };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)pBorderColor};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetBorderColor, (void*) PTR_ORIGINAL_cuTexRefSetBorderColor, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2408,7 +2742,9 @@ void * PTR_ORIGINAL_cuTexRefSetFlags;
 int INTER_cuTexRefSetFlags( CUtexref hTexRef, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetFlags, (void*) PTR_ORIGINAL_cuTexRefSetFlags, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2422,7 +2758,9 @@ void * PTR_ORIGINAL_cuTexRefGetAddress;
 int INTER_cuTexRefGetAddress( CUdeviceptr * pdptr, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pdptr,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pdptr,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetAddress, (void*) PTR_ORIGINAL_cuTexRefGetAddress, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2436,7 +2774,9 @@ void * PTR_ORIGINAL_cuTexRefGetArray;
 int INTER_cuTexRefGetArray( CUarray * phArray, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&phArray,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)phArray,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetArray, (void*) PTR_ORIGINAL_cuTexRefGetArray, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2450,7 +2790,9 @@ void * PTR_ORIGINAL_cuTexRefGetMipmappedArray;
 int INTER_cuTexRefGetMipmappedArray( CUmipmappedArray * phMipmappedArray, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&phMipmappedArray,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)phMipmappedArray,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMipmappedArray, (void*) PTR_ORIGINAL_cuTexRefGetMipmappedArray, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2464,7 +2806,9 @@ void * PTR_ORIGINAL_cuTexRefGetAddressMode;
 int INTER_cuTexRefGetAddressMode( CUaddress_mode * pam, CUtexref hTexRef, int dim ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pam,(void **)&hTexRef,(void **)&dim };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pam,(void *)hTexRef,(void *)dim};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetAddressMode, (void*) PTR_ORIGINAL_cuTexRefGetAddressMode, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2478,7 +2822,9 @@ void * PTR_ORIGINAL_cuTexRefGetFilterMode;
 int INTER_cuTexRefGetFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pfm,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pfm,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetFilterMode, (void*) PTR_ORIGINAL_cuTexRefGetFilterMode, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2492,7 +2838,9 @@ void * PTR_ORIGINAL_cuTexRefGetFormat;
 int INTER_cuTexRefGetFormat( CUarray_format * pFormat, int * pNumChannels, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pFormat,(void **)&pNumChannels,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pFormat,(void *)pNumChannels,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetFormat, (void*) PTR_ORIGINAL_cuTexRefGetFormat, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2506,7 +2854,9 @@ void * PTR_ORIGINAL_cuTexRefGetMipmapFilterMode;
 int INTER_cuTexRefGetMipmapFilterMode( CUfilter_mode * pfm, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pfm,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pfm,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMipmapFilterMode, (void*) PTR_ORIGINAL_cuTexRefGetMipmapFilterMode, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2520,7 +2870,9 @@ void * PTR_ORIGINAL_cuTexRefGetMipmapLevelBias;
 int INTER_cuTexRefGetMipmapLevelBias( float * pbias, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pbias,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pbias,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMipmapLevelBias, (void*) PTR_ORIGINAL_cuTexRefGetMipmapLevelBias, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2534,7 +2886,9 @@ void * PTR_ORIGINAL_cuTexRefGetMipmapLevelClamp;
 int INTER_cuTexRefGetMipmapLevelClamp( float * pminMipmapLevelClamp, float * pmaxMipmapLevelClamp, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pminMipmapLevelClamp,(void **)&pmaxMipmapLevelClamp,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pminMipmapLevelClamp,(void *)pmaxMipmapLevelClamp,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMipmapLevelClamp, (void*) PTR_ORIGINAL_cuTexRefGetMipmapLevelClamp, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2548,7 +2902,9 @@ void * PTR_ORIGINAL_cuTexRefGetMaxAnisotropy;
 int INTER_cuTexRefGetMaxAnisotropy( int * pmaxAniso, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pmaxAniso,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pmaxAniso,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetMaxAnisotropy, (void*) PTR_ORIGINAL_cuTexRefGetMaxAnisotropy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2562,7 +2918,9 @@ void * PTR_ORIGINAL_cuTexRefGetBorderColor;
 int INTER_cuTexRefGetBorderColor( float * pBorderColor, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pBorderColor,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pBorderColor,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetBorderColor, (void*) PTR_ORIGINAL_cuTexRefGetBorderColor, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2576,7 +2934,9 @@ void * PTR_ORIGINAL_cuTexRefGetFlags;
 int INTER_cuTexRefGetFlags( unsigned int * pFlags, CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pFlags,(void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pFlags,(void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefGetFlags, (void*) PTR_ORIGINAL_cuTexRefGetFlags, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2590,7 +2950,9 @@ void * PTR_ORIGINAL_cuTexRefCreate;
 int INTER_cuTexRefCreate( CUtexref * pTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pTexRef};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefCreate, (void*) PTR_ORIGINAL_cuTexRefCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2604,7 +2966,9 @@ void * PTR_ORIGINAL_cuTexRefDestroy;
 int INTER_cuTexRefDestroy( CUtexref hTexRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefDestroy, (void*) PTR_ORIGINAL_cuTexRefDestroy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2618,7 +2982,9 @@ void * PTR_ORIGINAL_cuSurfRefSetArray;
 int INTER_cuSurfRefSetArray( CUsurfref hSurfRef, CUarray hArray, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hSurfRef,(void **)&hArray,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hSurfRef,(void *)hArray,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfRefSetArray, (void*) PTR_ORIGINAL_cuSurfRefSetArray, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2632,7 +2998,9 @@ void * PTR_ORIGINAL_cuSurfRefGetArray;
 int INTER_cuSurfRefGetArray( CUarray * phArray, CUsurfref hSurfRef ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&phArray,(void **)&hSurfRef };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)phArray,(void *)hSurfRef};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfRefGetArray, (void*) PTR_ORIGINAL_cuSurfRefGetArray, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2646,7 +3014,9 @@ void * PTR_ORIGINAL_cuTexObjectCreate;
 int INTER_cuTexObjectCreate( CUtexObject * pTexObject, const CUDA_RESOURCE_DESC * pResDesc, const CUDA_TEXTURE_DESC * pTexDesc, const CUDA_RESOURCE_VIEW_DESC * pResViewDesc ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pTexObject,(void **)&pResDesc,(void **)&pTexDesc,(void **)&pResViewDesc };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pTexObject,(void *)pResDesc,(void *)pTexDesc,(void *)pResViewDesc};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectCreate, (void*) PTR_ORIGINAL_cuTexObjectCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2660,7 +3030,9 @@ void * PTR_ORIGINAL_cuTexObjectDestroy;
 int INTER_cuTexObjectDestroy( CUtexObject texObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&texObject };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)texObject};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectDestroy, (void*) PTR_ORIGINAL_cuTexObjectDestroy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2674,7 +3046,9 @@ void * PTR_ORIGINAL_cuTexObjectGetResourceDesc;
 int INTER_cuTexObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUtexObject texObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pResDesc,(void **)&texObject };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pResDesc,(void *)texObject};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectGetResourceDesc, (void*) PTR_ORIGINAL_cuTexObjectGetResourceDesc, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2688,7 +3062,9 @@ void * PTR_ORIGINAL_cuTexObjectGetTextureDesc;
 int INTER_cuTexObjectGetTextureDesc( CUDA_TEXTURE_DESC * pTexDesc, CUtexObject texObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pTexDesc,(void **)&texObject };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pTexDesc,(void *)texObject};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectGetTextureDesc, (void*) PTR_ORIGINAL_cuTexObjectGetTextureDesc, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2702,7 +3078,9 @@ void * PTR_ORIGINAL_cuTexObjectGetResourceViewDesc;
 int INTER_cuTexObjectGetResourceViewDesc( CUDA_RESOURCE_VIEW_DESC * pResViewDesc, CUtexObject texObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pResViewDesc,(void **)&texObject };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pResViewDesc,(void *)texObject};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexObjectGetResourceViewDesc, (void*) PTR_ORIGINAL_cuTexObjectGetResourceViewDesc, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2716,7 +3094,9 @@ void * PTR_ORIGINAL_cuSurfObjectCreate;
 int INTER_cuSurfObjectCreate( CUsurfObject * pSurfObject, const CUDA_RESOURCE_DESC * pResDesc ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pSurfObject,(void **)&pResDesc };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pSurfObject,(void *)pResDesc};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfObjectCreate, (void*) PTR_ORIGINAL_cuSurfObjectCreate, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2730,7 +3110,9 @@ void * PTR_ORIGINAL_cuSurfObjectDestroy;
 int INTER_cuSurfObjectDestroy( CUsurfObject surfObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&surfObject };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)surfObject};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfObjectDestroy, (void*) PTR_ORIGINAL_cuSurfObjectDestroy, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2744,7 +3126,9 @@ void * PTR_ORIGINAL_cuSurfObjectGetResourceDesc;
 int INTER_cuSurfObjectGetResourceDesc( CUDA_RESOURCE_DESC * pResDesc, CUsurfObject surfObject ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pResDesc,(void **)&surfObject };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pResDesc,(void *)surfObject};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuSurfObjectGetResourceDesc, (void*) PTR_ORIGINAL_cuSurfObjectGetResourceDesc, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2758,7 +3142,9 @@ void * PTR_ORIGINAL_cuDeviceCanAccessPeer;
 int INTER_cuDeviceCanAccessPeer( int * canAccessPeer, CUdevice dev, CUdevice peerDev ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&canAccessPeer,(void **)&dev,(void **)&peerDev };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)canAccessPeer,(void *)dev,(void *)peerDev};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceCanAccessPeer, (void*) PTR_ORIGINAL_cuDeviceCanAccessPeer, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2772,7 +3158,9 @@ void * PTR_ORIGINAL_cuDeviceGetP2PAttribute;
 int INTER_cuDeviceGetP2PAttribute( int * value, CUdevice_P2PAttribute attrib, CUdevice srcDevice, CUdevice dstDevice ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&value,(void **)&attrib,(void **)&srcDevice,(void **)&dstDevice };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)value,(void *)attrib,(void *)srcDevice,(void *)dstDevice};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuDeviceGetP2PAttribute, (void*) PTR_ORIGINAL_cuDeviceGetP2PAttribute, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2786,7 +3174,9 @@ void * PTR_ORIGINAL_cuCtxEnablePeerAccess;
 int INTER_cuCtxEnablePeerAccess( CUcontext peerContext, unsigned int Flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&peerContext,(void **)&Flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)peerContext,(void *)Flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxEnablePeerAccess, (void*) PTR_ORIGINAL_cuCtxEnablePeerAccess, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2800,7 +3190,9 @@ void * PTR_ORIGINAL_cuCtxDisablePeerAccess;
 int INTER_cuCtxDisablePeerAccess( CUcontext peerContext ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&peerContext };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)peerContext};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuCtxDisablePeerAccess, (void*) PTR_ORIGINAL_cuCtxDisablePeerAccess, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2814,7 +3206,9 @@ void * PTR_ORIGINAL_cuGraphicsUnregisterResource;
 int INTER_cuGraphicsUnregisterResource( CUgraphicsResource resource ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&resource };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)resource};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsUnregisterResource, (void*) PTR_ORIGINAL_cuGraphicsUnregisterResource, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2828,7 +3222,9 @@ void * PTR_ORIGINAL_cuGraphicsSubResourceGetMappedArray;
 int INTER_cuGraphicsSubResourceGetMappedArray( CUarray * pArray, CUgraphicsResource resource, unsigned int arrayIndex, unsigned int mipLevel ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pArray,(void **)&resource,(void **)&arrayIndex,(void **)&mipLevel };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pArray,(void *)resource,(void *)arrayIndex,(void *)mipLevel};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsSubResourceGetMappedArray, (void*) PTR_ORIGINAL_cuGraphicsSubResourceGetMappedArray, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2842,7 +3238,9 @@ void * PTR_ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray;
 int INTER_cuGraphicsResourceGetMappedMipmappedArray( CUmipmappedArray * pMipmappedArray, CUgraphicsResource resource ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pMipmappedArray,(void **)&resource };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pMipmappedArray,(void *)resource};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsResourceGetMappedMipmappedArray, (void*) PTR_ORIGINAL_cuGraphicsResourceGetMappedMipmappedArray, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2856,7 +3254,9 @@ void * PTR_ORIGINAL_cuGraphicsResourceGetMappedPointer;
 int INTER_cuGraphicsResourceGetMappedPointer( CUdeviceptr * pDevPtr, size_t * pSize, CUgraphicsResource resource ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pDevPtr,(void **)&pSize,(void **)&resource };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pDevPtr,(void *)pSize,(void *)resource};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsResourceGetMappedPointer, (void*) PTR_ORIGINAL_cuGraphicsResourceGetMappedPointer, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2870,7 +3270,9 @@ void * PTR_ORIGINAL_cuGraphicsResourceSetMapFlags;
 int INTER_cuGraphicsResourceSetMapFlags( CUgraphicsResource resource, unsigned int flags ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&resource,(void **)&flags };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)resource,(void *)flags};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsResourceSetMapFlags, (void*) PTR_ORIGINAL_cuGraphicsResourceSetMapFlags, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2884,7 +3286,9 @@ void * PTR_ORIGINAL_cuGraphicsMapResources;
 int INTER_cuGraphicsMapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&count,(void **)&resources,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)count,(void *)resources,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsMapResources, (void*) PTR_ORIGINAL_cuGraphicsMapResources, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2898,7 +3302,9 @@ void * PTR_ORIGINAL_cuGraphicsUnmapResources;
 int INTER_cuGraphicsUnmapResources( unsigned int count, CUgraphicsResource * resources, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&count,(void **)&resources,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)count,(void *)resources,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGraphicsUnmapResources, (void*) PTR_ORIGINAL_cuGraphicsUnmapResources, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2912,7 +3318,9 @@ void * PTR_ORIGINAL_cuGetExportTable;
 int INTER_cuGetExportTable( const void * * ppExportTable, const CUuuid * pExportTableId ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&ppExportTable,(void **)&pExportTableId };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)ppExportTable,(void *)pExportTableId};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuGetExportTable, (void*) PTR_ORIGINAL_cuGetExportTable, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2926,7 +3334,9 @@ void * PTR_ORIGINAL_cuTexRefSetAddress2D_v2;
 int INTER_cuTexRefSetAddress2D_v2( CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR * desc, CUdeviceptr dptr, size_t Pitch ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&hTexRef,(void **)&desc,(void **)&dptr,(void **)&Pitch };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)desc,(void *)dptr,(void *)Pitch};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetAddress2D_v2, (void*) PTR_ORIGINAL_cuTexRefSetAddress2D_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2940,7 +3350,9 @@ void * PTR_ORIGINAL_cuMemcpyHtoD_v2;
 int INTER_cuMemcpyHtoD_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcHost,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcHost,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoD_v2, (void*) PTR_ORIGINAL_cuMemcpyHtoD_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2954,7 +3366,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoH_v2;
 int INTER_cuMemcpyDtoH_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstHost,(void *)srcDevice,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoH_v2, (void*) PTR_ORIGINAL_cuMemcpyDtoH_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2968,7 +3382,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoD_v2;
 int INTER_cuMemcpyDtoD_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcDevice,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcDevice,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoD_v2, (void*) PTR_ORIGINAL_cuMemcpyDtoD_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2982,7 +3398,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoA_v2;
 int INTER_cuMemcpyDtoA_v2( CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcDevice,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstArray,(void *)dstOffset,(void *)srcDevice,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoA_v2, (void*) PTR_ORIGINAL_cuMemcpyDtoA_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -2996,7 +3414,9 @@ void * PTR_ORIGINAL_cuMemcpyAtoD_v2;
 int INTER_cuMemcpyAtoD_v2( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcArray,(void *)srcOffset,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoD_v2, (void*) PTR_ORIGINAL_cuMemcpyAtoD_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3010,7 +3430,9 @@ void * PTR_ORIGINAL_cuMemcpyHtoA_v2;
 int INTER_cuMemcpyHtoA_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstArray,(void *)dstOffset,(void *)srcHost,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoA_v2, (void*) PTR_ORIGINAL_cuMemcpyHtoA_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3024,7 +3446,9 @@ void * PTR_ORIGINAL_cuMemcpyAtoH_v2;
 int INTER_cuMemcpyAtoH_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstHost,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstHost,(void *)srcArray,(void *)srcOffset,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoH_v2, (void*) PTR_ORIGINAL_cuMemcpyAtoH_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3038,7 +3462,9 @@ void * PTR_ORIGINAL_cuMemcpyAtoA_v2;
 int INTER_cuMemcpyAtoA_v2( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstArray,(void *)dstOffset,(void *)srcArray,(void *)srcOffset,(void *)ByteCount};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoA_v2, (void*) PTR_ORIGINAL_cuMemcpyAtoA_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3052,7 +3478,9 @@ void * PTR_ORIGINAL_cuMemcpyHtoAAsync_v2;
 int INTER_cuMemcpyHtoAAsync_v2( CUarray dstArray, size_t dstOffset, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstArray,(void **)&dstOffset,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstArray,(void *)dstOffset,(void *)srcHost,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoAAsync_v2, (void*) PTR_ORIGINAL_cuMemcpyHtoAAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3066,7 +3494,9 @@ void * PTR_ORIGINAL_cuMemcpyAtoHAsync_v2;
 int INTER_cuMemcpyAtoHAsync_v2( void * dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstHost,(void **)&srcArray,(void **)&srcOffset,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstHost,(void *)srcArray,(void *)srcOffset,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyAtoHAsync_v2, (void*) PTR_ORIGINAL_cuMemcpyAtoHAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3080,7 +3510,9 @@ void * PTR_ORIGINAL_cuMemcpy2D_v2;
 int INTER_cuMemcpy2D_v2( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2D_v2, (void*) PTR_ORIGINAL_cuMemcpy2D_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3094,7 +3526,9 @@ void * PTR_ORIGINAL_cuMemcpy2DUnaligned_v2;
 int INTER_cuMemcpy2DUnaligned_v2( const CUDA_MEMCPY2D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2DUnaligned_v2, (void*) PTR_ORIGINAL_cuMemcpy2DUnaligned_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3108,7 +3542,9 @@ void * PTR_ORIGINAL_cuMemcpy3D_v2;
 int INTER_cuMemcpy3D_v2( const CUDA_MEMCPY3D * pCopy ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy};
+	std::vector<void **> params = { &tmpParams[0] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3D_v2, (void*) PTR_ORIGINAL_cuMemcpy3D_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3122,7 +3558,9 @@ void * PTR_ORIGINAL_cuMemcpyHtoDAsync_v2;
 int INTER_cuMemcpyHtoDAsync_v2( CUdeviceptr dstDevice, const void * srcHost, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcHost,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcHost,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyHtoDAsync_v2, (void*) PTR_ORIGINAL_cuMemcpyHtoDAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3136,7 +3574,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoHAsync_v2;
 int INTER_cuMemcpyDtoHAsync_v2( void * dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstHost,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstHost,(void *)srcDevice,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoHAsync_v2, (void*) PTR_ORIGINAL_cuMemcpyDtoHAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3150,7 +3590,9 @@ void * PTR_ORIGINAL_cuMemcpyDtoDAsync_v2;
 int INTER_cuMemcpyDtoDAsync_v2( CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&srcDevice,(void **)&ByteCount,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)srcDevice,(void *)ByteCount,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpyDtoDAsync_v2, (void*) PTR_ORIGINAL_cuMemcpyDtoDAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3164,7 +3606,9 @@ void * PTR_ORIGINAL_cuMemcpy2DAsync_v2;
 int INTER_cuMemcpy2DAsync_v2( const CUDA_MEMCPY2D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy2DAsync_v2, (void*) PTR_ORIGINAL_cuMemcpy2DAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3178,7 +3622,9 @@ void * PTR_ORIGINAL_cuMemcpy3DAsync_v2;
 int INTER_cuMemcpy3DAsync_v2( const CUDA_MEMCPY3D * pCopy, CUstream hStream ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&pCopy,(void **)&hStream };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)pCopy,(void *)hStream};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemcpy3DAsync_v2, (void*) PTR_ORIGINAL_cuMemcpy3DAsync_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3192,7 +3638,9 @@ void * PTR_ORIGINAL_cuMemsetD8_v2;
 int INTER_cuMemsetD8_v2( CUdeviceptr dstDevice, unsigned char uc, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&uc,(void **)&N };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)uc,(void *)N};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD8_v2, (void*) PTR_ORIGINAL_cuMemsetD8_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3206,7 +3654,9 @@ void * PTR_ORIGINAL_cuMemsetD16_v2;
 int INTER_cuMemsetD16_v2( CUdeviceptr dstDevice, unsigned short us, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&us,(void **)&N };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)us,(void *)N};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD16_v2, (void*) PTR_ORIGINAL_cuMemsetD16_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3220,7 +3670,9 @@ void * PTR_ORIGINAL_cuMemsetD32_v2;
 int INTER_cuMemsetD32_v2( CUdeviceptr dstDevice, unsigned int ui, size_t N ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&ui,(void **)&N };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)ui,(void *)N};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD32_v2, (void*) PTR_ORIGINAL_cuMemsetD32_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3234,7 +3686,9 @@ void * PTR_ORIGINAL_cuMemsetD2D8_v2;
 int INTER_cuMemsetD2D8_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&uc,(void **)&Width,(void **)&Height };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstPitch,(void *)uc,(void *)Width,(void *)Height};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D8_v2, (void*) PTR_ORIGINAL_cuMemsetD2D8_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3248,7 +3702,9 @@ void * PTR_ORIGINAL_cuMemsetD2D16_v2;
 int INTER_cuMemsetD2D16_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&us,(void **)&Width,(void **)&Height };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstPitch,(void *)us,(void *)Width,(void *)Height};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D16_v2, (void*) PTR_ORIGINAL_cuMemsetD2D16_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;
@@ -3262,7 +3718,9 @@ void * PTR_ORIGINAL_cuMemsetD2D32_v2;
 int INTER_cuMemsetD2D32_v2( CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height ) {
 	// Build the instriment factory
 	BUILD_FACTORY
-	std::vector<void **> params = { (void **)&dstDevice,(void **)&dstPitch,(void **)&ui,(void **)&Width,(void **)&Height };
+	// Gets around an issue on POWER
+	std::vector<void *> tmpParams = { (void *)dstDevice,(void *)dstPitch,(void *)ui,(void *)Width,(void *)Height};
+	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2],&tmpParams[3],&tmpParams[4] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuMemsetD2D32_v2, (void*) PTR_ORIGINAL_cuMemsetD2D32_v2, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
 	return ret;

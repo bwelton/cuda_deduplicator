@@ -73,16 +73,21 @@ for x in protos:
 	variables["PARAMETERS_NAMES"] = ""
 	variables["PARAMETER_TYPES"] = "int,"
 	variables["PARAMETERS_NAMES_VOID_CAST"] = ""
+	variables["FROM_TEMP_PARAMS"] = "";
 	tmp[-1] = tmp[-1][:-1]
+	mCount = 0
 	for y in tmp[2:]:
 		pnames = y.split("$")
 		variables["PARAMETER_TYPES"] += pnames[0] + ","
 		variables["PARAMETERS_FULL"] += pnames[0] + " " + pnames[1] + ", "
 		variables["PARAMETERS_NAMES"] += pnames[1] + ","
-		variables["PARAMETERS_NAMES_VOID_CAST"] += "(void **)&" + pnames[1] + ","
+		variables["PARAMETERS_NAMES_VOID_CAST"] += "(void *)" + pnames[1] + ","
+		variables["FROM_TEMP_PARAMS"] += "&tmpParams[" + str(mCount) + "],"
+		mCount += 1
 	variables["PARAMETERS_FULL"] = variables["PARAMETERS_FULL"][:-2]	
 	variables["PARAMETERS_NAMES"] = variables["PARAMETERS_NAMES"][:-1]
 	variables["PARAMETER_TYPES"] = variables["PARAMETER_TYPES"][:-1]
+	variables["FROM_TEMP_PARAMS"] = variables["FROM_TEMP_PARAMS"][:-1]
 	variables["PARAMETERS_NAMES_VOID_CAST"] = variables["PARAMETERS_NAMES_VOID_CAST"][:-1]
 	if len(variables["PARAMETERS_NAMES"]) == 0:
 		variables["PARAMETERS_NAMES"] = ""

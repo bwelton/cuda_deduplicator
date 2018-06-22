@@ -2391,7 +2391,8 @@ int INTER_cuParamSetf( CUfunction hfunc, int offset, float value ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 	// Gets around an issue on POWER
-
+	// Really schetchy fix, lets assert if this is ever called to check it
+	assert(1==0);
 	// One off fix for float.... but likely doesn't work (FML). 
 	char * tmpFloat = (char *) malloc(1 * sizeof(float*));
 	memcpy(tmpFloat, &value, sizeof(float));
@@ -2400,6 +2401,7 @@ int INTER_cuParamSetf( CUfunction hfunc, int offset, float value ) {
 	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuParamSetf, (void*) PTR_ORIGINAL_cuParamSetf, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	free(tmpFloat);
 	return ret;
 }
 // This "function" will be rewritten to point to cuParamSetv
@@ -2683,11 +2685,17 @@ void * PTR_ORIGINAL_cuTexRefSetMipmapLevelBias;
 int INTER_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) {
 	// Build the instriment factory
 	BUILD_FACTORY
+	// Really schetchy fix, lets assert if this is ever called to check it
+	assert(1==0);
 	// Gets around an issue on POWER
-	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)bias};
+	char * tmpFloat = (char *) malloc(1 * sizeof(float*));
+	memcpy(tmpFloat, &bias, sizeof(float));
+	
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)tmpFloat};
 	std::vector<void **> params = { &tmpParams[0],&tmpParams[1] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmapLevelBias, (void*) PTR_ORIGINAL_cuTexRefSetMipmapLevelBias, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	free(tmpFloat);
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetMipmapLevelClamp
@@ -2700,10 +2708,16 @@ int INTER_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelCla
 	// Build the instriment factory
 	BUILD_FACTORY
 	// Gets around an issue on POWER
-	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)minMipmapLevelClamp,(void *)maxMipmapLevelClamp};
+	// Really schetchy fix, lets assert if this is ever called to check it
+	assert(1==0);
+	char * tmpFloat = (char *) malloc(2 * sizeof(float*));
+	memcpy(tmpFloat, &minMipmapLevelClamp, sizeof(float));
+	memcpy(tmpFloat[sizeof(float*)], &maxMipmapLevelClamp, sizeof(float));
+	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)&(tmpFloat[0]),(void *)&(tmpFloat[8])};
 	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmapLevelClamp, (void*) PTR_ORIGINAL_cuTexRefSetMipmapLevelClamp, params));
 	int ret = ( int ) FACTORY_PTR->PerformAction(paramsPtr);
+	free(tmpFloat);
 	return ret;
 }
 // This "function" will be rewritten to point to cuTexRefSetMaxAnisotropy

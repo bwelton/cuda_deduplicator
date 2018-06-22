@@ -2712,7 +2712,7 @@ int INTER_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelCla
 	assert(1==0);
 	char * tmpFloat = (char *) malloc(2 * sizeof(float*));
 	memcpy(tmpFloat, &minMipmapLevelClamp, sizeof(float));
-	memcpy(tmpFloat[sizeof(float*)], &maxMipmapLevelClamp, sizeof(float));
+	memcpy((void *)&(tmpFloat[sizeof(float*)]), &maxMipmapLevelClamp, sizeof(float));
 	std::vector<void *> tmpParams = { (void *)hTexRef,(void *)&(tmpFloat[0]),(void *)&(tmpFloat[8])};
 	std::vector<void **> params = { &tmpParams[0],&tmpParams[1],&tmpParams[2] };
 	std::shared_ptr<Parameters> paramsPtr(new Parameters(ID_cuTexRefSetMipmapLevelClamp, (void*) PTR_ORIGINAL_cuTexRefSetMipmapLevelClamp, params));

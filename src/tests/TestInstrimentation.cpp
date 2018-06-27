@@ -175,7 +175,7 @@ int main(int argc, const char * argv[]) {
 	InitDyninst(handle);
 	handle->beginInsertionSet();
 	for (auto i : ToCheck)
-		InsertInstrimentationAtPoint(handle, i):
-	_addrSpace->finalizeInsertionSet(false
+		InsertInstrimentationAtPoint(handle, i);
+	_addrSpace->finalizeInsertionSet(false);
 	return 0;
 }

@@ -16,8 +16,10 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 		argv[i] = strdup(progName[i].c_str());
 
 	argv[progName.size()] = NULL;
-	for (int i = 0; i < progName.size(); i++)
+	for (int i = 0; i < progName.size(); i++){
+		std::cerr << "[PROCCTR] Launch Arguments - " <<  std::string(argv[i]) << std::endl;
 		_log->Write(std::string("[PROCCTR] Launch Arguments - ") + std::string(argv[i]));
+	}
 
 	// Create the bpatch process
 	bpatch.setInstrStackFrames(true);

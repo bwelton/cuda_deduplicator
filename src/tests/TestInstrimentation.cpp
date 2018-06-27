@@ -111,6 +111,7 @@ BPatch_object * GetObject(BPatch_addressSpace * addr, std::string libname) {
 	std::vector<BPatch_object *> objects;
 	img->getObjects(objects);
 	for (auto i : objects){
+		assert(i != NULL)
 		boost::filesystem::path lnme(i->pathName());
 		_objCache[lnme.filename().string()] =  i;
 	}

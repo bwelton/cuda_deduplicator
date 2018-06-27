@@ -54,6 +54,7 @@ using namespace PatchAPI;
 using namespace SymtabAPI;
 #include <map>
 #include <vector>
+#include <boost/filesystem.hpp>
 
 std::map<std::string, int> _libnameToID;
 std::map<int, std::string> _idToLibname;
@@ -98,23 +99,22 @@ void ReadInputFile(char * filename) {
 	}
 }
 BPatch_object * GetObject(BPatch_addressSpace * addr, std::string libname) {
-	if (libname.find("libcuda.so") != std::string::npos)
-		{
-			for(auto i : _objCache)
-				if (i.first.find("libcuda.so") != std::string::npos)
-					return i.second;
-		}
-	if (_objCache.find(libname) != _objCache.end())
-		return _objCache[libname];
+	boost::filesystem::path outName(libname);
+	std::string filename = outName.filename();
+
+	if (_objCache.find(filename) != _objCache.end())
+		return _objCache[filename];
 	// regenerate object cache...
-	std::cerr << "Looking for " << libname << std::endl;
+	std::cerr << "Looking for " << filename << std::endl;
 	BPatch_image * img = addr->getImage();
 	std::vector<BPatch_object *> objects;
 	img->getObjects(objects);
-	for (auto i : objects)
-		_objCache[i->pathName()] =  i;
-	assert(_objCache.find(libname) == _objCache.end());
-	return _objCache[libname];
+	for (auto i : objects){
+		boost::filesystem::path lnme(i->pathName());
+		_objCache[lnme.filename()] =  i;
+	}
+	assert(_objCache.find(filename) == _objCache.end());
+	return _objCache[filename];
 
 }
 

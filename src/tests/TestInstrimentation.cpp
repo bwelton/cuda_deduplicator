@@ -5,6 +5,7 @@
 #include "BPatch_binaryEdit.h"
 #include "BPatch_point.h"
 #include "BPatch_function.h"
+#include "BPatch_object.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -91,7 +92,7 @@ void ReadInputFile(char * filename) {
 	    InstPoints m;
 	    m.libid =  id;
 	    m.pos = std::stoull(token[2]);
-	    mp.type = std::stoi(token[0]);
+	    m.type = std::stoi(token[0]);
 	    ToCheck.push_back(m);
 	}
 }
@@ -99,7 +100,7 @@ BPatch_object * GetObject(BPatch_addressSpace * addr, std::string libname) {
 	if (_objCache.find(libname) != _objCache.end())
 		return _objCache[libname];
 	// regenerate object cache...
-	BPatch_image * img = aspace->getImage();
+	BPatch_image * img = addr->getImage();
 	std::vector<BPatch_object *> objects;
 	img->getObjects(objects);
 	for (auto i : objects)

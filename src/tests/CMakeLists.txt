@@ -123,6 +123,8 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 install(TARGETS DumpFunctionNames
         RUNTIME DESTINATION tests)
 
+install(TARGETS TestInstrimentation
+        RUNTIME DESTINATION tests)
 # add_executable(HostToDev "artifacts/HostToDevice.cpp")
 # target_link_libraries(HostToDev "-lpthread")
 # target_link_libraries(HostToDev "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")

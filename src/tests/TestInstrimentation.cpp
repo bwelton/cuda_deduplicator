@@ -71,13 +71,13 @@ void ReadInputFile(char * filename) {
 	int curId = 0;
 	std::ifstream t;
 	std::string line;
-	t.open(file,std::ifstream::in);
+	t.open(filename,std::ifstream::in);
 	while (std::getline(t, line)) {
 		std::string item;
-		std::vector<std::string> tokens;
+		std::vector<std::string> token;
 		std::stringstream ss(line);
 	    while (std::getline(ss, item, '$')) {
-	        tokens.push_back(item);
+	        token.push_back(item);
 	    }
 	    int id = curId;
 	    assert(token.size() == 3);
@@ -126,9 +126,9 @@ void InitDyninst(BPatch_addressSpace * addr) {
 	addr->loadLibrary("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/lib/libStubLib.so");
 	addr->loadLibrary("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/lib/plugins/libSynchTool.so");
 	addr->loadLibrary("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/lib/libDriverAPIWrapper.so");
-	assert(FindFuncByName(_addrSpace, _entryFunction, std::string("RECORD_FUNCTION_ENTRY")) == 1);
-	assert(FindFuncByName(_addrSpace, _exitingFunction, std::string("RECORD_FUNCTION_EXIT")) == 1);
-	assert(FindFuncByName(_addrSpace, _recordMemAccess, std::string("SYNC_RECORD_MEM_ACCESS")) == 1);
+	assert(FindFuncByName(addr, _entryFunction, std::string("RECORD_FUNCTION_ENTRY")) == 1);
+	assert(FindFuncByName(addr, _exitingFunction, std::string("RECORD_FUNCTION_EXIT")) == 1);
+	assert(FindFuncByName(addr, _recordMemAccess, std::string("SYNC_RECORD_MEM_ACCESS")) == 1);
 }
 
 std::vector<BPatch_point *> GetPoints(BPatch_addressSpace * addr, InstPoints point) {
@@ -156,8 +156,8 @@ void InsertInstrimentationAtPoint(BPatch_addressSpace * addr, InstPoints point) 
 		recordArgs.push_back(new BPatch_constExpr(0));
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);
 		BPatch_funcCallExpr exitExpr(*_exitingFunction, recordArgs);		
-		_addrSpace->insertSnippet(entryExpr,lspoints, BPatch_callBefore) 
-		_addrSpace->insertSnippet(exitExpr,lspoints, BPatch_callAfter) 
+		addr->insertSnippet(entryExpr,lspoints, BPatch_callBefore) 
+		addr->insertSnippet(exitExpr,lspoints, BPatch_callAfter) 
 	}
 }
 
@@ -176,6 +176,6 @@ int main(int argc, const char * argv[]) {
 	handle->beginInsertionSet();
 	for (auto i : ToCheck)
 		InsertInstrimentationAtPoint(handle, i);
-	_addrSpace->finalizeInsertionSet(false);
+	handle->finalizeInsertionSet(false);
 	return 0;
 }

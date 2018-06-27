@@ -109,7 +109,7 @@ BPatch_object * GetObject(BPatch_addressSpace * addr, std::string libname) {
 
 }
 
-void FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string name) {
+int FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string name) {
 	if (aspace == NULL) 
 		return -1;
 	BPatch_image * img = aspace->getImage();
@@ -132,7 +132,7 @@ void InitDyninst(BPatch_addressSpace * addr) {
 }
 
 std::vector<BPatch_point *> GetPoints(BPatch_addressSpace * addr, InstPoints point) {
-	BPatch_function * obj =  GetObject(addr, _idToLibname[point.libid]);
+	BPatch_object * obj =  GetObject(addr, _idToLibname[point.libid]);
 	uint64_t realAddress = (uint64_t) obj->fileOffsetToAddr(point.pos);
 	std::vector<BPatch_point *> points;
 	assert(obj->findPoints(realAddress, points));

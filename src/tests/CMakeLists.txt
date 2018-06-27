@@ -108,6 +108,18 @@ target_link_libraries(DumpFunctionNames ${DYNINST_LIBRARIES})
 INCLUDE_DIRECTORIES(DumpFunctionNames "${CMAKE_SOURCE_DIR}/src/common")
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 
+add_executable(TestInstrimentation "TestInstrimentation.cpp")
+target_link_libraries(TestInstrimentation ${Boost_LIBRARIES})
+target_link_libraries(TestInstrimentation "-lpthread")
+target_link_libraries(TestInstrimentation "-L/opt/cray/nvidia/default/lib64 -lcuda")
+target_link_libraries(TestInstrimentation "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/common")
+INCLUDE_DIRECTORIES(TestInstrimentation ${CUDA_TOOLKIT_ROOT_DIR}/include)
+INCLUDE_DIRECTORIES(TestInstrimentation ${Boost_INCLUDE_DIRS})
+target_link_libraries(TestInstrimentation ${DYNINST_LIBRARIES})
+INCLUDE_DIRECTORIES(TestInstrimentation "${CMAKE_SOURCE_DIR}/src/common")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
 install(TARGETS DumpFunctionNames
         RUNTIME DESTINATION tests)
 

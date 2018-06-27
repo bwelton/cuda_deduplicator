@@ -6,6 +6,7 @@
 #include "BPatch_point.h"
 #include "BPatch_function.h"
 #include "BPatch_object.h"
+#include "BPatch_snippet.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

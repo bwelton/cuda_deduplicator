@@ -101,6 +101,7 @@ BPatch_object * GetObject(BPatch_addressSpace * addr, std::string libname) {
 	if (_objCache.find(libname) != _objCache.end())
 		return _objCache[libname];
 	// regenerate object cache...
+	std::cerr << "Looking for " << libname << std::endl;
 	BPatch_image * img = addr->getImage();
 	std::vector<BPatch_object *> objects;
 	img->getObjects(objects);

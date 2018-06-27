@@ -98,6 +98,12 @@ void ReadInputFile(char * filename) {
 	}
 }
 BPatch_object * GetObject(BPatch_addressSpace * addr, std::string libname) {
+	if (libname.find("libcuda.so") != std::string::npos)
+		{
+			for(auto i : _objCache)
+				if (i.first.find("libcuda.so") != std::string::npos)
+					return i.second;
+		}
 	if (_objCache.find(libname) != _objCache.end())
 		return _objCache[libname];
 	// regenerate object cache...

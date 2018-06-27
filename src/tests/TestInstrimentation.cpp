@@ -100,8 +100,9 @@ void ReadInputFile(char * filename) {
 }
 BPatch_object * GetObject(BPatch_addressSpace * addr, std::string libname) {
 	boost::filesystem::path outName(libname);
-	std::string filename = outName.filename();
-
+	std::string filename = outName.filename().string();
+	if (filename.find("libcuda") != std::string::npos)
+		filename = std::string("libcuda.so.1");
 	if (_objCache.find(filename) != _objCache.end())
 		return _objCache[filename];
 	// regenerate object cache...
@@ -111,7 +112,7 @@ BPatch_object * GetObject(BPatch_addressSpace * addr, std::string libname) {
 	img->getObjects(objects);
 	for (auto i : objects){
 		boost::filesystem::path lnme(i->pathName());
-		_objCache[lnme.filename()] =  i;
+		_objCache[lnme.filename().string()] =  i;
 	}
 	assert(_objCache.find(filename) == _objCache.end());
 	return _objCache[filename];

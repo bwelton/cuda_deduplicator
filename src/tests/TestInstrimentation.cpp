@@ -157,8 +157,8 @@ void InsertInstrimentationAtPoint(BPatch_addressSpace * addr, InstPoints point) 
 		recordArgs.push_back(new BPatch_constExpr(0));
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);
 		BPatch_funcCallExpr exitExpr(*_exitingFunction, recordArgs);		
-		addr->insertSnippet(entryExpr,lspoints, BPatch_callBefore) 
-		addr->insertSnippet(exitExpr,lspoints, BPatch_callAfter) 
+		addr->insertSnippet(entryExpr,lspoints, BPatch_callBefore);
+		addr->insertSnippet(exitExpr,lspoints, BPatch_callAfter);
 	}
 }
 

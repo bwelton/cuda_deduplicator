@@ -1,5 +1,4 @@
 #include "InstrimentationTracker.h"
-#include <ofstream>
 #define INST_TRACKER_RECORD 1
 InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::ofstream::out | std::ofstream::app) {
 	#ifdef INST_TRACKER_RECORD

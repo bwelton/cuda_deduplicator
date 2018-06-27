@@ -57,7 +57,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);
 		BPatch_funcCallExpr exitExpr(*_exitingFunction, recordArgs);
 		//_logFile << id << ",";
-		_instTracker.RecordInstrimentation(CALL_TRACING, func, singlePoint);
+		_instTracker.RecordInstrimentation(CALL_TRACING, func, singlePoint[0]);
 		if (_addrSpace->insertSnippet(entryExpr,singlePoint, BPatch_callBefore) == NULL) {
 			_logFile << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert entry tracking into " << func->getName() << std::endl;
 		}

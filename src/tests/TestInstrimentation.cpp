@@ -145,7 +145,7 @@ std::vector<BPatch_point *> GetPoints(BPatch_addressSpace * addr, InstPoints poi
 void InsertInstrimentationAtPoint(BPatch_addressSpace * addr, InstPoints point) {
 	std::vector<BPatch_point *> lspoints = GetPoints(addr, point);	
 	if (point.type == 0) {
-		// Load Store inst test
+		std::vector<BPatch_snippet*> recordArgs;		// Load Store inst test
 		BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
 		recordArgs.push_back(loadAddr);
 		recordArgs.push_back(new BPatch_constExpr(0));

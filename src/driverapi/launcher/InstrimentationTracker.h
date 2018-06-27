@@ -57,6 +57,8 @@ public:
 	void AddAlreadyInstrimented(std::vector<std::string> & wrappedFunctions);
 	bool ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t);
 	bool ShouldInstrimentPoint(BPatch_function * func, InstType t);
+	void RecordInstrimentation(InstType t, BPatch_function * func, BPatch_point * point);
+	void RecordInstrimentation(InstType t, BPatch_function * func, std::vector<BPatch_point *> * points);
 private:
 
 	uint64_t HashPoint(BPatch_function * func, BPatch_point * point);
@@ -65,5 +67,5 @@ private:
 	std::vector<std::string> _prevWrappedFunctions;
 	std::map<InstType, std::set<uint64_t> > _alreadyInstrimented;
 	std::ofstream _logFile;
-
+	std::ofstream _recordInst;
 };

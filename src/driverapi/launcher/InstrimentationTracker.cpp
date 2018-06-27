@@ -1,5 +1,24 @@
 #include "InstrimentationTracker.h"
+#include <ofstream>
+#define INST_TRACKER_RECORD 1
 InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::ofstream::out | std::ofstream::app) {
+	#ifdef INST_TRACKER_RECORD
+	_recordInst.open("InstrimentationRecorder.txt", std::ofstream::out);
+	#endif
+}
+
+void InstrimentationTracker::RecordInstrimentation(InstType t, BPatch_function * func, std::vector<BPatch_point *> * points) {
+#ifdef INST_TRACKER_RECORD
+	for(auto i : *points)
+		RecordInstrimentation(t, func, i);
+#endif
+	_recordInst.flush();
+}
+
+void InstrimentationTracker::RecordInstrimentation(InstType t, BPatch_function * func, BPatch_point * point) {
+#ifdef INST_TRACKER_RECORD
+	_recordInst << int(t) << "$" <<  func->getModule()->getObject()->pathName() << "$" << (uint64_t)point->getAddress() << std::endl;
+#endif
 }
 
 void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & wrappedFunctions) {

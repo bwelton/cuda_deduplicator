@@ -57,6 +57,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		BPatch_funcCallExpr entryExpr(*_entryFunction, recordArgs);
 		BPatch_funcCallExpr exitExpr(*_exitingFunction, recordArgs);
 		//_logFile << id << ",";
+		_instTracker.RecordInstrimentation(CALL_TRACING, func, singlePoint);
 		if (_addrSpace->insertSnippet(entryExpr,singlePoint, BPatch_callBefore) == NULL) {
 			_logFile << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert entry tracking into " << func->getName() << std::endl;
 		}
@@ -109,6 +110,7 @@ void LoadStoreInst::InsertSyncCallNotifier() {
 void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
 	_logFile << "[LoadStoreInst][LoadStoreSnippet] Inserting load store instrimentation into - " << func->getName() << "," << func->getModule()->getObject()->pathName() << "\n";
+	_instTracker.RecordInstrimentation(LOAD_STORE_INST, func, points);
 	for (auto i : *points) {
 		uint64_t libOffsetAddr = 0;
 		uint64_t id = 0;

@@ -15,6 +15,10 @@ void InstrimentationTracker::RecordInstrimentation(InstType t, BPatch_function *
 }
 
 void InstrimentationTracker::RecordInstrimentation(InstType t, BPatch_function * func, BPatch_point * point) {
+	if ((uint64_t)point->getAddress() == 0x102cec8c){
+		std::cerr << "STOP - Function with failure is: " << func->getName() << std::endl;
+		assert(1==0);
+	}
 #ifdef INST_TRACKER_RECORD
 	_recordInst << int(t) << "$" <<  func->getModule()->getObject()->pathName() << "$" << (uint64_t)point->getAddress() << std::endl;
 #endif

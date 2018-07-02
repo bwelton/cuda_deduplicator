@@ -4,6 +4,7 @@ InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::o
 	#ifdef INST_TRACKER_RECORD
 	_recordInst.open("InstrimentationRecorder.txt", std::ofstream::out);
 	#endif
+	
 }
 
 void InstrimentationTracker::RecordInstrimentation(InstType t, BPatch_function * func, std::vector<BPatch_point *> * points) {
@@ -98,7 +99,7 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
 	"cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc", "basic_ostringstream","basic_istringstream",
 	"cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3","std::num_get","std::time_get",
 	"__printf","__GI_fprintf","_IO_vfprintf_internal","buffered_vfprintf","printf_positional","__printf_fp","__printf_fphex","__fxprintf","__GI___printf_fp_l","vfwprintf","__GI___asprintf","buffered_vfprintf","printf_positional","_IO_vasprintf","__snprintf","vsnprintf",
-    "__GI___libc_malloc","_int_malloc","__malloc_assert","malloc_consolidate","sysmalloc","malloc_printerr"};
+    "__GI___libc_malloc","_int_malloc","__malloc_assert","malloc_consolidate","sysmalloc","malloc_printerr", "cudaHostGetDevicePointer"};
 
     StringVector * toSkip;
     if (t == LOAD_STORE_INST)

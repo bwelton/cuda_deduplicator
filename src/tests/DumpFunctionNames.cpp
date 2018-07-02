@@ -62,7 +62,7 @@ int main(const int argc, const char * argv[]){
 	std::vector<BPatch_function *> funcs;
 	img->getProcedures(funcs, false);
 	for (auto i : funcs) {
-		if (i->getName().find("targ") != std::string::npos)
+		if (i->getName().find("targ") == std::string::npos)
 			pfile << i->getName() << std::endl;
 		// if (i->getName().at(0) == 'c' && i->getName().at(1) == 'u') {
 		// 	if (i->getName().find(std::string("__")) == std::string::npos) {

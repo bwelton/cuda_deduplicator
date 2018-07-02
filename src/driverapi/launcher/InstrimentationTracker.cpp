@@ -45,7 +45,7 @@ StringVector InstrimentationTracker::OpenAndParseExclusionFile(std::string filen
 		if (line.at(0) == '#' || line.at(0) == '\n' || line.size() < 2)
 			continue;
 		if (line.find('\n') != std::string::npos)
-			line.erase(line.find(), 1);
+			line.erase(line.find('n'), 1);
 		ret.push_back(line);
 	}
 	return ret;

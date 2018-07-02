@@ -161,10 +161,10 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
 	    	if (funcName.find(i) != std::string::npos)
 	    		return false;
 	    }
-	if (t == LOAD_STORE_INST){
-		if (func->getMangledName().find("_ZN6SAMRAI4algs25HyperbolicLevelIntegrator37coarsenDataForRichardsonExtrapolationERKSt10shared_ptrINS_4hier14PatchHierarchyEEiRKS2_INS3_10PatchLevelEEdb") == std::string::npos)
-			return false;
-	}
+	// if (t == LOAD_STORE_INST){
+	// 	if (func->getMangledName().find("_ZN6SAMRAI4algs25HyperbolicLevelIntegrator37coarsenDataForRichardsonExtrapolationERKSt10shared_ptrINS_4hier14PatchHierarchyEEiRKS2_INS3_10PatchLevelEEdb") == std::string::npos)
+	// 		return false;
+	// }
     return true;
 }
 

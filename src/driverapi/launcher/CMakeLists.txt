@@ -22,19 +22,19 @@ INCLUDE_DIRECTORIES(LaunchCUInstriment ${Boost_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(LaunchCUInstriment "${CMAKE_SOURCE_DIR}/src/common")
 
 configure_file (
-    "${PROJECT_SOURCE_DIR}/src/driverapi/defs/LoadStoreFunctions.skip"
+    "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/LoadStoreFunctions.skip"
 	"${CMAKE_INSTALL_PREFIX}/lib/LoadStoreFunctions.skip"
 )
 configure_file (
-    "${PROJECT_SOURCE_DIR}/src/driverapi/defs/LoadStoreModules.skip"
+    "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/LoadStoreModules.skip"
 	"${CMAKE_INSTALL_PREFIX}/lib/LoadStoreModules.skip"
 )
 configure_file (
-    "${PROJECT_SOURCE_DIR}/src/driverapi/defs/CallTracingFunctions.skip"
+    "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/CallTracingFunctions.skip"
 	"${CMAKE_INSTALL_PREFIX}/lib/CallTracingFunctions.skip"
 )
 configure_file (
-    "${PROJECT_SOURCE_DIR}/src/driverapi/defs/CallTracingModules.skip""
+    "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/CallTracingModules.skip""
 	"${CMAKE_INSTALL_PREFIX}/lib/CallTracingModules.skip""
 )
 install(TARGETS LaunchCUInstriment

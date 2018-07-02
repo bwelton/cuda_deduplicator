@@ -5,7 +5,52 @@ InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::o
 	_recordInst.open("InstrimentationRecorder.txt", std::ofstream::out);
 	#endif
 
+	// Open File Exlusion lists
+	// Grab Defaults 
+	_loadStoreFuncSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/LoadStoreFunctions.skip"));
+	_loadStoreModSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/LoadStoreModules.skip"));
+	_callTracingFuncSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/CallTracingFunctions.skip"));
+	_callTracingModSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/CallTracingModules.skip"));
+
+	// Grab those that are local for this application.
+	StringVector LSFunc = OpenAndParseExclusionFile(std::string("LoadStoreFunctions.skip"));
+	StringVector LSMod = OpenAndParseExclusionFile(std::string("LoadStoreModules.skip"));
+	StringVector CTFunc = OpenAndParseExclusionFile(std::string("CallTracingFunctions.skip"));
+	StringVector CTMod = OpenAndParseExclusionFile(std::string("CallTracingModules.skip"));
+
+	// Concate defaults with application specific skips.
+	_loadStoreFuncSkips.insert(_loadStoreFuncSkips.end(), LSFunc.begin(), LSFunc.end());
+	_loadStoreModSkips.insert(_loadStoreModSkips.end(), LSMod.begin(), LSMod.end());
+	_callTracingFuncSkips.insert(_callTracingFuncSkips.end(),CTFunc.begin(), CTFunc.end());
+	_callTracingModSkips.insert(_callTracingModSkips.end(), CTMod.begin(), CTMod.end());
+
+	for (auto & i : _callTracingModSkips) {
+		std::transform(i.begin(), i.end(), i.begin(), ::tolower);
+	}
+	for (auto & i : _loadStoreModSkips) {
+		std::transform(i.begin(), i.end(), i.begin(), ::tolower);
+	}
 }
+
+StringVector InstrimentationTracker::OpenAndParseExclusionFile(std::string filename) {
+	StringVector ret;
+	std::ifstream t(filename.c_str(), std::ios::binary);
+	if (!t.good()){
+		std::cerr << "[InstrimentationTracker::OpenAndParseExclusionFile] Could not open excludes file: " << filename << std::endl;
+		return std::vector<std::string>();
+	}
+
+	std::string line;
+	while (std::getline(t, line)) {
+		if (line.at(0) == '#' || line.at(0) == '\n' || line.size() < 2)
+			continue;
+		if (line.find('\n') != std::string::npos)
+			line.erase(line.find(), 1);
+		ret.push_back(line);
+	}
+	return ret;
+}
+
 
 void InstrimentationTracker::RecordInstrimentation(InstType t, BPatch_function * func, std::vector<BPatch_point *> * points) {
 #ifdef INST_TRACKER_RECORD
@@ -91,21 +136,21 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
 }
 
 bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, InstType t) {
-	static StringVector callTracingSkips  = {"dyninst","Dyninst","main","___stack_chk_fail","__run_exit_handlers","exit","libc","__GI_"," __malloc","abort","__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
-	static StringVector loadStoreSkips =  {"_fini","atexit","main", "dyninst", "boost","pthread", "clock","timer","__aio_",
-	"__libc_csu_init", "__libc_csu_fini","malloc","printf","fwrite","strlen","abort","assert","strnlen","new_heap","fflush",
-	"__static_initialization_and_destruction_0","_start", "__GI___backtrace","__GI___libc_secure_getenv","__GI_exit","cudart","_IO_puts","__new_fopen","fopen","_Unwind_Resume","__run_exit_handlers","free","open",
-	"_init", "cudart::cuosInitializeCriticalSection","cudart::", "cudaLaunch","__timer","pthread","elf","dwarf",
-	"cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc", "basic_ostringstream","basic_istringstream",
-	"cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3","std::num_get","std::time_get",
-	"__printf","__GI_fprintf","_IO_vfprintf_internal","buffered_vfprintf","printf_positional","__printf_fp","__printf_fphex","__fxprintf","__GI___printf_fp_l","vfwprintf","__GI___asprintf","buffered_vfprintf","printf_positional","_IO_vasprintf","__snprintf","vsnprintf",
-    "__GI___libc_malloc","_int_malloc","__malloc_assert","malloc_consolidate","sysmalloc","malloc_printerr", "cudaHostGetDevicePointer", "cudaHostGetFlags"};
+//	static StringVector callTracingSkips  = {"dyninst","Dyninst","main","___stack_chk_fail","__run_exit_handlers","exit","libc","__GI_"," __malloc","abort","__random","__stack_chk_fail","deregister_tm_clones","register_tm_clones","backtrace_and_maps","__GI__IO_unsave_markers","_IO_setb","__GI___mempcpy","__munmap","__GI___twalk","__GI__IO_adjust_column"};
+	// static StringVector loadStoreSkips =  {"_fini","atexit","main", "dyninst", "boost","pthread", "clock","timer","__aio_",
+	// "__libc_csu_init", "__libc_csu_fini","malloc","printf","fwrite","strlen","abort","assert","strnlen","new_heap","fflush",
+	// "__static_initialization_and_destruction_0","_start", "__GI___backtrace","__GI___libc_secure_getenv","__GI_exit","cudart","_IO_puts","__new_fopen","fopen","_Unwind_Resume","__run_exit_handlers","free","open",
+	// "_init", "cudart::cuosInitializeCriticalSection","cudart::", "cudaLaunch","__timer","pthread","elf","dwarf",
+	// "cudart::cuosInitializeCriticalSectionShared","cudart::cuosMalloc", "basic_ostringstream","basic_istringstream",
+	// "cudart::cuosInitializeCriticalSectionWithSharedFlag","cudaLaunch","dim3::dim3","std::num_get","std::time_get",
+	// "__printf","__GI_fprintf","_IO_vfprintf_internal","buffered_vfprintf","printf_positional","__printf_fp","__printf_fphex","__fxprintf","__GI___printf_fp_l","vfwprintf","__GI___asprintf","buffered_vfprintf","printf_positional","_IO_vasprintf","__snprintf","vsnprintf",
+    // "__GI___libc_malloc","_int_malloc","__malloc_assert","malloc_consolidate","sysmalloc","malloc_printerr", "cudaHostGetDevicePointer", "cudaHostGetFlags"};
 
     StringVector * toSkip;
     if (t == LOAD_STORE_INST)
-    	toSkip = &loadStoreSkips;
+    	toSkip = &_loadStoreFuncSkips;
     else
-    	toSkip = &callTracingSkips;
+    	toSkip = &_callTracingFuncSkips;
     std::string funcName = func->getName();
     for (auto i : *toSkip) {
     	if (funcName.find(i) != std::string::npos)
@@ -120,13 +165,13 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
 }
 
 bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, InstType t) {
-	static StringVector loadStoreModSkips = {"libicui18n","libnvtoolsext","libgfortran","libnvidia-fatbinaryloader","libxlsmp","nvidia-384","libc","libmpi","liblzma","libxerces","libunwind.so","gettext","libxml2","openmpi","libgcc_s","libstdc++","pthread","elf","dwarf","boost","libcuda","boost","Dyninst", "dyninst", "cudadedup","libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so","libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libcuptieventhandler.so","libecho.so","libsynchtool.so","libtimecall.so","libtransfertimeline.so","libstublib.so", "dyninst", "dyninst", "libdriverapiwrapper", "libgotcha", "cudadedup"};
-	static StringVector callTracingModSkips = {"libc.so","ld-linux-x86-64","libgcc_s.so","libstdc++.so", "libdl.so", "libpthread.so", "cudadedup", "libdl-2.23.so","dyninst","dyninst","boost", "libc.so", "linux-vdso.so", "libpthread-2.23.so","libcuptieventhandler.so","libecho.so","libsynchtool.so","libtimecall.so","libtransfertimeline.so","libstublib.so", "dyninst","Dyninst", "libdriverapiwrapper", "libgotcha", "cudadedup"};
+	//static StringVector loadStoreModSkips = {"libicui18n","libnvtoolsext","libgfortran","libnvidia-fatbinaryloader","libxlsmp","nvidia-384","libc","libmpi","liblzma","libxerces","libunwind.so","gettext","libxml2","openmpi","libgcc_s","libstdc++","pthread","elf","dwarf","boost","libcuda","boost","Dyninst", "dyninst", "cudadedup","libcudnn.so","libaccinj64.so","libcublas.so","libcudart.so","libcufft.so","libcufftw.so","libcuinj64.so","libcurand.so","libcusolver.so","libcusparse.so","libnppc.so","libnppial.so","libnppicc.so","libnppicom.so","libnppidei.so","libnppif.so","libnppig.so","libnppim.so","libnppist.so","libnppisu.so","libnppitc.so","libnpps.so","libnvblas.so","libnvgraph.so","libnvrtc-builtins.so","libnvrtc.so","libdl-2.23.so","libpthread-2.23.so", "cudadedup", "libcuda.so","libcuptieventhandler.so","libecho.so","libsynchtool.so","libtimecall.so","libtransfertimeline.so","libstublib.so", "dyninst", "dyninst", "libdriverapiwrapper", "libgotcha", "cudadedup"};
+	//static StringVector callTracingModSkips = {"libc.so","ld-linux-x86-64","libgcc_s.so","libstdc++.so", "libdl.so", "libpthread.so", "cudadedup", "libdl-2.23.so","dyninst","dyninst","boost", "libc.so", "linux-vdso.so", "libpthread-2.23.so","libcuptieventhandler.so","libecho.so","libsynchtool.so","libtimecall.so","libtransfertimeline.so","libstublib.so", "dyninst","Dyninst", "libdriverapiwrapper", "libgotcha", "cudadedup"};
     StringVector * toSkip;
     if (t == LOAD_STORE_INST)
-    	toSkip = &loadStoreModSkips;
+    	toSkip = &_loadStoreModSkips;
     else
-    	toSkip = &callTracingModSkips;
+    	toSkip = &_callTracingModSkips;
     std::string modname = func->getModule()->getObject()->pathName();
     std::transform(modname.begin(), modname.end(), modname.begin(), ::tolower);
     for (auto i : *toSkip) {

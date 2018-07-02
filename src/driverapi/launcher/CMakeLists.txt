@@ -21,5 +21,27 @@ INCLUDE_DIRECTORIES(LaunchCUInstriment ${CUDA_TOOLKIT_ROOT_DIR}/include)
 INCLUDE_DIRECTORIES(LaunchCUInstriment ${Boost_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(LaunchCUInstriment "${CMAKE_SOURCE_DIR}/src/common")
 
+	_loadStoreFuncSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/LoadStoreFunctions.skip"));
+	_loadStoreModSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/LoadStoreModules.skip"));
+	_callTracingFuncSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/CallTracingFunctions.skip"));
+	_callTracingModSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/CallTracingModules.skip"));
+
+
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/driverapi/defs/LoadStoreFunctions.skip"
+	"${CMAKE_INSTALL_PREFIX}/lib/LoadStoreFunctions.skip"
+)
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/driverapi/defs/LoadStoreModules.skip"
+	"${CMAKE_INSTALL_PREFIX}/lib/LoadStoreModules.skip"
+)
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/driverapi/defs/CallTracingFunctions.skip"
+	"${CMAKE_INSTALL_PREFIX}/lib/CallTracingFunctions.skip"
+)
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/driverapi/defs/CallTracingModules.skip""
+	"${CMAKE_INSTALL_PREFIX}/lib/CallTracingModules.skip""
+)
 install(TARGETS LaunchCUInstriment
         RUNTIME DESTINATION bin)

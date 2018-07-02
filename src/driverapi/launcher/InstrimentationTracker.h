@@ -39,6 +39,7 @@
 #include "BPatch_point.h"
 #include "BPatch_addressSpace.h"
 #include "BPatch_statement.h"
+#include "Constants.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -59,6 +60,7 @@ public:
 	bool ShouldInstrimentPoint(BPatch_function * func, InstType t);
 	void RecordInstrimentation(InstType t, BPatch_function * func, BPatch_point * point);
 	void RecordInstrimentation(InstType t, BPatch_function * func, std::vector<BPatch_point *> * points);
+	StringVector OpenAndParseExclusionFile(std::string filename);
 private:
 
 	uint64_t HashPoint(BPatch_function * func, BPatch_point * point);
@@ -68,4 +70,8 @@ private:
 	std::map<InstType, std::set<uint64_t> > _alreadyInstrimented;
 	std::ofstream _logFile;
 	std::ofstream _recordInst;
+	StringVector _loadStoreFuncSkips;
+	StringVector _callTracingFuncSkips;
+	StringVector _loadStoreModSkips;
+	StringVector _callTracingModSkips;
 };

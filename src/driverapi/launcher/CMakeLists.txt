@@ -34,7 +34,7 @@ configure_file (
 	"${CMAKE_INSTALL_PREFIX}/lib/CallTracingFunctions.skip"
 )
 configure_file (
-    "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/CallTracingModules.skip""
+    "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/CallTracingModules.skip"
 	"${CMAKE_INSTALL_PREFIX}/lib/CallTracingModules.skip""
 )
 install(TARGETS LaunchCUInstriment

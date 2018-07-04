@@ -20,7 +20,7 @@ extern "C" {
 		//assert(1 == 0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// fflush(_temporaryFiles);
-		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
+		std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		_LoadStoreDriver->PushStack(id);
 	}
 	void RECORD_FUNCTION_EXIT(uint64_t id) {
@@ -28,13 +28,13 @@ extern "C" {
 		//assert(1==0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// fflush(_temporaryFiles);
-		// std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
+		std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
 		_LoadStoreDriver->PopStack(id);
 	}
 
 	void SYNC_CAPTURE_SYNC_CALL() {
 		INIT_SYNC_COMMON();
-		//std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
+		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
 		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
@@ -42,7 +42,7 @@ extern "C" {
 		//assert(1==0);
 //		fprintf(_temporaryFiles,"[SynchTool] Captured memory access - %llu, %llu\n", addr, id);
 //		fflush(_temporaryFiles);
-//		std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
+		std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
 		_LoadStoreDriver->RecordAccess(id, addr);
 	}
 }

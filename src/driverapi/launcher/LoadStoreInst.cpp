@@ -135,6 +135,7 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 void LoadStoreInst::InsertLoadStoreInstrimentation() {
 	std::vector<BPatch_function *> all_functions;
 	_img->getProcedures(all_functions);
+	_instTracker.PowerFunctionFix(all_functions);
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);

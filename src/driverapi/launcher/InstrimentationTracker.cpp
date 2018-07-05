@@ -70,16 +70,16 @@ void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & w
 	//_prevWrappedFunctions = wrappedFunctions;
 }
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
-	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t) || _exculdeByAddress.find(uint64_t(func->getAddress())) != _exculdeByAddress.end()) {
+	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t) || _exculdeByAddress.find(uint64_t(func->getBaseAddr())) != _exculdeByAddress.end()) {
 		_logFile << "[InstrimentationTracker] We are rejecting function " << func->getName() <<  " because module/function is labeled as uninstrimentable" << std::endl;
 		if (func->getName().find("targ10003b1c") != func->getName().end()) {
-			_logFile << "[InstrimentationTracker] \t\t Module: " << func->getModule()->getObject()->pathName() << " Offset Address: " <<  std::hex << func->getAddress() << std::endl;
+			_logFile << "[InstrimentationTracker] \t\t Module: " << func->getModule()->getObject()->pathName() << " Offset Address: " <<  std::hex << func->getBaseAddr() << std::endl;
 		}
 		if (!ShouldInstrimentModule(func, t))
 			_logFile << "[InstrimentationTracker]\tRejected because module is set to skip" << std::endl;
 		if (!ShouldInstrimentFunciton(func, t))
 			_logFile << "[InstrimentationTracker]\tRejected because function is set to skip" << std::endl;
-		if (_exculdeByAddress.find(uint64_t(func->getAddress())) != _exculdeByAddress.end())
+		if (_exculdeByAddress.find(uint64_t(func->getBaseAddr())) != _exculdeByAddress.end())
 			_logFile << "[InstrimentationTracker]\tRejected because address is exluded by fixpower" << std::endl;
 		return false;
 	}

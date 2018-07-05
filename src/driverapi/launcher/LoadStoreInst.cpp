@@ -135,7 +135,7 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 void LoadStoreInst::InsertLoadStoreInstrimentation() {
 	std::vector<BPatch_function *> all_functions;
 	_img->getProcedures(all_functions);
-	_instTracker.PowerFunctionFix(all_functions);
+	//_instTracker.PowerFunctionFix(all_functions);
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);
@@ -171,6 +171,9 @@ void LoadStoreInst::SetWrappedFunctions(std::vector<std::string> & wrappedFuncti
 bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
 	Setup();
 	BeginInsertionSet();
+	std::vector<BPatch_function *> all_functions;
+	_img->getProcedures(all_functions);
+	_instTracker.PowerFunctionFix(all_functions);
 	InsertGotchaEntries();
 	WrapEntryAndExit(syncStacks);
 	InsertSyncCallNotifier();

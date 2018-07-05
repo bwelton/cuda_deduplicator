@@ -70,12 +70,17 @@ void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & w
 	//_prevWrappedFunctions = wrappedFunctions;
 }
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
-	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t)){
+	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t) || _exculdeByAddress.find(uint64_t(func->getAddress())) != _exculdeByAddress.end()) {
 		_logFile << "[InstrimentationTracker] We are rejecting function " << func->getName() <<  " because module/function is labeled as uninstrimentable" << std::endl;
+		if (func->getName().find("targ10003b1c") != func->getName().end()) {
+			_logFile << "[InstrimentationTracker] \t\t Module: " << func->getModule()->getObject()->pathName() << " Offset Address: " <<  std::hex << func->getAddress() << std::endl;
+		}
 		if (!ShouldInstrimentModule(func, t))
 			_logFile << "[InstrimentationTracker]\tRejected because module is set to skip" << std::endl;
 		if (!ShouldInstrimentFunciton(func, t))
 			_logFile << "[InstrimentationTracker]\tRejected because function is set to skip" << std::endl;
+		if (_exculdeByAddress.find(uint64_t(func->getAddress())) != _exculdeByAddress.end())
+			_logFile << "[InstrimentationTracker]\tRejected because address is exluded by fixpower" << std::endl;
 		return false;
 	}
 	
@@ -129,6 +134,33 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
     		return false;
     }
     return true;
+}
+
+void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & functions) {
+	// Handle the POWER ABI issues, look for functions within distance of 0x8 (two instructions).
+	// Exclude all functions with size < 5 instructions.
+
+	// This Map MUST Be ordered...
+	std::map<uint64_t, BPatch_function *> orderMap;
+	for (auto i : functions) {
+		if (orderMap.find(i->getBaseAddr()) != orderMap.end())
+			assert("WE SHOULDN'T BE HERE" != 0);
+		orderMap[i->getBaseAddr()] = i;
+	}
+
+	for (auto i : orderMap) {
+		if (orderMap.find(i.first + 0x8) != orderMap.end() || orderMap.find(i.first + 0x10) != orderMap.end()) {
+			// Exclude this function
+			_recordInst << "-1" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() << std::dec << "$" << i.second->getName() << std::endl;
+			_exculdeByAddress.insert(i.first);
+			continue;
+		} 
+		// Check the size
+		if(i.second->getSize() < (0x4 * 6)) {
+			_recordInst << "-2" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() << std::dec << "$" << i.second->getName() << std::endl;
+			_exculdeByAddress.insert(i.first);
+		}
+	}
 }
 
 bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, InstType t) {

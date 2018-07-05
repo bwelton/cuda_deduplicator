@@ -72,7 +72,7 @@ void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & w
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
 	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t) || _exculdeByAddress.find((uint64_t)(func->getBaseAddr())) != _exculdeByAddress.end()) {
 		_logFile << "[InstrimentationTracker] We are rejecting function " << func->getName() <<  " because module/function is labeled as uninstrimentable" << std::endl;
-		if (func->getName().find("targ10003b1c") != func->getName().end()) {
+		if (func->getName().find("targ10003b1c") != std::string::npos) {
 			_logFile << "[InstrimentationTracker] \t\t Module: " << func->getModule()->getObject()->pathName() << " Offset Address: " <<  std::hex << func->getBaseAddr() << std::endl;
 		}
 		if (!ShouldInstrimentModule(func, t))

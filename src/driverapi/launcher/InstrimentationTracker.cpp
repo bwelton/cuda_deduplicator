@@ -70,7 +70,7 @@ void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & w
 	//_prevWrappedFunctions = wrappedFunctions;
 }
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
-	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t) || _exculdeByAddress.find(uint64_t(func->getBaseAddr())) != _exculdeByAddress.end()) {
+	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t) || _exculdeByAddress.find((uint64_t)(func->getBaseAddr())) != _exculdeByAddress.end()) {
 		_logFile << "[InstrimentationTracker] We are rejecting function " << func->getName() <<  " because module/function is labeled as uninstrimentable" << std::endl;
 		if (func->getName().find("targ10003b1c") != func->getName().end()) {
 			_logFile << "[InstrimentationTracker] \t\t Module: " << func->getModule()->getObject()->pathName() << " Offset Address: " <<  std::hex << func->getBaseAddr() << std::endl;
@@ -79,7 +79,7 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 			_logFile << "[InstrimentationTracker]\tRejected because module is set to skip" << std::endl;
 		if (!ShouldInstrimentFunciton(func, t))
 			_logFile << "[InstrimentationTracker]\tRejected because function is set to skip" << std::endl;
-		if (_exculdeByAddress.find(uint64_t(func->getBaseAddr())) != _exculdeByAddress.end())
+		if (_exculdeByAddress.find((uint64_t)func->getBaseAddr()) != _exculdeByAddress.end())
 			_logFile << "[InstrimentationTracker]\tRejected because address is exluded by fixpower" << std::endl;
 		return false;
 	}
@@ -143,9 +143,9 @@ void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & fu
 	// This Map MUST Be ordered...
 	std::map<uint64_t, BPatch_function *> orderMap;
 	for (auto i : functions) {
-		if (orderMap.find(i->getBaseAddr()) != orderMap.end())
+		if (orderMap.find((uint64_t)i->getBaseAddr()) != orderMap.end())
 			assert("WE SHOULDN'T BE HERE" != 0);
-		orderMap[i->getBaseAddr()] = i;
+		orderMap[(uint64_t)i->getBaseAddr()] = i;
 	}
 
 	for (auto i : orderMap) {

@@ -1,5 +1,7 @@
 #include "DynOpsClass.h"
-DynOpsClass::DynOpsClass() {}
+DynOpsClass::DynOpsClass() {
+	init = false;
+}
 
 int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_function * & ret, StackPoint & point) {
 	if (aspace == NULL) 
@@ -13,9 +15,39 @@ int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_funct
 	return tmp; 
 }
 
+
+void DynOpsClass::SetupPowerMap(BPatch_addressSpace * addr) {
+	if (init)
+		return;
+
+	std::vector<BPatch_function *> all_functions;
+	BPatch_image * _img = addr->getImage();
+	_img->getProcedures(all_functions);
+	for (auto i : all_functions) {
+		if (_powerFuncmap.find((uint64_t)i->getBaseAddr()) != _powerFuncmap.end())
+			assert("WE SHOULDN'T BE HERE" != 0);
+		_powerFuncmap[(uint64_t)i->getBaseAddr()] = i;
+	}
+	init = true;
+}
+
+BPatch_function * DynOpsClass::GetPOWERFunction(BPatch_function * function) {
+	uint64_t address = (uint64_t)function->getBaseAddr();
+	if (_powerFuncmap.find(address + 0x8) != _powerFuncmap.end())
+		return _powerFuncmap[address + 0x8];
+	return function;
+}
+// BPatch_function * DynOpsClass::GetPOWERFunction(BPatch_function * function) { 
+// 	// Returns the real function when using power.
+
+
+
+// }
+
 int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string name) {
 	if (aspace == NULL) 
 		return -1;
+	SetupPowerMap(aspace);
 	BPatch_image * img = aspace->getImage();
 	std::vector<BPatch_function *> tmp;
 	img->findFunction(name.c_str(), tmp);

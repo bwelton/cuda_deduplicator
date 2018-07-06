@@ -36,7 +36,7 @@ BPatch_function * DynOpsClass::GetPOWERFunction(BPatch_function * function) {
 	if (_powerFuncmap.find(address + 0x8) != _powerFuncmap.end())
 		return _powerFuncmap[address + 0x8];
 	return function;
-	
+
 }
 // BPatch_function * DynOpsClass::GetPOWERFunction(BPatch_function * function) { 
 // 	// Returns the real function when using power.
@@ -53,7 +53,7 @@ int DynOpsClass::FindFuncByName(BPatch_addressSpace * aspace, BPatch_function * 
 	std::vector<BPatch_function *> tmp;
 	img->findFunction(name.c_str(), tmp);
 	if (tmp.size() > 0) 
-		ret = tmp[0];
+		ret = GetPOWERFunction(tmp[0]);
 	return tmp.size();
 }
 

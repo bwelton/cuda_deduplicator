@@ -1,4 +1,6 @@
 #include "InstrimentationTracker.h"
+#include "BPatch_flowGraph.h"
+
 #define INST_TRACKER_RECORD 1
 InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::ofstream::out | std::ofstream::app) {
 	#ifdef INST_TRACKER_RECORD
@@ -141,6 +143,42 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
     return true;
 }
 
+
+
+uint64_t GetContiguousSize(BPatch_function * func) {
+	uint64_t size = 0;
+	BPatch_flowGraph * fg = func->getCFG();
+    std::vector<BPatch_basicBlock *> entry;
+    if (fg->getEntryBasicBlock(entry) != true)
+    	assert(fg->getEntryBasicBlock(entry) == true);
+    if (entry.size() > 1) 
+    	fprintf(stderr, "%s %s %s\n", "Function ", func->getName(), "has multiple entries");
+    uint64_t tmp = 999999999;
+    uint64_t pos = 0;
+    for (int i = 0; i < entry.size(); i++) {
+    	if (entry[i]->size() < tmp){
+    		tmp = entry[i]->size();
+    		pos = i;
+    	}
+    }
+    if (tmp == 999999999)
+    	assert(tmp != 999999999);
+
+    if (tmp => 6 * 0x4)
+    	return tmp;
+    std::vector<BPatch_basicBlock *> targets; 
+    fg->getTargets(targets);
+    uint64_t lastInstructionAddress = entry[pos]->getLastInsnAddress();
+    uint64_t nextBlockAddr = 0;
+    for (auto i : targets)
+    	if (i->getStartAddress() == lastInstructionAddress || i->getStartAddress() + 0x4 == lastInstructionAddress || i->getStartAddress() + 0x8 == lastInstructionAddress){    	
+    		nextBlockAddr = i->getLastInsnAddress();
+    		break;
+    	}
+
+   return std::abs(nextBlockAddr - entry[pos]->getStartAddress());
+}	
+
 void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & functions) {
 	// Handle the POWER ABI issues, look for functions within distance of 0x8 (two instructions).
 	// Exclude all functions with size < 5 instructions.
@@ -161,7 +199,7 @@ void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & fu
 			continue;
 		} 
 		// Check the size
-		if(i.second->getSize() < (0x4 * 6)) {
+		if(i.second->getSize() < (0x4 * 6) || GetContiguousSize(i.second) < (0x4 * 6)) {
 			_recordInst << "-2" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() << std::dec << "$" << i.second->getName() << std::endl;
 			_exculdeByAddress.insert(i.first);
 		}
@@ -217,10 +255,10 @@ bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, Inst
     	//if (modname.find("libcuda.so") == std::string::npos)
     	//	return false;
     }
-    // if (t == LOAD_STORE_INST){
-    // 	if (modname.find("stencil") != std::string::npos)
-    // 		return true;
-    // 	return false;
-    // }
+    if (t == LOAD_STORE_INST){
+    	if (modname.find("stencil") != std::string::npos)
+    		return true;
+    	return false;
+    }
     return true;
 }

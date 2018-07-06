@@ -7,6 +7,7 @@ InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::o
 	_recordInst.open("InstrimentationRecorder.txt", std::ofstream::out);
 	#endif
 	_libsInstrimented.open("LibsInstrimented.txt", std::ofstream::out);
+	_funcsInstrimented.open("FuncsInstrimented.txt", std::ofstream::out);
 	// Open File Exlusion lists
 	// Grab Defaults 
 	_loadStoreFuncSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/LoadStoreFunctions.skip"));
@@ -117,6 +118,11 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 		_libsInstrimented << func->getModule()->getObject()->pathName() << std::endl;
 		_libsInstrimented.flush();
 		_librariesInstrimented.insert(func->getModule()->getObject()->pathName());
+	}
+	// Function name save
+	if (_functionsInstrimented.find(func->getName()) == _functionsInstrimented.end()) {
+		_funcsInstrimented << func->getName() << std::endl;
+		_functionsInstrimented.insert(func->getName());
 	}
 	return true;
 }

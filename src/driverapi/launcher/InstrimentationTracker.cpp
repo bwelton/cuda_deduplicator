@@ -152,7 +152,7 @@ uint64_t GetContiguousSize(BPatch_function * func) {
     if (fg->getEntryBasicBlock(entry) != true)
     	assert(fg->getEntryBasicBlock(entry) == true);
     if (entry.size() > 1) 
-    	fprintf(stderr, "%s %s %s\n", "Function ", func->getName(), "has multiple entries");
+    	fprintf(stderr, "%s %s %s\n", "Function ", func->getName().c_str(), "has multiple entries");
     uint64_t tmp = 999999999;
     uint64_t pos = 0;
     for (int i = 0; i < entry.size(); i++) {
@@ -167,7 +167,7 @@ uint64_t GetContiguousSize(BPatch_function * func) {
     if (tmp => 6 * 0x4)
     	return tmp;
     std::vector<BPatch_basicBlock *> targets; 
-    fg->getTargets(targets);
+    entry[i]->getTargets(targets);
     uint64_t lastInstructionAddress = entry[pos]->getLastInsnAddress();
     uint64_t nextBlockAddr = 0;
     for (auto i : targets)
@@ -175,8 +175,9 @@ uint64_t GetContiguousSize(BPatch_function * func) {
     		nextBlockAddr = i->getLastInsnAddress();
     		break;
     	}
-
-   return std::abs(nextBlockAddr - entry[pos]->getStartAddress());
+   if (func->getSize() > std::abs(nextBlockAddr - entry[pos]->getStartAddress()))
+   		return std::abs(nextBlockAddr - entry[pos]->getStartAddress());
+   return func->getSize();
 }	
 
 void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & functions) {

@@ -167,7 +167,7 @@ uint64_t GetContiguousSize(BPatch_function * func) {
     if (tmp >= 6 * 0x4)
     	return tmp;
     std::vector<BPatch_basicBlock *> targets; 
-    entry[i]->getTargets(targets);
+    entry[pos]->getTargets(targets);
     uint64_t lastInstructionAddress = entry[pos]->getLastInsnAddress();
     uint64_t nextBlockAddr = 0;
     for (auto i : targets)

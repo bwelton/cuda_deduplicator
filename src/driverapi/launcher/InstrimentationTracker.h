@@ -76,5 +76,6 @@ private:
 	StringVector _callTracingFuncSkips;
 	StringVector _loadStoreModSkips;
 	StringVector _callTracingModSkips;
-	std::map<std::string> _librariesInstrimented;
+	std::set<std::string> _librariesInstrimented;
+	std::ofstream _libsInstrimented;
 };

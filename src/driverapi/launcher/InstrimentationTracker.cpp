@@ -189,7 +189,7 @@ bool CheckForPreamble(BPatch_function * func) {
     entry[0]->getInstructions(instructions);
     if (instructions.size() < 2) 
     	return true;
-    if(instructions[0].format().find("addis") != std::string::npos && instructions[1].format().find("addi") != std::string::npos)
+    if(instructions[0].first->format().find("addis") != std::string::npos && instructions[1].first->format().find("addi") != std::string::npos)
     	return true;
     return false;
 

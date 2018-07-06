@@ -120,9 +120,9 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 		_librariesInstrimented.insert(func->getModule()->getObject()->pathName());
 	}
 	// Function name save
-	if (_functionsInstrimented.find(func->getName()) == _functionsInstrimented.end()) {
-		_funcsInstrimented << func->getName() << std::endl;
-		_functionsInstrimented.insert(func->getName());
+	if (_functionsInstrimented.find(func->getMangledName()) == _functionsInstrimented.end()) {
+		_funcsInstrimented << func->getMangledName() << std::endl;
+		_functionsInstrimented.insert(func->getMangledName());
 	}
 	return true;
 }
@@ -245,13 +245,14 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
     else
     	toSkip = &_callTracingFuncSkips;
     std::string funcName = func->getName();
+    std::string funcNameMangled = func->getMangledName();
     for (auto i : *toSkip) {
-    	if (funcName.find(i) != std::string::npos)
+    	if (funcName.find(i) != std::string::npos || funcNameMangled.find(i) != std::string::npos)
     		return false;
     }
     if (t == LOAD_STORE_INST)
 	    for (auto i : _prevWrappedFunctions) {
-	    	if (funcName.find(i) != std::string::npos)
+	    	if (funcName.find(i) != std::string::npos || funcNameMangled.find(i) != std::string::npos)
 	    		return false;
 	    }
 	// if (t == LOAD_STORE_INST){

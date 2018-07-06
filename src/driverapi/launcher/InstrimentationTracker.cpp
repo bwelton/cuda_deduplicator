@@ -180,6 +180,21 @@ uint64_t GetContiguousSize(BPatch_function * func) {
    return func->getSize();
 }	
 
+bool CheckForPreamble(BPatch_function * func) {
+	BPatch_flowGraph * fg = func->getCFG();
+    std::vector<BPatch_basicBlock *> entry;
+    if (fg->getEntryBasicBlock(entry) != true)
+    	assert(fg->getEntryBasicBlock(entry) == true);
+    std::vector<std::pair<Dyninst::InstructionAPI::Instruction::Ptr, Dyninst::Address> > instructions;
+    entry[0]->getInstructions(instructions);
+    if (instructions.size() < 2) 
+    	return true;
+    if(instructions[0].format().find("addis") != std::string::npos && instructions[1].format().find("addi") != std::string::npos)
+    	return true;
+    return false;
+
+}
+
 void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & functions) {
 	// Handle the POWER ABI issues, look for functions within distance of 0x8 (two instructions).
 	// Exclude all functions with size < 5 instructions.
@@ -193,7 +208,7 @@ void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & fu
 	}
 
 	for (auto i : orderMap) {
-		if (orderMap.find(i.first + 0x8) != orderMap.end() || orderMap.find(i.first + 0x10) != orderMap.end()) {
+		if (orderMap.find(i.first + 0x8) != orderMap.end() || orderMap.find(i.first + 0x10) != orderMap.end() || CheckForPreamble(i.second) == true) {
 			// Exclude this function
 			_recordInst << "-1" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() << std::dec << "$" << i.second->getName() << std::endl;
 			_exculdeByAddress.insert(i.first);

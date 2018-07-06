@@ -164,7 +164,7 @@ uint64_t GetContiguousSize(BPatch_function * func) {
     if (tmp == 999999999)
     	assert(tmp != 999999999);
 
-    if (tmp => 6 * 0x4)
+    if (tmp >= 6 * 0x4)
     	return tmp;
     std::vector<BPatch_basicBlock *> targets; 
     entry[i]->getTargets(targets);

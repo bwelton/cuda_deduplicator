@@ -36,6 +36,7 @@ BPatch_function * DynOpsClass::GetPOWERFunction(BPatch_function * function) {
 	if (_powerFuncmap.find(address + 0x8) != _powerFuncmap.end())
 		return _powerFuncmap[address + 0x8];
 	return function;
+	
 }
 // BPatch_function * DynOpsClass::GetPOWERFunction(BPatch_function * function) { 
 // 	// Returns the real function when using power.

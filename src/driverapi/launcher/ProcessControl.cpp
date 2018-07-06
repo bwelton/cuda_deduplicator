@@ -110,6 +110,7 @@ void ProcessController::InsertTimers(std::vector<StackPoint> points) {
 	BPatch_image * img = _addrSpace->getImage();
 	img->findFunction("TIMER_SIMPLE_TIME_START", startFunc);
 	img->findFunction("TIMER_SIMPLE_TIME_STOP", stopFunc);
+	
 	assert(startFunc.size() > 0);
 	assert(stopFunc.size() > 0);
 	std::map<std::string, BPatch_object *> objs;

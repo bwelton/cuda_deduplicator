@@ -65,7 +65,7 @@ int FindFuncByName(BPatch_binaryEdit * aspace, BPatch_function * & ret, std::str
 }
 
 int FindFuncByOffset(BPatch_binaryEdit * app, BPatch_function * & ret, uint64_t offset) {
-	BPatch_image * img = aspace->getImage();
+	BPatch_image * img = app->getImage();
 	BPatch_function * func = img->findFunction(offset);
 	if (func == NULL)
 		return 0;

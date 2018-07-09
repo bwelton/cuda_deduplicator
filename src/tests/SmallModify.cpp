@@ -64,6 +64,15 @@ int FindFuncByName(BPatch_binaryEdit * aspace, BPatch_function * & ret, std::str
 	return tmp.size();
 }
 
+int FindFuncByOffset(BPatch_binaryEdit * app, BPatch_function * & ret, uint64_t offset) {
+	BPatch_image * img = aspace->getImage();
+	BPatch_function * func = img->findFunction(offset);
+	if (func == NULL)
+		return 0;
+	ret = func;
+	return 1;	
+}
+
 void InsertLoadStore(BPatch_binaryEdit * app) {
 	std::string functionName = std::string("targ105576c8");
 	app->loadLibrary("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/lib/libDriverAPIWrapper.so");
@@ -71,7 +80,7 @@ void InsertLoadStore(BPatch_binaryEdit * app) {
 	BPatch_function * _recordMemAccess;
 	BPatch_function * _editingFunction;
 	assert(FindFuncByName(app, _recordMemAccess, std::string("SYNC_RECORD_MEM_ACCESS")) == 1);	
-	assert(FindFuncByName(app, _editingFunction, functionName) == 1);
+	assert(FindFuncByOffset(app, _editingFunction, 0x105576c8) == 1);
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);

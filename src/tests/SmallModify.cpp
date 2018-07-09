@@ -81,7 +81,7 @@ void InsertLoadStore(BPatch_binaryEdit * app) {
 	recordArgs.push_back(loadAddr);
 	recordArgs.push_back(new BPatch_constExpr(0));
 	BPatch_funcCallExpr recordAddrCall(*_recordMemAccess, recordArgs);
-	assert(_addrSpace->insertSnippet(recordAddrCall,*loadsAndStores) != NULL);
+	assert(app->insertSnippet(recordAddrCall,*loadsAndStores) != NULL);
 }
 
 

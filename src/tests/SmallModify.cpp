@@ -97,7 +97,7 @@ void InsertLoadStore(BPatch_binaryEdit * app) {
 int main(const int argc, const char * argv[]){
 	BPatch patch;
 	patch.setInstrStackFrames(true);
-	BPatch_binaryEdit * app = patch.openBinary(argv[1], true);
+	BPatch_binaryEdit * app = patch.openBinary(argv[1], false);
 	patch.setInstrStackFrames(true);
 	InsertLoadStore(app);
 	// //patch.setSaveFPR(false);

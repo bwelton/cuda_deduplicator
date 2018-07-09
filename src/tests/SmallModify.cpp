@@ -61,6 +61,7 @@ int FindFuncByName(BPatch_binaryEdit * aspace, BPatch_function * & ret, std::str
 	BPatch_image * img = aspace->getImage();
 	std::vector<BPatch_function *> tmp;
 	img->findFunction(name.c_str(), tmp);
+	ret = tmp[0];
 	return tmp.size();
 }
 

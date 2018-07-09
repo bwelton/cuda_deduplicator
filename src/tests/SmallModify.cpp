@@ -54,96 +54,59 @@ using namespace SymtabAPI;
 
 // Pulls all function symbols from binary, places them into textfile. 
 #define INTERNAL_SYNC_ST 0x2864C0
+
+int FindFuncByName(BPatch_binaryEdit * aspace, BPatch_function * & ret, std::string name) {
+	if (aspace == NULL) 
+		return -1;
+	BPatch_image * img = aspace->getImage();
+	std::vector<BPatch_function *> tmp;
+	img->findFunction(name.c_str(), tmp);
+	return tmp.size();
+}
+
+void InsertLoadStore(BPatch_binaryEdit * app) {
+	std::string functionName = std::string("targ105576c8");
+	app->loadLibrary("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/lib/libDriverAPIWrapper.so");
+	app->loadLibrary("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/lib/plugins/libSynchTool.so");
+	BPatch_function * _recordMemAccess;
+	BPatch_function * _editingFunction;
+	assert(FindFuncByName(app, _recordMemAccess, std::string("SYNC_RECORD_MEM_ACCESS")) == 1);	
+	assert(FindFuncByName(app, _editingFunction, functionName) == 1);
+	std::set<BPatch_opCode> axs;
+	axs.insert(BPatch_opLoad);
+	axs.insert(BPatch_opStore);
+	std::vector<BPatch_point*> * loadsAndStores = _editingFunction->findPoint(axs);
+	std::vector<BPatch_snippet*> recordArgs;
+	BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
+	recordArgs.push_back(loadAddr);
+	recordArgs.push_back(new BPatch_constExpr(0));
+	BPatch_funcCallExpr recordAddrCall(*_recordMemAccess, recordArgs);
+	assert(_addrSpace->insertSnippet(recordAddrCall,*loadsAndStores) != NULL);
+}
+
+
 int main(const int argc, const char * argv[]){
 	BPatch patch;
 	patch.setInstrStackFrames(true);
 	BPatch_binaryEdit * app = patch.openBinary(argv[1], true);
 	patch.setInstrStackFrames(true);
-	//patch.setSaveFPR(false);
-	//patch.setTrampRecursive(true);
-	BPatch_image * img = app->getImage();
-	app->loadLibrary("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/lib/plugins/libStacktrace.so");
-	//BPatch_object * obj = app->loadLibrary("libcuda.so.1");
-	std::vector<BPatch_function *> tracerCall;
-	std::vector<BPatch_function *> wrappingCall;
-	img->findFunction("RecordStack", tracerCall);
-	img->findFunction("funcWrapping", wrappingCall);
-	std::vector<BPatch_point*> * entryLocations = wrappingCall[0]->findPoint(BPatch_locEntry);//cuCtxSync[0]->findPoint(BPatch_locExit) //_cudaSync->findPoint(BPatch_locExit);
-	std::vector<BPatch_snippet*> testArgs;
-	BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
-	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*entryLocations) != false);
+	InsertLoadStore(app);
+	// //patch.setSaveFPR(false);
+	// //patch.setTrampRecursive(true);
+	// BPatch_image * img = app->getImage();
+	// app->loadLibrary("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/lib/plugins/libStacktrace.so");
+	// //BPatch_object * obj = app->loadLibrary("libcuda.so.1");
+	// std::vector<BPatch_function *> tracerCall;
+	// std::vector<BPatch_function *> wrappingCall;
+	// img->findFunction("RecordStack", tracerCall);
+	// img->findFunction("funcWrapping", wrappingCall);
+	// std::vector<BPatch_point*> * entryLocations = wrappingCall[0]->findPoint(BPatch_locEntry);//cuCtxSync[0]->findPoint(BPatch_locExit) //_cudaSync->findPoint(BPatch_locExit);
+	// std::vector<BPatch_snippet*> testArgs;
+	// BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
+	// assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*entryLocations) != false);
 
-	//img->findFunction("__backtrace", btcall);
-	//assert(btcall.size() > 0);
-	// assert(tracerCall.size() > 0);
-	// BPatch_function * cudaSync = NULL;
-	// Dyninst::Address offsetAddress = 0;
-	// std::vector<BPatch_object *> imgObjs;
-	// std::vector<BPatch_module *> mods;
-	// img->getModules(mods);
-	// assert(mods.size() > 0);
-
-	// for (auto i : mods){
-	// 	// Found libcuda
-	// 	std::vector<BPatch_function * > * internalFuncs = i->getProcedures();
-	// 	for (auto z : *internalFuncs){
-	// 		if ((uint64_t) z->getBaseAddr() == INTERNAL_SYNC_ST){
-	// 			std::cerr << "Found" << std::endl;
-	// 			cudaSync = z;
-	// 			break;
-	// 		}
-	// 		if (z->getName() == std::string("INTERNAL_Synchronization"))
-	// 		{
-	// 			cudaSync = z;
-	// 			break;
-	// 		}
-	// 	}
-	// 	if (cudaSync != NULL)
-	// 		break;
-	// 	cudaSync = i->findFunctionByEntry(INTERNAL_SYNC_ST);
-	// 	if (cudaSync != NULL)
-	// 		break;
-	// }
-	// assert(cudaSync != NULL);
-
-	// img->getAddressSpace()->beginInsertionSet();
-
-	// // {
-	// // 	BPatch_variableExpr * voidPtr = img->getAddressSpace()->malloc(sizeof(uint64_t) * 1024, "stackTraceVar");
-	// // 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locEntry);
-	// // 	std::vector<BPatch_snippet*> testArgs;
-	// // 	testArgs.push_back(voidPtr);
-	// // 	testArgs.push_back(new BPatch_constExpr(1024));
-	// // 	BPatch_funcCallExpr recordFuncEntry(*(btcall[0]), testArgs);
-	// // 	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
-	// // }
-	// std::cerr << cudaSync->getName() << std::endl;
- // 	{
-	// 	std::vector<BPatch_point*> * funcEntry = cudaSync->findPoint(BPatch_locExit);
-	// 	std::vector<BPatch_snippet*> testArgs;
-	// 	BPatch_funcCallExpr recordFuncEntry(*(tracerCall[0]), testArgs);
-	// 	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
-	// 	funcEntry = cudaSync->findPoint(BPatch_locEntry);
-	// 	assert(img->getAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry)!= NULL);
-	// }
-	// img->getAddressSpace()->finalizeInsertionSet(false);	
 	if(!app->writeFile(argv[2])) {
 		fprintf(stderr, "Could not write output file %s\n", argv[2]);
 		return -1;
 	}
-
-	// std::ofstream pfile;
-	// pfile.open(argv[2]);	
-	// BPatch_image * img = app->getImage();
-	// std::vector<BPatch_function *> funcs;
-	// img->getProcedures(funcs, false);
-	// for (auto i : funcs) {
-	// 	if (i->getName().at(0) == 'c' && i->getName().at(1) == 'u') {
-	// 		if (i->getName().find(std::string("__")) == std::string::npos) {
-	// 			pfile << "" << std::hex << i->getBaseAddr() << std::dec << " " << i->getName() 
-	// 			      << " 0x" << std::hex << i->getFootprint() << std::dec << std::endl;		
-	// 		}
-	// 	}
-	// }
-	//pfile.close();
 }

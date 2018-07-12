@@ -105,7 +105,7 @@ private:
 	BPatch_function * _entryFunction;
 	BPatch_function * _exitingFunction;
 	BPatch_function * _libcudaSync;
-
+	int _debugPrinting;
 	std::ofstream _logFile;
 	DynOpsClass _dynOps;
 	BinaryLocationIDMap _binLoc;

@@ -3,7 +3,8 @@
 
 LoadStoreInst::LoadStoreInst(BPatch_addressSpace * addrSpace, BPatch_image * img) :
 	_addrSpace(addrSpace), _img(img), _started(false), _funcId(0) {
-	_runOneTime = false;	
+	_runOneTime = false;
+	_debugPrinting = 0;	
 }
 
 
@@ -124,6 +125,10 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 		BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
 		recordArgs.push_back(loadAddr);
 		recordArgs.push_back(new BPatch_constExpr(id));
+		if (_debugPrinting < 40){
+			std::cerr << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec << std::endl;
+			_debugPrinting++;
+		}
 		BPatch_funcCallExpr recordAddrCall(*_recordMemAccess, recordArgs);
 		if (_addrSpace->insertSnippet(recordAddrCall,singlePoint) == NULL) {
 			std::cerr << "[LoadStoreInst][LoadStoreSnippet]\t\tCould not insert load store instrimentation into " << id << " in function " << func->getName() << std::endl;

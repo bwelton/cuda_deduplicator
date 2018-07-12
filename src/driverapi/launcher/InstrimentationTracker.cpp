@@ -170,7 +170,7 @@ uint64_t GetContiguousSize(BPatch_function * func) {
     if (tmp == 999999999)
     	assert(tmp != 999999999);
 
-    if (tmp >= 6 * 0x8)
+    if (tmp >= 6 * 0x4)
     	return tmp;
     std::vector<BPatch_basicBlock *> targets; 
     entry[pos]->getTargets(targets);
@@ -221,7 +221,7 @@ void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & fu
 			continue;
 		} 
 		// Check the size
-		if(i.second->getSize() < (0x8 * 6) || GetContiguousSize(i.second) < (0x8 * 6)) {
+		if(i.second->getSize() < (0x4 * 6) || GetContiguousSize(i.second) < (0x4 * 6)) {
 			_recordInst << "-2" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() << std::dec << "$" << i.second->getName() << std::endl;
 			_exculdeByAddress.insert(i.first);
 		}

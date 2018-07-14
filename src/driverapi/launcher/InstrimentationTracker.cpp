@@ -67,6 +67,7 @@ void InstrimentationTracker::RecordInstrimentation(InstType t, BPatch_function *
 #ifdef INST_TRACKER_RECORD
 	_recordInst << int(t) << "$" <<  func->getModule()->getObject()->pathName() << "$" << (uint64_t)point->getAddress() << std::endl;
 #endif
+		_recordInst.flush();
 }
 
 void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & wrappedFunctions) {
@@ -86,7 +87,7 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 			_logFile << "[InstrimentationTracker]\tRejected because address is exluded by fixpower" << std::endl;
 		return false;
 	}
-	
+	_logFile.flush();
 	if (_alreadyInstrimented.find(t) == _alreadyInstrimented.end())
 		_alreadyInstrimented[t] = std::set<uint64_t>();
 	std::string pathName = func->getModule()->getObject()->pathName();

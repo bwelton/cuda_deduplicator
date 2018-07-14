@@ -125,7 +125,7 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 		BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
 		recordArgs.push_back(loadAddr);
 		recordArgs.push_back(new BPatch_constExpr(id));
-		if (_debugPrinting < 40){
+		if (_debugPrinting < 40 || id == 4988 || id == 4989){
 			std::cerr << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec << std::endl;
 			_debugPrinting++;
 		}
@@ -193,6 +193,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 
 
 void LoadStoreInst::Setup() {
+	std::cerr << "[LoadStoreInst] Setup" << std::endl;
 	_logFile.open("LS_log.txt", std::ofstream::out);
 	_addrSpace->loadLibrary("libDriverAPIWrapper.so");
 	assert(_dynOps.FindFuncByName(_addrSpace, _entryFunction, std::string("RECORD_FUNCTION_ENTRY")) == 1);

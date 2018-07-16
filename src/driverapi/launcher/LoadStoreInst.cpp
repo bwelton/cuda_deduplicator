@@ -128,8 +128,8 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 		if (_debugPrinting < 40 || id == 4988 || id == 4989){
 			std::cerr << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec << std::endl;
 			_debugPrinting++;
-			// if (id == 4989)
-			// 	assert(id != 4989);
+			if (id == 4989)
+			 	assert(id != 4989);
 		}
 		BPatch_funcCallExpr recordAddrCall(*_recordMemAccess, recordArgs);
 		if (_addrSpace->insertSnippet(recordAddrCall,singlePoint) == NULL) {

@@ -125,9 +125,10 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 		BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
 		recordArgs.push_back(loadAddr);
 		recordArgs.push_back(new BPatch_constExpr(id));
+		_logFile << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec <<  " in function " << func->getName() << std::endl;
 		if (_debugPrinting < 40 || id == 4988 || id == 4989){
 			std::cerr << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec <<  " in function " << func->getName() << std::endl;
-			_logFile << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec <<  " in function " << func->getName() << std::endl;
+			//_logFile << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec <<  " in function " << func->getName() << std::endl;
 			_debugPrinting++;
 			// if (id == 4989)
 			//  	assert(id != 4989);

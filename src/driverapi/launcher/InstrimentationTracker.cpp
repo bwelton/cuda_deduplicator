@@ -155,7 +155,20 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
 bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
 	std::string tmp =  point->getInsnAtPoint()->format();
     std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-	if (tmp.find("lwarx") != std::string::npos || tmp.find("stwcx") != std::string::npos)
+    // Reservation Instructions
+	if (tmp.find("lwarx") != std::string::npos || 
+		tmp.find("lbarx") != std::string::npos ||
+		tmp.find("lharx") != std::string::npos ||
+		tmp.find("ldarx") != std::string::npos ||
+		tmp.find("lqarx") != std::string::npos )
+		return false;
+
+	// Use of reservation instructions
+	if (tmp.find("stbcx") != std::string::npos ||
+		tmp.find("sthcx") != std::string::npos ||
+		tmp.find("stwcx") != std::string::npos ||
+		tmp.find("stdcx") != std::string::npos || 
+		tmp.find("stqcx") != std::string::npos )
 		return false;
 
 	return true;

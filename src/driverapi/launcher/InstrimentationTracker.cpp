@@ -155,7 +155,7 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
 bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
 	std::string tmp =  point->getInsnAtPoint()->format();
     std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-	if (tmp.find("lwarx") != tmp.end() || tmp.find("stwcx") != tmp.end())
+	if (tmp.find("lwarx") != std::string::npos || tmp.find("stwcx") != std::string::npos)
 		return false;
 
 	return true;

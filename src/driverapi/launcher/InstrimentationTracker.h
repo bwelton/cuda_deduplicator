@@ -61,6 +61,7 @@ public:
 	void RecordInstrimentation(InstType t, BPatch_function * func, BPatch_point * point);
 	void RecordInstrimentation(InstType t, BPatch_function * func, std::vector<BPatch_point *> * points);
 	StringVector OpenAndParseExclusionFile(std::string filename);
+	bool ShouldInstrimentInstruction(BPatch_point * point);
 	void PowerFunctionFix(std::vector<BPatch_function*> & functions);
 private:
 

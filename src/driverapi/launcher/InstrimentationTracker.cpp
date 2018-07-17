@@ -100,6 +100,8 @@ bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vecto
 				//std::cerr << "Instrumenting function call - " << (*points)[i]->getCalledFunction()->getName() << "@" << std::hex << (uint64_t)(*points)[i]->getAddress() << std::dec <<std::endl;
 			}
 		}
+		if (!ShouldInstrimentInstruction((*points)[i]))
+			removeList.insert(i);
 		uint64_t hashValue = HashPoint(func, (*points)[i]);
 		if (_alreadyInstrimented[t].find(hashValue) != _alreadyInstrimented[t].end())
 			removeList.insert(i);
@@ -149,6 +151,15 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
     return true;
 }
 
+
+bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
+	std::string tmp =  point->getInsnAtPoint()->format();
+    std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+	if (tmp.find("lwarx") != tmp.end() || tmp.find("stwcx") != tmp.end())
+		return false;
+
+	return true;
+}
 
 
 uint64_t GetContiguousSize(BPatch_function * func) {

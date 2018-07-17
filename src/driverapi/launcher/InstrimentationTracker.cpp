@@ -72,7 +72,9 @@ void InstrimentationTracker::RecordInstrimentation(InstType t, BPatch_function *
 void InstrimentationTracker::AddAlreadyInstrimented(std::vector<std::string> & wrappedFunctions) {
 	//_prevWrappedFunctions = wrappedFunctions;
 }
+bool __In_Emulated;
 bool InstrimentationTracker::ShouldInstriment(BPatch_function * func, std::vector<BPatch_point *> * points, InstType t) {
+	__In_Emulated = false;
 	if (!ShouldInstrimentFunciton(func, t) || !ShouldInstrimentModule(func, t) || _exculdeByAddress.find((uint64_t)(func->getBaseAddr())) != _exculdeByAddress.end()) {
 		_logFile << "[InstrimentationTracker] We are rejecting function " << func->getName() <<  " because module/function is labeled as uninstrimentable" << std::endl;
 		if (func->getName().find("targ10003b1c") != std::string::npos) {
@@ -160,17 +162,21 @@ bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
 		tmp.find("lbarx") != std::string::npos ||
 		tmp.find("lharx") != std::string::npos ||
 		tmp.find("ldarx") != std::string::npos ||
-		tmp.find("lqarx") != std::string::npos )
+		tmp.find("lqarx") != std::string::npos ){
+		__In_Emulated = true;
 		return false;
-
+	}
 	// Use of reservation instructions
 	if (tmp.find("stbcx") != std::string::npos ||
 		tmp.find("sthcx") != std::string::npos ||
 		tmp.find("stwcx") != std::string::npos ||
 		tmp.find("stdcx") != std::string::npos || 
-		tmp.find("stqcx") != std::string::npos )
+		tmp.find("stqcx") != std::string::npos ) {
+		__In_Emulated = false;
+		return false;	
+	}
+	if (__In_Emulated)
 		return false;
-
 	return true;
 }
 

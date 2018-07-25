@@ -225,8 +225,8 @@ bool CheckForPreamble(BPatch_function * func) {
     entry[0]->getInstructions(instructions);
     if (instructions.size() < 2) 
     	return true;
-    if ((retString[0].find("lis R2") != std::string::npos && retString[1].find("addi R2") != std::string::npos) ||
-        (retString[0].find("addis R2") != std::string::npos && retString[1].find("addi R2") != std::string::npos)) {
+    if ((instructions[0].first->format().find("lis R2") != std::string::npos && instructions[1].first->format().find("addi R2") != std::string::npos) ||
+        (instructions[0].first->format().find("addis R2") != std::string::npos && instructions[1].first->format().find("addi R2") != std::string::npos)) {
       return true; 
     }
     if(func->getAddSpace()->findFunctionByAddr(((uint64_t) func->getBaseAddr()) + 0x8))

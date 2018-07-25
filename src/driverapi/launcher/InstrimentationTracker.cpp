@@ -264,8 +264,8 @@ void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & fu
 		if (i.second->getDemangledName().find("std::") != std::string::npos) {
 			_exculdeByAddress.insert(i.first);	
 			_exculdeByAddress.insert(i.first+0x8);	
-			_recordInst << "-3" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() << std::dec << "$" << i.second->getName() << std::endl;
-			_recordInst << "-3" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() + 0x8 << std::dec << "$" << i.second->getName() << std::endl;
+			_recordInst << "-3" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() << std::dec << "$" << i.second->getDemangledName() << std::endl;
+			_recordInst << "-3" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() + 0x8 << std::dec << "$" << i.second->getDemangledName() << std::endl;
 		}
 
 	}

@@ -229,7 +229,7 @@ bool CheckForPreamble(BPatch_function * func) {
         (instructions[0].first->format().find("addis R2") != std::string::npos && instructions[1].first->format().find("addi R2") != std::string::npos)) {
       return true; 
     }
-    if(func->getAddSpace()->findFunctionByAddr(((uint64_t) func->getBaseAddr()) + 0x8))
+    if(func->getAddSpace()->findFunctionByAddr((void*)(((uint64_t) func->getBaseAddr()) + 0x8)))
     	return true;
 
     return false;

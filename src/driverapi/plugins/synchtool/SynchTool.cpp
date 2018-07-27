@@ -42,7 +42,7 @@ extern "C" {
 		//assert(1==0);
 //		fprintf(_temporaryFiles,"[SynchTool] Captured memory access - %llu, %llu\n", addr, id);
 //		fflush(_temporaryFiles);
-		std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
+		//std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
 		_LoadStoreDriver->RecordAccess(id, addr);
 	}
 }

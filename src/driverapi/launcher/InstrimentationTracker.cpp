@@ -175,6 +175,12 @@ bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
 		__In_Emulated = false;
 		return false;	
 	}
+	uint64_t pointAddress = (uint64_t) point->getAddress();
+	if ((pointAddress >= 0x10500510 && pointAddress <= 0x10500530) ||
+	    (pointAddress >= 0x10500598 && pointAddress <= 0x105005b8) ||
+	    (pointAddress >= 0x105006d4 && pointAddress <= 0x105006f8) ||
+	    (pointAddress >= 0x10500738 && pointAddress <= 0x10500750))
+		return false;
 	if (__In_Emulated)
 		return false;
 	return true;

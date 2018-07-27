@@ -178,6 +178,11 @@ bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
 	// xxswapd
 	if (tmp.find("stfq fpr0, fpr1, [0 + 250]") != std::string::npos)
 		return false;
+
+	// Load/Stores to/from stack.
+	if (tmp.find("[r1 +") != std::string::npos || tmp.find("[r1 -") != std::string::npos)
+		return false;
+
 	// if ((pointAddress >= 0x10500510 && pointAddress <= 0x10500530) ||
 	//     (pointAddress >= 0x10500598 && pointAddress <= 0x105005b8) ||
 	//     (pointAddress >= 0x105006d4 && pointAddress <= 0x105006f8) ||

@@ -84,6 +84,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 			BPatch_function * func;
 			if(_dynOps.FindFuncByStackPoint(_addrSpace, func, z) <= 0){
 				_logFile << "[LoadStoreInst][EntryExit] Could not find function - " << z.funcName << std::endl;
+				std::cerr << "[LoadStoreInst][EntryExit] Could not find function - " << z.funcName << std::endl;
 				continue;
 			}
 			// Correct power issues

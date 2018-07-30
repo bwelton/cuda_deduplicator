@@ -72,11 +72,13 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 	// Get all the functions in the binary
 	std::vector<BPatch_object *> objects;
 	_img->getObjects(objects);
+	int count = 0;
 	for (auto i : syncStacks) {
 		i.second.PrintStack();
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
 			_logFile << "[LoadStoreInst][EntryExit] Attempting to find - " << z.funcName << std::endl;
+			std::cerr << "[LoadStoreInst][EntryExit] Attempting to find - " << z.funcName << std::endl;
 			// if (z.funcName.find("targ") != std::string::npos)
 			// 	continue;
 			BPatch_function * func;
@@ -85,7 +87,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				continue;
 			}
 			// Correct power issues
-			//func = _dynOps.GetPOWERFunction(func);
+			func = _dynOps.GetPOWERFunction(func);
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
 				_logFile << "[LoadStoreInst][EntryExit] Inserting exit/entry info into - " << z.funcName << "," << func->getModule()->getObject()->pathName() << std::endl;
@@ -94,7 +96,9 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				_logFile << "[LoadStoreInst][EntryExit] Rejected function - " << z.funcName << std::endl;
 			}		
 		}
-		break;
+		if (count >= 1)
+			break;
+		count++;
 	}		
 }	
 

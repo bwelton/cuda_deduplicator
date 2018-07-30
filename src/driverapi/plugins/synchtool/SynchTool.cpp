@@ -20,7 +20,7 @@ extern "C" {
 		//assert(1 == 0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// fflush(_temporaryFiles);
-		std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
+		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		_LoadStoreDriver->PushStack(id);
 	}
 	void RECORD_FUNCTION_EXIT(uint64_t id) {
@@ -28,7 +28,7 @@ extern "C" {
 		//assert(1==0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// fflush(_temporaryFiles);
-		std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
+		//std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
 		_LoadStoreDriver->PopStack(id);
 	}
 

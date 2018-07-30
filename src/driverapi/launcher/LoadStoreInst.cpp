@@ -25,6 +25,8 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 	std::string libname = func->getModule()->getObject()->pathName();
 	_logFile << "[LoadStoreInst][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
 	for (auto i : *points) {
+		if (i != points->back())
+			continue;
 		// if (i->getCalledFunction() == NULL)
 		// 	continue;
 		// std::vector<std::pair<Dyninst::InstructionAPI::Instruction::Ptr, Dyninst::Address> > instructionVector;
@@ -64,7 +66,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 		}
 		if (_addrSpace->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
 			_logFile << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert exit tracking into " << func->getName() << std::endl;
-		}		
+		}
 	}
 }
 

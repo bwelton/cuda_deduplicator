@@ -3,7 +3,6 @@ int exited = 0;
 std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
-bool setup = false;
 FILE * _temporaryFiles;
 extern "C" {
 
@@ -13,31 +12,24 @@ extern "C" {
 			return;
 		_dataAccessManager.reset(new CheckAccesses());
 		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager));
-		setup = true;
 		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
 	}
 
-	void  __attribute__ ((noinline)) RECORD_FUNCTION_ENTRY(uint64_t id) {
-		//if (setup == false)
-		//	INIT_SYNC_COMMON();
-		setup = false;
-		
+	void RECORD_FUNCTION_ENTRY(uint64_t id) {
+		INIT_SYNC_COMMON();
 		//assert(1 == 0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
-		//_LoadStoreDriver->PushStack(id);
-
+		_LoadStoreDriver->PushStack(id);
 	}
-	void  __attribute__ ((noinline)) RECORD_FUNCTION_EXIT(uint64_t id) {
-		//if (setup == false)
-		//	INIT_SYNC_COMMON();
-		setup = true;
+	void RECORD_FUNCTION_EXIT(uint64_t id) {
+		INIT_SYNC_COMMON();
 		//assert(1==0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
-		//_LoadStoreDriver->PopStack(id);
+		_LoadStoreDriver->PopStack(id);
 	}
 
 	void SYNC_CAPTURE_SYNC_CALL() {

@@ -77,8 +77,8 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
 			_logFile << "[LoadStoreInst][EntryExit] Attempting to find - " << z.funcName << std::endl;
-			if (z.funcName.find("targ") != std::string::npos)
-				continue;
+			// if (z.funcName.find("targ") != std::string::npos)
+			// 	continue;
 			BPatch_function * func;
 			if(_dynOps.FindFuncByStackPoint(_addrSpace, func, z) <= 0){
 				_logFile << "[LoadStoreInst][EntryExit] Could not find function - " << z.funcName << std::endl;

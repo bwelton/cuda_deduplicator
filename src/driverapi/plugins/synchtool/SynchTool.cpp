@@ -1,8 +1,8 @@
 #include "SynchTool.h"
 int exited = 0;
 std::shared_ptr<SynchTool> Worker;
-thread_local LoadStoreDriverPtr _LoadStoreDriver;
-thread_local CheckAccessesPtr _dataAccessManager;
+LoadStoreDriverPtr _LoadStoreDriver;
+CheckAccessesPtr _dataAccessManager;
 FILE * _temporaryFiles;
 extern "C" {
 
@@ -22,7 +22,7 @@ extern "C" {
 		// fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		//_LoadStoreDriver->PushStack(id);
-		
+
 	}
 	void  __attribute__ ((noinline)) RECORD_FUNCTION_EXIT(uint64_t id) {
 		INIT_SYNC_COMMON();

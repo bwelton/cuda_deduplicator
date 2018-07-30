@@ -64,6 +64,13 @@ struct StackPoint {
 		return false;
 	};
 
+	void Print() {
+		std::cerr << "[StackPoint] Stack Point Debug" << std::endl;
+		std::cerr << "[StackPoint] \t libname: " << libname << std::endl;
+		std::cerr << "[StackPoint] \t FuncName: " << funcName << std::endl;
+		std::cerr << "[StackPoint] \t libOffset: " << std::hex << libOffset << std::endl;
+		std::cerr << "[StackPoint] \t funcOffset: " << std::hex << funcOffset << std::endl;
+	}
 	int Serialize(char * data, int size) {
 		int pos = 0;
 		if (size < sizeof(uint64_t) + libname.size() + sizeof(uint64_t))

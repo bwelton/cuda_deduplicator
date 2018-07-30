@@ -3,29 +3,34 @@ int exited = 0;
 std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
+bool setup = false;
 FILE * _temporaryFiles;
 extern "C" {
 
 
 	void INIT_SYNC_COMMON() {
-		// if (_dataAccessManager.get() != NULL)
-		// 	return;
+		if (_dataAccessManager.get() != NULL)
+			return;
 		_dataAccessManager.reset(new CheckAccesses());
 		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager));
+		setup = true;
 		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
 	}
 
 	void  __attribute__ ((noinline)) RECORD_FUNCTION_ENTRY(uint64_t id) {
-		INIT_SYNC_COMMON();
+		if (setup == false)
+			INIT_SYNC_COMMON();
 		//assert(1 == 0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		//_LoadStoreDriver->PushStack(id);
-		
+
 	}
 	void  __attribute__ ((noinline)) RECORD_FUNCTION_EXIT(uint64_t id) {
-		INIT_SYNC_COMMON();
+		if (setup == false)
+			INIT_SYNC_COMMON();
+		
 		//assert(1==0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// fflush(_temporaryFiles);

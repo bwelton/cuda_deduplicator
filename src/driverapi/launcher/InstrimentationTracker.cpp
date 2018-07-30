@@ -155,6 +155,10 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
 
 
 bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
+	if (point->getInsnAtPoint() == NULL){
+		std::cerr << "[InstrimentationTracker::ShouldInstrimentInstruction] Could not get instruction at " << std::hex << point->getAddress() << std::endl;
+		return true;		
+	}
 	std::string tmp =  point->getInsnAtPoint()->format();
     std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
     // Reservation Instructions

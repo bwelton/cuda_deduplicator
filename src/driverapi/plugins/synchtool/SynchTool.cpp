@@ -15,16 +15,16 @@ extern "C" {
 		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
 	}
 
-	void RECORD_FUNCTION_ENTRY(uint64_t id) {
-		//INIT_SYNC_COMMON();
+	void  __attribute__ ((noinline)) RECORD_FUNCTION_ENTRY(uint64_t id) {
+		INIT_SYNC_COMMON();
 		//assert(1 == 0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		//_LoadStoreDriver->PushStack(id);
 	}
-	void RECORD_FUNCTION_EXIT(uint64_t id) {
-		//INIT_SYNC_COMMON();
+	void  __attribute__ ((noinline)) RECORD_FUNCTION_EXIT(uint64_t id) {
+		INIT_SYNC_COMMON();
 		//assert(1==0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// fflush(_temporaryFiles);

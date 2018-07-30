@@ -32,6 +32,7 @@ void DynOpsClass::SetupPowerMap(BPatch_addressSpace * addr) {
 }
 
 BPatch_function * DynOpsClass::GetPOWERFunction(BPatch_function * function) {
+	SetupPowerMap(function->getAddSpace());
 	uint64_t address = (uint64_t)function->getBaseAddr();
 	if (_powerFuncmap.find(address + 0x8) != _powerFuncmap.end())
 		return _powerFuncmap[address + 0x8];

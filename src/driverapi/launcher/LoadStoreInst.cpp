@@ -81,6 +81,8 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				_logFile << "[LoadStoreInst][EntryExit] Could not find function - " << z.funcName << std::endl;
 				continue;
 			}
+			// Correct power issues
+			func = GetPOWERFunction(func);
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
 				_logFile << "[LoadStoreInst][EntryExit] Inserting exit/entry info into - " << z.funcName << "," << func->getModule()->getObject()->pathName() << std::endl;
@@ -184,7 +186,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 	_img->getProcedures(all_functions);
 	_instTracker.PowerFunctionFix(all_functions);
 	InsertGotchaEntries();
-	//WrapEntryAndExit(syncStacks);
+	WrapEntryAndExit(syncStacks);
 	InsertSyncCallNotifier();
 	//InsertSyncCallNotifier(points);
 	InsertLoadStoreInstrimentation();

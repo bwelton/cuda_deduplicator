@@ -1,15 +1,15 @@
 #include "SynchTool.h"
 int exited = 0;
 std::shared_ptr<SynchTool> Worker;
-LoadStoreDriverPtr _LoadStoreDriver;
-CheckAccessesPtr _dataAccessManager;
+thread_local LoadStoreDriverPtr _LoadStoreDriver;
+thread_local CheckAccessesPtr _dataAccessManager;
 FILE * _temporaryFiles;
 extern "C" {
 
 
 	void INIT_SYNC_COMMON() {
-		if (_dataAccessManager.get() != NULL)
-			return;
+		// if (_dataAccessManager.get() != NULL)
+		// 	return;
 		_dataAccessManager.reset(new CheckAccesses());
 		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager));
 		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
@@ -22,7 +22,7 @@ extern "C" {
 		// fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		//_LoadStoreDriver->PushStack(id);
-
+		
 	}
 	void  __attribute__ ((noinline)) RECORD_FUNCTION_EXIT(uint64_t id) {
 		INIT_SYNC_COMMON();

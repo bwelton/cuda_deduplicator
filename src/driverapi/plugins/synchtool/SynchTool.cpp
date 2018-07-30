@@ -18,8 +18,10 @@ extern "C" {
 	}
 
 	void  __attribute__ ((noinline)) RECORD_FUNCTION_ENTRY(uint64_t id) {
-		if (setup == false)
-			INIT_SYNC_COMMON();
+		//if (setup == false)
+		//	INIT_SYNC_COMMON();
+		setup = false;
+		
 		//assert(1 == 0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// fflush(_temporaryFiles);
@@ -28,9 +30,9 @@ extern "C" {
 
 	}
 	void  __attribute__ ((noinline)) RECORD_FUNCTION_EXIT(uint64_t id) {
-		if (setup == false)
-			INIT_SYNC_COMMON();
-		
+		//if (setup == false)
+		//	INIT_SYNC_COMMON();
+		setup = true;
 		//assert(1==0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// fflush(_temporaryFiles);

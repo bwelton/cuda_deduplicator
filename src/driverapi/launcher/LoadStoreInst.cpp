@@ -94,6 +94,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 				_logFile << "[LoadStoreInst][EntryExit] Rejected function - " << z.funcName << std::endl;
 			}		
 		}
+		break;
 	}		
 }	
 

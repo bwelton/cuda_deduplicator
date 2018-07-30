@@ -343,7 +343,7 @@ bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, Inst
     	//if (modname.find("libcuda.so") == std::string::npos)
     	//	return false;
     }
-    
+    //if (t == LOAD_STORE_INST){
     	if (modname.find("stencil") != std::string::npos)
     		return true;
     	return false;

@@ -4455,7 +4455,7 @@ extern "C" void DefineBinders() {
 	gotcha_set_priority("cuda/driverapibinders", 1);
 	int result = gotcha_wrap(gotfuncs, NUM_GOTFUNCS, "cuda/driverapibinders");
 	assert(result == GOTCHA_SUCCESS);
-
+	std::cerr << "[DefineBinders] In define binders...." << std::endl;
 	int (*TMP_PTR_cuGetErrorString)(CUresult,const char * *) = (int(*)(CUresult,const char * *)) gotcha_get_wrappee(GOTTCHA_cuGetErrorString);
 	PTR_ORIGINAL_cuGetErrorString = (void *) gotcha_get_wrappee(GOTTCHA_cuGetErrorString);
 	Bound_cuGetErrorString = std::bind(TMP_PTR_cuGetErrorString,std::placeholders::_1,std::placeholders::_2);

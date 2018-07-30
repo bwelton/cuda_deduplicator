@@ -31,7 +31,7 @@ extern "C" {
 		std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
 		_LoadStoreDriver->PopStack(id);
 	}
-#targ10500498
+
 	void SYNC_CAPTURE_SYNC_CALL() {
 		INIT_SYNC_COMMON();
 		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;

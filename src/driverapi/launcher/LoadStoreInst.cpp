@@ -89,6 +89,7 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 			}
 			// Correct power issues
 			func = _dynOps.GetPOWERFunction(func);
+			std::cerr << "[LoadStoreInst][EntryExit] Power Function - " << func->getName() << std::endl;
 			std::vector<BPatch_point*> * funcCalls = func->findPoint(BPatch_locSubroutine);
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
 				_logFile << "[LoadStoreInst][EntryExit] Inserting exit/entry info into - " << z.funcName << "," << func->getModule()->getObject()->pathName() << std::endl;

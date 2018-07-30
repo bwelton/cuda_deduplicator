@@ -24,7 +24,7 @@ void LoadStoreInst::InsertGotchaEntries() {
 void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
 	std::string libname = func->getModule()->getObject()->pathName();
 	_logFile << "[LoadStoreInst][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
-	for (int nmp = 0; nmp < points->size(); nmp++)
+	for (int nmp = 0; nmp < points->size(); nmp++){
 		auto i = (*points)[nmp];
 		if (nmp >= 1)
 			continue;

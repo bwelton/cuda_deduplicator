@@ -16,18 +16,16 @@ extern "C" {
 	}
 
 	void  __attribute__ ((noinline)) RECORD_FUNCTION_ENTRY(uint64_t id) {
-		asm ("");
-		//INIT_SYNC_COMMON();
+		INIT_SYNC_COMMON();
 		//assert(1 == 0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		//_LoadStoreDriver->PushStack(id);
-
+		
 	}
 	void  __attribute__ ((noinline)) RECORD_FUNCTION_EXIT(uint64_t id) {
-		asm ("");
-		//INIT_SYNC_COMMON();
+		INIT_SYNC_COMMON();
 		//assert(1==0);
 		// fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// fflush(_temporaryFiles);

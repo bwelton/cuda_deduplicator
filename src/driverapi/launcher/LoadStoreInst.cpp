@@ -207,6 +207,11 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 	return true;
 }
 
+export DYNINST_DEBUG_INST=1
+export DYNINST_DEBUG_RELOCATION=1
+export DYNINST_DEBUG_WRITE=1
+export DYNINST_DEBUG_SPRINGBOARD=1
+export DYNINST_DEBUG_STARTUP=1
 
 void LoadStoreInst::Setup() {
 	std::cerr << "[LoadStoreInst] Setup" << std::endl;

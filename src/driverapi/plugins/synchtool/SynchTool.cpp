@@ -91,14 +91,15 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 	tmp.stream = stream;
 	_dataAccessManager->AddMemoryTransfer(tmp);
 
-#ifdef SYNCH_DEBUG
+//#ifdef SYNCH_DEBUG
 	std::stringstream ss;
 	ss << "[SynchTool] Adding Memory Transfer - " << params.get()->GetName() << " with the following info\n" 
 	   << "\tCPU Starting Address = 0x" << std::hex << tmp.begin << std::dec 
 	   << "\n\tTransfer Size = " << tmp.size 
 	   << "\n\tStream = " << tmp.stream;
-	_sync_log.get()->Write(ss.str());
-#endif
+	std::cerr << ss.str() << std::endl;
+	//_sync_log.get()->Write(ss.str());
+//#endif
 }
 
 PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
@@ -112,6 +113,7 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 			mem->PreTransfer();
 			GetLiveTransfer(params);
 		} else if (p->GetID() == ID_cuMemAllocManaged){
+			// Cuda Malloc Mana
 			std::cerr << "[SynchTool::Precall] I am an idiot for not filling this in...." << std::endl;
 			// This is a unified memory address allocation, for now
 			// we assume that these are always live

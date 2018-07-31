@@ -137,9 +137,9 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 			mem->PreTransfer();
 			GetLiveTransfer(params);
 		} else if (p->GetID() == ID_cuMemAllocManaged){
-			// Cuda Malloc Mana
-			std::cerr << "[SynchTool::Precall] I am an idiot for not filling this in...." << std::endl;
-			UnifiedAllocation(params);
+			// // Cuda Malloc Mana
+			// std::cerr << "[SynchTool::Precall] I am an idiot for not filling this in...." << std::endl;
+			// UnifiedAllocation(params);
 			// This is a unified memory address allocation, for now
 			// we assume that these are always live
 		} else if (p->GetID() == ID_cuMemFree){
@@ -151,7 +151,13 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 }
 
 PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
-
+	Parameters * p = params.get();
+	// If the call is not a synchronization
+	if (ID_InternalSynchronization != p->GetID()){
+		if (p->GetID() == ID_cuMemAllocManaged){
+			UnifiedAllocation(params);	
+		}
+	}
 }
 
 extern "C"{

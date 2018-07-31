@@ -65,7 +65,7 @@ void SynchTool::UnifiedAllocation(std::shared_ptr<Parameters> params) {
 	// // PT_cuMemAllocManaged CUdeviceptr ** ,size_t* ,unsigned int*
 	std::tuple<PT_cuMemAllocManaged> pvalues = GetParams<PT_cuMemAllocManaged>(params);
 	MemoryRange tmp;
-	tmp.begin = (uint64_t)(std::get<0>(pvalues)[0]);
+	tmp.begin = *((uint64_t *)(std::get<0>(pvalues)[0]));
 	tmp.size = (uint64_t)(std::get<1>(pvalues)[0]);
 	tmp.end = tmp.begin + tmp.size;
 	tmp.transferID = params.get()->GetInstID();

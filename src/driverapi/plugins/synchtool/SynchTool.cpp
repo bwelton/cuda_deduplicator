@@ -112,6 +112,7 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 			mem->PreTransfer();
 			GetLiveTransfer(params);
 		} else if (p->GetID() == ID_cuMemAllocManaged){
+			std::cerr << "[SynchTool::Precall] I am an idiot for not filling this in...." << std::endl;
 			// This is a unified memory address allocation, for now
 			// we assume that these are always live
 		}

@@ -26,7 +26,7 @@ void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<
 	_logFile << "[LoadStoreInst][EntryExit] Inserting entry exit instrimentation into - " << func->getName() << " with ids: ";
 	for (int nmp = 0; nmp < points->size(); nmp++){
 		auto i = (*points)[nmp];
-		if (nmp >= 5)
+		if (nmp >= 10)
 			continue;
 		// if (i->getCalledFunction() == NULL)
 		// 	continue;

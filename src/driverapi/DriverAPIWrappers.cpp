@@ -3802,7 +3802,7 @@ struct gotcha_binding_t gotfuncs[] = {
 	{"cuMemGetInfo",(void *)INTER_cuMemGetInfo,&GOTTCHA_cuMemGetInfo},
 	{"cuMemAlloc",(void *)INTER_cuMemAlloc,&GOTTCHA_cuMemAlloc},
 	{"cuMemAllocPitch",(void *)INTER_cuMemAllocPitch,&GOTTCHA_cuMemAllocPitch},
-	{"cuMemFree",(void *)INTER_cuMemFree,&GOTTCHA_cuMemFree},
+	{"cuMemFree_v2",(void *)INTER_cuMemFree,&GOTTCHA_cuMemFree},
 	{"cuMemGetAddressRange",(void *)INTER_cuMemGetAddressRange,&GOTTCHA_cuMemGetAddressRange},
 	{"cuMemAllocHost",(void *)INTER_cuMemAllocHost,&GOTTCHA_cuMemAllocHost},
 	{"cuMemFreeHost",(void *)INTER_cuMemFreeHost,&GOTTCHA_cuMemFreeHost},

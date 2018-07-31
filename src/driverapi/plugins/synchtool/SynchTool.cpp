@@ -63,14 +63,38 @@ SynchTool::~SynchTool() {
 
 void SynchTool::UnifiedAllocation(std::shared_ptr<Parameters> params) {
 	// // PT_cuMemAllocManaged CUdeviceptr ** ,size_t* ,unsigned int*
-	// std::tuple<PT_cuMemAllocManaged> pvalues = GetParams<PT_cuMemAllocManaged>(params);
-	// MemoryRange tmp;
-	// tmp.begin = (uint64_t)(std::get<0>(pvalues)[0]);
-	// tmp.size = (uint64_t)(std::get<1>(pvalues)[0]);
-	// tmp.end = tmp.begin + tmp.size;
-	// tmp.transferID = params.get()->GetInstID();
-	// tmp.unifiedMemory = 1;
-	// _ranges[tmp.begin] = tmp;
+	std::tuple<PT_cuMemAllocManaged> pvalues = GetParams<PT_cuMemAllocManaged>(params);
+	MemoryRange tmp;
+	tmp.begin = (uint64_t)(std::get<0>(pvalues)[0]);
+	tmp.size = (uint64_t)(std::get<1>(pvalues)[0]);
+	tmp.end = tmp.begin + tmp.size;
+	tmp.transferID = params.get()->GetInstID();
+	tmp.unifiedMemory = 1;
+	tmp.stream = 0;
+	std::stringstream ss;
+	ss << "[SynchTool] Adding Unified Memory Location - " << params.get()->GetName() << " with the following info\n" 
+	   << "\tCPU Starting Address = 0x" << std::hex << tmp.begin << std::dec 
+	   << "\n\tAllocation Size = " << tmp.size 
+	   << "\n\tStream = " << tmp.stream;
+	std::cerr << ss.str() << std::endl; 
+	_dataAccessManager->AddUnifiedMemRange(tmp);
+
+	//_ranges[tmp.begin] = tmp;
+}
+
+void SyncTool::FreeMemoryAllocation(std::shared_ptr<Parameters> params) {
+	std::tuple<PT_cuMemFree> pvalues = GetParams<PT_cuMemFree>(params);
+	MemoryRange tmp;
+	tmp.begin = (uint64_t)(std::get<0>(pvalues)[0]);
+	tmp.end = 0;
+	tmp.transferID = params.get()->GetInstID();
+	tmp.unifiedMemory = 1;
+	tmp.stream = 0;
+	_dataAccessManager->RemoveUnifiedMemoryRange(tmp);
+	std::stringstream ss;
+	ss << "[SynchTool] cudaMemoryFree at call - " << params.get()->GetName() << " with the following info\n" 
+	   << "\tCPU Starting Address = 0x" << std::hex << tmp.begin << std::dec;
+	std::cerr << ss.str() << std::endl; 
 }
 
 void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
@@ -115,9 +139,12 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 		} else if (p->GetID() == ID_cuMemAllocManaged){
 			// Cuda Malloc Mana
 			std::cerr << "[SynchTool::Precall] I am an idiot for not filling this in...." << std::endl;
+			UnifiedAllocation(params);
 			// This is a unified memory address allocation, for now
 			// we assume that these are always live
-		}
+		} else if (p->GetID() == ID_cuMemFree){
+			FreeMemoryAllocation(params);
+		}		
 	}
 
 	return NO_ACTION;

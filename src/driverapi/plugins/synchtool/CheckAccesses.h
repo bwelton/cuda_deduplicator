@@ -9,9 +9,12 @@ public:
 	void AddMemoryTransfer(MemoryRange & range);
 	void SyncCalled();
 	bool IsAddressProtected(uint64_t addr);
+	void AddUnifiedMemRange(MemoryRange & range);
+	void RemoveUnifiedMemoryRange(MemoryRange & range);
 private:
 	std::vector<MemoryRange> _prev;
 	std::vector<MemoryRange> _current;	
+	std::vector<MemoryRange> _unifiedMemory;	
 	bool _doNotCheck;
 };
 

@@ -12,4 +12,9 @@ struct MemoryRange {
 			return true;
 		return false;
 	}
+	bool DoesRangeMatch(MemoryRange & range) {
+		if (range.begin == begin && unifiedMemory == 1)
+			return true;
+		return false;
+	}
 };

@@ -7,6 +7,25 @@ void CheckAccesses::AddMemoryTransfer(MemoryRange & range) {
 	_doNotCheck = false;
 }
 
+void CheckAccesses::AddUnifiedMemRange(MemoryRange & range) {
+	_doNotCheck = true;
+	_unifiedMemory.push_back(range);
+	_doNotCheck = false;
+}
+void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
+	_doNotCheck = true;
+	int removePos = -1;
+	for (int i = 0; i < _unifiedMemory.size(); i++){
+		if (_unifiedMemory[i].DoesRangeMatch(range)){
+			removePos = i;
+			break;
+		}
+	}
+	if (removePos >= 0)
+		_unifiedMemory.erase(_unifiedMemory.begin() + removePos);
+	_doNotCheck = false;
+
+}
 void CheckAccesses::SyncCalled() {
 	_prev = _current;
 }
@@ -17,5 +36,8 @@ bool CheckAccesses::IsAddressProtected(uint64_t addr) {
 	for (auto i : _prev)
 		if(i.IsInRange(addr))
 			return true;
+	for (auto i : _unifiedMemory)
+		if(i.IsInRange(addr))
+			return true;		
 	return false;
 }

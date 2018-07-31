@@ -1,4 +1,4 @@
-add_compile_options(-O0 -g -mno-vsx)
+add_compile_options(-O3 -g -mno-vsx)
 add_compile_options(-mno-vsx)
 add_library(SynchTool SHARED "SynchTool.cpp" "CheckAccesses.cpp" "OutputWriter.cpp" "LoadStoreDriver.cpp")
 target_link_libraries(SynchTool ${Boost_LIBRARIES})

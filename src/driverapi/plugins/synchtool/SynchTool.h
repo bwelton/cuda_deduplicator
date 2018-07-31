@@ -51,6 +51,7 @@ public:
 	PluginReturn Postcall(std::shared_ptr<Parameters> params);
 	void UnifiedAllocation(std::shared_ptr<Parameters> params);
 	void GetLiveTransfer(std::shared_ptr<Parameters> params);
+	void FreeMemoryAllocation(std::shared_ptr<Parameters> params);
 private:
 	std::shared_ptr<LogInfo> _sync_log;
 	std::map<uint64_t, MemoryRange> _ranges;

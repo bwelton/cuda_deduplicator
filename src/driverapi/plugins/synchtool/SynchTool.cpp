@@ -82,7 +82,7 @@ void SynchTool::UnifiedAllocation(std::shared_ptr<Parameters> params) {
 	//_ranges[tmp.begin] = tmp;
 }
 
-void SyncTool::FreeMemoryAllocation(std::shared_ptr<Parameters> params) {
+void SynchTool::FreeMemoryAllocation(std::shared_ptr<Parameters> params) {
 	std::tuple<PT_cuMemFree> pvalues = GetParams<PT_cuMemFree>(params);
 	MemoryRange tmp;
 	tmp.begin = (uint64_t)(std::get<0>(pvalues)[0]);

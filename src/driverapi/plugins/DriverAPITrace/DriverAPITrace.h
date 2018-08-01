@@ -45,6 +45,7 @@ struct OutputFile {
 
 class CallInstance{
 public:
+	CallInstance();
 	CallInstance(uint64_t callId, char * name);
 	~CallInstance();
 	void InsertInstance(uint64_t stackID, double time);

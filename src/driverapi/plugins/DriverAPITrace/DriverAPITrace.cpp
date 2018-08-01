@@ -1,6 +1,7 @@
 #include "DriverAPITrace.h"
 std::shared_ptr<DriverAPITracer> __DriverTracer;
 int exited = 0;
+CallInstance::CallInstance(){}
 CallInstance::CallInstance(uint64_t callid, char * name) {
 	_name = std::string(name);
 	_callId = callid;
@@ -38,7 +39,7 @@ APITracker::APITracker() {}
 APITracker::~APITracker() {}
 void APITracker::InsertNewEntry(uint64_t callid, uint64_t stackID, char * name, double time) {
 	if (_calls.find(callid) == _calls.end())
-		_calls[callid] = CallInstance(callid, name);
+		_calls.insert(std::make_pair(callid CallInstance(callid, name)));
 	_calls[callid].InsertInstance(stackID, time);
 
 }

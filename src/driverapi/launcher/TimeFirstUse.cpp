@@ -100,31 +100,30 @@ void TimeFirstUse::InsertSyncCallNotifier() {
 	InsertSyncNotifierSnippet(_libcudaSync, INTERNAL_SYNC_LS);
 }
 
-void TimeFirstUse::InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {
+void TimeFirstUse::InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points, uint64_t id) {
 	std::string libname = func->getModule()->getObject()->pathName();
 	_logFile << "[TimeFirstUse][LoadStoreSnippet] Inserting load store instrimentation into - " << func->getName() << "," << func->getModule()->getObject()->pathName() << "\n";
 	_instTracker.RecordInstrimentation(LOAD_STORE_INST, func, points);
 	for (auto i : *points) {
 		uint64_t libOffsetAddr = 0;
-		uint64_t id = 0;
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
-		if (_dynOps.GetFileOffset(_addrSpace, i, libOffsetAddr))
-			id = _binLoc.StorePosition(libname, libOffsetAddr);
-		else
-			id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
+		// if (_dynOps.GetFileOffset(_addrSpace, i, libOffsetAddr))
+		// 	id = _binLoc.StorePosition(libname, libOffsetAddr);
+		// else
+		// 	id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
 		std::vector<BPatch_snippet*> recordArgs;
 		BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
 		recordArgs.push_back(loadAddr);
 		recordArgs.push_back(new BPatch_constExpr(id));
 		_logFile << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec <<  " in function " << func->getName() << std::endl;
-		if (_debugPrinting < 40 || id == 4988 || id == 4989){
-			std::cerr << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec <<  " in function " << func->getName() << std::endl;
-			//_logFile << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec <<  " in function " << func->getName() << std::endl;
-			_debugPrinting++;
-			// if (id == 4989)
-			//  	assert(id != 4989);
-		}
+		// if (_debugPrinting < 40 || id == 4988 || id == 4989){
+		// 	std::cerr << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec <<  " in function " << func->getName() << std::endl;
+		// 	//_logFile << "[DEBUGEMERG] Inst point " << id << " Original Address: " << std::hex << i->getAddress() << std::dec <<  " in function " << func->getName() << std::endl;
+		// 	_debugPrinting++;
+		// 	// if (id == 4989)
+		// 	//  	assert(id != 4989);
+		// }
 		BPatch_funcCallExpr recordAddrCall(*_recordMemAccess, recordArgs);
 		if (_addrSpace->insertSnippet(recordAddrCall,singlePoint) == NULL) {
 			std::cerr << "[TimeFirstUse][LoadStoreSnippet]\t\tCould not insert load store instrimentation into " << id << " in function " << func->getName() << std::endl;
@@ -133,8 +132,10 @@ void TimeFirstUse::InsertLoadStoreSnippets(BPatch_function * func, std::vector<B
 }
 
 
-void TimeFirstUse::InsertTimeFirstUserimentation(std::vector<StackPoint> LSpoints) {
-	for (auto i : LSpoints) {
+void TimeFirstUse::InsertTimeFirstUserimentation(std::map<uint64_t, std::vector<StackPoint> > LSpoints) {
+	for (auto tf : LSpoints) {
+		auto i = tf.second;
+		auto ident = tf.first;
 		std::vector<BPatch_function *> funcs;
 		funcs = _dynOps.FindFuncByStackPoint(_addrSpace, i.libname, i.libOffset, false);
 		assert(funcs.size() >= 1);
@@ -152,13 +153,14 @@ void TimeFirstUse::InsertTimeFirstUserimentation(std::vector<StackPoint> LSpoint
 		axs.insert(BPatch_opStore);
 		std::vector<BPatch_point*> * loadsAndStores = i->findPoint(axs);
 		std::vector<BPatch_point *> * tmpPoints = new std::vector<BPatch_point *>();
+		std::vector<uint64_t> idents;
 		for (auto p : *loadsAndStores) {
 			if (p->getAddress() == i.libOffset)
 				tmpPoints->push_back(p);
 		}
-		assert(tmpPoints->size() > 0);
+		assert(tmpPoints->size() == 1);
 		if (_instTracker.ShouldInstriment(i, tmpPoints, LOAD_STORE_INST)) {
-			InsertLoadStoreSnippets(i, tmpPoints);
+			InsertLoadStoreSnippets(i, tmpPoints, ident);
 		}		
 	}
 }
@@ -169,8 +171,8 @@ void TimeFirstUse::FixLSStackFiles() {
 	// LS_stackkey.bin -> LS_stackkey.txt
 	std::cerr << "Runing onetime code on exit of LS" << std::endl;
 	ReadLoadStoreFiles tmp(&_binLoc);
-	tmp.OutputTraceKey(std::string("LS_trace.bin"), std::string("LS_tracekey.txt"));
-	tmp.CreateStackKey(std::string("LS_stackkey.bin"), std::string("LS_stackkey.txt"));
+	//tmp.OutputTraceKey(std::string("FI_trace.bin"), std::string("FI_tracekey.txt"));
+	tmp.CreateStackKey(std::string("FI_stackkey.bin"), std::string("FI_stackkey.txt"));
 
 }
 
@@ -193,9 +195,9 @@ bool TimeFirstUse::InstrimentAllModules(bool finalize, std::vector<uint64_t> & s
 		return true;
 	assert(ret.size() > 0);
 
-	std::vector<StackPoint> toInstriment;
-	for (auto i : ret)
-		toInstriment.insert(toInstriment.end(), i.second.begin(), i.second.end());
+	// std::vector<StackPoint> toInstriment;
+	// for (auto i : ret)
+	// 	toInstriment.insert(toInstriment.end(), i.second.begin(), i.second.end());
 
 	std::vector<BPatch_function *> all_functions;
 	_img->getProcedures(all_functions);
@@ -204,7 +206,7 @@ bool TimeFirstUse::InstrimentAllModules(bool finalize, std::vector<uint64_t> & s
 	WrapEntryAndExit(syncStacks);
 	InsertSyncCallNotifier();
 	//InsertSyncCallNotifier(points);
-	InsertTimeFirstUserimentation(toInstriment);
+	InsertTimeFirstUserimentation(ret);
 	_runOneTime =true;
 	if (finalize)
 		Finalize();

@@ -174,7 +174,7 @@ double TimeApplications::GetFirstUses(std::string wrapperDef, std::vector<std::t
 	std::chrono::duration<double> diff = stop-start;
 	std::cerr << "[TIMEAPP] Application runtime with instrimentation - " << diff.count() << std::endl;
 
-	_firstUses = proc.GetFirstUse();
+	//_firstUses = proc.GetFirstUse();
 	return diff.count();	
 }
 

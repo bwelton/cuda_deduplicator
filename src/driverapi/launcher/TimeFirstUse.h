@@ -58,16 +58,16 @@ using namespace SymtabAPI;
 #define INTERNAL_SYNC_LS 0x2B7E28
 
 
-namespace std
-{
-    template<> struct less<BPatch_object::Region>
-    {
-       bool operator() (const BPatch_object::Region& lhs, const BPatch_object::Region& rhs) const
-       {
-           return (uint64_t)lhs.base < (uint64_t)rhs.base;
-       }
-    };
-}
+// namespace std
+// {
+//     template<> struct less<BPatch_object::Region>
+//     {
+//        bool operator() (const BPatch_object::Region& lhs, const BPatch_object::Region& rhs) const
+//        {
+//            return (uint64_t)lhs.base < (uint64_t)rhs.base;
+//        }
+//     };
+// }
 
 
 //class DynOpsClass;
@@ -86,8 +86,8 @@ public:
 	void WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStacks);
 	void InsertSyncNotifierSnippet(BPatch_function * func, uint64_t offset);
 	void InsertSyncCallNotifier();
-	void InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);
-	void InsertTimeFirstUserimentation();
+	void InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points, uint64_t id);
+	void InsertTimeFirstUserimentation(std::map<uint64_t, std::vector<StackPoint> > LSpoints);
 	void InsertGotchaEntries();
 private:
 	void Setup();

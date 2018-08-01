@@ -63,6 +63,7 @@ public:
 	Dyninst::InstructionAPI::Instruction::Ptr FindInstructionAtPoint(BPatch_point * point);
 	void SetupPowerMap(BPatch_addressSpace * addr);
 	BPatch_function * GetPOWERFunction(BPatch_function * function);
+	std::vector<BPatch_function> FindFunctionsByLibnameOffset(BPatch_addressSpace * aspace, std::string libname, uint64_t offset, bool exact);
 private:
 	std::map<uint64_t, BPatch_function *> _powerFuncmap;
 	bool init;

@@ -93,6 +93,22 @@ int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_fu
 	return 1;
 }
 
+std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_addressSpace * aspace, std::string libname, uint64_t offset, bool exact) {
+	std::vector<BPatch_function *> ret;
+	if (aspace == NULL) 
+		return -1;
+	BPatch_image * img = aspace->getImage();
+	BPatch_object * obj = FindObjectByName(aspace, libname, exact);
+	
+	if (obj == NULL)
+		return -1;
+
+	img->findFunction(obj->fileOffsetToAddr(offset), ret);
+
+	return ret;
+}
+
+
 // Hack to get around point->getInsnAtPoint() not wokring
 Dyninst::InstructionAPI::Instruction::Ptr DynOpsClass::FindInstructionAtPoint(BPatch_point * point) {
 	std::vector<std::pair<Dyninst::InstructionAPI::Instruction::Ptr, Dyninst::Address> > instructionVector;

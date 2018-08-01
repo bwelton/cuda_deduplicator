@@ -51,6 +51,8 @@ public:
 	void ReturnToTerminal();
 	double RunWithStackTracing();
 	double RunWithDriverAPITrace();
+	double GetFirstUses(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras,
+				std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks);
 	std::map<uint64_t, StackPoint> _firstUses;
 private:
 	int terminal_stdout;

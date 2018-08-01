@@ -40,6 +40,7 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	_launched = true;
 	_appProc = dynamic_cast<BPatch_process*>(_addrSpace);
 	_loadStore.reset(new LoadStoreInst(_addrSpace, _addrSpace->getImage()));
+	_timeFirstUse.reset(new TimeFirstUse(_addrSpace, _addrSpace->getImage()));
 	_stackTracer = new StacktraceInst(_addrSpace, _addrSpace->getImage());
 	return handle;
 }
@@ -76,6 +77,7 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 	_loadStore.reset(new LoadStoreInst(_addrSpace, app->getImage()));
 	_appBE = dynamic_cast<BPatch_binaryEdit*>(app);
 	_stackTracer = new StacktraceInst(_addrSpace, _addrSpace->getImage());
+	_timeFirstUse.reset(new LoadStoreInst(_addrSpace, _addrSpace->getImage()));
 	return handle;
 }
 
@@ -376,6 +378,33 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 
 	_loadStore->SetWrappedFunctions(wrappedFunctionNames);
 	_loadStore->InstrimentAllModules(true, skips, instUntil, synchFunctions, points,syncStacks);
+	_WithLoadStore = true;
+	//_appProc->terminateExecution();
+	//exit(0);
+}
+
+void ProcessController::InsertFirstUse(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
+	// Check this....
+	//LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStubLib.so"));
+	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeFirstUse.so"));
+	for (auto i : syncStacks) {
+		for (auto z : i.second.GetStackpoints()) {
+		 	if (z.libname.find(".so") != std::string::npos)
+		 		LoadWrapperLibrary(z.libname);
+		}
+	}
+	std::vector<std::string> synchFunctions;
+	std::vector<std::string> wrappedFunctionNames;
+	for (auto i : _wrapFunctions)
+		wrappedFunctionNames.push_back(std::get<1>(i));
+
+	for (auto i : points) {
+		synchFunctions.push_back(i.funcName);
+		//synchFunctions.push_back(i.fname);
+	}
+
+	_timeFirstUse->SetWrappedFunctions(wrappedFunctionNames);
+	_timeFirstUse->InstrimentAllModules(true, skips, instUntil, synchFunctions, points,syncStacks);
 	_WithLoadStore = true;
 	//_appProc->terminateExecution();
 	//exit(0);

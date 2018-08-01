@@ -121,6 +121,20 @@ void SyncTesting::Run() {
 		std::cerr << "[Base] We are setting up syncs checking with " << stackSyncs.size() << std::endl;
 		//_model.AddFirstUses(base._firstUses);
 	}
+	{	
+		std::vector<std::string> pluginNames = {"libTimeFirstUse"};
+		CreatePluginFile(pluginNames);
+		std::string def(WRAPPER_DEF);
+		//std::string def("");
+		TimeApplications base(_vm);
+		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
+		std::map<uint64_t, StackRecord> stackSyncs = _model.GetTimingStackRecords();
+
+		//extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
+		double time = base.GetFirstUses(def, extras, timingList, stackSyncs);
+		std::cerr << "[Base] We are setting up syncs checking with " << stackSyncs.size() << std::endl;
+		//_model.AddFirstUses(base._firstUses);
+	}
 	//_model.FixLSStackFiles();
 	// We are done running. Perform Analysis.
 	//_model.FinalProcessing();

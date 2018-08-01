@@ -47,6 +47,7 @@
 #include "LoadStoreInst.h"
 #include "StacktraceInst.h"
 #include "StackStorage.h"
+#include "TimeFirstUse.h"
 #define INTERNAL_SYNC_C 0x2B7E28
 using namespace Dyninst;
 using namespace ParseAPI;
@@ -60,6 +61,7 @@ public:
 	BPatch_addressSpace * LaunchProcess();
 	BPatch_addressSpace * LaunchProcessInstrimenter(std::string WrapperDef);
 	BPatch * GetBPatch();
+	void InsertFirstUse(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks);
 	void Run();
 	void RunWithTimeout(int timeout);
 	void InsertTimers(std::vector<StackPoint> points);
@@ -88,6 +90,7 @@ public:
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
 	std::shared_ptr<LoadStoreInst> _loadStore;
+	std::shared_ptr<TimeFirstUse> _timeFirstUse;
 	LogInfo * _log;
 	double _instrimentationOverhead;
 	boost::program_options::variables_map _vm;

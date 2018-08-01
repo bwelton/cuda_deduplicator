@@ -149,6 +149,34 @@ double TimeApplications::RunWithLSInstrimentation(std::string wrapperDef, std::v
 	_firstUses = proc.GetFirstUse();
 	return diff.count();	
 }
+double TimeApplications::GetFirstUses(std::string wrapperDef, std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras,
+				std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
+	LogInfo log(std::string("FI_TimeLog.txt"), std::string("[TimeLog]"), true);
+	ProcessController proc(_vm, &log);
+	proc.DontFinalize();
+	proc.LaunchProcess();
+	for (auto i : extras)
+		proc.InsertWrapperDef(std::get<0>(i), std::get<1>(i), std::get<2>(i), std::get<3>(i), std::get<4>(i));
+	proc.InsertInstrimentation(std::string(""));
+	//proc.InsertInstrimentation(wrapperDef);
+	std::vector<uint64_t> skips;
+	uint64_t total_functions = 0;
+	proc.InsertFirstUse(skips, total_functions, points, syncStacks);
+	proc.ContinueExecution();
+	auto start = std::chrono::high_resolution_clock::now();
+	while (!proc.IsTerminated()){
+		proc.Run();
+		if (proc.IsStopped()){
+			proc.ContinueExecution();
+		}
+	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> diff = stop-start;
+	std::cerr << "[TIMEAPP] Application runtime with instrimentation - " << diff.count() << std::endl;
+
+	_firstUses = proc.GetFirstUse();
+	return diff.count();	
+}
 
 
 double TimeApplications::RunWithBreakpoints(std::string wrapperDef, 

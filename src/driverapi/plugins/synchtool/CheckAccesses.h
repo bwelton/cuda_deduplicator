@@ -2,6 +2,9 @@
 #include <vector>
 #include <memory>
 #include "MemoryRange.h"
+#include <boost/icl/interval_set.hpp>
+#include <boost/icl/interval.hpp>
+using namespace boost::icl;
 
 class CheckAccesses {
 public:
@@ -16,6 +19,7 @@ private:
 	std::vector<MemoryRange> _current;	
 	std::vector<MemoryRange> _unifiedMemory;	
 	bool _doNotCheck;
+	interval_set<uint64_t> _memoryRanges;
 };
 
 typedef std::shared_ptr<CheckAccesses> CheckAccessesPtr;

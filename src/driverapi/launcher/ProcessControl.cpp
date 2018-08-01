@@ -113,7 +113,7 @@ void ProcessController::InsertAPICapture() {
 	assert(1 == ops.FindFuncByName(_addrSpace, main, std::string("main")));
 	assert(1 == ops.FindFuncByName(_addrSpace, defineBinders, std::string("DefineBinders")));
 	std::vector<BPatch_point*> * entryPoints = main->findPoint(BPatch_locEntry);
-	main = _dynOps.GetPOWERFunction(main);
+	main = ops.GetPOWERFunction(main);
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*defineBinders, recordArgs);
 	assert(_addrSpace->insertSnippet(entryExpr,*entryPoints) != NULL);

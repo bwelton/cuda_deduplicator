@@ -28,7 +28,7 @@ void SyncTesting::CaptureDriverCalls() {
 	{
 		double time;
 		TimeApplications base(_vm);
-		std::vector<std::string> pluginNames = {"libDriverTrace"};
+		std::vector<std::string> pluginNames = {"libDriverAPITrace"};
 		CreatePluginFile(pluginNames);
 		std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
 		std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
@@ -52,7 +52,7 @@ void SyncTesting::Run() {
 		_model.AddExecutionTime(time);
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	}
-	
+	CaptureDriverCalls();
 	
 	//RunWithCUPTI();
 

@@ -54,6 +54,8 @@ std::string APITracker::Print() {
 }
 
 DriverAPITracer::DriverAPITracer() {
+	std::cerr << "[DriverAPITracer] Tracer has been enabled\n";
+	
 	_outFile.reset(new OutputFile(std::string("CS_Summary.txt")));
 	_keyFile.reset(new StackKeyWriter(fopen("CS_StackFile.txt","w")));
 	_tracer.reset(new APITracker());

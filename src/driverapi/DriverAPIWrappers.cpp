@@ -4450,11 +4450,14 @@ EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned short,size_t,size_t)> 
 
 EXTERN_FLAG std::function<int(CUdeviceptr,size_t,unsigned int,size_t,size_t)> Bound_cuMemsetD2D32_v2;
 
-
+bool _setBindings = false;
 extern "C" void DefineBinders() {
+	if (_setBindings == true)
+		return;
 	gotcha_set_priority("cuda/driverapibinders", 1);
 	int result = gotcha_wrap(gotfuncs, NUM_GOTFUNCS, "cuda/driverapibinders");
 	assert(result == GOTCHA_SUCCESS);
+	_setBindings = true;
 	std::cerr << "[DefineBinders] In define binders...." << std::endl;
 	int (*TMP_PTR_cuGetErrorString)(CUresult,const char * *) = (int(*)(CUresult,const char * *)) gotcha_get_wrappee(GOTTCHA_cuGetErrorString);
 	PTR_ORIGINAL_cuGetErrorString = (void *) gotcha_get_wrappee(GOTTCHA_cuGetErrorString);

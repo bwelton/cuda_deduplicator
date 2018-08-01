@@ -1,4 +1,5 @@
 #include "CheckAccesses.h"
+#include <iostream>
 CheckAccesses::CheckAccesses() : _doNotCheck(false) {};
 
 void CheckAccesses::AddMemoryTransfer(MemoryRange & range) {

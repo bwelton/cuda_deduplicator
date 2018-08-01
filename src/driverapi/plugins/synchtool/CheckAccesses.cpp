@@ -10,6 +10,7 @@ void CheckAccesses::AddMemoryTransfer(MemoryRange & range) {
 void CheckAccesses::AddUnifiedMemRange(MemoryRange & range) {
 	_doNotCheck = true;
 	_unifiedMemory.push_back(range);
+	_memoryRanges += interval<uint64_t>::closed(range.StartAddr(), range.EndAddr());
 	_doNotCheck = false;
 }
 void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
@@ -21,8 +22,18 @@ void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
 			break;
 		}
 	}
+	std::cerr << "Range interval before removal of range - " << interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()) << std::endl;
+	for(auto i : _memoryRanges)
+		std::cerr << i << std::endl;
+
+	_memoryRanges.erase(interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()));
+	std::cerr << "Range interval after removal of range - " << interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()) << std::endl;
+	for(auto i : _memoryRanges)
+		std::cerr << i << std::endl;
+	
 	if (removePos >= 0)
 		_unifiedMemory.erase(_unifiedMemory.begin() + removePos);
+
 	_doNotCheck = false;
 
 }

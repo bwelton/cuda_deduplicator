@@ -6,7 +6,12 @@ struct MemoryRange {
 	uint64_t transferID;
 	uint64_t unifiedMemory;
 	int stream;
-
+	uint64_t StartAddr() {
+		return begin;
+	}
+	uint64_t EndAddr() {
+		return begin+size;
+	}
 	bool IsInRange(uint64_t addr) {
 		if (addr >= begin && addr <= end)
 			return true;

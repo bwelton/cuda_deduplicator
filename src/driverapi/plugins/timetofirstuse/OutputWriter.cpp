@@ -12,7 +12,7 @@ void OutputWriter::RecordAccess(uint64_t id, std::vector<uint64_t> & currentStac
 		_stackKeyFile->Write(_curPos, currentStack);
 		_prevStacks[hash] = _curPos;
 	}
-	_accessFile->Write(id, _prevStacks[hash]);
+	_accessFile->Write(id, _prevStacks[hash],time);
 }
 
 uint64_t OutputWriter::HashStack(std::vector<uint64_t> & currentStack) {

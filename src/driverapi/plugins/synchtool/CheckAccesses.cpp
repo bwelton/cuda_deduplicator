@@ -12,9 +12,9 @@ void CheckAccesses::AddUnifiedMemRange(MemoryRange & range) {
 	_doNotCheck = true;
 	_unifiedMemory.push_back(range);
 	_memoryRanges += interval<uint64_t>::closed(range.StartAddr(), range.EndAddr());
-	std::cerr << "Range interval after adding range - " << interval<uint64_t>::closed(range.StartAddr(), range.EndAddr()) << std::endl;
-	for(auto i : _memoryRanges)
-		std::cerr << i << std::endl;
+	//std::cerr << "Range interval after adding range - " << interval<uint64_t>::closed(range.StartAddr(), range.EndAddr()) << std::endl;
+	// for(auto i : _memoryRanges)
+	// 	std::cerr << i << std::endl;
 	_doNotCheck = false;
 }
 void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
@@ -26,14 +26,14 @@ void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
 			break;
 		}
 	}
-	std::cerr << "Range interval before removal of range - " << interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()) << std::endl;
-	for(auto i : _memoryRanges)
-		std::cerr << i << std::endl;
+	// std::cerr << "Range interval before removal of range - " << interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()) << std::endl;
+	// for(auto i : _memoryRanges)
+	// 	std::cerr << i << std::endl;
 
 	_memoryRanges.erase(interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()));
-	std::cerr << "Range interval after removal of range - " << interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()) << std::endl;
-	for(auto i : _memoryRanges)
-		std::cerr << i << std::endl;
+	// std::cerr << "Range interval after removal of range - " << interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()) << std::endl;
+	// for(auto i : _memoryRanges)
+	// 	std::cerr << i << std::endl;
 	
 	if (removePos >= 0)
 		_unifiedMemory.erase(_unifiedMemory.begin() + removePos);
@@ -51,8 +51,10 @@ bool CheckAccesses::IsAddressProtected(uint64_t addr) {
 	for (auto i : _prev)
 		if(i.IsInRange(addr))
 			return true;
-	for (auto i : _unifiedMemory)
-		if(i.IsInRange(addr))
-			return true;		
+	if (contains(_memoryRanges,addr) == true)
+		return true;
+	//for (auto i : _unifiedMemory)
+	//	if(i.IsInRange(addr))
+	//		return true;		
 	return false;
 }

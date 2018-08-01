@@ -159,8 +159,8 @@ void TimeFirstUse::InsertTimeFirstUserimentation(std::map<uint64_t, std::vector<
 				tmpPoints->push_back(p);
 		}
 		assert(tmpPoints->size() == 1);
-		if (_instTracker.ShouldInstriment(i, tmpPoints, LOAD_STORE_INST)) {
-			InsertLoadStoreSnippets(i, tmpPoints, ident);
+		if (_instTracker.ShouldInstriment(chosenOne, tmpPoints, LOAD_STORE_INST)) {
+			InsertLoadStoreSnippets(chosenOne, tmpPoints, ident);
 		}		
 	}
 }

@@ -58,6 +58,7 @@ public:
 	bool FindElement(uint64_t genId, uint64_t & startPos, std::vector<TimingData> & array);
 	void ReadTimingStacks(std::string keyFile, std::string timelineFile);
 	std::map<uint64_t,uint64_t> MatchStackTraces(std::map<uint64_t, StackRecord> & a, std::map<uint64_t, StackRecord> & b);
+	void WriteStackFile(std::string stackFile, std::string fileName);
 private:
 	double _fastestExecTime;
 	uint64_t _capturedSyncs;

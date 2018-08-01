@@ -1,7 +1,7 @@
 #pragma once
 #include "StackPoint.h"
 #include "SymbolLookup.h"
-
+#include <sstream> 
 #define DEBUG_STACKRECORD 1
 
 typedef std::map<std::string, std::shared_ptr<SymbolLookup> > SymbolMap;
@@ -57,6 +57,7 @@ public:
 	void AddStackRecord(uint64_t pos);
 	void PrintStack();
 	void PrintStack(std::ofstream & outStream);
+	void PrintStack(std::stringstream & outStream);
 	//void AddTimingData(uint64_t start, uint64_t len, double time);
 	StackPoint GetFirstCudaCall();
 	uint64_t GetFirstLibDynRTPosition();

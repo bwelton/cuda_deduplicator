@@ -534,6 +534,29 @@ void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelin
 	// std::cerr << "[PerformanceModel] Captured " << total << " synchronizations from timing " << std::endl;
 }
 
+void PerformanceModel::WriteStackFile(std::string stackFile, std::string fileName) {
+
+	FILE * keyFile = fopen(stackFile.c_str(), "rb");
+	assert(keyFile != NULL);
+
+	StackKeyReader reader(keyFile);
+	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
+	std::map<uint64_t, StackRecord> tmpStorage;
+	for (auto & i : ret)
+		tmpStorage[i.first] = StackRecord(i.first, i.second);
+
+	ExtractLineInfo(tmpStorage);
+	std::stringstream ss;
+
+	for (auto i : tmpStorage) {
+		i.second.PrintStack(ss);
+		ss << std::endl;
+	}
+	FILE * out = fopen(fileName.c_str(), "w");
+	fprintf(out, "%s\n",ss.str().c_str());
+	fclose(out);
+}
+
 void PerformanceModel::ReadStackFile(std::string key, std::string timeline) {
 	std::cerr << "Reading stack file: " << timeline << std::endl;
 	std::cerr << "Reading key file: " << key << std::endl;

@@ -37,7 +37,8 @@ void SyncTesting::CaptureDriverCalls() {
 		//base.ReturnToTerminal();
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	}
-
+	// Write out the stack values that were saved to CS_StackFile.txt
+	_model.WriteStackFile(std::string("CS_StackFile.txt"), std::string("CS_HumanStacks.txt"));
 }
 
 void SyncTesting::Run() {

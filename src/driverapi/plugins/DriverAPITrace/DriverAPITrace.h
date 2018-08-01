@@ -80,7 +80,7 @@ private:
 	std::shared_ptr<StackKeyWriter> _keyFile;
 };
 
-#define PLUG_BUILD_FACTORY() \
+#define PLUG_BUILD_FACTORY \
 	if (__DriverTracer.get() == NULL) { \
 		__DriverTracer.reset(new DriverAPITracer()); \
 	} 

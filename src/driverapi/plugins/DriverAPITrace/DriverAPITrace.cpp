@@ -90,7 +90,7 @@ extern "C"{
 
 void init(std::vector<std::string> & cmd_list) {
 	exited = 0;
-	PLUG_BUILD_FACTORY(cmd_list)
+	PLUG_BUILD_FACTORY
 }
 
 PluginReturn Precall(std::shared_ptr<Parameters> params){

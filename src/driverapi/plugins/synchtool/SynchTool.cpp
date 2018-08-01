@@ -158,6 +158,7 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 			UnifiedAllocation(params);	
 		}
 	}
+	return NO_ACTION;
 }
 
 extern "C"{

@@ -39,7 +39,7 @@ APITracker::APITracker() {}
 APITracker::~APITracker() {}
 void APITracker::InsertNewEntry(uint64_t callid, uint64_t stackID, char * name, double time) {
 	if (_calls.find(callid) == _calls.end())
-		_calls.insert(std::make_pair(callid CallInstance(callid, name)));
+		_calls.insert(std::make_pair(callid, CallInstance(callid, name)));
 	_calls[callid].InsertInstance(stackID, time);
 
 }

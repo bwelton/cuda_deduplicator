@@ -12,6 +12,9 @@ void CheckAccesses::AddUnifiedMemRange(MemoryRange & range) {
 	_doNotCheck = true;
 	_unifiedMemory.push_back(range);
 	_memoryRanges += interval<uint64_t>::closed(range.StartAddr(), range.EndAddr());
+	std::cerr << "Range interval after adding range - " << interval<uint64_t>::closed(range.StartAddr(), range.EndAddr()) << std::endl;
+	for(auto i : _memoryRanges)
+		std::cerr << i << std::endl;
 	_doNotCheck = false;
 }
 void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {

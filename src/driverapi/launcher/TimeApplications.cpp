@@ -23,6 +23,27 @@ void TimeApplications::ReturnToTerminal() {
 	dup2(terminal_stderr, fileno(stderr));
 }
 
+
+double TimeApplications::RunWithDriverAPITrace() {
+	LogInfo log(std::string(""), std::string(""), false);
+	ProcessController proc(_vm, &log);
+	//proc.DontFinalize();
+	proc.LaunchProcess();
+	proc.InsertAPICapture();
+	//proc.InsertStacktracing();
+	assert(proc.ContinueExecution() == true);
+	auto start = std::chrono::high_resolution_clock::now();
+	while (!proc.IsTerminated()){
+		proc.Run();
+		assert(proc.ContinueExecution() == true);
+	}
+	auto stop = std::chrono::high_resolution_clock::now();	
+	std::chrono::duration<double> diff = stop-start;
+	std::cerr << "[TIMEAPP] Application runtime with stacktracing - " << diff.count() << std::endl;
+	return diff.count();
+}
+
+
 double TimeApplications::RunWithStackTracing() {
 	LogInfo log(std::string(""), std::string(""), false);
 	ProcessController proc(_vm, &log);

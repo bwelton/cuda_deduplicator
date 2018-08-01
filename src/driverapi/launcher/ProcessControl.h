@@ -84,6 +84,7 @@ public:
 	void DontFinalize();
 	void InsertStacktracing();
 	std::map<uint64_t, StackPoint> GetFirstUse();
+	void InsertAPICapture();
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
 	std::shared_ptr<LoadStoreInst> _loadStore;

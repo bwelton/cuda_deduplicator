@@ -50,6 +50,7 @@ public:
 	void RedirectOutToFile(std::string filename);
 	void ReturnToTerminal();
 	double RunWithStackTracing();
+	double RunWithDriverAPITrace();
 	std::map<uint64_t, StackPoint> _firstUses;
 private:
 	int terminal_stdout;

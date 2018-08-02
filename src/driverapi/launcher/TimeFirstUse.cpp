@@ -156,7 +156,7 @@ void TimeFirstUse::InsertTimeFirstUserimentation(std::map<uint64_t, std::vector<
 		std::vector<BPatch_point *> * tmpPoints = new std::vector<BPatch_point *>();
 		std::vector<uint64_t> idents;
 		for (auto p : *loadsAndStores) {
-			if (p->getAddress() == i.libOffset)
+			if ((uint64_t)p->getAddress() == i.libOffset)
 				tmpPoints->push_back(p);
 		}
 		assert(tmpPoints->size() == 1);

@@ -144,7 +144,7 @@ void TimeFirstUse::InsertTimeFirstUserimentation(std::map<uint64_t, std::vector<
 		// Power BS
 		if (funcs.size() > 1){ 
 			for (auto nm : funcs) {
-				if (((uint64_t)chosenOne->getAddress()) +0x8 == (uint64_t)nm->getAddress())
+				if (((uint64_t)chosenOne->getBaseAddr()) +0x8 == (uint64_t)nm->getBaseAddr())
 					chosenOne = nm;
 			}
 		}

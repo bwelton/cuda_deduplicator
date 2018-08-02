@@ -138,7 +138,7 @@ void TimeFirstUse::InsertTimeFirstUserimentation(std::map<uint64_t, std::vector<
 		auto i = tf.second[0];
 		auto ident = tf.first;
 		std::vector<BPatch_function *> funcs;
-		funcs = _dynOps.FindFuncByStackPoint(_addrSpace, i.libname, i.libOffset, false);
+		funcs = _dynOps.FindFunctionsByLibnameOffset(_addrSpace, i.libname, i.libOffset, false);
 		assert(funcs.size() >= 1);
 		BPatch_function * chosenOne = funcs[0];
 		// Power BS

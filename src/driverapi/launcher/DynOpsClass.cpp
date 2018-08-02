@@ -96,12 +96,12 @@ int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_fu
 std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_addressSpace * aspace, std::string libname, uint64_t offset, bool exact) {
 	std::vector<BPatch_function *> ret;
 	if (aspace == NULL) 
-		return -1;
+		return ret;
 	BPatch_image * img = aspace->getImage();
 	BPatch_object * obj = FindObjectByName(aspace, libname, exact);
 	
 	if (obj == NULL)
-		return -1;
+		return ret;
 
 	img->findFunction(obj->fileOffsetToAddr(offset), ret);
 

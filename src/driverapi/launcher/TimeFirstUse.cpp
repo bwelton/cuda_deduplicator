@@ -152,7 +152,7 @@ void TimeFirstUse::InsertTimeFirstUserimentation(std::map<uint64_t, std::vector<
 		std::set<BPatch_opCode> axs;
 		axs.insert(BPatch_opLoad);
 		axs.insert(BPatch_opStore);
-		std::vector<BPatch_point*> * loadsAndStores = i->findPoint(axs);
+		std::vector<BPatch_point*> * loadsAndStores = chosenOne->findPoint(axs);
 		std::vector<BPatch_point *> * tmpPoints = new std::vector<BPatch_point *>();
 		std::vector<uint64_t> idents;
 		for (auto p : *loadsAndStores) {

@@ -134,7 +134,8 @@ void TimeFirstUse::InsertLoadStoreSnippets(BPatch_function * func, std::vector<B
 
 void TimeFirstUse::InsertTimeFirstUserimentation(std::map<uint64_t, std::vector<StackPoint> > LSpoints) {
 	for (auto tf : LSpoints) {
-		auto i = tf.second;
+		assert(tf.second.size() == 1);
+		auto i = tf.second[0];
 		auto ident = tf.first;
 		std::vector<BPatch_function *> funcs;
 		funcs = _dynOps.FindFuncByStackPoint(_addrSpace, i.libname, i.libOffset, false);
@@ -189,7 +190,9 @@ void TimeFirstUse::SetWrappedFunctions(std::vector<std::string> & wrappedFunctio
 bool TimeFirstUse::InstrimentAllModules(bool finalize, std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<std::string> & syncFunctions, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
 	Setup();
 	BeginInsertionSet();
-	StackKeyReader reader(std::string("LS_tracekey.txt"));
+	FILE * keyFile = fopen("LS_tracekey.txt", "rb");
+	assert(keyFile != NULL);
+	StackKeyReader reader(keyFile);
 	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
 	if (ret.size() == 0) 
 		return true;

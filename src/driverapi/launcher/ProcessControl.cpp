@@ -77,7 +77,7 @@ BPatch_addressSpace * ProcessController::GenerateDebugBinary(std::string bin) {
 	_loadStore.reset(new LoadStoreInst(_addrSpace, app->getImage()));
 	_appBE = dynamic_cast<BPatch_binaryEdit*>(app);
 	_stackTracer = new StacktraceInst(_addrSpace, _addrSpace->getImage());
-	_timeFirstUse.reset(new LoadStoreInst(_addrSpace, _addrSpace->getImage()));
+	_timeFirstUse.reset(new TimeFirstUse(_addrSpace, _addrSpace->getImage()));
 	return handle;
 }
 

@@ -20,7 +20,7 @@ extern "C" {
 	void RECORD_FUNCTION_ENTRY(uint64_t id) {
 		if (justChecking == 8)
 			justChecking = -1;
-		
+
 		//INIT_SYNC_COMMON();
 		// //assert(1 == 0);
 		// // fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
@@ -41,9 +41,11 @@ extern "C" {
 	}
 
 	void SYNC_CAPTURE_SYNC_CALL() {
-		INIT_SYNC_COMMON();
-		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
-		_LoadStoreDriver->SyncCalled();
+		if (justChecking == 8)
+			justChecking = -1;
+		// INIT_SYNC_COMMON();
+		// std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
+		// _LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 		if (justChecking == 8)

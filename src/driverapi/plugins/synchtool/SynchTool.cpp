@@ -5,7 +5,7 @@ thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
 FILE * _temporaryFiles;
 bool enteredMe = false;
-volatile int justChecking;
+volatile int justChecking = 8;
 extern "C" {
 
 
@@ -18,7 +18,9 @@ extern "C" {
 	}
 
 	void RECORD_FUNCTION_ENTRY(uint64_t id) {
-		justChecking = 1;
+		if (justChecking == 8)
+			justChecking = -1;
+		
 		//INIT_SYNC_COMMON();
 		// //assert(1 == 0);
 		// // fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
@@ -27,7 +29,9 @@ extern "C" {
 		//_LoadStoreDriver->PushStack(id);
 	}
 	void RECORD_FUNCTION_EXIT(uint64_t id) {
-		justChecking = 2;
+		if (justChecking == 8)
+			justChecking = -1;
+		
 		//INIT_SYNC_COMMON();
 		// //assert(1==0);
 		// // fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
@@ -42,7 +46,9 @@ extern "C" {
 		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
-		justChecking = 3;
+		if (justChecking == 8)
+			justChecking = -1;
+		
 		//INIT_SYNC_COMMON();
 		//assert(1==0);
 //		fprintf(_temporaryFiles,"[SynchTool] Captured memory access - %llu, %llu\n", addr, id);

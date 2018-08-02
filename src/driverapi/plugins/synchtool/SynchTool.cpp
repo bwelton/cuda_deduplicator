@@ -42,7 +42,7 @@ extern "C" {
 		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
-		justChecking = 3
+		justChecking = 3;
 		//INIT_SYNC_COMMON();
 		//assert(1==0);
 //		fprintf(_temporaryFiles,"[SynchTool] Captured memory access - %llu, %llu\n", addr, id);

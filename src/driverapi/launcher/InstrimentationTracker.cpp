@@ -155,7 +155,7 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
 
 
 bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
-	if (point->getAddress() == 0x102b3308)
+	if ((uint64_t)point->getAddress() == 0x102b3308)
 		std::cerr << "MYPOINTISHERE - " <<  point->getInsnAtPoint()->format() << std::endl;
 	if (point->getInsnAtPoint() == NULL){
 		std::cerr << "[InstrimentationTracker::ShouldInstrimentInstruction] Could not get instruction at " << std::hex << point->getAddress() << std::endl;

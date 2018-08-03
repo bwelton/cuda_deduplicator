@@ -155,6 +155,8 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
 
 
 bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
+	if (point->getAddress() == 0x102b3308)
+		std::cerr << "MYPOINTISHERE - " <<  point->getInsnAtPoint()->format() << std::endl;
 	if (point->getInsnAtPoint() == NULL){
 		std::cerr << "[InstrimentationTracker::ShouldInstrimentInstruction] Could not get instruction at " << std::hex << point->getAddress() << std::endl;
 		return true;		
@@ -183,7 +185,7 @@ bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
 	if (tmp.find("stfq fpr0, fpr1, [0 + 250]") != std::string::npos)
 		return false;
 
-	if (tmp.find("stfq fpr0, fpr1, [0 + 4d0]") != std::string::npos)
+	if (tmp.find("stfq fpr") != std::string::npos)
 		return false; 
 
 	// Load/Stores to/from stack.

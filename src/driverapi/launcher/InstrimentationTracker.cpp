@@ -183,9 +183,9 @@ bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
 	if (tmp.find("stfq fpr0, fpr1, [0 + 250]") != std::string::npos)
 		return false;
 
-	if (tmp.find("stfq FPR0, FPR1, [0 + 4d0]") != std::string::npos)
+	if (tmp.find("stfq fpr0, fpr1, [0 + 4d0]") != std::string::npos)
 		return false; 
-	
+
 	// Load/Stores to/from stack.
 	if (tmp.find("[r1 +") != std::string::npos || tmp.find("[r1 -") != std::string::npos)
 		return false;

@@ -196,8 +196,8 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 	_img->getProcedures(all_functions);
 	_instTracker.PowerFunctionFix(all_functions);
 	InsertGotchaEntries();
-	WrapEntryAndExit(syncStacks);
-	InsertSyncCallNotifier();
+	//WrapEntryAndExit(syncStacks);
+	//InsertSyncCallNotifier();
 	//InsertSyncCallNotifier(points);
 	InsertLoadStoreInstrimentation();
 	_runOneTime =true;

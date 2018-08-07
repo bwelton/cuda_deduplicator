@@ -151,8 +151,8 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 			std::cerr << "[LoadStoreInst][LoadStoreSnippet]\t\tCould not insert load store instrimentation into " << id << " in function " << func->getName() << std::endl;
 		}
 		count++;
-		if (count >= 32)
-			break;
+		// if (count >= 32)
+		// 	break;
 	}
 }
 

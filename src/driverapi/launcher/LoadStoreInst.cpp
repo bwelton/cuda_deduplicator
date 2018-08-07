@@ -124,8 +124,8 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 	std::string libname = func->getModule()->getObject()->pathName();
 	_logFile << "[LoadStoreInst][LoadStoreSnippet] Inserting load store instrimentation into - " << func->getName() << "," << func->getModule()->getObject()->pathName() << "\n";
 	_instTracker.RecordInstrimentation(LOAD_STORE_INST, func, points);
+	int count = 0;
 	for (auto i : *points) {
-		return;
 		uint64_t libOffsetAddr = 0;
 		uint64_t id = 0;
 		std::vector<BPatch_point*> singlePoint;
@@ -150,6 +150,9 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 		if (_addrSpace->insertSnippet(recordAddrCall,singlePoint) == NULL) {
 			std::cerr << "[LoadStoreInst][LoadStoreSnippet]\t\tCould not insert load store instrimentation into " << id << " in function " << func->getName() << std::endl;
 		}
+		count++;
+		if (count >= 5)
+			break;
 	}
 }
 

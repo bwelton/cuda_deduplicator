@@ -130,10 +130,13 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 		uint64_t id = 0;
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
+
 		if (_dynOps.GetFileOffset(_addrSpace, i, libOffsetAddr))
 			id = _binLoc.StorePosition(libname, libOffsetAddr);
 		else
 			id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
+		if (libOffsetAddr == 0x102b3720)
+			continue;
 		std::vector<BPatch_snippet*> recordArgs;
 		BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
 		recordArgs.push_back(loadAddr);
@@ -150,7 +153,7 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 		if (_addrSpace->insertSnippet(recordAddrCall,singlePoint) == NULL) {
 			std::cerr << "[LoadStoreInst][LoadStoreSnippet]\t\tCould not insert load store instrimentation into " << id << " in function " << func->getName() << std::endl;
 		}
-		count++;
+		// count++;
 		// if (count >= 32)
 		// 	break;
 	}

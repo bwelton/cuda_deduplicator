@@ -125,6 +125,7 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 	_logFile << "[LoadStoreInst][LoadStoreSnippet] Inserting load store instrimentation into - " << func->getName() << "," << func->getModule()->getObject()->pathName() << "\n";
 	_instTracker.RecordInstrimentation(LOAD_STORE_INST, func, points);
 	for (auto i : *points) {
+		return;
 		uint64_t libOffsetAddr = 0;
 		uint64_t id = 0;
 		std::vector<BPatch_point*> singlePoint;
@@ -196,7 +197,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 	_img->getProcedures(all_functions);
 	_instTracker.PowerFunctionFix(all_functions);
 	InsertGotchaEntries();
-	//WrapEntryAndExit(syncStacks);
+	WrapEntryAndExit(syncStacks);
 	InsertSyncCallNotifier();
 	//InsertSyncCallNotifier(points);
 	InsertLoadStoreInstrimentation();

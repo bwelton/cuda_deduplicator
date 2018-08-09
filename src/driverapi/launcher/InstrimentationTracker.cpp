@@ -181,8 +181,8 @@ bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
 		__In_Emulated = false;
 		return false;	
 	}
-	if (tmp.find("[R31 +") != std::string::npos)
-		return false;
+	// if (tmp.find("[R31 +") != std::string::npos)
+	// 	return false;
 	// xxswapd
 	if (tmp.find("stfq fpr0, fpr1, [0 + 250]") != std::string::npos)
 		return false;

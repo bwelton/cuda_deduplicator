@@ -135,7 +135,7 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 			id = _binLoc.StorePosition(libname, libOffsetAddr);
 		else
 			id = _binLoc.StorePosition(libname, (uint64_t) i->getAddress());
-		if (libOffsetAddr != 0x102b35c8)
+		if (libOffsetAddr == 0x102b35c8)
 			continue;
 		// if (libOffsetAddr == 0x102b3720 || libOffsetAddr == 0x102b3718 || libOffsetAddr == 0x102b36e0 || libOffsetAddr == 0x102b36c4 || libOffsetAddr == 0x102b36c0 || libOffsetAddr == 0x102b36bc ||
 		// 	libOffsetAddr == 0x102b36b8 || libOffsetAddr == 0x102b36b4 || libOffsetAddr == 0x102b369c ||

@@ -52,6 +52,7 @@ extern "C" {
 		//_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
+		std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		if (justChecking == 8)
 			justChecking = 1;
 		else 

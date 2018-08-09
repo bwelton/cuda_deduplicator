@@ -139,17 +139,18 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 			libOffsetAddr == 0x102b36b8 || libOffsetAddr == 0x102b36b4 || libOffsetAddr == 0x102b369c ||
 			libOffsetAddr == 0x102b358c ||
 			libOffsetAddr == 0x102b35b8 ||
-			libOffsetAddr == 0x102b35c0 ||
-			libOffsetAddr == 0x102b35c8 ||
+			libOffsetAddr == 0x102b35c0)
+			continue;
+
+			/*
+					libOffsetAddr == 0x102b35c8 ||
 			libOffsetAddr == 0x102b35d4 ||
 			libOffsetAddr == 0x102b35e4 ||
 			libOffsetAddr == 0x102b3618 ||
 			libOffsetAddr == 0x102b3620 ||
 			libOffsetAddr == 0x102b362c ||
-			libOffsetAddr == 0x102b3630 )
-			continue;
-
-			/*
+			libOffsetAddr == 0x102b3630 ||
+			
 			libOffsetAddr == 0x102b3650 ||
 			libOffsetAddr == 0x102b3684 ||
 			libOffsetAddr == 0x102b368c ||

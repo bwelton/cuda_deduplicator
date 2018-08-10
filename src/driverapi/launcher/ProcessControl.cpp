@@ -379,8 +379,9 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 	_loadStore->SetWrappedFunctions(wrappedFunctionNames);
 	_loadStore->InstrimentAllModules(true, skips, instUntil, synchFunctions, points,syncStacks);
 	_WithLoadStore = true;
-	//_appProc->terminateExecution();
-	//exit(0);
+	_appProc->detach(false);
+	std::cerr << "[LoadStore] Detacthing process for debugging and leaving stopped...." << std::endl;
+	exit(0);
 }
 
 void ProcessController::InsertFirstUse(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {

@@ -381,7 +381,10 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 	_WithLoadStore = true;
 	_appProc->detach(false);
 	std::cerr << "[LoadStore] Detacthing process for debugging and leaving stopped...." << std::endl;
-	exit(0);
+	for (1)
+		sleep(10);
+	
+	//exit(0);
 }
 
 void ProcessController::InsertFirstUse(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {

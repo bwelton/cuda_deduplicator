@@ -381,9 +381,9 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 	_WithLoadStore = true;
 	_appProc->detach(false);
 	std::cerr << "[LoadStore] Detacthing process for debugging and leaving stopped...." << std::endl;
-	for (1)
+	while (1)
 		sleep(10);
-	
+
 	//exit(0);
 }
 

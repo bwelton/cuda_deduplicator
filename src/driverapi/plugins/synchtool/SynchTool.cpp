@@ -18,51 +18,51 @@ extern "C" {
 	}
 
 	void RECORD_FUNCTION_ENTRY(uint64_t id) {
-		if (justChecking == 8)
-			justChecking = 1;
-		else 
-			justChecking = 1002321;
-		//INIT_SYNC_COMMON();
+		// if (justChecking == 8)
+		// 	justChecking = 1;
+		// else 
+		// 	justChecking = 1002321;
+		INIT_SYNC_COMMON();
 		// //assert(1 == 0);
 		// // fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// // fflush(_temporaryFiles);
 		// //std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
-		//_LoadStoreDriver->PushStack(id);
+		_LoadStoreDriver->PushStack(id);
 	}
 	void RECORD_FUNCTION_EXIT(uint64_t id) {
-		if (justChecking == 8)
-			justChecking = 1;
-		else 
-			justChecking = 1002321;
-		//INIT_SYNC_COMMON();
+		// if (justChecking == 8)
+		// 	justChecking = 1;
+		// else 
+		// 	justChecking = 1002321;
+		INIT_SYNC_COMMON();
 		// //assert(1==0);
 		// // fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// // fflush(_temporaryFiles);
 		// //std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
-		//_LoadStoreDriver->PopStack(id);
+		_LoadStoreDriver->PopStack(id);
 	}
 
 	void SYNC_CAPTURE_SYNC_CALL() {
-		if (justChecking == 8)
-			justChecking = 1;
-		else 
-			justChecking = 1002321;
-	    //INIT_SYNC_COMMON();
+		// if (justChecking == 8)
+		// 	justChecking = 1;
+		// else 
+		// 	justChecking = 1002321;
+	    INIT_SYNC_COMMON();
 		 //std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
-		//_LoadStoreDriver->SyncCalled();
+		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
-		if (justChecking == 8)
-			justChecking = 1;
-		else 
-			justChecking = 1002321;
-		//INIT_SYNC_COMMON();
+		// if (justChecking == 8)
+		// 	justChecking = 1;
+		// else 
+		// 	justChecking = 1002321;
+		INIT_SYNC_COMMON();
 		//assert(1==0);
 //		fprintf(_temporaryFiles,"[SynchTool] Captured memory access - %llu, %llu\n", addr, id);
 //		fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
-		//_LoadStoreDriver->RecordAccess(id, addr);
+		_LoadStoreDriver->RecordAccess(id, addr);
 	}
 }
 

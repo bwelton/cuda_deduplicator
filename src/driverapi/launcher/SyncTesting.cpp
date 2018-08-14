@@ -24,6 +24,10 @@ void SyncTesting::ReprocessModel() {
 	_model.CaptureSyncTime();
 }
 
+void SyncTesting::DecodeStack(std::string infile, std::string outfile) {
+	_model.TranslateStackfile(infile, outfile);
+}
+
 void SyncTesting::CaptureDriverCalls() {
 	{
 		double time;

@@ -198,10 +198,6 @@ bool TimeFirstUse::InstrimentAllModules(bool finalize, std::vector<uint64_t> & s
 		return true;
 	assert(ret.size() > 0);
 
-	// std::vector<StackPoint> toInstriment;
-	// for (auto i : ret)
-	// 	toInstriment.insert(toInstriment.end(), i.second.begin(), i.second.end());
-
 	std::vector<BPatch_function *> all_functions;
 	_img->getProcedures(all_functions);
 	_instTracker.PowerFunctionFix(all_functions);

@@ -15,11 +15,23 @@ int main(int argc, char * argv[]) {
 		("prog,p", value<std::vector<std::string> >()->multitoken(), "Program to instrument with all parameters")
 		("plugindir", value<std::string>()->default_value(std::string("@CMAKE_INSTALL_PREFIX@/lib")), "Directory containing the plugins (install lib directory)")
 		("synch,s", bool_switch()->default_value(false), "Enable synchronization checker")
-		("reevaluate,r", bool_switch()->default_value(false), "Reevaluate existing synchronization trace files");
+		("reevaluate,r", bool_switch()->default_value(false), "Reevaluate existing synchronization trace files")
+		("decode,d", bool_switch()->default_value(false), "Decode stack trace file only (using symtab to get line info)")
+		("infile,i",value<std::string>()->default_value(std::string("")), "Input file to decode")
+		("outfile,o",value<std::string>()->default_value(std::string("")), "Ouput file to decode");
+
 
 		store(parse_command_line(argc, argv, desc), vm);
 		notify(vm);
-
+		if (vm["decode"].as<bool>() == true) {
+			if (vm["infile"].as<std::string>() == std::string("") || vm["outfile"].as<std::string>() == std::string("")){
+				std::cerr << "Input file or output file not set, exiting now" << std::endl;
+				return 0;
+			}
+			SyncTesting runSync(vm);
+			runSync.DecodeStack(vm["infile"].as<std::string>(), vm["outfile"].as<std::string>());					
+			return 0;
+		}
 		if (vm.count("prog") == 0 && vm["reevaluate"].as<bool>() == false) {
 			std::cerr << "Program to instriment is not set, specify with -p or -prog" << std::endl; 
 			exit(-1);

@@ -475,6 +475,28 @@ void PerformanceModel::AddStack(std::vector<StackPoint> stack) {
  	return _stackRecords;
  }
 
+void PerformanceModel::TranslateStackfile(std::string fileName, std::string outFilename) {
+	FILE * keyFile = fopen(fileName.c_str(), "rb");
+	assert(keyFile != NULL);
+
+	StackKeyReader reader(keyFile);
+	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
+
+	std::map<uint64_t, StackRecord> translateRecords; 
+	for (auto & i : ret)
+		translateRecords[i.first] = StackRecord(i.first, i.second);	
+
+	ExtractLineInfo(translateRecords);
+	std::ofstream outFile;
+	outFile.open(outFilename.c_str(), std::ofstream::out);
+	for (auto i : translateRecords) {
+		outFile << i.first; 
+		i.second.PrintEncodedStack(outFile);
+		outFile << std::endl;
+	}
+	outFile.close();
+}
+
 void PerformanceModel::ReadTimingStacks(std::string keyFile, std::string timelineFile) {
 	std::cerr << "[PerformanceModel] Reading Timing Information" << std::endl;
 	std::cerr << "[PerformanceModel] Reading timing stack file: " << timelineFile << std::endl;

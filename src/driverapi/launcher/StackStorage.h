@@ -56,6 +56,7 @@ public:
 	void GetStackSymbols(SymbolMap & m);
 	void AddStackRecord(uint64_t pos);
 	void PrintStack();
+	void PrintEncodedStack(std::ofstream & outStream);
 	void PrintStack(std::ofstream & outStream);
 	void PrintStack(std::stringstream & outStream);
 	//void AddTimingData(uint64_t start, uint64_t len, double time);

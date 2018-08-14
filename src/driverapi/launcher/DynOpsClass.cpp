@@ -97,6 +97,8 @@ std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_
 	std::vector<BPatch_function *> ret;
 	if (aspace == NULL) 
 		return ret;
+
+	std::cerr << "Trying to find - " << libname << " at offset " << std::hex << offset << std::endl;
 	BPatch_image * img = aspace->getImage();
 	BPatch_object * obj = FindObjectByName(aspace, libname, exact);
 	

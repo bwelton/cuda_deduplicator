@@ -104,9 +104,11 @@ std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_
 	
 	if (obj == NULL)
 		return ret;
-
-	img->findFunction(obj->fileOffsetToAddr(offset), ret);
-
+	std::vector<BPatch_point *> points;
+	obj->findPoints(obj->fileOffsetToAddr(offset), points);
+	//img->findFunction(obj->fileOffsetToAddr(offset), ret);
+	for (auto i : points)
+		ret.push_back(i->getFunction());
 	std::cerr << "Found - " << ret.size() << " functions" << std::endl;
 	return ret;
 }

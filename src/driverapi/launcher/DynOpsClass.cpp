@@ -107,6 +107,7 @@ std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_
 
 	img->findFunction(obj->fileOffsetToAddr(offset), ret);
 
+	std::cerr << "Found - " << ret.size() << " functions" << std::endl;
 	return ret;
 }
 

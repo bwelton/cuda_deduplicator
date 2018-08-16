@@ -18,8 +18,15 @@ class MatchTimeToLSStack:
     def CompareStacks(self, ls, tf):
         #ls stack will always be longer
         for x in range(0,len(tf)):
-            if str(ls[x]) != str(tf[x]):
+            found = False
+            for y in range(0,len(ls)):
+                if ls[y] == tf[x]:
+                    found = True
+            if (found == False):
                 return False
+
+            #if str(ls[x]) != str(tf[x]):
+            #    return False
         return True
 
 

@@ -126,7 +126,7 @@ void StackRecord::PrintStack(std::stringstream & outStream) {
 
 void StackRecord::PrintEncodedStack(std::ofstream & outStream) {
 	for (auto i : _points) {
-		outStream << "$" << i.libname << ":" << i.funcName << "@" << std::hex << i.libOffset;
+		outStream << "$" << i.libname << "@" << i.funcName << "@" << std::hex << i.libOffset;
 	}
 }
 

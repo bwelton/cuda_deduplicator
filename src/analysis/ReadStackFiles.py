@@ -1,8 +1,9 @@
+import os
 class StackEntry:
     def __init__(self, libname = "", offset = 0):
         self._libname = libname
         self._offset = offset
-
+        self._funcname = ""
 
     def __eq__(self, other):
         if (str(self) == str(other)):
@@ -18,6 +19,8 @@ class Stack:
     def __init__(self, i):
         self._stack = []
         self._ident = i
+        self._gotName = False
+
     def AddEntry(self, libname, offset):
         self._stack.append(StackEntry(libname, offset))
 
@@ -36,6 +39,8 @@ class Stack:
         for x in self._stack:
             if "libcuda.so" in  x._libname:
                 return x
+        return StackEntry(libname="????", offset=0)
+
     def __str__(self):
         ret = "\tStack " + str(self._ident)  + "\n"
         for i in self._stack:
@@ -47,6 +52,37 @@ class Stack:
         for x in range(len(self._stack) - 1, 0, -1):
             tmp.append(self._stack[x])
         self._stack = tmp
+
+    def GetNameInfo(self):
+        if self._gotName == True:
+            return 
+        f = open("tmp_encoded_stack.txt","w")
+        count = 1
+        for x in self._stack:
+            f.write(str(count) + "$" + str(x) +"\n")
+        f.close()
+        os.remove("tmp_decoded_stack.txt")
+        ## Run Diogenes to get stack info
+        os.system("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/bin/LaunchCUInstriment -d -i tmp_encoded_stack.txt -o tmp_decoded_stack.txt")
+        f = open("tmp_decoded_stack.txt", "r")
+        for x in f.readlines():
+            tmp = x.split("$")
+            if int(count) - 1 > len(self._stack):
+                print "ERROR Could not find stack - " + x
+            else:
+                index = int(count) - 1
+                a = tmp[1].split("@")
+                if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
+                    self._funcname = a[1]
+                else:
+                    print "NON MATCH"
+                    print str(self._stack[index])
+                    print x
+        f.close()
+        self._gotName = True
+
+
+
 
 def RemoveNewline(line):
     return line.replace("\n","")

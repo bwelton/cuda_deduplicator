@@ -12,7 +12,7 @@ class StackEntry:
         return False
 
     def __str__(self):
-        return str(self._libname) + "@" + str(self._offset) 
+        return str(self._funcname) + " IN " + str(self._libname) + "@" + str(self._offset) 
 
     def GetFilename(self):
         return self._libname.split("/")[-1]

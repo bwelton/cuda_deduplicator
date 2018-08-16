@@ -38,8 +38,6 @@ class MatchTimeToLSStack:
         ls_stacks = self._ls.GetAllStacks()
         for x in tf_stacks:
             tmp = self.PruneTFStack(tf_stacks[x])
-            print tmp[0]
-            print tmp[-1]
             for y in ls_stacks:
                 tmp2 = ls_stacks[y]._stack
                 if self.CompareStacks(tmp2, tmp):

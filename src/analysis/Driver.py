@@ -104,7 +104,7 @@ class Driver:
             stack = self._stackStore["TF_timekey.txt"].GetStackAtID(int(i))
             ucall = stack.FindFirstUserCall()
             ccall = stack.FindFirstLibCuda()
-            print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._offset),str(ccall._offset),str(i),"Sync",str(x[3]), str(x[4]))
+            print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4]))
 
 
 

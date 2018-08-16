@@ -103,6 +103,7 @@ class Stack:
         data = f.readlines()
         f.close()
         for x in data:
+            print x
             self._cuda_funcs[x] = 1
 
 

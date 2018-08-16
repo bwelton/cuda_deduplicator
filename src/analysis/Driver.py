@@ -11,8 +11,8 @@ class MatchTimeToLSStack:
 
     def PruneTFStack(self, stack):
         ret = stack._stack
-        ret = ret[3:]
-        return ret[:-1]
+        ret = ret
+        return ret
 
 
     def CompareStacks(self, ls, tf):

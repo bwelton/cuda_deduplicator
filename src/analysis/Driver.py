@@ -83,7 +83,7 @@ class Driver:
         for x in m:
             singleSetTF.append(x[0])
         notInSet = tf_trace.GetNotInSet(singleSetTF)
-        print notInSet
+        #print notInSet
         timeSavedEstimate = 0.0
         for x in notInSet:
             timeSavedEstimate += x[-1]

@@ -57,6 +57,7 @@ class Stack:
         return StackEntry(libname="????", offset=0)
 
     def __str__(self):
+        self.GetNameInfo()
         ret = "\tStack " + str(self._ident)  + "\n"
         for i in self._stack:
             ret += "\t\t" + str(i) + "\n"

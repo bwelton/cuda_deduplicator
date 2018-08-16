@@ -81,10 +81,10 @@ class Stack:
         f = open("tmp_decoded_stack.txt", "r")
         for x in f.readlines():
             tmp = x.split("$")
-            if int(count) - 1 > len(self._stack):
+            if int(count,16) - 1 > len(self._stack):
                 print "ERROR Could not find stack - " + x
             else:
-                index = int(count) - 1
+                index = int(count,16) - 1
                 a = tmp[1].split("@")
                 if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
                     self._funcname = a[1]

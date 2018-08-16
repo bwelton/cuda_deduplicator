@@ -48,7 +48,7 @@ class Stack:
         for x in self._stack:
             if "libcuda.so" in  x._libname:
                 return x
-            else 
+            else:
                 if x._funcname in self._cuda_funcs:
                     return x
         return StackEntry(libname="????", offset=0)

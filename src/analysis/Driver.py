@@ -44,6 +44,7 @@ class MatchTimeToLSStack:
                 tmp2 = ls_stacks[y]._stack
                 if self.CompareStacks(tmp2, tmp):
                     ret.append([tf_stacks[x]._ident,ls_stacks[y]._ident])
+        print "MATCH SET"
         print ret
         return ret
 

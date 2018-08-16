@@ -76,6 +76,9 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 	std::vector<BPatch_object *> objects;
 	_img->getObjects(objects);
 	int count = 0;
+	std::ofstream functionDump;
+	functionDump.open("temporary_list.txt", std::ofstream::out);
+
 	for (auto i : syncStacks) {
 		i.second.PrintStack();
 		std::vector<StackPoint> points = i.second.GetStackpoints();
@@ -96,12 +99,14 @@ void LoadStoreInst::WrapEntryAndExit(std::map<uint64_t, StackRecord> & syncStack
 			if (_instTracker.ShouldInstriment(func, funcCalls, CALL_TRACING)) {
 				_logFile << "[LoadStoreInst][EntryExit] Inserting exit/entry info into - " << z.funcName << "," << func->getModule()->getObject()->pathName() << std::endl;
 				InsertEntryExitSnippets(func, funcCalls);
+				functionDump << func->getMangledName() << std::endl;
 			} else {
 				_logFile << "[LoadStoreInst][EntryExit] Rejected function - " << z.funcName << std::endl;
 			}		
 		}
 		count++;
-	}		
+	}	
+	functionDump.close();	
 }	
 
 void LoadStoreInst::InsertSyncNotifierSnippet(BPatch_function * func, uint64_t offset) {

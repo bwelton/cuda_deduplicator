@@ -4,7 +4,7 @@ class StackEntry:
     def __init__(self, libname = "", offset = 0):
         self._libname = libname
         self._offset = offset
-        self._funcname = str(offset)
+        self._funcname = ""
 
     def __eq__(self, other):
         if (str(self) == str(other)):

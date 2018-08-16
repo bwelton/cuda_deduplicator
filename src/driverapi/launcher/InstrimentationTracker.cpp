@@ -328,8 +328,8 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
 	    		return false;
 	    }
 
-	if (funcNameMangled.find("thunk") != std::string::npos)
-		return false;
+	// if (funcNameMangled.find("thunk") != std::string::npos)
+	// 	return false;
 	// if (t == LOAD_STORE_INST){
 	// 	if (func->getMangledName().find("_ZN6SAMRAI4algs25HyperbolicLevelIntegrator37coarsenDataForRichardsonExtrapolationERKSt10shared_ptrINS_4hier14PatchHierarchyEEiRKS2_INS3_10PatchLevelEEdb") == std::string::npos)
 	// 		return false;

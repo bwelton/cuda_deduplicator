@@ -20,6 +20,7 @@ class Stack:
         self._stack = []
         self._ident = i
         self._gotName = False
+        self._cuda_funcs = {}
 
     def AddEntry(self, libname, offset):
         self._stack.append(StackEntry(libname, offset))
@@ -29,16 +30,27 @@ class Stack:
 
     def FindFirstUserCall(self):
         startPos = 0
+        self.GetNameInfo()
+
         for x in range(0,len(self._stack)):
             if "libcuda.so" in  self._stack[x]._libname:
                 startPos = x
                 break
+            else:
+                if self._stack[x]._funcname in self._cuda_funcs:
+                    startPos = x
+                    break
+
         return self._stack[startPos-1]
 
     def FindFirstLibCuda(self):
+        self.GetNameInfo()
         for x in self._stack:
             if "libcuda.so" in  x._libname:
                 return x
+            else 
+                if x._funcname in self._cuda_funcs:
+                    return x
         return StackEntry(libname="????", offset=0)
 
     def __str__(self):
@@ -79,6 +91,14 @@ class Stack:
                     print str(self._stack[index])
                     print x
         f.close()
+        cudaFunctions = os.path.join(os.path.dirname(os.path.realpath(__file__)),"cudaFunctions.txt")
+        f = open(cudaFunctions, "r")
+        data = f.readlines()
+        f.close()
+        for x in data:
+            self._cuda_funcs[x] = 1
+
+
         self._gotName = True
 
 

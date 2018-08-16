@@ -17,11 +17,12 @@ class MatchTimeToLSStack:
 
     def CompareStacks(self, ls, tf):
         #ls stack will always be longer
-        for x in range(0,len(tf)):
+        for x in range(0,len(ls)):
             found = False
-            for y in range(0,len(ls)):
-                if ls[y] == tf[x]:
+            for y in range(0,len(tf)):
+                if ls[x] == tf[y]:
                     found = True
+                    break
             if (found == False):
                 return False
 
@@ -69,12 +70,12 @@ class Driver:
         ## LS_trace Reader
         ls_trace = LS_TraceBin(os.path.join(self._inDir, "LS_trace.bin"))
         ls_trace.DecodeFile()
-        print str(ls_trace)
+        #print str(ls_trace)
 
         ## TF_Trace Decorder 
         tf_trace = TF_Trace(os.path.join(self._inDir, "TF_trace.bin"))
         tf_trace.DecodeFile()
-        print str(tf_trace)
+        #print str(tf_trace)
         match = MatchTimeToLSStack(self._stackStore["TF_timekey.txt"], self._stackStore["LS_stackkey.txt"])
         m = match.GetMatchSet()
         singleSetTF = []

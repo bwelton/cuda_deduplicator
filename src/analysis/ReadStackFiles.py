@@ -94,6 +94,8 @@ class Stack:
                 index = int(count,16) - 1
                 a = tmp[1].split("@")
                 if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
+                    lines = os.popen("/usr/bin/c++filt " + a[1]).read()
+                    print lines
                     self._stack[index]._funcname = a[1]
                     #print a[1]
                 else:

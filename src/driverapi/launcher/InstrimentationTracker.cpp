@@ -278,7 +278,7 @@ void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & fu
 	}
 
 	for (auto i : orderMap) {
-		if (orderMap.find(i.first + 0x8) != orderMap.end() || orderMap.find(i.first + 0x10) != orderMap.end() || CheckForPreamble(i.second) == true) {
+		if (orderMap.find(i.first + 0x8) != orderMap.end() || orderMap.find(i.first + 0x10) != orderMap.end() ) {
 			// Exclude this function
 			_recordInst << "-1" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() << std::dec << "$" << i.second->getName() << std::endl;
 			_exculdeByAddress.insert(i.first);

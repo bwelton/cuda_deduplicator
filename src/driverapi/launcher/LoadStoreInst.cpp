@@ -229,7 +229,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 	WrapEntryAndExit(syncStacks);
 	InsertSyncCallNotifier();
 	//InsertSyncCallNotifier(points);
-	InsertLoadStoreInstrimentation();
+	//InsertLoadStoreInstrimentation();
 	_runOneTime =true;
 	if (finalize)
 		Finalize();

@@ -386,7 +386,7 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 
 	//exit(0);
 }
-
+//zSAMRAI::tbox::StartupShutdownManager::Handler::initialize
 void ProcessController::InsertFirstUse(std::vector<uint64_t> & skips, uint64_t & instUntil, std::vector<StackPoint> & points, std::map<uint64_t, StackRecord> & syncStacks) {
 	// Check this....
 	//LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStubLib.so"));

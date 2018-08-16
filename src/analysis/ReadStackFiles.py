@@ -12,8 +12,10 @@ class StackEntry:
         return False
 
     def __str__(self):
-        return str(self._funcname) + " IN " + str(self._libname) + "@" + str(self._offset) 
+        return str(self._libname) + "@" + str(self._offset) 
 
+    def PrintNormalHuman(self):
+        return str(self._funcname) + " IN " + str(self._libname) + "@" + str(self._offset)         
     def GetFilename(self):
         return self._libname.split("/")[-1]
 class Stack:
@@ -60,7 +62,7 @@ class Stack:
         self.GetNameInfo()
         ret = "\tStack " + str(self._ident)  + "\n"
         for i in self._stack:
-            ret += "\t\t" + str(i) + "\n"
+            ret += "\t\t" + str(i.PrintNormalHuman()) + "\n"
         return ret
 
     def InverseStack(self):

@@ -24,6 +24,8 @@ class Stack:
         self._cuda_funcs = {}
 
     def AddEntry(self, libname, offset):
+        if "libTimeCall" in libname:
+            return
         self._stack.append(StackEntry(libname, offset))
 
     def GetStack(self):

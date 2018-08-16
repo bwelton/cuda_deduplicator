@@ -72,6 +72,7 @@ class Stack:
         count = 1
         for x in self._stack:
             f.write(str(count) + "$" + str(x) +"\n")
+            count += 1
         f.close()
         os.remove("tmp_decoded_stack.txt")
         ## Run Diogenes to get stack info

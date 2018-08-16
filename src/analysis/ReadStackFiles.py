@@ -92,7 +92,7 @@ class Stack:
                 a = tmp[1].split("@")
                 if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
                     self._stack[index]._funcname = a[1]
-                    print a[1]
+                    #print a[1]
                 else:
                     print "NON MATCH"
                     print str(self._stack[index])

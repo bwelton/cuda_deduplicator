@@ -26,7 +26,7 @@ InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::o
 	_loadStoreModSkips.insert(_loadStoreModSkips.end(), LSMod.begin(), LSMod.end());
 	_callTracingFuncSkips.insert(_callTracingFuncSkips.end(),CTFunc.begin(), CTFunc.end());
 	_callTracingModSkips.insert(_callTracingModSkips.end(), CTMod.begin(), CTMod.end());
-
+	_loadStoreModSkips.push_back("libcuda.so");
 	for (auto & i : _callTracingModSkips) {
 		std::transform(i.begin(), i.end(), i.begin(), ::tolower);
 	}
@@ -354,10 +354,10 @@ bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, Inst
     	//if (modname.find("libcuda.so") == std::string::npos)
     	//	return false;
     }
-    if (t == LOAD_STORE_INST){
-    	if (modname.find("stencil") != std::string::npos)
-    		return true;
-    	return false;
-    }
+    // if (t == LOAD_STORE_INST){
+    // 	if (modname.find("stencil") != std::string::npos)
+    // 		return true;
+    // 	return false;
+    // }
     return true;
 }

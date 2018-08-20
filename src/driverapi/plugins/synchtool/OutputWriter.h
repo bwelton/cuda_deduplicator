@@ -6,8 +6,7 @@
 #include <memory>
 #include <iostream>
 #include <functional>
-#include <sstream>
-#include "StackPoint.h" 
+#include <sstream> 
 struct OutputFile {
 	FILE * outFile;
 	OutputFile(std::string filename) {
@@ -35,13 +34,13 @@ struct OutputFile {
 class OutputWriter {
 public:
 	OutputWriter();
-	void RecordAccess(uint64_t id, std::vector<StackPoint> & currentStack);
+	void RecordAccess(uint64_t id, std::vector<uint64_t> & currentStack);
 	uint64_t HashStack(std::vector<uint64_t> & currentStack);
 private:
 	uint64_t _curPos;
 	std::map<uint64_t, uint64_t> _prevStacks;
 	std::shared_ptr<OutputFile> _accessFile;
-	std::shared_ptr<StackKeyWriter> _stackKeyFile;
+	std::shared_ptr<OutputFile> _stackKeyFile;
 };
 
 typedef std::shared_ptr<OutputWriter> OutputWriterPtr;

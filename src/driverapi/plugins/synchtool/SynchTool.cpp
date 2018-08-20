@@ -1,14 +1,8 @@
 #include "SynchTool.h"
-#include "StackPoint.h"
-#include "StackwalkingCommon.h"
 int exited = 0;
 std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
-thread_local std::shared_ptr<StackKeyWriter> testStackwalker;
-volatile bool inCudaCall = false;
-volatile bool _synchronizationTriggered = false;
-std::vector<CallID> cudaCallDepth;
 FILE * _temporaryFiles;
 bool enteredMe = false;
 volatile int justChecking = 8;
@@ -20,9 +14,6 @@ extern "C" {
 			return;
 		_dataAccessManager.reset(new CheckAccesses());
 		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager));
-		std::stringstream ss;
-		ss << "tfTester.key";
-		testStackwalker.reset(new StackKeyWriter(fopen(ss.str().c_str(),"w")));
 		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
 	}
 
@@ -57,16 +48,8 @@ extern "C" {
 		// else 
 		// 	justChecking = 1002321;
 	    INIT_SYNC_COMMON();
-	    _synchronizationTriggered = true;
 		 //std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
-		//std::vector<StackPoint> points_tmp;
-		//bool ret = GET_FP_STACKWALK(points_tmp);
-		// if (ret) {
-		// 	testStackwalker->InsertStack(points_tmp);
-		// }
-		if (!inCudaCall)
-			std::cerr << "[WARNING] SYNCHRONIZATION OCCURED WITHOUt CUDA CALL!" << std::endl;
-		//_LoadStoreDriver->SyncCalled(points_tmp);
+		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
@@ -79,7 +62,7 @@ extern "C" {
 //		fprintf(_temporaryFiles,"[SynchTool] Captured memory access - %llu, %llu\n", addr, id);
 //		fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
-		_LoadStoreDriver->RecordAccess(id, addr, inCudaCall);
+		_LoadStoreDriver->RecordAccess(id, addr);
 	}
 }
 
@@ -161,9 +144,7 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 }
 
 PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
-	inCudaCall = true;
 	Parameters * p = params.get();
-	cudaCallDepth.push_back(p->GetID());
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
 		MemoryTransfer * mem = p->GetMemtrans();
@@ -194,18 +175,6 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 			UnifiedAllocation(params);	
 		}
 	}
-	if(cudaCallDepth.back() == p->GetID()){
-		cudaCallDepth.pop_back();
-		if (cudaCallDepth.size() == 0)
-			inCudaCall = false;
-	}
-	if (inCudaCall == false && _synchronizationTriggered == true) {
-		std::vector<StackPoint> points_tmp;
-		bool ret = GET_FP_STACKWALK(points_tmp);
-		_LoadStoreDriver->SyncCalled(points_tmp);
-		_synchronizationTriggered = false;
-	}
-
 	return NO_ACTION;
 }
 

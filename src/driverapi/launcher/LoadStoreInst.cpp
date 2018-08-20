@@ -210,7 +210,7 @@ void LoadStoreInst::FixLSStackFiles() {
 	std::cerr << "Runing onetime code on exit of LS" << std::endl;
 	ReadLoadStoreFiles tmp(&_binLoc);
 	tmp.OutputTraceKey(std::string("LS_trace.bin"), std::string("LS_tracekey.txt"));
-	//tmp.CreateStackKey(std::string("LS_stackkey.bin"), std::string("LS_stackkey.txt"));
+	tmp.CreateStackKey(std::string("LS_stackkey.bin"), std::string("LS_stackkey.txt"));
 
 }
 
@@ -231,7 +231,7 @@ bool LoadStoreInst::InstrimentAllModules(bool finalize, std::vector<uint64_t> & 
 	_img->getProcedures(all_functions);
 	_instTracker.PowerFunctionFix(all_functions);
 	InsertGotchaEntries();
-	//WrapEntryAndExit(syncStacks);
+	WrapEntryAndExit(syncStacks);
 	InsertSyncCallNotifier();
 	//InsertSyncCallNotifier(points);
 	InsertLoadStoreInstrimentation();

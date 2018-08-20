@@ -28,7 +28,7 @@
 #include "Symtab.h"
 #include "BPatch.h"
 #include "BPatch_process.h"
-
+#include "StackPoint.h"
 #include "MemoryRange.h"
 #include "CheckAccesses.h"
 #include "LoadStoreDriver.h"

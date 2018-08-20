@@ -55,10 +55,10 @@ extern "C" {
 		// 	justChecking = 1002321;
 	    INIT_SYNC_COMMON();
 		 //std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
-		std::vector<StackPoint> points;
-		bool ret = GET_FP_STACKWALK(points);
+		std::vector<StackPoint> points_tmp;
+		bool ret = GET_FP_STACKWALK(points_tmp);
 		if (ret) {
-			testStackwalker->InsertStack(points);
+			testStackwalker->InsertStack(points_tmp);
 		}
 		_LoadStoreDriver->SyncCalled();
 	}

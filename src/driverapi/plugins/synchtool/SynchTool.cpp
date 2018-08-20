@@ -58,7 +58,7 @@ extern "C" {
 	    INIT_SYNC_COMMON();
 		 //std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
 		std::vector<StackPoint> points_tmp;
-		bool ret = GET_FP_STACKWALK(points_tmp);
+		//bool ret = GET_FP_STACKWALK(points_tmp);
 		// if (ret) {
 		// 	testStackwalker->InsertStack(points_tmp);
 		// }

@@ -56,16 +56,18 @@ void LoadStoreDriver::PopStack(uint64_t stack) {
 			}
 		}
 	}
-	if (ShouldSignalSync(false))
-		SignalSync();
+	// if (ShouldSignalSync(false))
+	// 	SignalSync();
 }
 
 void LoadStoreDriver::SyncCalled() {
-	ShouldSignalSync(true);
+	//ShouldSignalSync();
+	SignalSync();
 }
 
 void LoadStoreDriver::SignalSync() {
 	_access->SyncCalled();
 	_found = false;
 	_syncTriggered = true;
+	_stackAtSync = _storedStack;
 }

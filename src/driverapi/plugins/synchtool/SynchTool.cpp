@@ -6,6 +6,8 @@ std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
 thread_local std::shared_ptr<StackKeyWriter> testStackwalker;
+bool inCudaCall = false;
+std::vector<CallID> cudaCallDepth;
 FILE * _temporaryFiles;
 bool enteredMe = false;
 volatile int justChecking = 8;
@@ -57,11 +59,16 @@ extern "C" {
 		 //std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
 		std::vector<StackPoint> points_tmp;
 		bool ret = GET_FP_STACKWALK(points_tmp);
-		if (ret) {
-			testStackwalker->InsertStack(points_tmp);
-		}
-		_LoadStoreDriver->SyncCalled();
+		// if (ret) {
+		// 	testStackwalker->InsertStack(points_tmp);
+		// }
+		if (!inCudaCall)
+			std::cerr << "[WARNING] SYNCHRONIZATION OCCURED WITHOUt CUDA CALL!" << std::endl;
+		_LoadStoreDriver->SyncCalled(points_tmp);
 	}
+
+	void SYNC_SIGNAL_
+
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)
@@ -73,7 +80,7 @@ extern "C" {
 //		fprintf(_temporaryFiles,"[SynchTool] Captured memory access - %llu, %llu\n", addr, id);
 //		fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
-		_LoadStoreDriver->RecordAccess(id, addr);
+		_LoadStoreDriver->RecordAccess(id, addr, inCudaCall);
 	}
 }
 
@@ -155,6 +162,8 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 }
 
 PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
+	inCudaCall = true;
+	cudaCallDepth.push_back(p->GetID());
 	Parameters * p = params.get();
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
@@ -185,6 +194,11 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 		if (p->GetID() == ID_cuMemAllocManaged){
 			UnifiedAllocation(params);	
 		}
+	}
+	if(cudaCallDepth.back() == p->GetID()){
+		cudaCallDepth.pop_back();
+		if (cudaCallDepth.size() == 0)
+			inCudaCall = false;
 	}
 	return NO_ACTION;
 }

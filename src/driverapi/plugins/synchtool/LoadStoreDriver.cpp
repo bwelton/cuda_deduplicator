@@ -4,8 +4,8 @@ LoadStoreDriver::LoadStoreDriver(CheckAccessesPtr access) : _firstSync(true), _s
 }
 
 void LoadStoreDriver::RecordAccess(uint64_t id, uint64_t addr, bool inCuda) {
-	if (_firstSync == false) 
-		ShouldSignalSync(inCuda);
+	// if (_firstSync == false) 
+	// 	ShouldSignalSync(inCuda);
 
 	if (_syncTriggered && !_found) {
 		if(_access->IsAddressProtected(addr)) {
@@ -73,7 +73,7 @@ void LoadStoreDriver::PopStack(uint64_t stack) {
 
 void LoadStoreDriver::SyncCalled(std::vector<StackPoint> & syncStack) {
 	_currentStack = syncStack;
-	ShouldSignalSync(true);
+	SignalSync();
 }
 
 void LoadStoreDriver::SignalSync() {

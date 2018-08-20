@@ -2,7 +2,7 @@
 
 OutputWriter::OutputWriter() : _curPos(1) {
 	_accessFile.reset(new OutputFile(std::string("LS_trace.bin")));
-	_stackKeyFile.reset(new StackKeyWriter(fopen("LS_stackkey.bin", "w")));
+	_stackKeyFile.reset(new StackKeyWriter(fopen("LS_stackkey.txt", "w")));
 }
 
 void OutputWriter::RecordAccess(uint64_t id, std::vector<StackPoint> & currentStack) {

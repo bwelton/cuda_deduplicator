@@ -11,13 +11,13 @@ InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::o
 	// Open File Exlusion lists
 	// Grab Defaults 
 	_loadStoreFuncSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/LoadStoreFunctions.skip"));
-	_loadStoreModSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/LoadStoreModules.skip"));
+	//_loadStoreModSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/LoadStoreModules.skip"));
 	_callTracingFuncSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/CallTracingFunctions.skip"));
 	_callTracingModSkips =  OpenAndParseExclusionFile(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/CallTracingModules.skip"));
 
 	// Grab those that are local for this application.
 	StringVector LSFunc = OpenAndParseExclusionFile(std::string("LoadStoreFunctions.skip"));
-	StringVector LSMod = OpenAndParseExclusionFile(std::string("LoadStoreModules.skip"));
+	StringVector LSMod = OpenAndParseExclusionFile(std::string("LoadStoreModules.inst"));
 	StringVector CTFunc = OpenAndParseExclusionFile(std::string("CallTracingFunctions.skip"));
 	StringVector CTMod = OpenAndParseExclusionFile(std::string("CallTracingModules.skip"));
 
@@ -26,7 +26,7 @@ InstrimentationTracker::InstrimentationTracker() : _logFile("IT_log.txt", std::o
 	_loadStoreModSkips.insert(_loadStoreModSkips.end(), LSMod.begin(), LSMod.end());
 	_callTracingFuncSkips.insert(_callTracingFuncSkips.end(),CTFunc.begin(), CTFunc.end());
 	_callTracingModSkips.insert(_callTracingModSkips.end(), CTMod.begin(), CTMod.end());
-	_loadStoreModSkips.push_back("libcuda.so");
+
 	for (auto & i : _callTracingModSkips) {
 		std::transform(i.begin(), i.end(), i.begin(), ::tolower);
 	}
@@ -350,7 +350,7 @@ bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, Inst
     std::transform(modname.begin(), modname.end(), modname.begin(), ::tolower);
     for (auto i : *toSkip) {
     	if (modname.find(i) != std::string::npos)
-    		return false;
+    		return true;
     	//if (modname.find("libcuda.so") == std::string::npos)
     	//	return false;
     }
@@ -359,5 +359,5 @@ bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, Inst
     // 		return true;
     // 	return false;
     // }
-    return true;
+    return false;
 }

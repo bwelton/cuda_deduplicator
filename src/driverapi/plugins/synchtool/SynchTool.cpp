@@ -17,7 +17,8 @@ extern "C" {
 			return;
 		_dataAccessManager.reset(new CheckAccesses());
 		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager));
-		ss << "tfTester." << my_thread_id << ".key";
+		std::stringstream ss;
+		ss << "tfTester.key";
 		testStackwalker.reset(new StackKeyWriter(fopen(ss.str().c_str(),"w")));
 		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
 	}

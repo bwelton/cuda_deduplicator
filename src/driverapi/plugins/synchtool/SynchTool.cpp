@@ -57,7 +57,7 @@ extern "C" {
 		std::vector<StackPoint> points;
 		bool ret = GET_FP_STACKWALK(points);
 		if (ret) {
-			pos = testStackwalker->InsertStack(points);
+			testStackwalker->InsertStack(points);
 		}
 		_LoadStoreDriver->SyncCalled();
 	}

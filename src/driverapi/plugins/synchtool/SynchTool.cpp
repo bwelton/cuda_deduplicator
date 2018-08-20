@@ -163,8 +163,8 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 
 PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 	inCudaCall = true;
-	cudaCallDepth.push_back(p->GetID());
 	Parameters * p = params.get();
+	cudaCallDepth.push_back(p->GetID());
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
 		MemoryTransfer * mem = p->GetMemtrans();

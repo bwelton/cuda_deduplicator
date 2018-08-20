@@ -200,6 +200,7 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 			inCudaCall = false;
 	}
 	if (inCudaCall == false && _synchronizationTriggered == true) {
+		std::vector<StackPoint> points_tmp;
 		bool ret = GET_FP_STACKWALK(points_tmp);
 		_LoadStoreDriver->SyncCalled(points_tmp);
 		_synchronizationTriggered = false;

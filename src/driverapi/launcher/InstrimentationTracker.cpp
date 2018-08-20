@@ -349,7 +349,7 @@ bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, Inst
     std::string modname = func->getModule()->getObject()->pathName();
     std::transform(modname.begin(), modname.end(), modname.begin(), ::tolower);
     for (auto i : *toSkip) {
-    	if (LOAD_STORE_INST) {
+    	if (t == LOAD_STORE_INST) {
     		if (modname.find(i) != std::string::npos)
     			return true;
     	} else {
@@ -365,7 +365,7 @@ bool InstrimentationTracker::ShouldInstrimentModule(BPatch_function * func, Inst
     // 		return true;
     // 	return false;
     // }
-   	if (LOAD_STORE_INST)
+   	if (t == LOAD_STORE_INST)
     	return false;
     return true;
 }

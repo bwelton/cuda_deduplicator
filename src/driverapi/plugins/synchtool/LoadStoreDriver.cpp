@@ -77,7 +77,7 @@ void LoadStoreDriver::SyncCalled(std::vector<StackPoint> & syncStack) {
 }
 
 void LoadStoreDriver::SignalSync() {
-	_storedSWStack = 0;
+	_storedSWStack = _currentStack;
 	_access->SyncCalled();
 	_found = false;
 	_firstSync = true;

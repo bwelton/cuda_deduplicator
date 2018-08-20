@@ -66,9 +66,6 @@ extern "C" {
 			std::cerr << "[WARNING] SYNCHRONIZATION OCCURED WITHOUt CUDA CALL!" << std::endl;
 		_LoadStoreDriver->SyncCalled(points_tmp);
 	}
-
-	void SYNC_SIGNAL_
-
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)

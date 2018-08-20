@@ -1,5 +1,5 @@
 add_library(PluginCommon SHARED "StackwalkingCommon.cpp")
-add_compile_options(-O3 -g)
+add_compile_options(-O3 -g -mno-vsx)
 target_link_libraries(PluginCommon ${Boost_LIBRARIES})
 target_link_libraries(PluginCommon ${DYNINST_LIBRARIES})
 target_link_libraries(PluginCommon "-lpthread")

@@ -1,8 +1,11 @@
 #include "SynchTool.h"
+#include "StackPoint.h"
+#include "StackwalkingCommon.h"
 int exited = 0;
 std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
+thread_local std::shared_ptr<StackKeyWriter> testStackwalker;
 FILE * _temporaryFiles;
 bool enteredMe = false;
 volatile int justChecking = 8;
@@ -14,6 +17,8 @@ extern "C" {
 			return;
 		_dataAccessManager.reset(new CheckAccesses());
 		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager));
+		ss << "tfTester." << my_thread_id << ".key";
+		testStackwalker.reset(new StackKeyWriter(fopen(ss.str().c_str(),"w")));
 		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
 	}
 
@@ -49,6 +54,11 @@ extern "C" {
 		// 	justChecking = 1002321;
 	    INIT_SYNC_COMMON();
 		 //std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
+		std::vector<StackPoint> points;
+		bool ret = GET_FP_STACKWALK(points);
+		if (ret) {
+			pos = testStackwalker->InsertStack(points);
+		}
 		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {

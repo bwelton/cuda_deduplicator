@@ -20,9 +20,12 @@ int main(int argc, char * argv[]) {
 		("infile,i",value<std::string>()->default_value(std::string("")), "Input file to decode")
 		("outfile,o",value<std::string>()->default_value(std::string("")), "Ouput file to decode");
 
-
-		store(parse_command_line(argc, argv, desc), vm);
-		notify(vm);
+		std::ifstream settings_file( "settings.ini" , std::ifstream::in );
+		store( parse_config_file( settings_file , desc ), vm );
+		settings_file.close();
+		notify( vm );  
+		//store(parse_command_line(argc, argv, desc), vm);
+		//notify(vm);
 		if (vm["decode"].as<bool>() == true) {
 			if (vm["infile"].as<std::string>() == std::string("") || vm["outfile"].as<std::string>() == std::string("")){
 				std::cerr << "Input file or output file not set, exiting now" << std::endl;

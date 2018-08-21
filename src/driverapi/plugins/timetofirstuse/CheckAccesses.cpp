@@ -29,7 +29,8 @@ void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
 	// std::cerr << "Range interval before removal of range - " << interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()) << std::endl;
 	// for(auto i : _memoryRanges)
 	// 	std::cerr << i << std::endl;
-
+	if (removePos == -1)
+		return;
 	_memoryRanges.erase(interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()));
 	// std::cerr << "Range interval after removal of range - " << interval<uint64_t>::closed(_unifiedMemory[removePos].StartAddr(), _unifiedMemory[removePos].EndAddr()) << std::endl;
 	// for(auto i : _memoryRanges)

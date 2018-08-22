@@ -139,6 +139,10 @@ void TimeFirstUse::InsertTimeFirstUserimentation(std::map<uint64_t, std::vector<
 		auto ident = tf.first;
 		std::vector<BPatch_function *> funcs;
 		funcs = _dynOps.FindFunctionsByLibnameOffset(_addrSpace, i.libname, i.libOffset, false);
+		if (funcs.size() == 0) {
+			std::cerr << "[TimeFirstUse] ERROR - Could not find function - " << i.libname << "@" << i.libOffset << std::endl;
+			continue;
+		}
 		assert(funcs.size() >= 1);
 		BPatch_function * chosenOne = funcs[0];
 		// Power BS

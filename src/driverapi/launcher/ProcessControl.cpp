@@ -379,10 +379,15 @@ void ProcessController::InsertLoadStores(std::vector<uint64_t> & skips, uint64_t
 	_loadStore->SetWrappedFunctions(wrappedFunctionNames);
 	_loadStore->InstrimentAllModules(true, skips, instUntil, synchFunctions, points,syncStacks);
 	_WithLoadStore = true;
-	// _appProc->detach(false);
-	// std::cerr << "[LoadStore] Detacthing process for debugging and leaving stopped...." << std::endl;
-	// while (1)
-	// 	sleep(10);
+	char * val;                                                                        
+    val = getenv( "DIOGENES_DEBUG_DETACH");    
+    if (val != NULL)  {
+    	_appProc->detach(false);
+		std::cerr << "[LoadStore] Detacthing process for debugging and leaving stopped...." << std::endl;
+		std::cerr << "Unset DIOGENES_DEBUG_DETACH if this is not desired behavior...." << std::endl;
+		while (1)
+	 		sleep(10);
+	 }
 
 	//exit(0);
 }

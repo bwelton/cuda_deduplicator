@@ -30,12 +30,15 @@ int main(int argc, char * argv[]) {
 		("infile,i",value<std::string>()->default_value(std::string("")), "Input file to decode")
 		("outfile,o",value<std::string>()->default_value(std::string("")), "Ouput file to decode");
 
-		std::ifstream settings_file( "settings.ini" , std::ifstream::in );
-		store( parse_config_file( settings_file , desc ), vm );
-		settings_file.close();
-		notify( vm );  
-		//store(parse_command_line(argc, argv, desc), vm);
-		//notify(vm);
+		if (argc <= 2) {
+			std::ifstream settings_file( "settings.ini" , std::ifstream::in );
+			store( parse_config_file( settings_file , desc ), vm );
+			settings_file.close();
+			notify( vm );  
+		} else {
+		    store(parse_command_line(argc, argv, desc), vm);
+		    notify(vm);
+		}
 		if (vm["decode"].as<bool>() == true) {
 			if (vm["infile"].as<std::string>() == std::string("") || vm["outfile"].as<std::string>() == std::string("")){
 				std::cerr << "Input file or output file not set, exiting now" << std::endl;
@@ -52,10 +55,14 @@ int main(int argc, char * argv[]) {
 
 			std::vector<std::string> progName = vm["prog"].as<std::vector<std::string> >();
 			std::vector<std::string> newParam;
-			split(progName[0], ' ', newParam);
-			vm.erase("prog");
-			vm.insert(std::make_pair("prog",variable_value(boost::any_cast<std::vector<std::string> >(newParam), false)));
-			notify( vm );
+			if (argc <= 2) {
+				split(progName[0], ' ', newParam);
+				vm.erase("prog");
+				vm.insert(std::make_pair("prog",variable_value(boost::any_cast<std::vector<std::string> >(newParam), false)));
+				notify( vm );
+			} else {
+				newParam = progName;
+			}
 			std::string pluginDirectory = vm["plugindir"].as<std::string>();
 			std::cerr << "Beginning Instrimentation of Program - " << newParam[0] << std::endl;
 			std::cerr << "Arguments to program: ";

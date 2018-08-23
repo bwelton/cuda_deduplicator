@@ -2686,7 +2686,7 @@ int INTER_cuTexRefSetMipmapLevelBias( CUtexref hTexRef, float bias ) {
 	// Build the instriment factory
 	BUILD_FACTORY
 	// Really schetchy fix, lets assert if this is ever called to check it
-	assert(1==0);
+	//assert(1==0);
 	// Gets around an issue on POWER
 	char * tmpFloat = (char *) malloc(1 * sizeof(float*));
 	memcpy(tmpFloat, &bias, sizeof(float));

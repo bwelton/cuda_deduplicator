@@ -1,4 +1,5 @@
 #include "ProcessControl.h"
+#include <boost/filesystem.hpp>
 static BPatch bpatch;
 static ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm, LogInfo * log) :
@@ -26,9 +27,10 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	} else {
 		sleep(5);
 		std::stringstream ss;
-		ss << "pidof " << argv[1] << std::endl;
-		std::cerr << "[ProcessController::LaunchMPIProcess] Waiting on process " << argv[1] << " to start" << std::endl;
-
+		boost::filesystem::path tmp(argv[1]);
+		std::string filename = tmp.filename().string();
+		ss << "pidof " << filename << std::endl;
+		std::cerr << "[ProcessController::LaunchMPIProcess] Waiting on process " << filename << " to start" << std::endl;
 		for (int i = 0; i < 4; i++){
 			char line[250];
 			FILE * command = popen(ss.str().c_str(),"r");

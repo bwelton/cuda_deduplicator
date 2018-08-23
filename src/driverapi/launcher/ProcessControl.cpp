@@ -66,6 +66,7 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	bpatch.setInstrStackFrames(true);
 	bpatch.setTrampRecursive(false);
 	bpatch.setLivenessAnalysis(false);	
+		std::cerr << "[ProcessController::LaunchMPIProcess] Attaching to process " << argv[appPosition] << " at pid " << pid << std::endl;
 	handle = bpatch.processAttach((const char *)argv[appPosition], pid);
 	bpatch.setLivenessAnalysis(false);
 	bpatch.setInstrStackFrames(true);

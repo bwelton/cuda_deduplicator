@@ -34,7 +34,10 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	pid_t child_pid = fork();
 	if (child_pid == 0){
 		// Child process
-		execvp(*argv, argv);
+		for (int i = 0; i < 10; i++){
+			execvp(*argv, argv);
+			sleep(2);
+		}
 		std::cerr << "FAILED TO LAUNCH PROCESS!\n";
 		assert(1==0);
 	} else {

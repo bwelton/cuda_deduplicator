@@ -2,7 +2,7 @@
 static BPatch bpatch;
 static ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm, LogInfo * log) :
-	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false), _WithLoadStore(false) {
+	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false), _WithLoadStore(false), _ProcessAttached(false) {
 }
 
 BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
@@ -15,11 +15,11 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	char ** argv = (char**)malloc(progName.size() * sizeof(char *)+1);
 	for (int i = 0; i < progName.size(); i++) 
 		argv[i] = strdup(progName[i].c_str());
-
+	int pid = -1;
 	// Launch the other procees
 	pid_t child_pid = fork();
 	if (child_pid == 0){
-		// Child process, perform action then exit
+		// Child process
 		execvp(*argv, argv);
 		std::cerr << "FAILED TO LAUNCH PROCESS!\n";
 		assert(1==0);
@@ -28,7 +28,7 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 		std::stringstream ss;
 		ss << "pidof " << argv[1] << std::endl;
 		std::cerr << "[ProcessController::LaunchMPIProcess] Waiting on process " << argv[1] << " to start" << std::endl;
-		int pid = -1;
+
 		for (int i = 0; i < 4; i++){
 			char line[250];
 			FILE * command = popen(ss.str().c_str(),"r");
@@ -56,6 +56,7 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	_loadStore.reset(new LoadStoreInst(_addrSpace, _addrSpace->getImage()));
 	_timeFirstUse.reset(new TimeFirstUse(_addrSpace, _addrSpace->getImage()));
 	_stackTracer = new StacktraceInst(_addrSpace, _addrSpace->getImage());
+	_ProcessAttached = true;
 	return handle;
 }
 
@@ -354,7 +355,6 @@ void ProcessController::InsertLoadStoreSingle(std::string funcName) {
 	recordArgs.push_back(loadAddr);
 	recordArgs.push_back(instAddr);
 
-
 	std::vector<BPatch_function *> all_functions;
 	std::vector<BPatch_function *> callFunc;
 	std::vector<BPatch_function *> tracerCall;
@@ -506,6 +506,11 @@ bool ProcessController::IsTerminated() {
 }
 
 bool ProcessController::ContinueExecution() {
+	if (_ProcessAttached) {
+		_appProc->continueExecution();
+		_appProc->continueExecution();
+		_ProcessAttached = false;
+	}
 //	_loadStore->RunOneTimeCode();
 	if (_binaryEdit)
 		return false;

@@ -109,4 +109,6 @@ private:
 
 	bool _WithLoadStore;
 	StacktraceInst * _stackTracer;
+
+	bool _ProcessAttached;
 };

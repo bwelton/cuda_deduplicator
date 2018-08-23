@@ -185,20 +185,21 @@ void ProcessController::InsertStacktracing() {
 void ProcessController::InsertAPICapture() {
 	LoadWrapperLibrary(std::string("libcuda.so.1"));
 	LoadWrapperLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/libDriverAPIWrapper.so"));
-	_addrSpace->beginInsertionSet();
+	//_addrSpace->beginInsertionSet();
 	BPatch_image * img = _addrSpace->getImage();
 	DynOpsClass ops;
 	BPatch_function * main;
 	BPatch_function * defineBinders;
-	assert(1 == ops.FindFuncByName(_addrSpace, main, std::string("main")));
+	//assert(1 == ops.FindFuncByName(_addrSpace, main, std::string("main")));
 	assert(1 == ops.FindFuncByName(_addrSpace, defineBinders, std::string("DefineBinders")));
 	std::vector<BPatch_point*> * entryPoints = main->findPoint(BPatch_locEntry);
-	main = ops.GetPOWERFunction(main);
+	//main = ops.GetPOWERFunction(main);
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*defineBinders, recordArgs);
+	std::cerr << "Fireing off one time call to setup binders\n";
 	dynamic_cast<BPatch_process*>(_addrSpace)->oneTimeCode(entryExpr);
 	//assert(_addrSpace->insertSnippet(entryExpr,*entryPoints) != NULL);
-	_addrSpace->finalizeInsertionSet(false);
+	//_addrSpace->finalizeInsertionSet(false);
 }
 
 void ProcessController::InsertTimers(std::vector<StackPoint> points) {

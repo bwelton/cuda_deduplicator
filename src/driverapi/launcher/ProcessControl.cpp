@@ -5,6 +5,60 @@ ProcessController::ProcessController(boost::program_options::variables_map vm, L
 	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false), _WithLoadStore(false) {
 }
 
+BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
+	_binaryEdit = false;
+	BPatch_addressSpace * handle = NULL;
+	// What this process entails is attaching to the process instead of launching it.
+	// This REQUIRES that you use some other method to stop the process at the start of main
+	// Such as kill(getpid(), SIGSTOP);
+	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
+	char ** argv = (char**)malloc(progName.size() * sizeof(char *)+1);
+	for (int i = 0; i < progName.size(); i++) 
+		argv[i] = strdup(progName[i].c_str());
+
+	// Launch the other procees
+	pid_t child_pid = fork();
+	if (child_pid == 0){
+		// Child process, perform action then exit
+		execvp(*argv, argv);
+		std::cerr << "FAILED TO LAUNCH PROCESS!\n";
+		assert(1==0);
+	} else {
+		sleep(5);
+		std::stringstream ss;
+		ss << "pidof " << argv[1] << std::endl;
+		std::cerr << "[ProcessController::LaunchMPIProcess] Waiting on process " << argv[1] << " to start" << std::endl;
+		int pid = -1;
+		for (int i = 0; i < 4; i++){
+			char line[250];
+			FILE * command = popen(ss.str().c_str(),"r");
+			if(fgets(line,250,command) > 0) {
+				pid = atoi(line);
+			}
+			pclose(command);
+			if (pid != -1)
+				break;
+			sleep(2);
+		}
+		assert(pid != -1);
+	}
+	bpatch.setInstrStackFrames(true);
+	bpatch.setTrampRecursive(false);
+	bpatch.setLivenessAnalysis(false);	
+	handle = bpatch.processAttach((const char *)argv[1], pid);
+	bpatch.setLivenessAnalysis(false);
+	bpatch.setInstrStackFrames(true);
+	bpatch.setTrampRecursive(false);
+	assert(handle != NULL);	
+	_addrSpace = handle;
+	_launched = true;
+	_appProc = dynamic_cast<BPatch_process*>(_addrSpace);
+	_loadStore.reset(new LoadStoreInst(_addrSpace, _addrSpace->getImage()));
+	_timeFirstUse.reset(new TimeFirstUse(_addrSpace, _addrSpace->getImage()));
+	_stackTracer = new StacktraceInst(_addrSpace, _addrSpace->getImage());
+	return handle;
+}
+
 BPatch_addressSpace * ProcessController::LaunchProcess() {
 	_binaryEdit = false;
 	BPatch_addressSpace * handle = NULL;

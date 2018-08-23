@@ -87,6 +87,7 @@ public:
 	void InsertStacktracing();
 	std::map<uint64_t, StackPoint> GetFirstUse();
 	void InsertAPICapture();
+	BPatch_addressSpace * LaunchMPIProcess();
 	//void LibraryLoadCallback(BPatch_thread * thread, BPatch_object * obj, bool l);
 private:
 	std::shared_ptr<LoadStoreInst> _loadStore;

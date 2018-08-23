@@ -188,11 +188,11 @@ void ProcessController::InsertAPICapture() {
 	//_addrSpace->beginInsertionSet();
 	BPatch_image * img = _addrSpace->getImage();
 	DynOpsClass ops;
-	BPatch_function * main;
+	//BPatch_function * main;
 	BPatch_function * defineBinders;
 	//assert(1 == ops.FindFuncByName(_addrSpace, main, std::string("main")));
 	assert(1 == ops.FindFuncByName(_addrSpace, defineBinders, std::string("DefineBinders")));
-	std::vector<BPatch_point*> * entryPoints = main->findPoint(BPatch_locEntry);
+	//std::vector<BPatch_point*> * entryPoints = main->findPoint(BPatch_locEntry);
 	//main = ops.GetPOWERFunction(main);
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*defineBinders, recordArgs);

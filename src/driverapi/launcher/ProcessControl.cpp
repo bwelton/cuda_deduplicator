@@ -28,6 +28,7 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 		}
 
 	}
+	argv[progName.size()] = NULL;
 	assert(appPosition != -1);
 	int pid = -1;
 	// Launch the other procees
@@ -35,9 +36,10 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	if (child_pid == 0){
 		// Child process
 		for (int i = 0; i < 10; i++){
-			execvp(*argv, argv);
+			int retM = execvp(*argv, argv);
+			
+			std::cerr << "Launch Failed, trying agian.... Error Status: " <<  strerror(errno) << std::endl;
 			sleep(2);
-			std::cerr << "Launch Failed, trying agian...." << std::endl;
 		}
 		std::cerr << "FAILED TO LAUNCH PROCESS!\n";
 		assert(1==0);

@@ -5,6 +5,10 @@ static ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm, LogInfo * log) :
 	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false), _WithLoadStore(false), _ProcessAttached(false) {
 }
+inline bool exists_test (const std::string& name) {
+    std::ifstream f(name.c_str());
+    return f.good();
+}
 
 BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	_binaryEdit = false;
@@ -14,8 +18,17 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	// Such as kill(getpid(), SIGSTOP);
 	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
 	char ** argv = (char**)malloc(progName.size() * sizeof(char *)+1);
-	for (int i = 0; i < progName.size(); i++) 
+	int appPosition = -1;
+	for (int i = 0; i < progName.size(); i++) {
 		argv[i] = strdup(progName[i].c_str());
+		if (i > 1 && appPosition == -1) {
+			if (exists_test(progName[i])) {
+				appPosition = i;
+			}
+		}
+
+	}
+	assert(appPosition != -1);
 	int pid = -1;
 	// Launch the other procees
 	pid_t child_pid = fork();
@@ -27,7 +40,7 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	} else {
 		sleep(5);
 		std::stringstream ss;
-		boost::filesystem::path tmp(argv[1]);
+		boost::filesystem::path tmp(progName[appPosition]);
 		std::string filename = tmp.filename().string();
 		ss << "pidof " << filename << std::endl;
 		std::cerr << "[ProcessController::LaunchMPIProcess] Waiting on process " << filename << " to start" << std::endl;
@@ -47,7 +60,7 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 	bpatch.setInstrStackFrames(true);
 	bpatch.setTrampRecursive(false);
 	bpatch.setLivenessAnalysis(false);	
-	handle = bpatch.processAttach((const char *)argv[1], pid);
+	handle = bpatch.processAttach((const char *)argv[appPosition], pid);
 	bpatch.setLivenessAnalysis(false);
 	bpatch.setInstrStackFrames(true);
 	bpatch.setTrampRecursive(false);

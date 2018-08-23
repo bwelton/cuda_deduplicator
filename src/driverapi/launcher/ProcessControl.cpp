@@ -64,7 +64,8 @@ BPatch_addressSpace * ProcessController::LaunchProcess() {
 	_binaryEdit = false;
 	BPatch_addressSpace * handle = NULL;
 	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
-
+	if (progName[0].find("mpirun") != std::string::npos || progName[0].find("mpiexec") != std::string::npos) 
+		return LaunchMPIProcess();
 	// Setup arguments
 	char ** argv = (char**)malloc(progName.size() * sizeof(char *)+1);
 	for (int i = 0; i < progName.size(); i++) 

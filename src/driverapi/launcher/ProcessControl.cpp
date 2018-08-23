@@ -37,6 +37,7 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 		for (int i = 0; i < 10; i++){
 			execvp(*argv, argv);
 			sleep(2);
+			std::cerr << "Launch Failed, trying agian...." << std::endl;
 		}
 		std::cerr << "FAILED TO LAUNCH PROCESS!\n";
 		assert(1==0);
@@ -47,7 +48,7 @@ BPatch_addressSpace * ProcessController::LaunchMPIProcess() {
 		std::string filename = tmp.filename().string();
 		ss << "pidof " << filename << std::endl;
 		std::cerr << "[ProcessController::LaunchMPIProcess] Waiting on process " << filename << " to start" << std::endl;
-		for (int i = 0; i < 4; i++){
+		for (int i = 0; i < 10; i++){
 			char line[250];
 			FILE * command = popen(ss.str().c_str(),"r");
 			if(fgets(line,250,command) > 0) {

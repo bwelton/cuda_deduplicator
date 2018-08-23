@@ -18,7 +18,8 @@ void LoadStoreInst::InsertGotchaEntries() {
 	main = _dynOps.GetPOWERFunction(main);
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*DefineBinders, recordArgs);
-	assert(_addrSpace->insertSnippet(entryExpr,*entryPoints) != NULL);
+	dynamic_cast<BPatch_process*>(_addrSpace)->oneTimeCode(entryExpr);
+	//assert(_addrSpace->insertSnippet(entryExpr,*entryPoints) != NULL);
 }
 
 void LoadStoreInst::InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points) {

@@ -196,7 +196,8 @@ void ProcessController::InsertAPICapture() {
 	main = ops.GetPOWERFunction(main);
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*defineBinders, recordArgs);
-	assert(_addrSpace->insertSnippet(entryExpr,*entryPoints) != NULL);
+	dynamic_cast<BPatch_process*>(_addrSpace)->oneTimeCode(entryExpr);
+	//assert(_addrSpace->insertSnippet(entryExpr,*entryPoints) != NULL);
 	_addrSpace->finalizeInsertionSet(false);
 }
 

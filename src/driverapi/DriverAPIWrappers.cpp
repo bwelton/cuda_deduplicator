@@ -2709,7 +2709,7 @@ int INTER_cuTexRefSetMipmapLevelClamp( CUtexref hTexRef, float minMipmapLevelCla
 	BUILD_FACTORY
 	// Gets around an issue on POWER
 	// Really schetchy fix, lets assert if this is ever called to check it
-	assert(1==0);
+	//assert(1==0);
 	char * tmpFloat = (char *) malloc(2 * sizeof(float*));
 	memcpy(tmpFloat, &minMipmapLevelClamp, sizeof(float));
 	memcpy((void *)&(tmpFloat[sizeof(float*)]), &maxMipmapLevelClamp, sizeof(float));

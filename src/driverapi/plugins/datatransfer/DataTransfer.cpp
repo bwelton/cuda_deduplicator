@@ -5,6 +5,7 @@ thread_local int exited;
 DataTransfer::DataTransfer(std::vector<std::string> & cmd_list) {
 	exited = 0;
 	_out.reset(new CollisionOut(std::string("DT_collisions.txt")));
+	_keyFile.reset(new StackKeyWriter(fopen("DT_stacks.bin","w")));
 }
 
 DataTransfer::~DataTransfer() {

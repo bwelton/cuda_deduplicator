@@ -45,6 +45,23 @@ void SyncTesting::CaptureDriverCalls() {
 	_model.WriteStackFile(std::string("CS_StackFile.txt"), std::string("CS_HumanStacks.txt"));
 }
 
+void SyncTesting::CaptureDuplicateTransfers() {
+	{
+		double time;
+		TimeApplications base(_vm);
+		std::vector<std::string> pluginNames = {"libDataTransfer"};
+		CreatePluginFile(pluginNames);
+		std::cerr << "Running " << _programName << " with data transfer trace identify duplicate transfers" << std::endl;
+		//std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
+		//base.RedirectOutToFile(_programName + std::string(".base.out"));
+		time = base.RunWithDriverAPITrace();
+		//base.ReturnToTerminal();
+		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	}
+	// Write out the stack values that were saved to CS_StackFile.txt
+	_model.WriteStackFile(std::string("DT_stacks.bin"), std::string("DT_humanstacks.txt"));	
+}
+
 void SyncTesting::Run() {
 	double time;
 	{
@@ -58,7 +75,7 @@ void SyncTesting::Run() {
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	}
 	CaptureDriverCalls();
-	
+	CaptureDuplicateTransfers();
 	//RunWithCUPTI();
 
 	// Find out what user called functions actually contain a synchronization.

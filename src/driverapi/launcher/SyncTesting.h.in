@@ -27,7 +27,7 @@
 #include "StackPoint.h"
 #include "StackStorage.h"
 #define DRIVER_LIBRARY "@CMAKE_INSTALL_PREFIX@/lib/libDriverAPIWrapper.so"
-#define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeCall.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libSynchTool.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libDriverAPITrace.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeFirstUse.so"};
+#define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeCall.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libSynchTool.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libDriverAPITrace.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeFirstUse.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libDataTransfer.so"};
 #define WRAPPER_DEF "@CMAKE_INSTALL_PREFIX@/defs/DriverAPIWrapper.def"
 #define INTERNAL_SYNC "0x2B7E28"
 class SyncTesting {
@@ -47,6 +47,7 @@ public:
 	void ReprocessModel();
 	void CaptureDriverCalls();
 	void DecodeStack(std::string infile, std::string outfile);
+	void CaptureDuplicateTransfers();
 private:
 	std::set<std::string> _syncCalls; 
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapperDefFunctions;

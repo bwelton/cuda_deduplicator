@@ -32,7 +32,7 @@ PluginReturn DataSyncTimer::Postcall(std::shared_ptr<Parameters> params) {
 		auto stop = std::chrono::high_resolution_clock::now();
 		// mem->SetHashGeneration(true);
 		// mem->PostTransfer();		
-		// std::vector<StackPoint> points;
+		std::vector<StackPoint> points;
 		bool ret = GET_FP_STACKWALK(points);
 		uint64_t pos = 0;
 		if (ret == false) {
@@ -48,7 +48,7 @@ PluginReturn DataSyncTimer::Postcall(std::shared_ptr<Parameters> params) {
 		std::chrono::duration<double> diff = stop-start;
 		rec.r.time = diff.count();
 		_outFile->Write(rec);
-		
+
 		// uint64_t originData = mem->GetOriginHash();
 		// uint64_t transferedHash = mem->GetTransferHash();
 		// if (transferedHash == 0) {

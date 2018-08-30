@@ -55,7 +55,7 @@ private:
 	std::shared_ptr<TFReaderWriter> _outFile;
 	std::map<uint64_t, uint64_t> _prevTransfers;
 	//std::map<CallID, std::chrono::high_resolution_clock::time_point> _activeTimers;
-	std::shared_ptr<CollisionOut> _out;
+	//std::shared_ptr<CollisionOut> _out;
 };
 
 #define PLUG_BUILD_FACTORY(param) \

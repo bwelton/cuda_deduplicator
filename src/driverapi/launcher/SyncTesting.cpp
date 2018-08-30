@@ -75,7 +75,7 @@ void SyncTesting::TimeTransfers() {
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	}
 	// Write out the stack values that were saved to CS_StackFile.txt
-	_model.WriteStackFile(std::string("DT_stacks.bin"), std::string("DT_humanstacks.txt"));	
+	_model.WriteStackFile(std::string("DSTIME_stacks.bin"), std::string("DSTIME_humanstacks.txt"));	
 }
 
 void SyncTesting::Run() {

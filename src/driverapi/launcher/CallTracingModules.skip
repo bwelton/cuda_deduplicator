@@ -33,3 +33,4 @@ libSynchTool.so
 libTimeCall.so
 libTimeFirstUse.so
 libTransferTimeline.so
+libDataSyncTimer.so

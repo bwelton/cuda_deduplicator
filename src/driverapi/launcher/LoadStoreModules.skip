@@ -64,3 +64,4 @@ dyninst
 libdriverapiwrapper
 libgotcha
 cudadedup
+libDataSyncTimer.so

@@ -44,5 +44,6 @@ public:
 	void PostcallHandleStandard();
 	void PreTransfer();
 	void PostTransfer();
+	void Synchronize();
 };
 

@@ -193,6 +193,11 @@ void MemoryTransfer::SetHashGeneration(bool s) {
 
 }
 
+void MemoryTransfer::Synchronize() {
+	if (Bound_cuCtxSynchronize() != 0)
+		std::cerr << "[MemoryTransfer.cpp] Could Not synchronize the device!" << std::endl;
+}
+
 void MemoryTransfer::PrecallHandleStandard() {
 	// This function is designed to get data from the 
 	if (_origData != 0)

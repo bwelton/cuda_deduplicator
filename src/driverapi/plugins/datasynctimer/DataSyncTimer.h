@@ -53,7 +53,10 @@ private:
 	//std::vector<std::tuple<const char *,size_t, double> > _timers;
 	std::shared_ptr<StackKeyWriter> _keyFile;
 	std::shared_ptr<TFReaderWriter> _outFile;
-	std::map<uint64_t, uint64_t> _prevTransfers;
+	std::shared_ptr<TFReaderWriter> _cpuOverhead;
+	std::shared_ptr<TFReaderWriter> _totalTime;
+	std::map<size_t, std::pair<std::chrono::high_resolution_clock::time_point, uint64_t> > _prevTransfers;
+	size_t _transCount;
 	//std::map<CallID, std::chrono::high_resolution_clock::time_point> _activeTimers;
 	//std::shared_ptr<CollisionOut> _out;
 };

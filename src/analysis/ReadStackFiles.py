@@ -95,7 +95,10 @@ class Stack:
                 a = tmp[1].split("@")
                 if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
                     lines = os.popen("/usr/bin/c++filt " + a[1]).read().splitlines()
-                    self._stack[index]._funcname = lines[0]
+                    if len(lines) == 0:
+                        self._stack[index]._funcname = "Unkown"
+                    else:
+                        self._stack[index]._funcname = lines[0]
                     #print a[1]
                 else:
                     print "NON MATCH"

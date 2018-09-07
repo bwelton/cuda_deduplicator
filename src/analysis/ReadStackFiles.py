@@ -88,17 +88,17 @@ class Stack:
         for x in f.readlines():
             tmp = x.split("$")
             count = tmp[0]
+            tmp = "".join(tmp[1:])
             if int(count,16) - 1 > len(self._stack):
                 print "ERROR Could not find stack - " + x
             else:
                 index = int(count,16) - 1
-                print tmp
                 a = tmp[1].split("@")
 
                 if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
                     lines = os.popen("/usr/bin/c++filt " + a[1]).read().splitlines()
                     if len(lines) == 0:
-                        self._stack[index]._funcname = "Unkown"
+                        self._stack[index]._funcname = "Unknown"
                     else:
                         self._stack[index]._funcname = lines[0]
                     #print a[1]

@@ -88,7 +88,7 @@ class Stack:
         for x in f.readlines():
             tmp = x.split("$")
             count = tmp[0]
-            tmp = "".join(tmp[1:])
+            tmp[1] = "".join(tmp[1:])
             if int(count,16) - 1 > len(self._stack):
                 print "ERROR Could not find stack - " + x
             else:

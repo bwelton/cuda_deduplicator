@@ -99,13 +99,15 @@ class Driver:
         print "Estimated time savings from unnecessary synchroniations/data transfers: " + str(timeSavedEstimate)
         print "Table of unnecessary operation\n"
         print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % ('App Bin','App Function','Cuda Call','Stack ID','Type','Call Count', 'Est Impact')
+        outFD = open("results_output.csv", "w")
         for x in notInSet:
             i = x[2]
             stack = self._stackStore["TF_timekey.txt"].GetStackAtID(int(i))
             ucall = stack.FindFirstUserCall()
             ccall = stack.FindFirstLibCuda()
             print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4]))
-
+            outFD.write('%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4])))
+        outFD.close()
 
 
 

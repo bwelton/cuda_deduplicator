@@ -106,6 +106,8 @@ class Stack:
                     print "NON MATCH"
                     print str(self._stack[index])
                     print x
+                    if self._stack[index]._libname != a[0]:
+                        print self._stack[index]._libname  + " does not match " + a[0]
         f.close()
         cudaFunctions = os.path.join(os.path.dirname(os.path.realpath(__file__)),"cudaFunctions.txt")
         f = open(cudaFunctions, "r")

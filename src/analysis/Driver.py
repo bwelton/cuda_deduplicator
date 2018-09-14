@@ -102,7 +102,7 @@ class DataTransfer:
         ret["Estimated Savings"] = str(savings[0])
         ret["Overwrite Issues"] = str(savings[1])
         ret["Duplicate Matches Transfer"] = ""
-        for x in savings[3]:
+        for x in savings[2]:
             ret["Duplicate Matches Transfer"] += str(x) + " | "
         return ret
 

@@ -156,9 +156,10 @@ class Driver:
         for x in stack_files:
             print str(self._stackStore[x])
 
-        for x in self._stackStore["DSTIME_stacks.bin"].GetAllStacks():
-            hashedStacks[x.HashStackDataTransfer()] = x
-            dstime_idToHash[x._ident] = x.HashStackDataTransfer()
+        tmpStack = self._stackStore["DSTIME_stacks.bin"].GetAllStacks()
+        for x in tmpStack:
+            hashedStacks[tmpStack[x].HashStackDataTransfer()] = tmpStack[x]
+            dstime_idToHash[x] = tmpStack[x].HashStackDataTransfer()
 
         timing_files = ["DSTIME_trace.bin", "DCPUTIME_trace.bin", "DTOTIME_trace.bin"]
         for x in timing_files:
@@ -176,10 +177,10 @@ class Driver:
                     print "error, should not be here"
                     print y
                     print x
-
-        for x in self._stackStore["DT_stacks.bin"].GetAllStacks():
-            hashedIssueStacks[x.HashStackDataTransfer()] = x
-            dtstack_idToHash[x._ident] = x.HashStackDataTransfer()
+        tmpStack = self._stackStore["DT_stacks.bin"].GetAllStacks()
+        for x in tmpStack:
+            hashedIssueStacks[tmpStack[x].HashStackDataTransfer()] = tmpStack[x]
+            dtstack_idToHash[x] = tmpStack[x].HashStackDataTransfer()
 
 
 

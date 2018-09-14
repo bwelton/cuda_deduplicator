@@ -90,6 +90,7 @@ public:
 	void InsertLoadStoreSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);
 	void InsertLoadStoreInstrimentation();
 	void InsertGotchaEntries();
+	void AddSpecialCase(std::string functionName, std::string libName, uint64_t id);
 private:
 	void Setup();
 	void InsertEntryExitSnippets(BPatch_function * func, std::vector<BPatch_point*> * points);

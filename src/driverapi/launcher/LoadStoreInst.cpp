@@ -188,6 +188,21 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 	}
 }
 
+void LoadStoreInst::AddSpecialCase(std::string functionName, std::string libName, uint64_t id) {
+	std::string specModule = libName;
+	BPatch_object * specObj = _dynOps.FindObjectByName(_addrSpace,  specModule, false);
+	uint64_t specID = id;
+	assert(specObj != NULL);
+	std::vector<BPatch_function *> specFuncs;
+	specObj->findFunction(functionName,specFuncs,false);
+	assert(specFuncs.size() == 1);
+	BPatch_function * memcpyFunc = _dynOps.GetPOWERFunction(specFuncs[0]);
+	uint64_t libOffset = 0;
+	assert(_dynOps.GetFileOffset(_addrSpace, memcpyFunc, libOffset) == true);
+	std::string specObjPath = specObj->pathName();
+	_binLoc.SetAbsoluteID(specID, specObjPath, libOffset);
+}
+
 
 void LoadStoreInst::InsertLoadStoreInstrimentation() {
 	std::vector<BPatch_function *> all_functions;
@@ -205,19 +220,8 @@ void LoadStoreInst::InsertLoadStoreInstrimentation() {
 
 	// Now lets add the special cases
 	// Start at -1 from limit max
-	std::string specModule = std::string("libc.so.6");
-	BPatch_object * specObj = _dynOps.FindObjectByName(_addrSpace,  specModule, false);
-	uint64_t specID = std::numeric_limits<uint64_t>::max() - 2;
-	assert(specObj != NULL);
-	std::vector<BPatch_function *> specFuncs;
-	specObj->findFunction("memcpy",specFuncs,false);
-	assert(specFuncs.size() == 1);
-	BPatch_function * memcpyFunc = _dynOps.GetPOWERFunction(specFuncs[0]);
-	uint64_t libOffset = 0;
-	_dynOps.GetFileOffset(_addrSpace, memcpyFunc, libOffset);
-	std::string specObjPath = specObj->pathName();
-	_binLoc.SetAbsoluteID(specID, specObjPath, libOffset);
-
+	AddSpecialCase(std::string("memcpy"), std::string("libc.so.6"), std::numeric_limits<uint64_t>::max() - 2);
+	
 	//specObj->pathName()
 }
 

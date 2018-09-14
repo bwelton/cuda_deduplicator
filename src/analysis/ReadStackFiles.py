@@ -18,6 +18,7 @@ class StackEntry:
         return str(self._funcname) + " IN " + str(self._libname) + "@" + str(self._offset)         
     def GetFilename(self):
         return self._libname.split("/")[-1]
+        
 class Stack:
     def __init__(self, i):
         self._stack = []

@@ -109,8 +109,14 @@ class Driver:
             print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4]))
             outFD.write('%-20.20s,%-20.20s,%-20.20s,%-10.10s,%-20.20s,%-10.10s,%-10.10s\n' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4])))
         outFD.close()
+        self.DataDeduplication()
 
-
+    def DataDeduplication(self):
+        stack_files = ["DSTIME_stacks.bin", "DT_stacks.bin"]
+        for x in stack_files:
+            self._stackStore[x] = StackReader(os.path.join(self._inDir, x))
+        for x in stack_files:
+            print str(self._stackStore[x])     
 
 if __name__ == "__main__":
     d = Driver()

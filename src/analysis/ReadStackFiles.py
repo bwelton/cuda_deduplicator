@@ -36,12 +36,12 @@ class Stack:
     def TransGetFirstUserCall(self):
         count = 0
         for x in self._stack:
-            if "cuda-9.2.148/nvidia" not in x:
+            if "cuda-9.2.148/nvidia" not in x._libname:
                 count += 1
             else:
                 break
         return self._stack[count]._funcname
-        
+
     def HashStackDataTransfer(self):
         tmp = ""
         for i in self._stack:

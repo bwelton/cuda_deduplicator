@@ -115,6 +115,7 @@ class Driver:
         stack_files = ["DSTIME_stacks.bin", "DT_stacks.bin"]
         for x in stack_files:
             self._stackStore[x] = StackReader(os.path.join(self._inDir, x))
+            self._stackStore[x].InverseStacks()
         for x in stack_files:
             print str(self._stackStore[x])     
 

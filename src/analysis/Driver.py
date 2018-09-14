@@ -232,12 +232,12 @@ class Driver:
             transferTime.DecodeFile()
             for y in transferTime._records:
                 hValue = dstime_idToHash[y[0]]
-                print y
                 if "DSTIME_trace.bin" in x:
                     hashedStacks[hValue].PreTransSynchronization(y[-1])
                 elif "DCPUTIME_trace.bin" in x:
                     hashedStacks[hValue].AddCPUOverhead(y[-1])
                 elif "DTOTIME_trace.bin" in x:
+                    print y
                     hashedStacks[hValue].AddTotalTime(y[-1])
                 else:
                     print "error, should not be here"

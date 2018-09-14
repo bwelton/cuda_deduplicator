@@ -18,13 +18,24 @@ class StackEntry:
         return str(self._funcname) + " IN " + str(self._libname) + "@" + str(self._offset)         
     def GetFilename(self):
         return self._libname.split("/")[-1]
-        
+
 class Stack:
     def __init__(self, i):
         self._stack = []
         self._ident = i
         self._gotName = False
         self._cuda_funcs = {}
+
+    def HashStackDataTransfer(self):
+        tmp = ""
+        for i in self._stack:
+            # break on the first invocation of Diogenes
+            if "cudadedup-develop" in str(i):
+                break
+            tmp += str(i) + "\n"
+
+        return int(hash(tmp))
+        
 
     def AddEntry(self, libname, offset):
         if "libTimeCall" in libname:

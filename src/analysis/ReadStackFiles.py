@@ -122,7 +122,9 @@ class Stack:
             else:
                 index = int(count,16) - 1
                 a = tmp[1].split("@")
-                print a[1]
+                if "<Unknown at Offset" in a[1]:
+                    self._stack[index]._funcname = "Unknown"
+                    continue
                 if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
                     lines = os.popen("/usr/bin/c++filt " + a[1]).read().splitlines()
                     if len(lines) == 0:

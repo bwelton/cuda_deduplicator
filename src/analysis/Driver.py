@@ -231,7 +231,7 @@ class Driver:
             transferTime = TF_Trace(os.path.join(self._inDir, x))
             transferTime.DecodeFile()
             for y in transferTime._records:
-                hValue = dstime_idToHash[y[0]]
+                hValue = dstime_idToHash[y[1]]
                 if "DSTIME_trace.bin" in x:
                     hashedStacks[hValue].PreTransSynchronization(y[-1])
                 elif "DCPUTIME_trace.bin" in x:

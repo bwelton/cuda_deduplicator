@@ -75,7 +75,7 @@ class DataTransfer:
     def PreTransSynchronization(self, time):
         self._preSync.append(time)
 
-    def CopyDuplicates(self, other);
+    def CopyDuplicates(self, other):
         self._duplicates = other._duplicates
 
 

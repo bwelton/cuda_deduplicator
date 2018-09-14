@@ -158,7 +158,7 @@ class Driver:
 
         tmpStack = self._stackStore["DSTIME_stacks.bin"].GetAllStacks()
         for x in tmpStack:
-            hashedStacks[tmpStack[x].HashStackDataTransfer()] = tmpStack[x]
+            hashedStacks[tmpStack[x].HashStackDataTransfer()] = DataTransfer(tmpStack[x].HashStackDataTransfer(),int(x), tmpStack[x])
             dstime_idToHash[x] = tmpStack[x].HashStackDataTransfer()
 
         timing_files = ["DSTIME_trace.bin", "DCPUTIME_trace.bin", "DTOTIME_trace.bin"]
@@ -179,7 +179,7 @@ class Driver:
                     print x
         tmpStack = self._stackStore["DT_stacks.bin"].GetAllStacks()
         for x in tmpStack:
-            hashedIssueStacks[tmpStack[x].HashStackDataTransfer()] = tmpStack[x]
+            hashedIssueStacks[tmpStack[x].HashStackDataTransfer()] = DataTransfer(tmpStack[x].HashStackDataTransfer(),int(x), tmpStack[x])
             dtstack_idToHash[x] = tmpStack[x].HashStackDataTransfer()
 
 

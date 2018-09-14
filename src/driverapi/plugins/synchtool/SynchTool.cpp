@@ -1,5 +1,5 @@
 #include "SynchTool.h"
-int exited = 0;
+volatile int exited = 0;
 std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
@@ -18,6 +18,8 @@ extern "C" {
 	}
 
 	void RECORD_FUNCTION_ENTRY(uint64_t id) {
+		if(exited == 1)
+			return;
 		// if (justChecking == 8)
 		// 	justChecking = 1;
 		// else 
@@ -30,6 +32,8 @@ extern "C" {
 		_LoadStoreDriver->PushStack(id);
 	}
 	void RECORD_FUNCTION_EXIT(uint64_t id) {
+		if(exited == 1)
+			return;
 		// if (justChecking == 8)
 		// 	justChecking = 1;
 		// else 
@@ -43,6 +47,8 @@ extern "C" {
 	}
 
 	void SYNC_CAPTURE_SYNC_CALL() {
+		if(exited == 1)
+			return;
 		// if (justChecking == 8)
 		// 	justChecking = 1;
 		// else 
@@ -52,6 +58,8 @@ extern "C" {
 		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
+		if(exited == 1)
+			return;
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)
 		// 	justChecking = 1;

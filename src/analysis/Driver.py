@@ -49,10 +49,14 @@ class MatchTimeToLSStack:
 
 
 class DuplicateEntry:
-    def __init__(self, overwrite, prevTransferHash, prevTransferID):
+    def __init__(self, overwrite, prevTransferHash):
         self._overwrite = overwrite
         self._prevTransferHash = prevTransferHash
 
+    def IsDuplicate(self):
+        if self.overwrite == 1 or self._prevTransferHash != 0:
+            return True
+        return False
 
 class DataTransfer:
     def __init__(self, hashVal, position, stack):
@@ -61,8 +65,51 @@ class DataTransfer:
         self._stack = stack
         self._preSync = []
         self._totalTime = []
-        self._cpuOverhead = [ ]
+        self._cpuOverhead = []
         self._duplicates = []
+
+    def FindSavings(self, idToHash):
+        tmpHash = {}
+        for x in idToHash:
+            tmpHash[idToHash[x]] = x
+        overwriteIssues = 0
+        previousTransfers = 0
+        previousTransferList = []
+        totalTimeSavings = 0.0
+        for x in range(0,len(self._duplicates)):
+            if self._duplicates.IsDuplicate():
+                if len(self._totalTime) > x:
+                    totalTimeSavings += self._totalTime[x]
+                if self._duplicates[x]._overwrite == 1:
+                    overwriteIssues += 1
+                else:
+                    self._duplicates[x].previousTransfers += 1
+                    if self._duplicates[x]._prevTransferHash in tmpHash:
+                        previousTransferList.append(tmpHash[self._duplicates[x]._prevTransferHash])
+        return [totalTimeSavings, overwriteIssues, previousTransferList]
+
+    def Analysis(self, idToHash):
+        ret = {}
+        ret["id"] = self._pos
+        ret["Total Time Aggragate"] = str(sum(self._totalTime))
+        ret["CPU Overhead Aggragate"] = str(sum(self._cpuOverhead))
+        ret["Pre-transfer Synchronization Time Aggragate"] = str(sum(self._preSync))
+        ret["Call Count"] = str(len(self._preSync))
+        ret["Cuda Call"] = self._stack.TransGetFirstLibCuda()
+        ret["First User Call"] = self._stack.TransGetFirstUserCall()
+        ret["Duplicate Count"] = str(len(self._duplicates))
+        savings = self.FindSavings(idToHash)
+        ret["Estimated Savings"] = str(savings[0])
+        ret["Overwrite Issues"] = str(savings[1])
+        ret["Duplicate Matches Transfer"] = ""
+        for x in savings[3]:
+            ret["Duplicate Matches Transfer"] += str(x) + " | "
+        return ret
+
+    def CreateOutput(self, idToHash):
+        ret = self.Analysis(idToHash)
+        return ret["id"] + "," + ret["Call Count"] + "," + ret["Cuda Call"] + "," + ret["First User Call"] + "," + ret["Duplicate Count"] + "," + ret["Estimated Savings"] + "," + ret["Overwrite Issues"]  + "," +  ret["Duplicate Matches Transfer"]
+
 
     def AddTotalTime(self, time):
         self._totalTime.append(time)
@@ -205,7 +252,11 @@ class Driver:
             rec = readCollisionFile.DecodeRecord()
             if rec == None:
                 break
-            hashedIssueStacks[dtstack_idToHash[int(rec[0])]].AddDuplicate(rec)
+
+            prevHash = 0
+            if rec[2] == 1:
+                prevHash = dtstack_idToHash[rec[3]]
+            hashedIssueStacks[dtstack_idToHash[int(rec[0])]].AddDuplicate(DuplicateEntry(rec[1],prevHash))
 
         ## Map the collision stacks to timing
         colToTiming = {}
@@ -214,6 +265,11 @@ class Driver:
                 hashedStacks[x].CopyDuplicates(hashedIssueStacks[x])
             else:
                 print "Unknown Transfer - " + str(x)
+
+        f = open("dtrans_out.csv", "w")
+        for x in hashedStacks:
+            f.write(str(x.CreateOutput(dstime_idToHash)))
+        f.close()
 
 
 if __name__ == "__main__":

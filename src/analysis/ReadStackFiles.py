@@ -26,6 +26,22 @@ class Stack:
         self._gotName = False
         self._cuda_funcs = {}
 
+    def TransGetFirstLibCuda(self):
+        for x in self._stack:
+            if "INTER_" in x._funcname:
+                tmp = x._funcname
+                tmp.replace("INTER_", "")
+                return tmp
+
+    def TransGetFirstUserCall(self):
+        count = 0
+        for x in self._stack:
+            if "cuda-9.2.148/nvidia" not in x:
+                count += 1
+            else:
+                break
+        return self._stack[count]._funcname
+        
     def HashStackDataTransfer(self):
         tmp = ""
         for i in self._stack:
@@ -35,7 +51,7 @@ class Stack:
             tmp += str(i) + "\n"
 
         return int(hash(tmp))
-        
+
 
     def AddEntry(self, libname, offset):
         if "libTimeCall" in libname:

@@ -268,7 +268,7 @@ class Driver:
 
         f = open("dtrans_out.csv", "w")
         for x in hashedStacks:
-            f.write(str(hashedStacks[x].CreateOutput(dstime_idToHash)))
+            f.write(str(hashedStacks[x].CreateOutput(dstime_idToHash)) + "\n")
         f.close()
 
 

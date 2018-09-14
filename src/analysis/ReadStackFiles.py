@@ -30,8 +30,8 @@ class Stack:
         for x in self._stack:
             if "INTER_" in x._funcname:
                 tmp = x._funcname
-                tmp.replace("INTER_", "")
-                return tmp
+
+                return tmp.replace("INTER_", "")
 
     def TransGetFirstUserCall(self):
         count = 0

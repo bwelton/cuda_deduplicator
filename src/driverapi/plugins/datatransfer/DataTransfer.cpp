@@ -57,9 +57,9 @@ PluginReturn DataTransfer::Postcall(std::shared_ptr<Parameters> params) {
 		} else {
 			_prevTransfers[transferedHash] = pos;
 		}
-		if (duplicate == true) {
-			_out->Write(pos, (overwrite ? uint64_t(1) : uint64_t(0)), (prevTransfer ? uint64_t(1) : uint64_t(0)), previousID);
-		}
+		//if (duplicate == true) {
+		_out->Write(pos, (overwrite ? uint64_t(1) : uint64_t(0)), (prevTransfer ? uint64_t(1) : uint64_t(0)), previousID);
+		//}
 	}
 	return NO_ACTION;
 }

@@ -90,7 +90,7 @@ class DataTransfer:
 
     def Analysis(self, idToHash):
         ret = {}
-        ret["id"] = self._pos
+        ret["id"] = str(self._pos)
         ret["Total Time Aggragate"] = str(sum(self._totalTime))
         ret["CPU Overhead Aggragate"] = str(sum(self._cpuOverhead))
         ret["Pre-transfer Synchronization Time Aggragate"] = str(sum(self._preSync))

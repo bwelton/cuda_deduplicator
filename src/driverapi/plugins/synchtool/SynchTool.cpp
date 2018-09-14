@@ -10,6 +10,8 @@ extern "C" {
 
 
 	void INIT_SYNC_COMMON() {
+		if(exited == 1)
+			return;
 		if (_dataAccessManager.get() != NULL)
 			return;
 		_dataAccessManager.reset(new CheckAccesses());
@@ -83,6 +85,8 @@ SynchTool::SynchTool(std::vector<std::string> & cmd_list) {
 
 SynchTool::~SynchTool() {
 	exited = 1;
+	_LoadStoreDriver.reset();
+	_dataAccessManager.reset();
 }
 
 

@@ -108,7 +108,10 @@ class Stack:
             f.write(str(count) + "$" + str(x) +"\n")
             count += 1
         f.close()
-        os.remove("tmp_decoded_stack.txt")
+        try:
+            os.remove("tmp_decoded_stack.txt")
+        except:
+            pass
         ## Run Diogenes to get stack info
         subprocess.call("/g/g17/welton2/repo/spack/opt/spack/linux-rhel7-ppc64le/gcc-4.9.3/cudadedup-develop-sfolqw2eykf4ubdm3umxxvnky2ul6k7r/bin/LaunchCUInstriment -d -i tmp_encoded_stack.txt -o tmp_decoded_stack.txt &> debug_symtab.txt", shell=True)
         f = open("tmp_decoded_stack.txt", "r")

@@ -58,26 +58,43 @@ class DataTransfer:
         self._hash = hashVal
         self._pos = position
         self._stack = stack
-        self._preSync = 0.0
-        self._totalTime = 0.0
-        self._cpuOverhead = 0.0
+        self._preSync = []
+        self._totalTime = []
+        self._cpuOverhead = [ ]
         self._duplicates = []
 
     def AddTotalTime(self, time):
-        self._totalTime = time
+        self._totalTime.append(time)
 
     def AddCPUOverhead(self, time):
-        self._cpuOverhead = time
+        self._cpuOverhead.append(time)
 
     def AddDuplicate(self, dupEntry):
         self._duplicates.append(dupEntry)
 
     def PreTransSynchronization(self, time):
-        self._preSync = time
+        self._preSync.append(time)
+
+    def CopyDuplicates(self, other);
+        self._duplicates = other._duplicates
 
 
 
+class ReadTransferCollisions:
+    def __init__(self, filename):
+        self._filename = filename
+        self._pos = 0
+        f = open(self._filename,"rb")
+        self._data = f.read()
+        f.close()
 
+    def DecodeRecord(self):
+        if self._pos >= len(self._data):
+            return None
+
+        tmp = struct.unpack_from("QQQQ", self._data, offset=self._pos)
+        self._pos += (8*4)
+        return list(tmp)
 
 class Driver:
     def __init__(self):
@@ -182,7 +199,20 @@ class Driver:
             hashedIssueStacks[tmpStack[x].HashStackDataTransfer()] = DataTransfer(tmpStack[x].HashStackDataTransfer(),int(x), tmpStack[x])
             dtstack_idToHash[x] = tmpStack[x].HashStackDataTransfer()
 
+        readCollisionFile = ReadTransferCollisions(os.path.join(self._inDir, "DT_collisions.txt"))
+        while 1:
+            rec = readCollisionFile.DecodeRecord()
+            if rec == None:
+                break
+            hashedIssueStacks[dtstack_idToHash[int(rec[0])]].AddDuplicate(rec)
 
+        ## Map the collision stacks to timing
+        colToTiming = {}
+        for x in hashedIssueStacks:
+            if x in hashedStacks:
+                hashedStacks[x].CopyDuplicates(hashedIssueStacks[x])
+            else:
+                print "Unknown Transfer - " + str(x)
 
 
 if __name__ == "__main__":

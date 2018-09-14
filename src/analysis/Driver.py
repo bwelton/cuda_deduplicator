@@ -83,7 +83,7 @@ class DataTransfer:
                 if self._duplicates[x]._overwrite == 1:
                     overwriteIssues += 1
                 else:
-                    self._duplicates[x].previousTransfers += 1
+                    previousTransfers += 1
                     if self._duplicates[x]._prevTransferHash in tmpHash:
                         previousTransferList.append(tmpHash[self._duplicates[x]._prevTransferHash])
         return [totalTimeSavings, overwriteIssues, previousTransferList]

@@ -19,6 +19,18 @@ uint64_t BinaryLocationIDMap::GetOffsetForID(uint64_t id) {
 	return 0;
 }
 
+bool BinaryLocationIDMap::SetAbsoluteID(uint64_t id, std::string & libname, uint64_t offsetAddr) {
+	if (_libnameToLibID.find(libname) == _libnameToLibID.end()) {
+		_libnameToLibID[libname] = _libids;
+		_libIdtoLibname[_libids] = libname;
+		_libids++;
+	}
+	if (_idToLibOffset.find(id) != _idToLibOffset.end())
+		assert("WE SHOULD NEVER BE HERE" != 0);
+	_idToLibOffset[id] = std::make_pair(_libnameToLibID[libname], offsetAddr);		
+	return true;
+}
+
 std::string * BinaryLocationIDMap::GetLibnameForID(uint64_t id) {
 	if (_idToLibOffset.find(id) != _idToLibOffset.end())
 		if (_libIdtoLibname.find(_idToLibOffset[id].first) != _libIdtoLibname.end())

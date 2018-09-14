@@ -12,6 +12,7 @@ public:
 	uint64_t GetOffsetForID(uint64_t id);
 	std::string * GetLibnameForID(uint64_t id);
 	StackPoint BuildStackPoint(uint64_t id);
+	bool SetAbsoluteID(uint64_t id, std::string & libname, uint64_t offsetAddr);
 private:
 	uint64_t _curPos, _libids;
 	std::map<uint64_t,std::pair<uint64_t, uint64_t>> _idToLibOffset;

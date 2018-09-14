@@ -49,6 +49,7 @@
 #include "DynOpsClass.h"
 #include "InstrimentationTracker.h"
 #include "ReadLoadStoreFiles.h"
+#include <limits.h>
 
 using namespace Dyninst;
 using namespace ParseAPI;

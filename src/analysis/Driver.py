@@ -156,7 +156,7 @@ class Driver:
         for x in stack_files:
             print str(self._stackStore[x])
 
-        for x in stack_files["DSTIME_stacks.bin"].GetAllStacks():
+        for x in self._stackStore["DSTIME_stacks.bin"].GetAllStacks():
             hashedStacks[x.HashStackDataTransfer()] = x
             dstime_idToHash[x._ident] = x.HashStackDataTransfer()
 
@@ -177,11 +177,11 @@ class Driver:
                     print y
                     print x
 
-        for x in stack_files["DT_stacks.bin"].GetAllStacks():
+        for x in self._stackStore["DT_stacks.bin"].GetAllStacks():
             hashedIssueStacks[x.HashStackDataTransfer()] = x
             dtstack_idToHash[x._ident] = x.HashStackDataTransfer()
 
-        
+
 
 
 if __name__ == "__main__":

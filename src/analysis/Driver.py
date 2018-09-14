@@ -77,7 +77,7 @@ class DataTransfer:
         previousTransferList = []
         totalTimeSavings = 0.0
         for x in range(0,len(self._duplicates)):
-            if self._duplicates.IsDuplicate():
+            if self._duplicates[x].IsDuplicate():
                 if len(self._totalTime) > x:
                     totalTimeSavings += self._totalTime[x]
                 if self._duplicates[x]._overwrite == 1:

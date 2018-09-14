@@ -54,7 +54,7 @@ class DuplicateEntry:
         self._prevTransferHash = prevTransferHash
 
     def IsDuplicate(self):
-        if self.overwrite == 1 or self._prevTransferHash != 0:
+        if self._overwrite == 1 or self._prevTransferHash != 0:
             return True
         return False
 

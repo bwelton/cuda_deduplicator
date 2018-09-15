@@ -228,7 +228,7 @@ void LoadStoreInst::InsertLoadStoreInstrimentation() {
 
 	// Now lets add the special cases
 	// Start at -1 from limit max
-	AddSpecialCase(std::string("memcpy"), std::string("libc.so.6"), std::numeric_limits<uint64_t>::max() - 2);
+	AddSpecialCase(std::string("memcpy"), std::string("libc.so"), std::numeric_limits<uint64_t>::max() - 2);
 
 	//specObj->pathName()
 }

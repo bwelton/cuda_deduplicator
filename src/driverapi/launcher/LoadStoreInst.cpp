@@ -201,6 +201,7 @@ void LoadStoreInst::AddSpecialCase(std::string functionName, std::string libName
 	specObj->findFunction(functionName,specFuncs,false);
 	BPatch_function * actual = NULL;
 	for (auto i : specFuncs) {
+		std::cerr << i->getMangledName() << std::endl;
 		if (i->getMangledName() == functionName){
 			actual = i;
 			break;

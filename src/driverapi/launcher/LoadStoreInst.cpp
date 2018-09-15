@@ -199,12 +199,19 @@ void LoadStoreInst::AddSpecialCase(std::string functionName, std::string libName
 	assert(specObj != NULL);
 	std::vector<BPatch_function *> specFuncs;
 	specObj->findFunction(functionName,specFuncs,false);
-	assert(specFuncs.size() == 1);
-
+	BPatch_function * actual = NULL;
+	for (auto i : specFuncs) {
+		if (i->getMangledName() == functionName){
+			actual = i;
+			break;
+		}
+	}
+	//assert(specFuncs.size() == 1);
+	assert(actual != NULL);
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);
-	BPatch_function * memcpyFunc = _dynOps.GetPOWERFunction(specFuncs[0]);
+	BPatch_function * memcpyFunc = _dynOps.GetPOWERFunction(actual);
 	assert(memcpyFunc != NULL);
 	std::vector<BPatch_point*> * loadsAndStores = memcpyFunc->findPoint(axs);
 	assert(loadsAndStores->size() > 0);

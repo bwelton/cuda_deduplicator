@@ -17,6 +17,15 @@ struct MemoryRange {
 			return true;
 		return false;
 	}
+	bool IsInRangeWithCount(uint64_t addr, uint64_t count) {
+		if (IsInRange(addr))
+			return true;
+		if (addr >= end)
+			return false;
+		if (addr <= begin && addr + count >= begin)
+			return true;
+		return false;
+	}
 	bool DoesRangeMatch(MemoryRange & range) {
 		if (range.begin == begin && unifiedMemory == 1)
 			return true;

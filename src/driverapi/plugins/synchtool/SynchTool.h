@@ -32,6 +32,7 @@
 #include "MemoryRange.h"
 #include "CheckAccesses.h"
 #include "LoadStoreDriver.h"
+#include "gotcha/gotcha.h"
 using namespace Dyninst;
 using namespace Dyninst::Stackwalker;
 using namespace SymtabAPI;

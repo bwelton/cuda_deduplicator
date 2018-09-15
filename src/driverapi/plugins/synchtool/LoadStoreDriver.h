@@ -13,6 +13,8 @@ public:
 	bool ShouldSignalSync(bool inSync);
 	void SyncCalled();
 	void SignalSync();
+	void RecordAccessRange(uint64_t id, uint64_t addr, uint64_t count);
+	
 private:
 	std::vector<uint64_t> _storedStack;
 	std::vector<uint64_t> _stackAtSync;

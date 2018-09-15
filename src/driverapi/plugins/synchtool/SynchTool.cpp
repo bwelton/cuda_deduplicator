@@ -1,5 +1,6 @@
 #include "SynchTool.h"
 volatile int exited = 0;
+volatile int inSpecialCase = 0;
 std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
@@ -9,14 +10,26 @@ volatile int justChecking = 8;
 extern "C" {
 
 
+static gotcha_wrappee_t memcpyWrapper_handle;
+static void * memcpyWrapper(void * dest, void * src, size_t count);
+struct gotcha_binding_t funcBinders[] = { {"memcpy",memcpyWrapper,&memcpyWrapper_handle}};
+
+
 	void INIT_SYNC_COMMON() {
 		if(exited == 1)
 			return;
 		if (_dataAccessManager.get() != NULL)
 			return;
+		// gotcha_set_priority("cuda/specialcases", 1);
+		// int result = gotcha_wrap(gotfuncs, 1, "cuda/specialcases");
+		// assert(result == GOTCHA_SUCCESS);
 		_dataAccessManager.reset(new CheckAccesses());
 		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager));
 		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
+	}
+	void * memcpyWrapper(void * dest, void * src, size_t count) {
+		INIT_SYNC_COMMON();
+		inSpecialCase = 1;
 	}
 
 	void RECORD_FUNCTION_ENTRY(uint64_t id) {
@@ -60,7 +73,7 @@ extern "C" {
 		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
-		if(exited == 1)
+		if(exited == 1 || inSpecialCase == 1)
 			return;
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)

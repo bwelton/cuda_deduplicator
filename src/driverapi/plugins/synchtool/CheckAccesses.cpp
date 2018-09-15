@@ -45,7 +45,24 @@ void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
 void CheckAccesses::SyncCalled() {
 	_prev = _current;
 	_memoryRangesPrev = _memoryRanges;
+	_current.clear();
 }
+
+bool CheckAccesses::IsAddressRangeProtected(uint64_t addr, uint64_t count) {
+	if (_doNotCheck)
+		return false;
+	for (auto i : _prev)
+		if(i.IsInRangeWithCount(addr,count))
+			return true;
+	for (auto mn : _memoryRangesPrev)
+		if ((addr >= mn->lower() && addr <= mn->upper()) || (addr <= mn->lower() && addr +count >= mn->lower()))
+			return true;
+	//for (auto i : _unifiedMemory)
+	//	if(i.IsInRange(addr))
+	//		return true;		
+	return false;
+}
+
 
 bool CheckAccesses::IsAddressProtected(uint64_t addr) {
 	if (_doNotCheck)

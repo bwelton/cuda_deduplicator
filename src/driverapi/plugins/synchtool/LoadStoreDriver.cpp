@@ -3,6 +3,18 @@
 LoadStoreDriver::LoadStoreDriver(CheckAccessesPtr access) : _firstSync(true), _syncTriggered(false), _firstWrite(true), _found(false), _access(access) {
 }
 
+void LoadStoreDriver::RecordAccessRange(uint64_t id, uint64_t addr, uint64_t count) {
+	if (_syncTriggered && !_found) {
+		if(_access->IsAddressRangeProtected(addr, count)) {
+			if (_firstWrite)
+				_writer.reset(new OutputWriter());
+			_firstWrite = false;
+			_writer->RecordAccess(id,_stackAtSync);
+			_found = true;
+		}
+	}
+}
+
 void LoadStoreDriver::RecordAccess(uint64_t id, uint64_t addr) {
 	if (_syncTriggered && !_found) {
 		if(_access->IsAddressProtected(addr)) {

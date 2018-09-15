@@ -14,8 +14,8 @@ INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/driverapi")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/deduplicate")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/driverapi/launcher")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/driverapi/plugins/common")
-target_link_libraries(DriverAPIWrapper "-L${GOTTCHA_LIBRARIES} -lgotcha" )
-INCLUDE_DIRECTORIES(DriverAPIWrapper ${GOTTCHA_INCLUDE})
+target_link_libraries(SynchTool "-L${GOTTCHA_LIBRARIES} -lgotcha" )
+INCLUDE_DIRECTORIES(SynchTool ${GOTTCHA_INCLUDE})
 target_link_libraries(SynchTool "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart -L${CUDA_TOOLKIT_ROOT_DIR}/extras/CUPTI/lib64 -lcupti -lboost_timer")
 install(TARGETS SynchTool
         RUNTIME DESTINATION bin

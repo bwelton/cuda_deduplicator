@@ -189,16 +189,28 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 }
 
 void LoadStoreInst::AddSpecialCase(std::string functionName, std::string libName, uint64_t id) {
-	std::vector<BPatch_object *> objects;
-	_img->getObjects(objects);
-	for (auto i : objects)
-		std::cerr << i->pathName() << std::endl;
+	// std::vector<BPatch_object *> objects;
+	// _img->getObjects(objects);
+	// for (auto i : objects)
+	// 	std::cerr << i->pathName() << std::endl;
+	std::vector<BPatch_function *> specFuncs;
+	_img->findFunction(functionName.c_str(), specFuncs);
+	for (auto i : specFuncs) {
+		std::cerr << i->getMangledName() << std::endl;
+	}
+
+
+
+
+
+
+
 	std::string specModule = libName;
 	BPatch_object * specObj = _dynOps.FindObjectByName(_addrSpace,  specModule, false);
 	uint64_t specID = id;
 	assert(specObj != NULL);
-	std::vector<BPatch_function *> specFuncs;
-	specObj->findFunction(functionName,specFuncs,false);
+
+	//specObj->findFunction(functionName,specFuncs,false);
 	BPatch_function * actual = NULL;
 	for (auto i : specFuncs) {
 		std::cerr << i->getMangledName() << std::endl;

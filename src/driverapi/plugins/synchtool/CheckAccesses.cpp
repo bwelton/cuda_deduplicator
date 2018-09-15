@@ -55,7 +55,7 @@ bool CheckAccesses::IsAddressRangeProtected(uint64_t addr, uint64_t count) {
 		if(i.IsInRangeWithCount(addr,count))
 			return true;
 	for (auto mn : _memoryRangesPrev)
-		if ((addr >= mn->lower() && addr <= mn->upper()) || (addr <= mn->lower() && addr +count >= mn->lower()))
+		if ((addr >= mn.lower() && addr <= mn.upper()) || (addr <= mn.lower() && addr +count >= mn.lower()))
 			return true;
 	//for (auto i : _unifiedMemory)
 	//	if(i.IsInRange(addr))

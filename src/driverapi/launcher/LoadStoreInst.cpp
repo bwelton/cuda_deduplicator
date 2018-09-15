@@ -189,6 +189,10 @@ void LoadStoreInst::InsertLoadStoreSnippets(BPatch_function * func, std::vector<
 }
 
 void LoadStoreInst::AddSpecialCase(std::string functionName, std::string libName, uint64_t id) {
+	std::vector<BPatch_object *> objects;
+	_img->getObjects(objects);
+	for (auto i : objects)
+		std::cerr << i->pathName() << std::endl;
 	std::string specModule = libName;
 	BPatch_object * specObj = _dynOps.FindObjectByName(_addrSpace,  specModule, false);
 	uint64_t specID = id;

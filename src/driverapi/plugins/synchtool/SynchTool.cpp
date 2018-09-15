@@ -12,7 +12,7 @@ extern "C" {
 
 static gotcha_wrappee_handle_t memcpyWrapper_handle;
 static void * memcpyWrapper(void * dest, void * src, size_t count);
-struct gotcha_binding_t funcBinders[] = { {"memcpy",memcpyWrapper,&memcpyWrapper_handle}};
+struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcpyWrapper_handle}};
 
 
 	void INIT_SYNC_COMMON() {

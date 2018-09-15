@@ -10,7 +10,7 @@ volatile int justChecking = 8;
 extern "C" {
 
 
-static gotcha_wrappee_t memcpyWrapper_handle;
+static gotcha_wrappee_handle_t memcpyWrapper_handle;
 static void * memcpyWrapper(void * dest, void * src, size_t count);
 struct gotcha_binding_t funcBinders[] = { {"memcpy",memcpyWrapper,&memcpyWrapper_handle}};
 

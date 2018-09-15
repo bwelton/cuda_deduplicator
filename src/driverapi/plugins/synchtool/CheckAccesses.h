@@ -12,7 +12,7 @@ public:
 	void AddMemoryTransfer(MemoryRange & range);
 	void SyncCalled();
 	bool IsAddressProtected(uint64_t addr);
-	void IsAddressRangeProtected(uint64_t addr, uint64_t count);
+	bool IsAddressRangeProtected(uint64_t addr, uint64_t count);
 	void AddUnifiedMemRange(MemoryRange & range);
 	void RemoveUnifiedMemoryRange(MemoryRange & range);
 private:

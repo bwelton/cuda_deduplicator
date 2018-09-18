@@ -47,10 +47,10 @@ StackPoint BinaryLocationIDMap::BuildStackPoint(uint64_t id) {
 
 void BinaryLocationIDMap::DumpLocationMap(std::string outFile) {
 	std::ofstream dumpIDMap;
-	dumpIDMap.open("BinaryLoactionMap.txt", std::ofstream::out);
+	dumpIDMap.open(outFile.c_str(), std::ofstream::out);
 
-	std::for_each(_libnameToLibID.begin(), _libnameToLibID.end(), [&dumpIDMap](auto i) {dumpIDMap << i.first <<"," << i.second << std::endl});
+	std::for_each(_libnameToLibID.begin(), _libnameToLibID.end(), [&dumpIDMap](std::map<uint64_t,std::string>::iterator i) {dumpIDMap << i->first <<"," << i->second << std::endl});
 	dumpIDMap << "EndOfHeader" << std::endl;
-	std::for_each(_idToLibOffset.begin(), _idToLibOffset.end(), [&dumpIDMap](auto i) {dumpIDMap << i.first <<"," << i.second.first << "," << i.second.second << std::endl});
+	std::for_each(_idToLibOffset.begin(), _idToLibOffset.end(), [&dumpIDMap](std::map<uint64_t,std::pair<uint64_t, uint64_t>>::iterator i) {dumpIDMap << i->first <<"," << i->second.first << "," << i->second.second << std::endl});
 	dumpIDMap.close();
 }

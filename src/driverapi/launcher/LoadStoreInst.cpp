@@ -199,12 +199,6 @@ void LoadStoreInst::AddSpecialCase(std::string functionName, std::string libName
 		std::cerr << i->getMangledName() << std::endl;
 	}
 
-
-
-
-
-
-
 	std::string specModule = libName;
 	BPatch_object * specObj = _dynOps.FindObjectByName(_addrSpace,  specModule, false);
 	uint64_t specID = id;
@@ -213,7 +207,6 @@ void LoadStoreInst::AddSpecialCase(std::string functionName, std::string libName
 	//specObj->findFunction(functionName,specFuncs,false);
 	BPatch_function * actual = NULL;
 	for (auto i : specFuncs) {
-
 		std::cerr << i->getMangledName() << std::endl;
 		std::cerr << i->getModule()->getObject()->pathName() << std::endl;
 		if (i->getMangledName() == functionName){
@@ -264,6 +257,7 @@ void LoadStoreInst::FixLSStackFiles() {
 	// LS_trace.bin -> {LS_trace.bin, LS_tracekey.txt}
 	// LS_stackkey.bin -> LS_stackkey.txt
 	std::cerr << "Runing onetime code on exit of LS" << std::endl;
+	_binLoc.DumpLocationMap(std::string("LS_BinLoc.txt"));
 	ReadLoadStoreFiles tmp(&_binLoc);
 	tmp.OutputTraceKey(std::string("LS_trace.bin"), std::string("LS_tracekey.txt"));
 	tmp.CreateStackKey(std::string("LS_stackkey.bin"), std::string("LS_stackkey.txt"));

@@ -84,7 +84,7 @@ class ReadLSTraceBinary:
     def __init__(self):
         self._stacks = []
         f = open("LS_trace.bin","rb")
-        data = f.read()
+        self._data = f.read()
         f.close()
         self._pos = 0
         while self._pos < len(data):

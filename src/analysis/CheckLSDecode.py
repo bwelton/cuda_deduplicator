@@ -88,15 +88,15 @@ class ReadLSTraceBinary:
         f.close()
         self._pos = 0
         while self._pos < len(self._data):
-            tmp = struct.unpack_from("QQ", self._data, offset=self._pos)
+            tmp = list(struct.unpack_from("QQ", self._data, offset=self._pos))
             bstack = BinaryStack(int(tmp[1]))
             tmp[0] = tmp[0] - 8
             self._pos += 16
             while tmp[0] > 0:
-                entry = struct.unpack_from("Q", self._data, offset=self._pos)
+                entry = list(struct.unpack_from("Q", self._data, offset=self._pos))
                 tmp[0] = tmp[0] - 8
                 self._pos += 8
-                bstack.AddEntry(int(entry))
+                bstack.AddEntry(int(entry[0]))
             self._stacks.append(bstack)
     def GetStacks(self):
         return self._stacks

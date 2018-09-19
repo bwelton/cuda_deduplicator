@@ -27,8 +27,7 @@ std::map<uint64_t, std::vector<StackPoint> > ReadLoadStoreFiles::ReadKeyFile(std
 		while (size > 0)  {
 			fread(&locationId,1,sizeof(uint64_t), inFile);
 			std::cerr << "[ReadLoadStoreFiles] Stack Location ID: " << locationId << std::endl;
-			if (locationId < 500000)
-				ret[stackId].push_back(_map->BuildStackPoint(locationId));
+			ret[stackId].push_back(_map->BuildStackPoint(locationId));
 			size -= sizeof(uint64_t);
 			readCount += sizeof(uint64_t);
 		}
@@ -71,6 +70,7 @@ void ReadLoadStoreFiles::CreateStackKey(std::string inFile, std::string outFile)
 	FILE * out = fopen(outFile.c_str(), "wb");
 	StackKeyWriter writer(out);
 	for (auto i : keys) {
+		std::cerr << "Writing - " << i.first << " to file " << outFile << std::endl;
 		writer.InsertStack(i.first, i.second);
 	}
 }

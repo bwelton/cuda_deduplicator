@@ -10,6 +10,7 @@ void OutputWriter::RecordAccess(uint64_t id, std::vector<uint64_t> & currentStac
 	if (_prevStacks.find(hash) == _prevStacks.end()) {
 		_stackKeyFile->Write(_curPos, currentStack);
 		_prevStacks[hash] = _curPos;
+		_curPos++;
 	}
 	_accessFile->Write(id, _prevStacks[hash]);
 }

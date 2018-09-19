@@ -76,22 +76,26 @@ class BinaryStack:
     def ReturnStack(self, searchClassInst):
         ret = []
         for z in self._stack:
-            tmp = searchClassInst(z)
+            tmp = searchClassInst.GetStackPoint(z)
             ret.append(StackEntry(tmp[0],int(tmp[1])))
         return ret
 
 class ReadLSTraceBinary:
     def __init__(self):
         self._stacks = []
-        f = open("LS_trace.bin","rb")
+        f = open("LS_stackkey.bin","rb")
         self._data = f.read()
         f.close()
         self._pos = 0
-        while self._pos < len(self._data):
+        while self._pos + 8 < len(self._data):
             tmp = list(struct.unpack_from("QQ", self._data, offset=self._pos))
-            bstack = BinaryStack(int(tmp[1]))
+           
+	    bstack = BinaryStack(int(tmp[1]))
             tmp[0] = tmp[0] - 8
             self._pos += 16
+	    print self._pos
+	    print len(self._data)
+	    print tmp[0]
             while tmp[0] > 0:
                 entry = list(struct.unpack_from("Q", self._data, offset=self._pos))
                 tmp[0] = tmp[0] - 8
@@ -109,7 +113,7 @@ decodedStacks = test.GetAllStacks()
 print "What was returned by Diogenes C++: "
 for x in decodedStacks:
     print "Stack Start:"
-    for y in x.GetStack():
+    for y in decodedStacks[x].GetStack():
         print str(y)
 
 print "Direct Decoding: "

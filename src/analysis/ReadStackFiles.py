@@ -8,7 +8,7 @@ class StackEntry:
 
         ## remove the version number from the .so
         if self._libname.find(".so") != -1:
-            self._libname = self._libname[0:self._libname.find+3]
+            self._libname = self._libname[0:self._libname.find(".so")+3]
 
     def __eq__(self, other):
         if (str(self) == str(other)):

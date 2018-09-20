@@ -1,5 +1,6 @@
 import os
 import subprocess
+import os.path
 class StackEntry:
     def __init__(self, libname = "", offset = 0):
         self._libname = libname
@@ -7,8 +8,10 @@ class StackEntry:
         self._funcname = ""
 
         ## remove the version number from the .so
+
         if self._libname.find(".so") != -1:
-            self._libname = self._libname[0:self._libname.find(".so")+3]
+            if os.path.isfile(self._libname[0:self._libname.find(".so")+3]):
+                self._libname = self._libname[0:self._libname.find(".so")+3]
 
     def __eq__(self, other):
         if (str(self) == str(other)):
@@ -133,7 +136,7 @@ class Stack:
                     self._stack[index]._funcname = "Unknown"
                     continue
                 if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
-                    print a[1]
+                    print "Demangling - " + a[1]
                     lines = os.popen("/usr/bin/c++filt " + a[1]).read().splitlines()
                     if len(lines) == 0:
                         self._stack[index]._funcname = "Unknown"

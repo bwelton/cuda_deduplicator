@@ -42,6 +42,14 @@ class MatchTimeToLSStack:
         return True
 
 
+    def PruneLSStack(self,stack):
+        ret = []
+        for x in range(0, len(stack)):
+            if "libcuda.so." in stack[x]._libname:
+                continue
+            else:
+                ret.append(stack[x])
+        return ret
     def PruneStack(self, stack):
         ## Remove all elements at the beginning of the stack such as 
         ## startmain.
@@ -70,7 +78,7 @@ class MatchTimeToLSStack:
             individaulStack = tf_stacks[x].GetStack()
             pruned = self.PruneStack(individaulStack)
             for y in ls_stacks:
-                if self.CompareStacks(ls_stacks[y].GetStack(), pruned):
+                if self.CompareStacks(self.PruneLSStack(ls_stacks[y].GetStack()), pruned):
                     ret.append([tf_stacks[x]._ident,ls_stacks[y]._ident])
         print "MATCH SET"
         print ret

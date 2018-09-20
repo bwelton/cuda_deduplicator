@@ -133,6 +133,7 @@ class Stack:
                     self._stack[index]._funcname = "Unknown"
                     continue
                 if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
+                    print a[1]
                     lines = os.popen("/usr/bin/c++filt " + a[1]).read().splitlines()
                     if len(lines) == 0:
                         self._stack[index]._funcname = "Unknown"

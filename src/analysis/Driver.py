@@ -21,7 +21,7 @@ class MatchTimeToLSStack:
                 nextPos += 1
                 if x == tf[y]:
                     found = True
-                else if start != 0:
+                elif start != 0:
                     found = False
                     break
             if found == False:

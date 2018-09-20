@@ -1,7 +1,6 @@
 import sys
 import os
 import struct
-from sets import set
 from  ReadStackFiles import StackReader
 from LS_TraceBin import LS_TraceBin
 from TF_trace import TF_Trace

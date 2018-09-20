@@ -45,7 +45,7 @@ class MatchTimeToLSStack:
     def PruneLSStack(self,stack):
         ret = []
         for x in range(0, len(stack)):
-            if "libcuda.so." in stack[x]._libname:
+            if "libcuda.so" in stack[x]._libname:
                 continue
             else:
                 ret.append(stack[x])

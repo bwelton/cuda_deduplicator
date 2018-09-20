@@ -6,6 +6,10 @@ class StackEntry:
         self._offset = offset
         self._funcname = ""
 
+        ## remove the version number from the .so
+        if self._libname.find(".so") != -1:
+            self._libname = self._libname[0:self._libname.find+3]
+
     def __eq__(self, other):
         if (str(self) == str(other)):
             return True
@@ -152,8 +156,6 @@ class Stack:
 
 
         self._gotName = True
-
-
 
 
 def RemoveNewline(line):

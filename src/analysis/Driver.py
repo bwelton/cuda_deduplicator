@@ -70,7 +70,7 @@ class MatchTimeToLSStack:
             individaulStack = tf_stacks[x].GetStack()
             pruned = self.PruneStack(individaulStack)
             for y in ls_stacks:
-                if self.CompareStacks(ls_stacks[y], pruned):
+                if self.CompareStacks(ls_stacks[y].GetStack(), pruned):
                     ret.append([tf_stacks[x]._ident,ls_stacks[y]._ident])
         print "MATCH SET"
         print ret

@@ -1,6 +1,7 @@
 import sys
 import os
 import struct
+from sets import set
 from  ReadStackFiles import StackReader
 from LS_TraceBin import LS_TraceBin
 from TF_trace import TF_Trace
@@ -10,27 +11,56 @@ class MatchTimeToLSStack:
         self._tf = TF_timekey
         self._ls = LS_stackkey
 
-    def PruneTFStack(self, stack):
-        ret = stack._stack
-        ret = ret
-        return ret
-
-
     def CompareStacks(self, ls, tf):
         #ls stack will always be longer
-        for x in range(0,len(ls)):
+        start = 0
+        for x in ls:
             found = False
-            for y in range(0,len(tf)):
-                if ls[x] == tf[y]:
+            nextPos = start
+            for y in range(start, len(tf)):
+                nextPos += 1
+                if x == tf[y]:
                     found = True
+                else if start != 0:
+                    found = False
                     break
-            if (found == False):
+            if found == False:
                 return False
+            start = nextPos
+
+
+        # for x in range(0,len(ls)):
+        #     found = False
+        #     for y in range(0,len(tf)):
+        #         if ls[x] == tf[y]:
+        #             found = True
+        #             break
+        #     if (found == False):
+        #         return False
 
             #if str(ls[x]) != str(tf[x]):
             #    return False
         return True
 
+
+    def PruneStack(self, stack):
+        ## Remove all elements at the beginning of the stack such as 
+        ## startmain.
+        removeElements = []
+        for x in range(0, len(stack)):
+            if "/lib64/libc" in stack[x]._libname or "main" == stack[x]._funcname:
+                removeElements.append(x)
+            else:
+                break
+
+        removeElements = list(set(removeElements))
+        ret = []
+        for x in range(0, len(stack)):
+            if x in removeElements:
+                continue
+            else:
+                ret.append(stack[x])
+        return ret
 
     def GetMatchSet(self):
         # returns [(TFNum,LSNum)]
@@ -38,11 +68,11 @@ class MatchTimeToLSStack:
         tf_stacks = self._tf.GetAllStacks()
         ls_stacks = self._ls.GetAllStacks()
         for x in tf_stacks:
-            tmp = self.PruneTFStack(tf_stacks[x])
+            individaulStack = x.GetStack()
+            pruned = self.PruneStack(individaulStack)
             for y in ls_stacks:
-                tmp2 = ls_stacks[y]._stack
-                if self.CompareStacks(tmp2, tmp):
-                    ret.append([tf_stacks[x]._ident,ls_stacks[y]._ident])
+                if self.CompareStacks(y, pruned):
+                    ret.append([x._ident,y._ident])
         print "MATCH SET"
         print ret
         return ret
@@ -139,7 +169,6 @@ class ReadTransferCollisions:
     def DecodeRecord(self):
         if self._pos >= len(self._data):
             return None
-
         tmp = struct.unpack_from("QQQQ", self._data, offset=self._pos)
         self._pos += (8*4)
         return list(tmp)

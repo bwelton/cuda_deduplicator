@@ -14,8 +14,8 @@ class StackEntry:
                 self._libname = self._libname[0:self._libname.find(".so")+3]
 
     def __eq__(self, other):
-        if "libcudart.so" in self._libname:
-            if "libcudart.so" in other._libname:
+        if self._libname.split("/")[-1] == other._libname.split("/")[-1]:
+            if int(self._offset) == int(other._offset):
                 return True
         if (str(self) == str(other)):
             return True

@@ -5,5 +5,6 @@ install(FILES ${PROJECT_SOURCE_DIR}/src/analysis/Driver.py
 		${PROJECT_SOURCE_DIR}/src/analysis/ReadStackFiles.py
 		${PROJECT_SOURCE_DIR}/src/analysis/CheckLSDecode.py
 		${PROJECT_SOURCE_DIR}/src/analysis/CompareOutputs.py
+		${PROJECT_SOURCE_DIR}/src/analysis/MoveResults.py
 		${PROJECT_SOURCE_DIR}/src/analysis/cudaFunctions.txt
 		DESTINATION bin)

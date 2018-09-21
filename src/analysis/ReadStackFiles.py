@@ -8,7 +8,6 @@ class StackEntry:
         self._funcname = ""
 
         ## remove the version number from the .so
-
         if self._libname.find(".so") != -1:
             if os.path.isfile(self._libname[0:self._libname.find(".so")+3]) and "libc.so.6" not in self._libname:
                 self._libname = self._libname[0:self._libname.find(".so")+3]
@@ -146,7 +145,6 @@ class Stack:
                     self._stack[index]._funcname = "Unknown"
                     continue
                 if self._stack[index]._libname == a[0] and int(self._stack[index]._offset) == int(a[2],16):
-                    print "Demangling - " + a[1]
                     lines = os.popen("/usr/bin/c++filt " + a[1]).read().splitlines()
                     if len(lines) == 0:
                         self._stack[index]._funcname = "Unknown"

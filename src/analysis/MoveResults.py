@@ -9,14 +9,14 @@ inDirectory = sys.argv[1]
 outDirectory = sys.argv[2]
 
 for x in outputFiles:
-	shutil.rename(os.path.join(inDirectory, x), os.path.join(outDirectory,x))
+	shutil.move(os.path.join(inDirectory, x), os.path.join(outDirectory,x))
 
 for x in logFiles:
-	shutil.rename(os.path.join(inDirectory, x), os.path.join(outDirectory,x))
+	shutil.move(os.path.join(inDirectory, x), os.path.join(outDirectory,x))
 
 tmp = os.listdir(inDirectory)
 
 for x in tmp:
 	for y in appSpecific:
 		if y in x:
-			shutil.rename(os.path.join(inDirectory, x), os.path.join(outDirectory,x))
+			shutil.move(os.path.join(inDirectory, x), os.path.join(outDirectory,x))

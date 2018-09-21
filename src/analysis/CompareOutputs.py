@@ -20,6 +20,7 @@
 # LS_trace.bin -> md5sum
 import sys
 import md5
+import os
 
 checkWithMD5 = ["TF_timekey.bin", "TF_timekey.txt","DSTIME_stacks.bin", "DT_stacks.bin","DT_collisions.txt","CS_StackFile.txt","CS_HumanStacks.txt", "LS_stackkey.txt", "LS_tracekey.txt","LS_stackkey.bin","LS_trace.bin"]
 

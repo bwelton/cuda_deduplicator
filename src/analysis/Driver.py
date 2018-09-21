@@ -20,6 +20,7 @@ class MatchTimeToLSStack:
                 nextPos += 1
                 if x == tf[y]:
                     found = True
+                    break
                 elif start != 0:
                     found = False
                     break
@@ -54,10 +55,7 @@ class MatchTimeToLSStack:
         ## Remove all elements at the beginning of the stack such as 
         ## startmain.
         removeElements = []
-        print "Before Prune "
         for x in range(0, len(stack)):
-            print str(stack[x])
-            
             if "/lib64/libc" in stack[x]._libname or "main" == stack[x]._funcname:
                 removeElements.append(x)
             else:
@@ -70,9 +68,6 @@ class MatchTimeToLSStack:
                 continue
             else:
                 ret.append(stack[x])
-        print "Pruned Stack: "
-        for a in ret:
-            print str(a)
 
         return ret
 

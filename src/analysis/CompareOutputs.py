@@ -23,8 +23,8 @@ import md5
 
 checkWithMD5 = ["TF_timekey.bin", "TF_timekey.txt","DSTIME_stacks.bin", "DT_stacks.bin","DT_collisions.txt","CS_StackFile.txt","CS_HumanStacks.txt", "LS_stackkey.txt", "LS_tracekey.txt","LS_stackkey.bin","LS_trace.bin"]
 
-newRunFolder = sys.arg[1]
-baselineFolder = sys.arg[2]
+newRunFolder = sys.argv[1]
+baselineFolder = sys.argv[2]
 
 def ReturnHash(file):
 	f = open(file,"rb")

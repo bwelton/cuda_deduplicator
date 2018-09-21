@@ -35,10 +35,10 @@ void SyncTesting::CaptureDriverCalls() {
 		std::vector<std::string> pluginNames = {"libDriverAPITrace"};
 		CreatePluginFile(pluginNames);
 		std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
-		//base.RedirectOutToFile(_programName + std::string(".base.out"));
+		std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".apitrace.log"));
 		time = base.RunWithDriverAPITrace();
-		//base.ReturnToTerminal();
+		base.ReturnToTerminal();
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	}
 	// Write out the stack values that were saved to CS_StackFile.txt
@@ -51,11 +51,11 @@ void SyncTesting::CaptureDuplicateTransfers() {
 		TimeApplications base(_vm);
 		std::vector<std::string> pluginNames = {"libDataTransfer"};
 		CreatePluginFile(pluginNames);
-		std::cerr << "Running " << _programName << " with data transfer trace identify duplicate transfers" << std::endl;
-		//std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
-		//base.RedirectOutToFile(_programName + std::string(".base.out"));
+		std::cerr << "Running " << _programName << " with data transfer trace to identify duplicate transfers" << std::endl;
+		std::cerr << "Saving application output to file : " << _programName << ".datatransfer.log" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".datatransfer.log"));
 		time = base.RunWithDriverAPITrace();
-		//base.ReturnToTerminal();
+		base.ReturnToTerminal();
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	}
 	// Write out the stack values that were saved to CS_StackFile.txt
@@ -68,10 +68,10 @@ void SyncTesting::TimeTransfers() {
 		std::vector<std::string> pluginNames = {"libDataSyncTimer"};
 		CreatePluginFile(pluginNames);
 		std::cerr << "Running " << _programName << " with data transfer trace identify duplicate transfers" << std::endl;
-		//std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
-		//base.RedirectOutToFile(_programName + std::string(".base.out"));
+		std::cerr << "Saving application output to file : " << _programName << ".timetransfer.log" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".timetransfer.log"));
 		time = base.RunWithDriverAPITrace();
-		//base.ReturnToTerminal();
+		base.ReturnToTerminal();
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	}
 	// Write out the stack values that were saved to CS_StackFile.txt
@@ -84,9 +84,9 @@ void SyncTesting::Run() {
 		TimeApplications base(_vm);
 		std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
 		std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
-		//base.RedirectOutToFile(_programName + std::string(".base.out"));
+		base.RedirectOutToFile(_programName + std::string(".base.out"));
 		time = base.Run();
-		//base.ReturnToTerminal();
+		base.ReturnToTerminal();
 		_model.AddExecutionTime(time);
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	}
@@ -103,10 +103,10 @@ void SyncTesting::Run() {
 		system("exec rm -rf ./stackOut.*");
 		TimeApplications base(_vm);
 		std::cerr << "Running " << _programName << " with stacktrace information enabled" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".stacktrace.out" << std::endl;
-		//base.RedirectOutToFile(_programName + std::string(".stacktrace.out"));
+		std::cerr << "Saving application output to file : " << _programName << ".stacktrace.log" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".stacktrace.log"));
 		time = base.RunWithStackTracing();
-		//base.ReturnToTerminal();
+		base.ReturnToTerminal();
 		_model.AddExecutionTime(time);
 		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;		
 	}
@@ -122,8 +122,8 @@ void SyncTesting::Run() {
 	{
 		TimeApplications base(_vm);
 		std::cerr << "Running " << _programName << " with timing information enabled" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".time.out" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".time.out"));		
+		std::cerr << "Saving application output to file : " << _programName << ".time.log" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".time.log"));		
 		double mytime = base.InternalRunWithTiming(timingList);
 		base.ReturnToTerminal();
 		_model.AddExecutionTime(mytime);	
@@ -153,9 +153,11 @@ void SyncTesting::Run() {
 		TimeApplications base(_vm);
 		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 		std::map<uint64_t, StackRecord> stackSyncs = _model.GetTimingStackRecords();
-
+		std::cerr << "Saving application output to file : " << _programName << ".synchronization.log" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".synchronization.log"));	
 		//extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 		double time = base.RunWithLSInstrimentation(def, extras, timingList, stackSyncs);
+		base.ReturnToTerminal();
 		std::cerr << "[Base] We are setting up syncs checking with " << stackSyncs.size() << std::endl;
 		//_model.AddFirstUses(base._firstUses);
 	}
@@ -167,24 +169,14 @@ void SyncTesting::Run() {
 		TimeApplications base(_vm);
 		std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 		std::map<uint64_t, StackRecord> stackSyncs = _model.GetTimingStackRecords();
-
+		std::cerr << "Saving application output to file : " << _programName << ".firstUse.log" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".firstUse.log"));	
 		//extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 		double time = base.GetFirstUses(def, extras, timingList, stackSyncs);
+		base.ReturnToTerminal();
 		std::cerr << "[Base] We are setting up syncs checking with " << stackSyncs.size() << std::endl;
 		//_model.AddFirstUses(base._firstUses);
 	}
-	//_model.FixLSStackFiles();
-	// We are done running. Perform Analysis.
-	//_model.FinalProcessing();
-
-	// //GatherSynchronizationCalls();
-	// std::cerr << "Launcher has identified the following synchronoization calls" << std::endl;
-	// for(auto i : _syncCalls) {
-	// 	std::cerr << "\t" << i << std::endl;
-	// }
-	// GatherSynchronizationDelay();
-	// InstrumentProgram();
-	// RunWithLoadStoreAnalysis();
 }
 
 void SyncTesting::ReadDefinition(std::string WrapperDef) {

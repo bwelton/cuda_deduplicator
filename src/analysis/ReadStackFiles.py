@@ -14,7 +14,7 @@ class StackEntry:
                 self._libname = self._libname[0:self._libname.find(".so")+3]
 
     def __eq__(self, other):
-        st = "Comparing " + str(self) + " to " str(other) + " - "
+        st = "Comparing " + str(self) + " to " + str(other) + " - "
         if self._libname.split("/")[-1] == other._libname.split("/")[-1]:
             if int(self._offset) == int(other._offset):
                 st += " MATCH"

@@ -24,6 +24,6 @@ void GetFilesInDirectory(std::string & dir, std::vector<std::string> & files) {
 	while ((dp = readdir (d)) != NULL) {
 		boost::filesystem::path ret(dir);
 		ret /= dp->d_name;
-		files.push_back(dir.string());
+		files.push_back(ret.string());
 	}
 }

@@ -78,6 +78,7 @@ std::string LocateCudaSynchronization::GetMD5Sum(boost::filesystem::path file) {
     #ifdef DEBUG_LOCATECUDA
     std::cout << "[LocateCudaSynchronization::GetMD5Sum] Hash Value Calculated for " << ret.string() << std::endl << "\t\t" << ret << std::endl;
     #endif
+    return ret;
 }
 
 

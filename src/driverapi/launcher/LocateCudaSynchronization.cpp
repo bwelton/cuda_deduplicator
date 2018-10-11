@@ -64,7 +64,7 @@ std::string LocateCudaSynchronization::GetMD5Sum(boost::filesystem::path ret) {
     if(fstat(fd, &statbuf) < 0) return std::string("");	
     size_t fileSize = statbuf.st_size;
 
-    char * file_buf = mmap(0, fileSize, PROT_READ, MAP_SHARED, fd, 0);
+    char * file_buf = (char *) mmap(0, fileSize, PROT_READ, MAP_SHARED, fd, 0);
     MD5((const unsigned char *) file_buf, fileSize, result);
     munmap(file_buf, fileSize);
     close(fd);
@@ -73,7 +73,7 @@ std::string LocateCudaSynchronization::GetMD5Sum(boost::filesystem::path ret) {
     for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
     	ss << std::setfill('0') << std::setw(2) << std::hex << (int)(result[i]);
     }
-    str::string ret = ss.str();
+    std::string ret = ss.str();
     std::transform(ret.begin(), ret.end(), ret.begin(), ::tolower);
     #ifdef DEBUG_LOCATECUDA
     std::cout << "[LocateCudaSynchronization::GetMD5Sum] Hash Value Calculated for " << ret.string() << std::endl << "\t\t" << ret << std::endl;

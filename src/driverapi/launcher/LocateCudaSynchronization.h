@@ -2,7 +2,6 @@
 #include <string>
 #include <map>
 #include <sstream> 
-#include <ifstream>
 #include <cstdlib>
 #include <sys/types.h>
 #include <dirent.h>
@@ -10,6 +9,7 @@
 #include <boost/filesystem.hpp>
 #include <openssl/md5.h>
 #include <iostream>
+#include <fstream>
 #include "Common.h"
 
 class LocateCudaSynchronization {

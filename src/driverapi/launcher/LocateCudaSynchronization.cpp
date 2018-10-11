@@ -48,15 +48,15 @@ std::map<std::string, uint64_t> LocateCudaSynchronization::ReadDriverList() {
 	}	
 }
 
-std::string LocateCudaSynchronization::GetMD5Sum(boost::filesystem::path ret) {
+std::string LocateCudaSynchronization::GetMD5Sum(boost::filesystem::path file) {
 	/**
-	 * Get the md5sum of the file supplied in ret. returns a string repre
+	 * Get the md5sum of the file supplied in file. returns a string repre
 	 */
     #ifdef DEBUG_LOCATECUDA
-    std::cout << "[LocateCudaSynchronization::GetMD5Sum] Hashing libcuda at location: " << ret.string() << std::endl;
+    std::cout << "[LocateCudaSynchronization::GetMD5Sum] Hashing libcuda at location: " << file.string() << std::endl;
     #endif
 	unsigned char result[MD5_DIGEST_LENGTH];
-	int fd = open(ret.string().c_str(), O_RDONLY);
+	int fd = open(file.string().c_str(), O_RDONLY);
 	if (fd == -1 )
 		return std::string("");
 

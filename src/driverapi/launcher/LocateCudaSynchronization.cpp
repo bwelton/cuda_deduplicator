@@ -65,7 +65,7 @@ std::string LocateCudaSynchronization::GetMD5Sum(boost::filesystem::path ret) {
     size_t fileSize = statbuf.st_size;
 
     char * file_buf = mmap(0, fileSize, PROT_READ, MAP_SHARED, fd, 0);
-    MD5((const char *) file_buf, fileSize, result);
+    MD5((const unsigned char *) file_buf, fileSize, result);
     munmap(file_buf, fileSize);
     close(fd);
 

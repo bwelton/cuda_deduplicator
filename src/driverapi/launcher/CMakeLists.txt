@@ -37,5 +37,9 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/CallTracingModules.skip"
 	"${CMAKE_INSTALL_PREFIX}/lib/CallTracingModules.skip"
 )
+configure_file (
+    "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/SyncDriverVerisons.txt"
+    "${CMAKE_INSTALL_PREFIX}/lib/SyncDriverVerisons.txt"
+)
 install(TARGETS LaunchCUInstriment
         RUNTIME DESTINATION bin)

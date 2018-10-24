@@ -14,7 +14,7 @@ def BackupFile(filename):
 
 def SetupLoadStoreModules():
 	print "Setting up LoadStoreModules.inst file"
-	in = raw_input("What modules do you want to instriment (CSV List)? ")
+	in = raw_input("What modules do you want to instriment (CSV List): ")
 	tmp = in.split(",")
 	BackupFile("LoadStoreFunctions.inst")
 	f = open("LoadStoreFunctions.inst", "w")

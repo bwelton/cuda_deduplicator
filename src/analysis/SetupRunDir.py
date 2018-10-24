@@ -16,8 +16,8 @@ def SetupLoadStoreModules():
 	print "Setting up LoadStoreModules.inst file"
 	inp = raw_input("What modules do you want to instriment (CSV List): ")
 	tmp = inp.split(",")
-	BackupFile("LoadStoreFunctions.inst")
-	f = open("LoadStoreFunctions.inst", "w")
+	BackupFile("LoadStoreModules.inst")
+	f = open("LoadStoreModules.inst", "w")
 	for x in tmp:
 		f.write(x + "\n")
 
@@ -32,6 +32,7 @@ def SetupSettingINIFile():
 	f.write("prog = " + tmp +"\n")
 	f.close()
 
+
 def CopyLaunchScripts():
 	print "Copying launch scripts..."
 	if "DIOGENES_LAUNCH_SCRIPTS" not in os.environ:
@@ -39,6 +40,9 @@ def CopyLaunchScripts():
 		exit(1)
 	copyfile(os.path.join(os.environ["DIOGENES_LAUNCH_SCRIPTS"],"launchInteractive.sh"), "launchInteractive.sh")
 	copyfile(os.path.join(os.environ["DIOGENES_LAUNCH_SCRIPTS"],"setupEnv.sh"), "setupEnv.sh")
+	copyfile(os.path.join(os.environ["DIOGENES_LAUNCH_SCRIPTS"],"run.sh"), "run.sh")
+	os.system("mkdir logs")
+
 
 CopyLaunchScripts()
 SetupSettingINIFile()

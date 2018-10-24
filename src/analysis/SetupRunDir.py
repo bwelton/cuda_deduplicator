@@ -29,7 +29,7 @@ def SetupSettingINIFile():
 	f = open("settings.ini","w")
 	f.write("synch = true\n")
 	tmp = raw_input("Enter CMD Line used to launch program: ")
-	f.write(tmp +"\n")
+	f.write("prog = " + tmp +"\n")
 	f.close()
 
 def CopyLaunchScripts():

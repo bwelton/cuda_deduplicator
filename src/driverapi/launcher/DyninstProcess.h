@@ -8,6 +8,10 @@
 #include <iostream>
 #include <memory>
 #include <algorithm>
+
+#include "DynOpsClass.h"
+#include "Common.h"
+
 // Dyninst includes
 #include "CodeObject.h"
 #include "CFG.h"

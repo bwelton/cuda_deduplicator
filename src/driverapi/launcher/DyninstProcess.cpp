@@ -1,7 +1,7 @@
 #include "DyninstProcess.h"
 static BPatch bpatch;
 DyninstProcess::DyninstProcess(boost::program_options::variables_map vm, bool debug) {
-	_vm(vm);
+	_vm = vm;
 	_ops.reset(new DynOpsClass());
 	_debug = debug;
 	_aspace = NULL;
@@ -47,7 +47,7 @@ BPatch_object * DyninstProcess::LoadLibrary(std::string library) {
 	}
 
 	// Not already loaded, return a new loaded library.
-	return appProc->loadLibrary(library);
+	return appProc->loadLibrary(library.c_str());
 }
 
 bool DyninstProcess::RunUntilCompleation() {
@@ -62,7 +62,7 @@ bool DyninstProcess::RunUntilCompleation() {
 	appProc->continueExecution();
 	while(!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
-		_appProc->continueExecution();
+		appProc->continueExecution();
 	}
 	return true;
 }
@@ -122,6 +122,7 @@ BPatch_addressSpace * DyninstProcess::LaunchProcess() {
 }
 
 
+
 BPatch_addressSpace * DyninstProcess::LaunchMPIProcess() {
 	/** 
 	 * Launches an MPI Process. This is fundamentally different from launching 
@@ -141,7 +142,7 @@ BPatch_addressSpace * DyninstProcess::LaunchMPIProcess() {
 	for (int i = 0; i < progName.size(); i++) {
 		argv[i] = strdup(progName[i].c_str());
 		if (i > 1 && appPosition == -1) {
-			if (exists_test(progName[i])) {
+			if (CheckIfFileExists(progName[i])) {
 				appPosition = i;
 			}
 		}

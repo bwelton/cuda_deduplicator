@@ -12,6 +12,10 @@ void StringSplit(const std::string &s, char delim, std::vector<std::string> & re
         result.push_back(item);
     }
 }
+bool CheckIfFileExists (const std::string& name) {
+    std::ifstream f(name.c_str());
+    return f.good();
+}
 
 void GetFilesInDirectory(std::string & dir, std::vector<std::string> & files) {
 	/** 

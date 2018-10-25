@@ -10,7 +10,7 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/Constants.h.in"
 	"${PROJECT_SOURCE_DIR}/src/driverapi/launcher/Constants.h"
 )
-add_executable(LaunchCUInstriment "main.cpp" "ProcessControl.cpp" "TimeApplications.cpp" "SyncTesting.cpp" "LoadStoreInst.cpp" "PerformanceModel.cpp" "SymbolLookup.cpp" "StacktraceInst.cpp" "StackStorage.cpp" "DynOpsClass.cpp" "BinaryLocationIDMap.cpp" "InstrimentationTracker.cpp" "ReadLoadStoreFiles.cpp" "TimeFirstUse.cpp" "Common.cpp" "LocateCudaSynchronization.cpp")
+add_executable(LaunchCUInstriment "main.cpp" "ProcessControl.cpp" "TimeApplications.cpp" "SyncTesting.cpp" "LoadStoreInst.cpp" "PerformanceModel.cpp" "SymbolLookup.cpp" "StacktraceInst.cpp" "StackStorage.cpp" "DynOpsClass.cpp" "BinaryLocationIDMap.cpp" "InstrimentationTracker.cpp" "ReadLoadStoreFiles.cpp" "TimeFirstUse.cpp" "Common.cpp" "LocateCudaSynchronization.cpp" "DyninstProcess.cpp")
 target_link_libraries(LaunchCUInstriment ${DYNINST_LIBRARIES})
 target_link_libraries(LaunchCUInstriment ${Boost_LIBRARIES})
 target_link_libraries(LaunchCUInstriment "-lpthread")

@@ -130,6 +130,13 @@ Dyninst::InstructionAPI::Instruction::Ptr DynOpsClass::FindInstructionAtPoint(BP
 	return NULL;
 }
 
+std::vector<BPatch_object *> DynOpsClass::GetObjects(BPatch_addressSpace * aspace) {
+	BPatch_image * _img = aspace->getImage();
+	std::vector<BPatch_object *> objects;
+	img->getObjects(objects);
+	return objects;
+}
+
 
 bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * point, uint64_t & addr, bool addInstSize) {
 	if (point->getFunction() == NULL)

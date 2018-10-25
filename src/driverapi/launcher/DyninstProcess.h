@@ -8,6 +8,8 @@
 #include <iostream>
 #include <memory>
 #include <algorithm>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "DynOpsClass.h"
 #include "Common.h"
@@ -46,7 +48,7 @@ public:
 	DyninstProcess(boost::program_options::variables_map vm, bool debug);
 	BPatch_addressSpace * LaunchProcess();
 	BPatch_addressSpace * GetAddressSpace();
-	bool RunUntilCompleation();
+	bool RunUntilCompleation(std::string filename = std::string(""));
 	BPatch_object * LoadLibrary(std::string library);
 	void SetDynOps(std::shared_ptr<DynOpsClass> ops);
 	std::shared_ptr<DynOpsClass> ReturnDynOps();

@@ -28,19 +28,33 @@ void SyncTesting::DecodeStack(std::string infile, std::string outfile) {
 	_model.TranslateStackfile(infile, outfile);
 }
 
+std::shared_ptr<DyninstProcess> SyncTesting::LaunchApplication(bool debug) {
+	std::shared_ptr<DyninstProcess> ret(new DyninstProcess(_vm, debug));
+	assert(ret->LaunchProcess() != NULL);
+
+	// Load libcuda.so into the address space of the process
+	ret->LoadLibrary(std::string("libcuda.so"));
+	return ret;
+}
+
 void SyncTesting::CaptureDriverCalls() {
-	{
-		double time;
-		TimeApplications base(_vm);
-		std::vector<std::string> pluginNames = {"libDriverAPITrace"};
-		CreatePluginFile(pluginNames);
-		std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".apitrace.log"));
-		time = base.RunWithDriverAPITrace();
-		base.ReturnToTerminal();
-		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
-	}
+	
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+
+	
+
+	// {
+	// 	double time;
+	// 	TimeApplications base(_vm);
+	// 	std::vector<std::string> pluginNames = {"libDriverAPITrace"};
+	// 	CreatePluginFile(pluginNames);
+	// 	std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
+	// 	std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
+	// 	base.RedirectOutToFile(_programName + std::string(".apitrace.log"));
+	// 	time = base.RunWithDriverAPITrace();
+	// 	base.ReturnToTerminal();
+	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	// }
 	// Write out the stack values that were saved to CS_StackFile.txt
 	_model.WriteStackFile(std::string("CS_StackFile.txt"), std::string("CS_HumanStacks.txt"));
 }

@@ -21,6 +21,7 @@
 #include <mutex>
 #include <fstream>
 #include <boost/program_options.hpp>
+#include "DyninstProcess.h"
 #include "ProcessControl.h"
 #include "TimeApplications.h"
 #include "PerformanceModel.h"
@@ -49,6 +50,7 @@ public:
 	void DecodeStack(std::string infile, std::string outfile);
 	void CaptureDuplicateTransfers();
 	void TimeTransfers();
+	std::shared_ptr<DyninstProcess> LaunchApplication(bool debug);
 private:
 	std::set<std::string> _syncCalls; 
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapperDefFunctions;

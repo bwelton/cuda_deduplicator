@@ -50,11 +50,22 @@ BPatch_object * DyninstProcess::LoadLibrary(std::string library) {
 	return appProc->loadLibrary(library.c_str());
 }
 
-bool DyninstProcess::RunUntilCompleation() {
+bool DyninstProcess::RunUntilCompleation(std::string filename) {
+	int terminal_stdout, terminal_stderr;
 	/**
 	 * Run the process until it finishes.
 	 */
 	BPatch_process * appProc = dynamic_cast<BPatch_process*>(_aspace);
+
+	if (filename != std::string("")){
+		// Capture applicaiton stdout/stderr
+		terminal_stdout = dup(fileno(stdout));
+		terminal_stderr = dup(fileno(stderr));
+		remove(filename.c_str());
+		freopen(filename.c_str(),"w",stdout);
+		dup2(fileno(stdout), fileno(stderr));		
+	}
+
 	if (_MPIProc) {
 		appProc->continueExecution();
 		appProc->continueExecution();
@@ -63,6 +74,14 @@ bool DyninstProcess::RunUntilCompleation() {
 	while(!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
 		appProc->continueExecution();
+	}
+
+	// Return stderr/out to terminal.
+	if (filename != std::string("")){
+		dup2(terminal_stdout, fileno(stdout));
+		dup2(terminal_stderr, fileno(stderr));
+		close(terminal_stderr);
+		close(terminal_stdout);			
 	}
 	return true;
 }

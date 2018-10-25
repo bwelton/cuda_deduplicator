@@ -40,14 +40,16 @@ std::shared_ptr<DyninstProcess> SyncTesting::LaunchApplication(bool debug) {
 void SyncTesting::CaptureDriverCalls() {
 	
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
-
+	std::vector<std::string> pluginNames = {"libDriverAPITrace"};
+	CreatePluginFile(pluginNames);	
+	std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
+	std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
 	
-
 	// {
 	// 	double time;
 	// 	TimeApplications base(_vm);
-	// 	std::vector<std::string> pluginNames = {"libDriverAPITrace"};
-	// 	CreatePluginFile(pluginNames);
+		// std::vector<std::string> pluginNames = {"libDriverAPITrace"};
+		// CreatePluginFile(pluginNames);
 	// 	std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
 	// 	std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
 	// 	base.RedirectOutToFile(_programName + std::string(".apitrace.log"));

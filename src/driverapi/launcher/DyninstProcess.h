@@ -52,6 +52,7 @@ public:
 	BPatch_object * LoadLibrary(std::string library);
 	void SetDynOps(std::shared_ptr<DynOpsClass> ops);
 	std::shared_ptr<DynOpsClass> ReturnDynOps();
+	void BeginInsertionSet();
 private:
 	bool IsMPIProgram();
 	BPatch_addressSpace * LaunchMPIProcess();
@@ -60,4 +61,5 @@ private:
 	bool _MPIProc;
 	BPatch_addressSpace * _aspace;
 	boost::program_options::variables_map _vm;
+	bool _openInsertions;
 };

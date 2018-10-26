@@ -65,6 +65,13 @@ public:
 	std::vector<BPatch_object *> GetObjects(BPatch_addressSpace * aspace);
 	BPatch_function * GetPOWERFunction(BPatch_function * function);
 	std::vector<BPatch_function*> FindFunctionsByLibnameOffset(BPatch_addressSpace * aspace, std::string libname, uint64_t offset, bool exact);
+	
+	// New replacement functions
+	void PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function * & funcToCheck);
+	std::vector<BPatch_function *> FindFuncsInObjectByName(BPatch_addressSpace * aspace, BPatch_object * obj, std::string name);
+	std::vector<BPatch_function *> FindFuncsByName(BPatch_addressSpace * aspace, std::string name, BPatch_object * obj = NULL);
+
+
 private:
 	std::map<uint64_t, BPatch_function *> _powerFuncmap;
 	bool init;

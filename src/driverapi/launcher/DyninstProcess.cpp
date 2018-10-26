@@ -6,6 +6,7 @@ DyninstProcess::DyninstProcess(boost::program_options::variables_map vm, bool de
 	_debug = debug;
 	_aspace = NULL;
 	_MPIProc = false;
+	_openInsertions = false;
 }
 
 void DyninstProcess::SetDynOps(std::shared_ptr<DynOpsClass> ops) {
@@ -14,6 +15,13 @@ void DyninstProcess::SetDynOps(std::shared_ptr<DynOpsClass> ops) {
 
 std::shared_ptr<DynOpsClass> DyninstProcess::ReturnDynOps() {
 	return _ops;
+}
+
+void DyninstProcess::BeginInsertionSet() {
+	if (_openInsertions)
+		return;
+	_aspace->beginInsertionSet();
+	_openInsertions = true;
 }
 
 BPatch_object * DyninstProcess::LoadLibrary(std::string library) {
@@ -55,6 +63,9 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 	/**
 	 * Run the process until it finishes.
 	 */
+	if (_openInsertions)
+		_aspace->finalizeInsertionSet(false);
+
 	BPatch_process * appProc = dynamic_cast<BPatch_process*>(_aspace);
 
 	if (filename != std::string("")){

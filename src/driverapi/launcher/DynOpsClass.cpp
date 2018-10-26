@@ -16,6 +16,42 @@ int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_funct
 }
 
 
+void DynOpsClass::PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function * & funcToCheck) {
+	BPatch_image * _img = addr->getImage();
+	std::vector<BPatch_function *> ret;
+	_img->findFunction(funcToCheck->getBaseAddr() + 0x8, ret);
+	assert(ret.size() > 0)
+	if (ret.size() == 1)
+		return;
+	// there should never be 3 functions at +0x8. If there is, something will screw up with instrimentation
+	assert(ret.size() == 2);
+
+	if (ret[0]->getBaseAddr() == funcToCheck->getBaseAddr() + 0x8)
+		funcToCheck = ret[0];
+	else if (ret[1]->getBaseAddr() == funcToCheck->getBaseAddr() + 0x8)
+		funcToCheck = ret[1];
+
+}
+
+std::vector<BPatch_function *> DynOpsClass::FindFuncsInObjectByName(BPatch_addressSpace * aspace, BPatch_object * obj, std::string name) {
+	std::vector<BPatch_function *> ret;
+	obj->findFunction(name, ret);
+	for (auto & i : ret)
+	 	PowerFunctionCheck(aspace, i);
+	return ret;
+}
+
+std::vector<BPatch_function *> DynOpsClass::FindFuncsByName(BPatch_addressSpace * aspace, std::string name, BPatch_object * obj) {
+	if (obj != NULL)
+		return FindFuncsInObjectByName(aspace, name, obj);
+	BPatch_image * img = aspace->getImage();
+	std::vector<BPatch_function *> ret;
+	img->findFunction(name.c_str(), ret);
+	for (auto & i : ret)
+	 	PowerFunctionCheck(aspace, i);
+	return ret;
+}
+
 void DynOpsClass::SetupPowerMap(BPatch_addressSpace * addr) {
 	if (init)
 		return;

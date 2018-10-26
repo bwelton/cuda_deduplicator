@@ -33,7 +33,7 @@ std::shared_ptr<DyninstProcess> SyncTesting::LaunchApplication(bool debug) {
 	assert(ret->LaunchProcess() != NULL);
 
 	// Load libcuda.so into the address space of the process
-	ret->LoadLibrary(std::string("libcuda.so"));
+	ret->LoadLibrary(std::string("libcuda.so.1"));
 	return ret;
 }
 
@@ -44,7 +44,8 @@ void SyncTesting::CaptureDriverCalls() {
 	CreatePluginFile(pluginNames);	
 	std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
 	std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
-	
+
+
 	// {
 	// 	double time;
 	// 	TimeApplications base(_vm);

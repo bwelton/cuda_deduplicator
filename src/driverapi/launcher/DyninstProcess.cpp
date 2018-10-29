@@ -69,14 +69,14 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 
 	BPatch_process * appProc = dynamic_cast<BPatch_process*>(_aspace);
 
-	if (filename != std::string("")){
-		// Capture applicaiton stdout/stderr
-		terminal_stdout = dup(fileno(stdout));
-		terminal_stderr = dup(fileno(stderr));
-		remove(filename.c_str());
-		freopen(filename.c_str(),"w",stdout);
-		dup2(fileno(stdout), fileno(stderr));		
-	}
+	// if (filename != std::string("")){
+	// 	// Capture applicaiton stdout/stderr
+	// 	terminal_stdout = dup(fileno(stdout));
+	// 	terminal_stderr = dup(fileno(stderr));
+	// 	remove(filename.c_str());
+	// 	freopen(filename.c_str(),"w",stdout);
+	// 	dup2(fileno(stdout), fileno(stderr));		
+	// }
 
 	if (_MPIProc) {
 		appProc->continueExecution();
@@ -87,22 +87,23 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 	// 	appProc->continueExecution();
 	// }
 	while(!appProc->isTerminated()) {
-		std::cerr << "Iteration of Termination loop" << std::endl;
+		//std::cerr << "Iteration of Termination loop" << std::endl;
 		bpatch.waitForStatusChange();
+		sleep(2);
 		if (appProc->isStopped())
 			if(appProc->isTerminated())
 				break;
-		//assert(appProc->continueExecution() == true);
+		assert(appProc->continueExecution() == true);
 	}
 
 
 	// Return stderr/out to terminal.
-	if (filename != std::string("")){
-		dup2(terminal_stdout, fileno(stdout));
-		dup2(terminal_stderr, fileno(stderr));
-		close(terminal_stderr);
-		close(terminal_stdout);			
-	}
+	// if (filename != std::string("")){
+	// 	dup2(terminal_stdout, fileno(stdout));
+	// 	dup2(terminal_stderr, fileno(stderr));
+	// 	close(terminal_stderr);
+	// 	close(terminal_stdout);			
+	// }
 	return true;
 }
 

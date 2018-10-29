@@ -156,12 +156,12 @@ bool InstrimentationTracker::ShouldInstrimentPoint(BPatch_function * func, InstT
 
 bool InstrimentationTracker::ShouldInstrimentInstruction(BPatch_point * point) {
 	if ((uint64_t)point->getAddress() == 0x102b3308)
-		std::cerr << "MYPOINTISHERE - " <<  point->getInsnAtPoint()->format() << std::endl;
-	if (point->getInsnAtPoint() == NULL){
+		std::cerr << "MYPOINTISHERE - " <<  point->getInsnAtPoint().format() << std::endl;
+	if (point->getInsnAtPoint().isValid() == false){
 		std::cerr << "[InstrimentationTracker::ShouldInstrimentInstruction] Could not get instruction at " << std::hex << point->getAddress() << std::endl;
 		return true;		
 	}
-	std::string tmp =  point->getInsnAtPoint()->format();
+	std::string tmp =  point->getInsnAtPoint().format();
     std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
     // Reservation Instructions
 	if (tmp.find("lwarx") != std::string::npos || 
@@ -240,9 +240,9 @@ uint64_t GetContiguousSize(BPatch_function * func) {
     		nextBlockAddr = i->getLastInsnAddress();
     		break;
     	}
-   if (func->getSize() > std::abs(nextBlockAddr - entry[pos]->getStartAddress()))
+   if (uint64_t(func->getFootprint()) > std::abs(nextBlockAddr - entry[pos]->getStartAddress()))
    		return std::abs(nextBlockAddr - entry[pos]->getStartAddress());
-   return func->getSize();
+   return uint64_t(func->getFootprint());
 }	
 
 bool CheckForPreamble(BPatch_function * func) {
@@ -250,12 +250,12 @@ bool CheckForPreamble(BPatch_function * func) {
     std::vector<BPatch_basicBlock *> entry;
     if (fg->getEntryBasicBlock(entry) != true)
     	assert(fg->getEntryBasicBlock(entry) == true);
-    std::vector<std::pair<Dyninst::InstructionAPI::Instruction::Ptr, Dyninst::Address> > instructions;
+    std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructions;
     entry[0]->getInstructions(instructions);
     if (instructions.size() < 2) 
     	return true;
-    if ((instructions[0].first->format().find("lis R2") != std::string::npos && instructions[1].first->format().find("addi R2") != std::string::npos) ||
-        (instructions[0].first->format().find("addis R2") != std::string::npos && instructions[1].first->format().find("addi R2") != std::string::npos)) {
+    if ((instructions[0].first.format().find("lis R2") != std::string::npos && instructions[1].first.format().find("addi R2") != std::string::npos) ||
+        (instructions[0].first.format().find("addis R2") != std::string::npos && instructions[1].first.format().find("addi R2") != std::string::npos)) {
       return true; 
     }
     // if(func->getAddSpace()->findFunctionByAddr((void*)(((uint64_t) func->getBaseAddr()) + 0x8)))
@@ -286,7 +286,7 @@ void InstrimentationTracker::PowerFunctionFix(std::vector<BPatch_function*> & fu
 			continue;
 		} 
 		// Check the size
-		if(i.second->getSize() < (0x4 * 6) || GetContiguousSize(i.second) < (0x4 * 6)) {
+		if(uint64_t(i.second->getFootprint()) < (0x4 * 6) || GetContiguousSize(i.second) < (0x4 * 6)) {
 			_recordInst << "-2" << "$" <<  i.second->getModule()->getObject()->pathName() << "$" << std::hex << (uint64_t)i.second->getBaseAddr() << std::dec << "$" << i.second->getName() << std::endl;
 			_exculdeByAddress.insert(i.first);
 		}

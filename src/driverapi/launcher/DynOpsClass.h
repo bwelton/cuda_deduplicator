@@ -60,7 +60,7 @@ public:
 	int FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_function * & ret, std::string libname, uint64_t offset, bool exact = true);
 	BPatch_object * FindObjectByName(BPatch_addressSpace * aspace, std::string & name, bool exact = true);
 	bool GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * point, uint64_t & addr, bool addInstSize = false);
-	Dyninst::InstructionAPI::Instruction::Ptr FindInstructionAtPoint(BPatch_point * point);
+	Dyninst::InstructionAPI::Instruction FindInstructionAtPoint(BPatch_point * point);
 	void SetupPowerMap(BPatch_addressSpace * addr);
 	std::vector<BPatch_object *> GetObjects(BPatch_addressSpace * aspace);
 	BPatch_function * GetPOWERFunction(BPatch_function * function);

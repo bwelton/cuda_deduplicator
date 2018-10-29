@@ -152,8 +152,8 @@ std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_
 
 
 // Hack to get around point->getInsnAtPoint() not wokring
-Dyninst::InstructionAPI::Instruction::Ptr DynOpsClass::FindInstructionAtPoint(BPatch_point * point) {
-	std::vector<std::pair<Dyninst::InstructionAPI::Instruction::Ptr, Dyninst::Address> > instructionVector;
+Dyninst::InstructionAPI::Instruction DynOpsClass::FindInstructionAtPoint(BPatch_point * point) {
+	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;
 	point->getBlock()->getInstructions(instructionVector);
 	bool found = false;
 	for (auto z : instructionVector) {

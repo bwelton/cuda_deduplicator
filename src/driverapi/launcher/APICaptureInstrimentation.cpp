@@ -16,6 +16,7 @@ bool APICaptureInstrimentation::InsertInstrimentation() {
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatch_object * libCuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
 	BPatch_object * driverAPIWrapper = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/libDriverAPIWrapper.so"));
+	_proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libDriverAPITrace.so"));
 	std::vector<BPatch_function *> binderFunctions = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DefineBinders"), driverAPIWrapper);
 
 	// We expect only a single call with this name, fail if there is more than one.

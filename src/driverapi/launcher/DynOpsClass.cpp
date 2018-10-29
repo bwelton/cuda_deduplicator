@@ -37,8 +37,8 @@ void DynOpsClass::PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function
 std::vector<BPatch_function *> DynOpsClass::FindFuncsInObjectByName(BPatch_addressSpace * aspace, BPatch_object * obj, std::string name) {
 	std::vector<BPatch_function *> ret;
 	obj->findFunction(name, ret);
-	for (auto & i : ret)
-	 	PowerFunctionCheck(aspace, i);
+	// for (auto & i : ret)
+	//  	PowerFunctionCheck(aspace, i);
 	return ret;
 }
 
@@ -48,8 +48,8 @@ std::vector<BPatch_function *> DynOpsClass::FindFuncsByName(BPatch_addressSpace 
 	BPatch_image * img = aspace->getImage();
 	std::vector<BPatch_function *> ret;
 	img->findFunction(name.c_str(), ret);
-	for (auto & i : ret)
-	 	PowerFunctionCheck(aspace, i);
+	// for (auto & i : ret)
+	//  	PowerFunctionCheck(aspace, i);
 	return ret;
 }
 

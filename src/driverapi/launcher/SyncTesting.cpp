@@ -45,7 +45,9 @@ void SyncTesting::CaptureDriverCalls() {
 	std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
 	std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
 
-
+	APICaptureInstrimentation inst(proc);
+	inst.InsertInstrimentation();
+	proc->RunUntilCompleation(_programName + std::string(".apitrace.log"));
 	// {
 	// 	double time;
 	// 	TimeApplications base(_vm);

@@ -30,6 +30,7 @@ BPatch_object * DyninstProcess::LoadLibrary(std::string library) {
 	 * If the library is already loaded, returns the loaded library. Otherwise, calls the appropriate
 	 * dyninst load function. 
 	 */
+	std::string original = library;
 	std::map<BPatch_object *, boost::filesystem::path> loadedLibraries;
 	BPatch_process * appProc = dynamic_cast<BPatch_process*>(_aspace);	
 	std::vector<BPatch_object *> objects = _ops->GetObjects(_aspace);
@@ -55,7 +56,7 @@ BPatch_object * DyninstProcess::LoadLibrary(std::string library) {
 	}
 
 	// Not already loaded, return a new loaded library.
-	return appProc->loadLibrary(library.c_str());
+	return appProc->loadLibrary(original.c_str());
 }
 
 bool DyninstProcess::RunUntilCompleation(std::string filename) {

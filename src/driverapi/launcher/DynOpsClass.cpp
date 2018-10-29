@@ -19,16 +19,17 @@ int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_funct
 void DynOpsClass::PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function * & funcToCheck) {
 	BPatch_image * _img = addr->getImage();
 	std::vector<BPatch_function *> ret;
-	_img->findFunction(funcToCheck->getBaseAddr() + 0x8, ret);
+	uint64_t baseAddr = (uint64_t)funcToCheck->getBaseAddr();
+	_img->findFunction(baseAddr + 0x8, ret);
 	assert(ret.size() > 0)
 	if (ret.size() == 1)
 		return;
 	// there should never be 3 functions at +0x8. If there is, something will screw up with instrimentation
 	assert(ret.size() == 2);
 
-	if (ret[0]->getBaseAddr() == funcToCheck->getBaseAddr() + 0x8)
+	if ((uint64_t)ret[0]->getBaseAddr() == baseAddr + 0x8)
 		funcToCheck = ret[0];
-	else if (ret[1]->getBaseAddr() == funcToCheck->getBaseAddr() + 0x8)
+	else if ((uint64_t)ret[1]->getBaseAddr() == baseAddr + 0x8)
 		funcToCheck = ret[1];
 
 }

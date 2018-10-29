@@ -87,6 +87,7 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 	// 	appProc->continueExecution();
 	// }
 	while(!appProc->isTerminated()) {
+		std::cerr << "Iteration of Termination loop" << std::endl;
 		bpatch.waitForStatusChange();
 		if (appProc->isStopped())
 			if(appProc->isTerminated())

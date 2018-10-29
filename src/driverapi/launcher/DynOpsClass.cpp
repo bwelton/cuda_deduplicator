@@ -21,7 +21,7 @@ void DynOpsClass::PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function
 	std::vector<BPatch_function *> ret;
 	uint64_t baseAddr = (uint64_t)funcToCheck->getBaseAddr();
 	_img->findFunction(baseAddr + 0x8, ret);
-	assert(ret.size() > 0)
+	assert(ret.size() > 0);
 	if (ret.size() == 1)
 		return;
 	// there should never be 3 functions at +0x8. If there is, something will screw up with instrimentation
@@ -44,7 +44,7 @@ std::vector<BPatch_function *> DynOpsClass::FindFuncsInObjectByName(BPatch_addre
 
 std::vector<BPatch_function *> DynOpsClass::FindFuncsByName(BPatch_addressSpace * aspace, std::string name, BPatch_object * obj) {
 	if (obj != NULL)
-		return FindFuncsInObjectByName(aspace, name, obj);
+		return FindFuncsInObjectByName(aspace, obj, name);
 	BPatch_image * img = aspace->getImage();
 	std::vector<BPatch_function *> ret;
 	img->findFunction(name.c_str(), ret);

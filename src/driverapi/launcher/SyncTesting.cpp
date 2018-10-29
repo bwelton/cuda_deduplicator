@@ -49,7 +49,7 @@ void SyncTesting::CaptureDriverCalls() {
 
 	APICaptureInstrimentation inst(proc);
 	inst.InsertInstrimentation();
-	proc->RunUntilCompleation(_programName + std::string(".apitrace.log"));
+	proc->RunUntilCompleation();
 	// {
 	// 	double time;
 	// 	TimeApplications base(_vm);

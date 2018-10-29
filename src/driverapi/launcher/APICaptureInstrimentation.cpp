@@ -28,7 +28,7 @@ bool APICaptureInstrimentation::InsertInstrimentation() {
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*(binderFunctions[0]), recordArgs);
 	std::cerr << "[APICaptureInstrimentation::InsertInstrimentation] Fireing off one time call to setup API Capture Instrimentation\n";
-	dynamic_cast<BPatch_process*>(_proc->GetAddressSpace())->oneTimeCode(entryExpr);
+	dynamic_cast<BPatch_process*>(_proc->GetAddressSpace())->oneTimeCodeAsync(entryExpr);
 	_compleated = true;
 	return true;
 }

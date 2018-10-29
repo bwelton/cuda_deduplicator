@@ -24,8 +24,8 @@ bool APICaptureInstrimentation::InsertInstrimentation() {
 	assert(1 == ops->FindFuncByName(_proc->GetAddressSpace(), binderFunction, std::string("DefineBinders")));
 	// Make the OTC into the process. 
 	// 
-	std::cerr << "Function returned by old interface: " << binderFunction->getName() << " at offset: " << binderFunction->getBaseAddr() << std::endl;
-	std::cerr << "Function returned by new interface: " << binderFunctions[0]->getName() << " at offset: " << binderFunctions[0]->getBaseAddr() << std::endl;
+	std::cerr << "Function returned by old interface: " << binderFunction->getName() << " at offset: " << binderFunction->getBaseAddr() << " with pointer value " << binderFunction << std::endl;
+	std::cerr << "Function returned by new interface: " << binderFunctions[0]->getName() << " at offset: " << binderFunctions[0]->getBaseAddr() << " with pointer value " << binderFunctions[0] << std::endl;
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*(binderFunctions[0]), recordArgs);
 	std::cerr << "[APICaptureInstrimentation::InsertInstrimentation] Fireing off one time call to setup API Capture Instrimentation\n";

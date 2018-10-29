@@ -164,7 +164,7 @@ Dyninst::InstructionAPI::Instruction DynOpsClass::FindInstructionAtPoint(BPatch_
 			 
 		}
 	}
-	return NULL;
+	return Dyninst::InstructionAPI::Instruction();
 }
 
 std::vector<BPatch_object *> DynOpsClass::GetObjects(BPatch_addressSpace * aspace) {
@@ -180,8 +180,8 @@ bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * poi
 		return false;
 	auto inst = FindInstructionAtPoint(point);
 	size_t size = 0;
-	if (inst != NULL && addInstSize){
-		size = inst->size();
+	if (inst.isValid() == true && addInstSize){
+		size = inst.size();
 	}
 	if (point->getFunction()->getModule()->isSharedLib())
 		addr = (uint64_t)point->getAddress() - (uint64_t)point->getFunction()->getModule()->getBaseAddr() + size;

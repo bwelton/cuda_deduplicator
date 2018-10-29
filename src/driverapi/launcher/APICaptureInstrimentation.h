@@ -51,25 +51,7 @@ public:
 	bool InsertInstrimentation();
 private:
 	std::shared_ptr<DyninstProcess> _proc;
+	bool _compleated;
 };
-
-APICaptureInstrimentation::APICaptureInstrimentation(std::shared_ptr<DyninstProcess> proc) : _proc(proc) { 
-
-}
-
-bool APICaptureInstrimentation::InsertInstrimentation() {
-	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
-	BPatch_object * libCuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
-	BPatch_object * driverAPIWrapper = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/libDriverAPIWrapper.so"));
-	std::vector<BPatch_function *> binderFunction = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DefineBinders"), driverAPIWrapper);
-
-	// We expect only a single call with this name, fail if there is more than one.
-	assert(binderFunction.size() == 1);
-
-	std::vector<BPatch_snippet*> recordArgs;
-	BPatch_funcCallExpr entryExpr(*(binderFunction[0]), recordArgs);
-	std::cerr << "[APICaptureInstrimentation::InsertInstrimentation] Fireing off one time call to setup API Capture Instrimentation\n";
-	dynamic_cast<BPatch_process*>(_proc->GetAddressSpace())->oneTimeCode(entryExpr);
-}
 
 

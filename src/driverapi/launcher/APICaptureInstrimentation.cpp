@@ -21,7 +21,7 @@ bool APICaptureInstrimentation::InsertInstrimentation() {
 	// We expect only a single call with this name, fail if there is more than one.
 	//assert(binderFunction.size() == 1);
 	BPatch_function * binderFunction;
-	assert(1 == ops.FindFuncByName(_proc->GetAddressSpace(), binderFunction, std::string("DefineBinders")));
+	assert(1 == ops->FindFuncByName(_proc->GetAddressSpace(), binderFunction, std::string("DefineBinders")));
 	// Make the OTC into the process. 
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*(binderFunction), recordArgs);

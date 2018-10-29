@@ -16,13 +16,16 @@ bool APICaptureInstrimentation::InsertInstrimentation() {
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatch_object * libCuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
 	BPatch_object * driverAPIWrapper = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/libDriverAPIWrapper.so"));
-//	std::vector<BPatch_function *> binderFunction = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DefineBinders"), driverAPIWrapper);
+	std::vector<BPatch_function *> binderFunctions = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DefineBinders"), driverAPIWrapper);
 
 	// We expect only a single call with this name, fail if there is more than one.
 	//assert(binderFunction.size() == 1);
 	BPatch_function * binderFunction;
 	assert(1 == ops->FindFuncByName(_proc->GetAddressSpace(), binderFunction, std::string("DefineBinders")));
 	// Make the OTC into the process. 
+	// 
+	std::cerr << "Function returned by old interface: " << binderFunction->getName() << " at offset: " << binderFunction->getBaseAddr() << std::endl;
+	std::cerr << "Function returned by new interface: " << binderFunctions[0]->getName() << " at offset: " << binderFunctions[0]->getBaseAddr() << std::endl;
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*(binderFunction), recordArgs);
 	std::cerr << "[APICaptureInstrimentation::InsertInstrimentation] Fireing off one time call to setup API Capture Instrimentation\n";

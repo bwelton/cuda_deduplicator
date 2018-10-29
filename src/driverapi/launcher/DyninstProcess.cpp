@@ -83,9 +83,9 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 		appProc->continueExecution();
 	}
 	appProc->continueExecution();
-	while(appProc->isStopped() == true && appProc->terminationStatus() == NoExit){
-		appProc->continueExecution();
-	}
+	// while(appProc->isStopped() == true && appProc->terminationStatus() == NoExit){
+	// 	appProc->continueExecution();
+	// }
 	while(bpatch.waitForStatusChange()) {
 		if (appProc->isStopped())
 			if(appProc->isTerminated())

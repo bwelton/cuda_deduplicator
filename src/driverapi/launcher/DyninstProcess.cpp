@@ -88,11 +88,12 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 	// }
 	while(!appProc->isTerminated()) {
 		bpatch.waitForStatusChange();
-		assert(appProc->continueExecution() == true);
 		if (appProc->isStopped())
 			if(appProc->isTerminated())
 				break;
+		assert(appProc->continueExecution() == true);
 	}
+
 
 	// Return stderr/out to terminal.
 	if (filename != std::string("")){

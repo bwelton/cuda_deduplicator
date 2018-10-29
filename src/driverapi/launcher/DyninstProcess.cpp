@@ -92,7 +92,7 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 		if (appProc->isStopped())
 			if(appProc->isTerminated())
 				break;
-		assert(appProc->continueExecution() == true);
+		//assert(appProc->continueExecution() == true);
 	}
 
 

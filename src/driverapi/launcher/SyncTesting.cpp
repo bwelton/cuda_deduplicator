@@ -41,27 +41,27 @@ void SyncTesting::CaptureDriverCalls() {
 
 	
 	
-	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
-	std::vector<std::string> pluginNames = {"libDriverAPITrace"};
-	CreatePluginFile(pluginNames);	
-	std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
-	std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
+	// std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	// std::vector<std::string> pluginNames = {"libDriverAPITrace"};
+	// CreatePluginFile(pluginNames);	
+	// std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
+	// std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
 
-	APICaptureInstrimentation inst(proc);
-	inst.InsertInstrimentation();
-	proc->RunUntilCompleation();
-	// {
-	// 	double time;
-	// 	TimeApplications base(_vm);
-	// 	std::vector<std::string> pluginNames = {"libDriverAPITrace"};
-	// 	CreatePluginFile(pluginNames);
-	// 	std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
-	// 	std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
-	// 	base.RedirectOutToFile(_programName + std::string(".apitrace.log"));
-	// 	time = base.RunWithDriverAPITrace();
-	// 	base.ReturnToTerminal();
-	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
-	// }
+	// APICaptureInstrimentation inst(proc);
+	// inst.InsertInstrimentation();
+	// proc->RunUntilCompleation();
+	{
+		double time;
+		TimeApplications base(_vm);
+		std::vector<std::string> pluginNames = {"libDriverAPITrace"};
+		CreatePluginFile(pluginNames);
+		std::cerr << "Running " << _programName << " with driver api trace to obtain total execution time" << std::endl;
+		std::cerr << "Saving application output to file : " << _programName << ".apitrace.log" << std::endl;
+		base.RedirectOutToFile(_programName + std::string(".apitrace.log"));
+		time = base.RunWithDriverAPITrace();
+		base.ReturnToTerminal();
+		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	}
 	// Write out the stack values that were saved to CS_StackFile.txt
 	_model.WriteStackFile(std::string("CS_StackFile.txt"), std::string("CS_HumanStacks.txt"));
 }

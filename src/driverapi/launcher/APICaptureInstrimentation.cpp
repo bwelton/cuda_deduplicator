@@ -27,7 +27,7 @@ bool APICaptureInstrimentation::InsertInstrimentation() {
 	std::cerr << "Function returned by old interface: " << binderFunction->getName() << " at offset: " << binderFunction->getBaseAddr() << std::endl;
 	std::cerr << "Function returned by new interface: " << binderFunctions[0]->getName() << " at offset: " << binderFunctions[0]->getBaseAddr() << std::endl;
 	std::vector<BPatch_snippet*> recordArgs;
-	BPatch_funcCallExpr entryExpr(*(binderFunction), recordArgs);
+	BPatch_funcCallExpr entryExpr(*(binderFunctions[0]), recordArgs);
 	std::cerr << "[APICaptureInstrimentation::InsertInstrimentation] Fireing off one time call to setup API Capture Instrimentation\n";
 	dynamic_cast<BPatch_process*>(_proc->GetAddressSpace())->oneTimeCode(entryExpr);
 	_compleated = true;

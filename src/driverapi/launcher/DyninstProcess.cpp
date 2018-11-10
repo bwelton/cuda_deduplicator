@@ -1,5 +1,5 @@
 #include "DyninstProcess.h"
-static BPatch bpatch_2;
+extern BPatch bpatch;
 DyninstProcess::DyninstProcess(boost::program_options::variables_map vm, bool debug) {
 	_vm = vm;
 	_ops.reset(new DynOpsClass());
@@ -88,7 +88,7 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 	// }
 	while(!appProc->isTerminated()) {
 		//std::cerr << "Iteration of Termination loop" << std::endl;
-		bpatch_2.waitForStatusChange();
+		bpatch.waitForStatusChange();
 		sleep(2);
 		if (appProc->isStopped())
 			if(appProc->isTerminated())
@@ -148,13 +148,13 @@ BPatch_addressSpace * DyninstProcess::LaunchProcess() {
 		std::cerr << "[DyninstProcess::LaunchProcess] Launch Arguments - " <<  std::string(argv[i]) << std::endl;
 	}
 
-	bpatch_2.setInstrStackFrames(true);
-	bpatch_2.setTrampRecursive(false);
-	bpatch_2.setLivenessAnalysis(false);
-	handle = bpatch_2.processCreate(argv[0],(const char **)argv);
-	bpatch_2.setLivenessAnalysis(false);
-	bpatch_2.setInstrStackFrames(true);
-	bpatch_2.setTrampRecursive(false);
+	bpatch.setInstrStackFrames(true);
+	bpatch.setTrampRecursive(false);
+	bpatch.setLivenessAnalysis(false);
+	handle = bpatch.processCreate(argv[0],(const char **)argv);
+	bpatch.setLivenessAnalysis(false);
+	bpatch.setInstrStackFrames(true);
+	bpatch.setTrampRecursive(false);
 	assert(handle != NULL);	
 	
 	_aspace = handle;

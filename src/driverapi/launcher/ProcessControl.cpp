@@ -1,6 +1,6 @@
 #include "ProcessControl.h"
 #include <boost/filesystem.hpp>
-static BPatch bpatch;
+BPatch bpatch;
 static ProcessController * curController;
 ProcessController::ProcessController(boost::program_options::variables_map vm, LogInfo * log) :
 	_vm(vm), _launched(false), _insertedInstrimentation(false), _terminated(false), _log(log), _dontFin(false), _WithLoadStore(false), _ProcessAttached(false) {

@@ -51,6 +51,7 @@ public:
 	void DecodeStack(std::string infile, std::string outfile);
 	void CaptureDuplicateTransfers();
 	void TimeTransfers();
+	void RunWithoutInstrimentation();
 	std::shared_ptr<DyninstProcess> LaunchApplication(bool debug);
 private:
 	std::set<std::string> _syncCalls; 

@@ -38,7 +38,7 @@ std::shared_ptr<DyninstProcess> SyncTesting::LaunchApplication(bool debug) {
 }
 
 void SyncTesting::CaptureDriverCalls() {
-
+	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	std::vector<std::string> pluginNames = {"libDriverAPITrace"};
 	CreatePluginFile(pluginNames);	
@@ -65,6 +65,7 @@ void SyncTesting::CaptureDriverCalls() {
 }
 
 void SyncTesting::CaptureDuplicateTransfers() {
+	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	std::vector<std::string> pluginNames = {"libDataTransfer"};
 	CreatePluginFile(pluginNames);	
@@ -90,6 +91,7 @@ void SyncTesting::CaptureDuplicateTransfers() {
 	_model.WriteStackFile(std::string("DT_stacks.bin"), std::string("DT_humanstacks.txt"));	
 }
 void SyncTesting::TimeTransfers() {
+	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	std::vector<std::string> pluginNames = {"libDataSyncTimer"};
 	CreatePluginFile(pluginNames);	
@@ -115,21 +117,34 @@ void SyncTesting::TimeTransfers() {
 	_model.WriteStackFile(std::string("DSTIME_stacks.bin"), std::string("DSTIME_humanstacks.txt"));	
 }
 
+void SyncTesting::RunWithoutInstrimentation() {
+	system("exec rm -rf ./stackOut.*");
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	// std::vector<std::string> pluginNames = {"libDataSyncTimer"};
+	// CreatePluginFile(pluginNames);	
+	std::cerr << "Running " << _programName << " without instrimentation" << std::endl;
+	std::cerr << "Saving application output to file : " << _programName << ".orig.log" << std::endl;
+	// APICaptureInstrimentation inst(proc);
+	// inst.InsertInstrimentation();
+	proc->RunUntilCompleation();	
+}
+
 void SyncTesting::Run() {
 	double time;
-	{
-		TimeApplications base(_vm);
-		std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".base.out"));
-		time = base.Run();
-		base.ReturnToTerminal();
-		_model.AddExecutionTime(time);
-		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
-	}
+	// {
+	// 	TimeApplications base(_vm);
+	// 	std::cerr << "Running " << _programName << " without instrimentation to obtain total execution time" << std::endl;
+	// 	std::cerr << "Saving application output to file : " << _programName << ".base.out" << std::endl;
+	// 	base.RedirectOutToFile(_programName + std::string(".base.out"));
+	// 	time = base.Run();
+	// 	base.ReturnToTerminal();
+	// 	_model.AddExecutionTime(time);
+	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	// }
 	CaptureDriverCalls();
 	CaptureDuplicateTransfers();
 	TimeTransfers();
+	RunWithoutInstrimentation();
 	//RunWithCUPTI();
 
 	// Find out what user called functions actually contain a synchronization.

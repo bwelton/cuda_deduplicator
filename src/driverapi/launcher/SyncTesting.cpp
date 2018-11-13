@@ -141,10 +141,11 @@ void SyncTesting::Run() {
 	// 	_model.AddExecutionTime(time);
 	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	// }
-	CaptureDriverCalls();
+	//CaptureDriverCalls();
+	//TimeTransfers();
 	CaptureDuplicateTransfers();
-	TimeTransfers();
-	RunWithoutInstrimentation();
+	//RunWithoutInstrimentation();
+	return;
 	//RunWithCUPTI();
 
 	// Find out what user called functions actually contain a synchronization.

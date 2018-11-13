@@ -39,8 +39,6 @@ std::shared_ptr<DyninstProcess> SyncTesting::LaunchApplication(bool debug) {
 
 void SyncTesting::CaptureDriverCalls() {
 
-	
-	
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	std::vector<std::string> pluginNames = {"libDriverAPITrace"};
 	CreatePluginFile(pluginNames);	
@@ -67,34 +65,52 @@ void SyncTesting::CaptureDriverCalls() {
 }
 
 void SyncTesting::CaptureDuplicateTransfers() {
-	{
-		double time;
-		TimeApplications base(_vm);
-		std::vector<std::string> pluginNames = {"libDataTransfer"};
-		CreatePluginFile(pluginNames);
-		std::cerr << "Running " << _programName << " with data transfer trace to identify duplicate transfers" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".datatransfer.log" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".datatransfer.log"));
-		time = base.RunWithDriverAPITrace();
-		base.ReturnToTerminal();
-		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
-	}
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	std::vector<std::string> pluginNames = {"libDataTransfer"};
+	CreatePluginFile(pluginNames);	
+	std::cerr << "Running " << _programName << " to detect duplicate transfers" << std::endl;
+	std::cerr << "Saving application output to file : " << _programName << ".datatransfer.log" << std::endl;
+
+	APICaptureInstrimentation inst(proc);
+	inst.InsertInstrimentation();
+	proc->RunUntilCompleation();
+	// {
+	// 	double time;
+	// 	TimeApplications base(_vm);
+	// 	std::vector<std::string> pluginNames = {"libDataTransfer"};
+	// 	CreatePluginFile(pluginNames);
+	// 	std::cerr << "Running " << _programName << " with data transfer trace to identify duplicate transfers" << std::endl;
+	// 	std::cerr << "Saving application output to file : " << _programName << ".datatransfer.log" << std::endl;
+	// 	base.RedirectOutToFile(_programName + std::string(".datatransfer.log"));
+	// 	time = base.RunWithDriverAPITrace();
+	// 	base.ReturnToTerminal();
+	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	// }
 	// Write out the stack values that were saved to CS_StackFile.txt
 	_model.WriteStackFile(std::string("DT_stacks.bin"), std::string("DT_humanstacks.txt"));	
 }
 void SyncTesting::TimeTransfers() {
-	{
-		double time;
-		TimeApplications base(_vm);
-		std::vector<std::string> pluginNames = {"libDataSyncTimer"};
-		CreatePluginFile(pluginNames);
-		std::cerr << "Running " << _programName << " with data transfer trace identify duplicate transfers" << std::endl;
-		std::cerr << "Saving application output to file : " << _programName << ".timetransfer.log" << std::endl;
-		base.RedirectOutToFile(_programName + std::string(".timetransfer.log"));
-		time = base.RunWithDriverAPITrace();
-		base.ReturnToTerminal();
-		std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
-	}
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	std::vector<std::string> pluginNames = {"libDataSyncTimer"};
+	CreatePluginFile(pluginNames);	
+	std::cerr << "Running " << _programName << " to time transfers" << std::endl;
+	std::cerr << "Saving application output to file : " << _programName << ".timetransfer.log" << std::endl;
+
+	APICaptureInstrimentation inst(proc);
+	inst.InsertInstrimentation();
+	proc->RunUntilCompleation();
+	// {
+	// 	double time;
+	// 	TimeApplications base(_vm);
+	// 	std::vector<std::string> pluginNames = {"libDataSyncTimer"};
+	// 	CreatePluginFile(pluginNames);
+	// 	std::cerr << "Running " << _programName << " with data transfer trace identify duplicate transfers" << std::endl;
+	// 	std::cerr << "Saving application output to file : " << _programName << ".timetransfer.log" << std::endl;
+	// 	base.RedirectOutToFile(_programName + std::string(".timetransfer.log"));
+	// 	time = base.RunWithDriverAPITrace();
+	// 	base.ReturnToTerminal();
+	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
+	// }
 	// Write out the stack values that were saved to CS_StackFile.txt
 	_model.WriteStackFile(std::string("DSTIME_stacks.bin"), std::string("DSTIME_humanstacks.txt"));	
 }

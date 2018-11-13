@@ -1,6 +1,6 @@
 #include "DataTransfer.h"
-std::shared_ptr<DataTransfer> Worker;
-thread_local int exited;
+static std::shared_ptr<DataTransfer> Worker;
+static int exited;
 
 DataTransfer::DataTransfer(std::vector<std::string> & cmd_list) {
 	exited = 0;

@@ -1,9 +1,9 @@
 #include "DataSyncTimer.h"
 std::shared_ptr<DataSyncTimer> Worker;
-thread_local int exited;
+thread_local int _DST_exited;
 
 DataSyncTimer::DataSyncTimer(std::vector<std::string> & cmd_list) {
-	exited = 0;
+	_DST_exited = 0;
 	_transCount = 0;
 	_outFile.reset(new TFReaderWriter());
 	_outFile->Open("DSTIME_trace.bin", TF_WRITE);
@@ -16,7 +16,7 @@ DataSyncTimer::DataSyncTimer(std::vector<std::string> & cmd_list) {
 }
 
 DataSyncTimer::~DataSyncTimer() {
-	exited = 1;
+	_DST_exited = 1;
 }
 
 PluginReturn DataSyncTimer::Precall(std::shared_ptr<Parameters> params) {
@@ -112,13 +112,13 @@ void init(std::vector<std::string> & cmd_list) {
 }
 
 PluginReturn Precall(std::shared_ptr<Parameters> params){
-	if (exited == 1)
+	if (_DST_exited == 1)
 		return NO_ACTION;
 	return PLUG_FACTORY_PTR->Precall(params);
 }
 
 PluginReturn Postcall(std::shared_ptr<Parameters> params) {
-	if (exited == 1)
+	if (_DST_exited == 1)
 		return NO_ACTION;
 	return PLUG_FACTORY_PTR->Postcall(params);
 }

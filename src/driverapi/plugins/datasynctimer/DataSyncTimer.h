@@ -13,6 +13,7 @@
 #include <sys/syscall.h>
 #include <errno.h>
 #include <sys/mman.h>
+#include <pthread.h>
 #include <signal.h>
 #include <fstream>
 #include <numeric>

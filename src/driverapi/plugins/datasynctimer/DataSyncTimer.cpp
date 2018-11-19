@@ -1,6 +1,6 @@
 #include "DataSyncTimer.h"
 std::shared_ptr<DataSyncTimer> Worker;
-thread_local int exited;
+int exited;
 
 DataSyncTimer::DataSyncTimer(std::vector<std::string> & cmd_list) {
 	exited = 0;

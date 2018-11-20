@@ -1,8 +1,23 @@
 #include "DynOpsClass.h"
 DynOpsClass::DynOpsClass() {
 	init = false;
+	_syncLocation = 0;
 }
 
+std::vector<BPatch_function*> DynOpsClass::GetFunctionsByOffeset(BPatch_addressSpace * aspace, BPatch_object * obj, uint64_t offset) {
+	std::vector<BPatch_function*> ret;
+	BPatch_image * _img = aspace->getImage();
+	uint64_t offsetAddress = obj->fileOffsetToAddr(offset);
+	ret.push_back(_img->findFunction(offsetAddress));
+	return ret;
+}
+
+uint64_t DynOpsClass::GetSyncFunctionLocation() {
+	if (_syncLocation == 0)
+		_syncLocation = _syncClass.FindLibcudaOffset();
+
+	return _syncLocation;
+}
 int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_function * & ret, StackPoint & point) {
 	if (aspace == NULL) 
 		return -1;
@@ -14,7 +29,6 @@ int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_funct
 
 	return tmp; 
 }
-
 
 void DynOpsClass::PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function * & funcToCheck) {
 	BPatch_image * _img = addr->getImage();

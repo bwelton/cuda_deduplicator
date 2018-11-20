@@ -45,6 +45,7 @@
 #include "Constants.h"
 #include "StackPoint.h"
 #include "StackStorage.h"
+#include "LocateCudaSynchronization.h"
 
 using namespace Dyninst;
 using namespace ParseAPI;
@@ -70,9 +71,12 @@ public:
 	void PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function * & funcToCheck);
 	std::vector<BPatch_function *> FindFuncsInObjectByName(BPatch_addressSpace * aspace, BPatch_object * obj, std::string name);
 	std::vector<BPatch_function *> FindFuncsByName(BPatch_addressSpace * aspace, std::string name, BPatch_object * obj = NULL);
-
+	std::vector<BPatch_function *> GetFunctionsByOffeset(BPatch_addressSpace * aspace, BPatch_object * obj, uint64_t offset);
+	uint64_t GetSyncFunctionLocation();
 
 private:
 	std::map<uint64_t, BPatch_function *> _powerFuncmap;
 	bool init;
+	uint64_t _syncLocation;
+	LocateCudaSynchronization _syncClass;
 };

@@ -7,7 +7,7 @@
  *     <MD5 HASH of LIBCUDA>$<SYNCOFFSET>
  */
 #include "LocateCudaSynchronization.h"
-
+#define DEBUG_LOCATECUDA 1
 uint64_t LocateCudaSynchronization::FindLibcudaOffset() {
 	std::string md5cuda = GetMD5Sum(FindLibCuda());
 	assert(md5cuda != std::string(""));

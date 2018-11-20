@@ -42,6 +42,9 @@ void StacktraceSynchronizations::Setup() {
 
 
 void StacktraceSynchronizations::InsertStacktracing() {
+
+	Setup();
+	
 	_proc->BeginInsertionSet();
 #ifdef USE_BPATCHINSERT
 	// Testing

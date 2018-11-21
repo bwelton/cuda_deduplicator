@@ -93,6 +93,10 @@ boost::filesystem::path LocateCudaSynchronization::FindLibCuda() {
 	std::string env_p = std::string(std::getenv("LD_LIBRARY_PATH"));
 	StringSplit(env_p, ':', dirs);
 
+	// Adding some special locations
+	dirs.push_back("/lib64");
+	dirs.push_back("/usr/lib64");
+
 	for (auto i : dirs) {
 		std::vector<std::string> files;
 		std::cerr << "Searching directory: " << i << std::endl;

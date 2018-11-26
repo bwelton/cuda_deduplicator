@@ -42,11 +42,11 @@ extern "C" {
 			my_thread_id = (pid_t) syscall(__NR_gettid);
 
 		std::stringstream ss;
-		ss << "stackOut." << my_thread_id << ".bin";
+		ss << "DIOGENES_SyncCalls.bin";
 		outputFile.reset(new OutputFile(ss.str()));
 		assert(outputFile.get() != NULL);
 		ss.str(std::string());
-		ss << "stackOut." << my_thread_id << ".key";
+		ss << "DIOGENES_SyncCalls.key";
 		keyFile.reset(new StackKeyWriter(fopen(ss.str().c_str(),"w")));
 		assert(keyFile.get() != NULL);
 	}

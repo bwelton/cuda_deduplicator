@@ -4,6 +4,16 @@ StacktraceSynchronizations::StacktraceSynchronizations(std::shared_ptr<DyninstPr
 }
 
 void StacktraceSynchronizations::Setup() {
+	/***
+	 * Setup finds the key functions we need for finding synchronizations:
+	 *
+	 * 1. Nvidia's internal synchronization function. This function is located at a specific, driver version
+	 *    dependent offset into libcuda.so. Right now, we have a directory of md5sum,offset infromation where
+	 *    we look up the md5sum of the systems libcuda to identify the location of this function. How these
+	 *    locations are determined is via manual testing currently. 
+	 * 2. The wrapper that performs the backtrace (using dyninst), inserted at the beginning of the synchronization function above
+	 **/
+
 	// Insert libraries needed into process	
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
 	BPatch_object * libstrace = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStacktrace.so"));
@@ -42,6 +52,13 @@ void StacktraceSynchronizations::Setup() {
 
 
 void StacktraceSynchronizations::InsertStacktracing() {
+	/** 
+	 * Inserts stack tracing to identify the locations of synchronizations in libcuda. 
+	 *
+	 * Currently either wraps the syncrhonization function (if function wrapping enabled, this is currently broken in dyninst) 
+	 * or viainsertion of a function call to instrimentation into the beginning of the synchronization function (current method).
+	 *
+	 */
 
 	Setup();
 	

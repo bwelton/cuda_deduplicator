@@ -32,7 +32,7 @@ typedef std::map<uint64_t, StackRecord> StackRecMap;
 class ReadStackKeys {
 public:
 	ReadStackKeys(std::string key, std::string bin); 	
-	void GetStackRecords(StackRecMap & ret, std::function<void(StackRecMap &, FILE *)> parsingFunc);
+	void GetStackRecords(StackRecMap & ret, std::function<void(StackRecMap &)> parsingFunc);
 	void ExtractLineInfo(StackRecMap & rec);
 
 	void ProcessStacktraceSynch(StackRecMap & ret);

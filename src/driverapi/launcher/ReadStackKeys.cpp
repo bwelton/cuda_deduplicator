@@ -16,7 +16,7 @@ void ReadStackKeys::ExtractLineInfo(StackRecMap & rec) {
 		i.second.GetStackSymbols(symbolInfo);
 }
 
-void ReadStackKeys::GetStackRecords(StackRecMap & ret, std::function<void(StackRecMap &, FILE *)> parsingFunc) {
+void ReadStackKeys::GetStackRecords(StackRecMap & ret, std::function<void(StackRecMap &)> parsingFunc) {
 	std::cerr << "[ReadStackKeys::GetStackRecords] Reading stack file: " << _bin << std::endl;
 	std::cerr << "[ReadStackKeys::GetStackRecords] Reading key file: " << _key << std::endl;
 

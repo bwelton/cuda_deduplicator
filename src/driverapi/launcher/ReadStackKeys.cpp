@@ -27,9 +27,9 @@ void ReadStackKeys::GetStackRecords(StackRecMap & ret, std::function<void(StackR
 	assert(keyFile != NULL);
 
 	StackKeyReader reader(keyFile);
-	std::map<uint64_t, std::vector<StackPoint> > ret = reader.ReadStacks();
+	std::map<uint64_t, std::vector<StackPoint> > readStacks = reader.ReadStacks();
 
-	for (auto & i : ret)
+	for (auto & i : readStacks)
 		ret[i.first] = StackRecord(i.first, i.second);
 
 	ExtractLineInfo(ret);

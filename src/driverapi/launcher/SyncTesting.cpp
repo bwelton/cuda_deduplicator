@@ -117,12 +117,13 @@ void SyncTesting::TimeTransfers() {
 	_model.WriteStackFile(std::string("DSTIME_stacks.bin"), std::string("DSTIME_humanstacks.txt"));	
 }
 
-void SyncTesting::RunWithSyncStacktracing() {
+void SyncTesting::RunWithSyncStacktracing(StackRecMap & recs) {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	StacktraceSynchronizations sync(proc);
 	sync.InsertStacktracing();
-	proc->RunUntilCompleation();		
+	proc->RunUntilCompleation();	
+	sync.ReadResults(recs);
 
 }
 
@@ -139,6 +140,7 @@ void SyncTesting::RunWithoutInstrimentation() {
 }
 
 void SyncTesting::Run() {
+	StackRecMap syncTiming; 
 	double time;
 	// {
 	// 	TimeApplications base(_vm);
@@ -154,7 +156,7 @@ void SyncTesting::Run() {
 	TimeTransfers();
 	CaptureDuplicateTransfers();
 	RunWithoutInstrimentation();
-	RunWithSyncStacktracing();
+	RunWithSyncStacktracing(syncTiming);
 	return;
 	//RunWithCUPTI();
 

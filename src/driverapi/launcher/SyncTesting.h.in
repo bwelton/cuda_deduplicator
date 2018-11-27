@@ -29,6 +29,7 @@
 #include "StackStorage.h"
 #include "APICaptureInstrimentation.h"
 #include "StacktraceSynchronizations.h"
+#include "ReadStackKeys.h"
 
 #define DRIVER_LIBRARY "@CMAKE_INSTALL_PREFIX@/lib/libDriverAPIWrapper.so"
 #define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeCall.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libSynchTool.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libDriverAPITrace.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeFirstUse.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libDataTransfer.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libDataSyncTimer.so"};
@@ -54,7 +55,7 @@ public:
 	void CaptureDuplicateTransfers();
 	void TimeTransfers();
 	void RunWithoutInstrimentation();
-	void RunWithSyncStacktracing();
+	void RunWithSyncStacktracing(StackRecMap & recs);
 	std::shared_ptr<DyninstProcess> LaunchApplication(bool debug);
 private:
 	std::set<std::string> _syncCalls; 

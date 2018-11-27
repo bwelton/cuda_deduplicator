@@ -35,7 +35,7 @@ public:
 	void GetStackRecords(StackRecMap & ret, std::function<void(StackRecMap &, FILE *)> parsingFunc);
 	void ExtractLineInfo(StackRecMap & rec);
 
-	void ProcessStacktraceSynch(StackRecMap & ret, FILE * binfile);
+	void ProcessStacktraceSynch(StackRecMap & ret);
 private:
 	std::string _key;
 	std::string _bin;

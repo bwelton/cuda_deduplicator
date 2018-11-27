@@ -39,7 +39,7 @@
 #include "Constants.h"
 #include "StackPoint.h"
 #include "StackStorage.h"
-
+#include "ReadStackKeys.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -49,6 +49,7 @@ class StacktraceSynchronizations {
 public:
 	StacktraceSynchronizations(std::shared_ptr<DyninstProcess> proc);
 	void InsertStacktracing();
+	void ReadResults(StackRecMap & recs);
 private:
 	void Setup();
 	std::shared_ptr<DyninstProcess> _proc;

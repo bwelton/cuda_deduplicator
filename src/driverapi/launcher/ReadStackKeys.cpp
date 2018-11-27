@@ -20,8 +20,6 @@ void ReadStackKeys::GetStackRecords(StackRecMap & ret, std::function<void(StackR
 	std::cerr << "[ReadStackKeys::GetStackRecords] Reading stack file: " << _bin << std::endl;
 	std::cerr << "[ReadStackKeys::GetStackRecords] Reading key file: " << _key << std::endl;
 
-	FILE * inFile = fopen(_bin.c_str(), "rb");
-	assert(inFile != NULL);
 
 	FILE * keyFile = fopen(_key.c_str(), "rb");
 	assert(keyFile != NULL);
@@ -38,13 +36,15 @@ void ReadStackKeys::GetStackRecords(StackRecMap & ret, std::function<void(StackR
 	// Insert an empty element at 0 for unidentified synchronizations.
 	ret[0] = StackRecord(0, e);
 
-	parsingFunc(ret, inFile);
+	parsingFunc(ret);
 
-	fclose(inFile);
 }
 
 // Individual parsing functions for different data file types
-void ReadStackKeys::ProcessStacktraceSynch(StackRecMap & ret, FILE * binfile) {
+void ReadStackKeys::ProcessStacktraceSynch(StackRecMap & ret) {
+	FILE * binfile = fopen(_bin.c_str(), "rb");
+	assert(binfile != NULL);
+
 	uint64_t totalSyncs = 0;
 	uint64_t hash = 0;
 	uint64_t pos = 0;
@@ -58,5 +58,6 @@ void ReadStackKeys::ProcessStacktraceSynch(StackRecMap & ret, FILE * binfile) {
 		if (feof(binfile))
 			break;
 	}
+	fclose(binfile);
 
 }

@@ -3,6 +3,7 @@
 StacktraceSynchronizations::StacktraceSynchronizations(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {
 }
 
+
 void StacktraceSynchronizations::Setup() {
 	/***
 	 * Setup finds the key functions we need for finding synchronizations:
@@ -75,4 +76,10 @@ void StacktraceSynchronizations::InsertStacktracing() {
 #endif
 // 	// _addrSpace->finalizeInsertionSet(false);
 // 	BPatch_process * tmpProc = dynamic_cast<BPatch_process*>(_addrSpace);		
+}
+
+
+void StacktraceSynchronizations::ReadResults(StackRecMap & recs) {
+	ReadStackKeys reader(std::string("DIOGENES_SyncCalls.key"), std::string("DIOGENES_SyncCalls.bin"));
+	reader.GetStackRecords(recs, std::bind(&ReadStackKeys::ProcessStacktraceSynch, &reader, std::placeholders::_1));
 }

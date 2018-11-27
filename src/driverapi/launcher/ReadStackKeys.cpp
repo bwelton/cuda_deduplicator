@@ -34,11 +34,6 @@ void ReadStackKeys::GetStackRecords(StackRecMap & ret, std::function<void(StackR
 
 	ExtractLineInfo(ret);
 
-	for (auto i : ret) {
-		std::cerr << "Adding " << i.second.GetFirstCudaCall().funcName << " with hash id " << i.first << std::endl;
-		_callMapper.InsertStackID(i.second.GetFirstCudaCall().funcName, i.first);
-	}
-
 	std::vector<StackPoint> e;
 	// Insert an empty element at 0 for unidentified synchronizations.
 	ret[0] = StackRecord(0, e);

@@ -1,19 +1,6 @@
-typedef std::map<uint64_t, StackRecord> StackRecMap;
-
-
-class ReadStackRecs {
-public:
-	ReadStackKeys(std::string key, std::string bin); 	
-	void GetStackRecords(StackRecMap & ret);
-	void ExtractLineInfo(StackRecMap & rec);
-
-private:
-	std::string _key;
-	std::string _bin;
-};
+#include "ReadStackKeys.h"
 
 ReadStackKeys::ReadStackKeys(std::string key, std::string bin) : _key(key), _bin(bin) {}
-
 
 void ReadStackKeys::ExtractLineInfo(StackRecMap & rec) {
 	SymbolMap symbolInfo;
@@ -29,9 +16,7 @@ void ReadStackKeys::ExtractLineInfo(StackRecMap & rec) {
 		i.second.GetStackSymbols(symbolInfo);
 }
 
-void ReadStackKeys::
-
-void ReadStackKeys::GetStackRecords(StackRecMap & ret, std::function<void()>) {
+void ReadStackKeys::GetStackRecords(StackRecMap & ret, std::function<void(StackRecMap &, FILE *)> parsingFunc) {
 	std::cerr << "[ReadStackKeys::GetStackRecords] Reading stack file: " << _bin << std::endl;
 	std::cerr << "[ReadStackKeys::GetStackRecords] Reading key file: " << _key << std::endl;
 
@@ -54,45 +39,29 @@ void ReadStackKeys::GetStackRecords(StackRecMap & ret, std::function<void()>) {
 		_callMapper.InsertStackID(i.second.GetFirstCudaCall().funcName, i.first);
 	}
 
-
-	fseek(inFile, 0, SEEK_END);
-	uint64_t elementCount = ftell(inFile);
-	fseek(inFile, 0, SEEK_SET);
-	elementCount = elementCount / 8;
-	// Typically have ~7 calls to low level synchronization
-	_orderingInfo.reserve(elementCount / 7);
-
 	std::vector<StackPoint> e;
 	// Insert an empty element at 0 for unidentified synchronizations.
 	ret[0] = StackRecord(0, e);
+
+	parsingFunc(ret, inFile);
+
+	fclose(inFile);
+}
+
+// Individual parsing functions for different data file types
+void ReadStackKeys::ProcessStacktraceSynch(StackRecMap & ret, FILE * binfile) {
+	uint64_t totalSyncs = 0;
 	uint64_t hash = 0;
 	uint64_t pos = 0;
-	uint64_t syncCount = 0;
-	bool start = true;
-	bool found = false;
-	while (fread(&hash, 1, sizeof(uint64_t), inFile) > 0){
-		syncCount++;
-		found = false;
-		//std::cerr << "My Hash: " << hash << std::endl;
-		if (start != true) {
-			if (_orderingInfo.back().stackId == hash){
-				_orderingInfo.back().count++;
-				found = true;
-			}
+	while (fread(&hash, 1, sizeof(uint64_t), binfile) > 0) {
+		if (ret.find(hash) == ret.end()){
+			std::cerr << "[ReadStackKeys::ProcessStacktraceSynch] Could not find stack associated with - " << hash << std::endl;
+		} else {
+			ret[hash].AddOccurance(pos);
 		}
-		if (start == true || found == false){
-			TF_SyncRecord tmp;
-			tmp.stackId = hash;
-			tmp.dynId = _callMapper.StackIDToGeneral(hash);
-			tmp.count = 1;
-			_orderingInfo.push_back(tmp);
-			start = false;
-		}
-		if (feof(inFile))
+		pos++;
+		if (feof(binfile))
 			break;
 	}
-	_capturedSyncs = syncCount;
-	fclose(inFile);
-
 
 }

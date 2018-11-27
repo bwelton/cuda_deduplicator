@@ -50,7 +50,7 @@ class StackRecord {
 public:
 	StackRecord();
 	StackRecord(uint64_t id, std::vector<StackPoint> & points);
-
+	void AddOccurance(uint64_t pos);
 	std::vector<std::string> GetLibNames();
 	void ChangePointAtPosition(StackPoint p, uint64_t pos);
 	void GetStackSymbols(SymbolMap & m);
@@ -69,6 +69,7 @@ private:
 	uint64_t _id;
 	std::vector<StackPoint> _points;
 	std::vector<SyncRangeRecord> _ranges;
+	std::vector<uint64_t> _occurances;
 	//std::vector<TimingData> _timingData;
 };
 

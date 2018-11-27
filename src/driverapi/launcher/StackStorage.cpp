@@ -38,6 +38,10 @@ uint64_t StackRecord::GetFirstLibDynRTPosition() {
 	return 0;
 }
 
+void StackRecord::AddOccurance(uint64_t pos) {
+	_occurances.push_back(pos);
+}
+
 void StackRecord::ReturnPreCudaCalls(std::vector<StackPoint> & ret) {
 	for (int i = _points.size() - 1; i >= 0; i = i - 1) 
 		if (_points[i].libname.find("libcuda.so") == std::string::npos && 

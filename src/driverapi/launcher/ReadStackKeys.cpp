@@ -61,3 +61,26 @@ void ReadStackKeys::ProcessStacktraceSynch(StackRecMap & ret) {
 	fclose(binfile);
 
 }
+
+void ReadStackKeys::ProcessTFTimingData(StackRecMap & ret) {
+	TFReaderWriter rw;
+	TF_Record rec;
+	uint64_t total = 0;
+	uint64_t pos = 0;
+	assert(rw.Open(timelineFile.c_str(), TF_READ) == true);
+	while (rw.Read(rec)) {
+		if (rec.type == TF_SYNCRECORD) {
+			_timingData[pos] = rec.s;
+			if (rec.s.dynId == 0)
+				continue;
+			assert(ret.find(rec.s.stackId) != ret.end());
+			ret[rec.s.stackId]._timing.push_back(rec);
+			total += rec.s.count;
+			pos++;
+		}
+	}
+
+	std::cerr << "[ReadStackKeys::ProcessTFTimingData] Processed " << pos << " synchronization records" << std::endl;
+	std::cerr << "[ReadStackKeys::ProcessTFTimingData] Captured " << total << " calls to low level synchronization" << std::endl;
+
+}

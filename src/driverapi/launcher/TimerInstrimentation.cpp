@@ -1,0 +1,96 @@
+#include "TimerInstrimentation.h"
+TimerInstrimentation::TimerInstrimentation(std::shared_ptr<DyninstProcess> proc) : _proc(proc) { }
+
+void TimerInstrimentation::InsertTimers(StackRecMap & recs) {
+	// standard library insertions
+	_libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
+	_libtime = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeCall.so"));
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+
+	// Find the cuda synchronization
+	BPatch_function * cudaSync = NULL;
+	std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), _libcuda, ops->GetSyncFunctionLocation());
+	assert(cudaSyncFunctions.size() == 1);
+
+	std::vector<BPatch_function*> instFuncs;
+	FindUniqueCudaFuncs(recs, instFuncs);
+
+	std::vector<BPatch_function *> addFunction;
+	addFunction = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("TIMER_SIMPLE_COUNT_ADD_ONE"), _libtime); 
+	assert(addFunction.size() == 1);
+
+	_proc->BeginInsertionSet();
+
+	std::vector<BPatch_point*> * funcEntry = cudaSyncFunctions[0]->findPoint(BPatch_locEntry);
+	std::vector<BPatch_snippet*> testArgs;
+	BPatch_funcCallExpr recordFuncEntry(*(addFunction[0]), testArgs);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
+
+	uint64_t curId = 1;
+	for (auto i : instFuncs) {
+		InsertTimer(i, curId);
+		_idToFunc[curId] = i;
+		curId++;
+	}
+
+}
+
+void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
+	StackRecMap tmp;
+	ReadStackKeys reader(std::string("TF_timekey.bin"), std::string("TF_trace.bin"));
+	reader.GetStackRecords(tmp, std::bind(&ReadStackKeys::ProcessTFTimingData, &reader, std::placeholders::_1));
+	std::cout << "Printing decoded stack" << std::endl;
+	for (auto i : tmp) 
+		i.second.PrintStack();
+
+	std::cout << "Printing original stack" << std::endl;
+	for (auto i : recs) 
+		i.second.PrintStack();
+}
+
+void TimerInstrimentation::InsertTimer(BPatch_function * func, uint64_t ident) {
+	if (_processed.find(func) != _processed.end()) {
+		std::cerr << "[TimerInstrimentation::InsertTimer] Function " << func->getName() << " has already been instrimented with timers!" << std::endl;
+		assert(_processed.find(func) == _processed.end());
+	}
+	_processed.insert(func);
+
+	std::vector<BPatch_function *> startTime;
+	std::vector<BPatch_function *> endTime;
+
+	startTime = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("TIMER_SIMPLE_TIME_START"), _libtime); 
+	endTime = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("TIMER_SIMPLE_TIME_STOP"), _libtime); 
+
+	assert(startTime.size() == 1);
+	assert(endTime.size() == 1);
+	
+	std::vector<BPatch_point*> * funcEntry = func->findPoint(BPatch_locEntry);
+	std::vector<BPatch_point*> * funcExit = func->findPoint(BPatch_locExit);	
+	assert(funcEntry->size() == 1);
+	assert(funcExit->size() == 1);
+
+	std::vector<BPatch_snippet*> testArgs;
+	testArgs.push_back(new BPatch_constExpr(ident));
+	BPatch_funcCallExpr recordFuncEntry(*(startFunc[0]), testArgs);
+	BPatch_funcCallExpr recordFuncExit(*(stopFunc[0]), testArgs);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncExit,*funcExit) != NULL); 	
+}
+
+void TimerInstrimentation::FindUniqueCudaFuncs(StackRecMap & recs, std::vector<BPatch_function *> & ret) {
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+	std::set<uint64_t> alreadyPresent;
+	BPatch_function * func;
+	for (auto i : recs) {
+		func = NULL;
+		StackPoint p = i.second.GetFirstCudaCall();
+		if (p.empty == true){
+			continue;
+		}
+		if (alreadyPresent.find(p.libOffset) == alreadyPresent.end()) {
+			alreadyPresent.insert(p.libOffset);
+			ops->FindFuncByStackPoint(_proc->GetAddressSpace(), func, p);
+			ret.push_back(func);
+		}
+	}
+}

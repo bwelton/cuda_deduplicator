@@ -34,7 +34,7 @@ public:
 	ReadStackKeys(std::string key, std::string bin); 	
 	void GetStackRecords(StackRecMap & ret, std::function<void(StackRecMap &)> parsingFunc);
 	void ExtractLineInfo(StackRecMap & rec);
-
+	void ProcessTFTimingData(StackRecMap & ret);
 	void ProcessStacktraceSynch(StackRecMap & ret);
 private:
 	std::string _key;

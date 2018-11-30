@@ -1,6 +1,7 @@
 #pragma once
 #include "StackPoint.h"
 #include "SymbolLookup.h"
+#include "TFReaderWriter.h"
 #include <sstream> 
 #define DEBUG_STACKRECORD 1
 
@@ -70,6 +71,7 @@ private:
 	std::vector<StackPoint> _points;
 	std::vector<SyncRangeRecord> _ranges;
 	std::vector<uint64_t> _occurances;
+	std::vector<TF_Record> _timing;
 	//std::vector<TimingData> _timingData;
 };
 

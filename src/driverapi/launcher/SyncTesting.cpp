@@ -139,6 +139,16 @@ void SyncTesting::RunWithoutInstrimentation() {
 	proc->RunUntilCompleation();	
 }
 
+void SyncTesting::TimeSynchronizations(StackRecMap & recs) {
+	system("exec rm -rf ./stackOut.*");
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	TimerInstrimentation t(proc);
+	t.InsertTimers(recs);
+	proc->RunUntilCompleation();
+	t.PostProcessing(recs);
+}
+
+
 void SyncTesting::Run() {
 	StackRecMap syncTiming; 
 	double time;
@@ -157,6 +167,7 @@ void SyncTesting::Run() {
 	CaptureDuplicateTransfers();
 	RunWithoutInstrimentation();
 	RunWithSyncStacktracing(syncTiming);
+	TimeSynchronizations(syncTiming);
 	return;
 	//RunWithCUPTI();
 

@@ -5,6 +5,7 @@ void TimerInstrimentation::InsertTimers(StackRecMap & recs) {
 	// standard library insertions
 	_libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
 	_libtime = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libTimeCall.so"));
+	_proc->LoadLibrary(std::string("/usr/tce/packages/cuda/cuda-9.2.88/lib64/libcublas.so.9.2.88"));
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 
 	// Find the cuda synchronization

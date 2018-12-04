@@ -53,11 +53,12 @@ void TimerInstrimentation::InsertTimer(BPatch_function * func, uint64_t ident) {
 		std::cerr << "[TimerInstrimentation::InsertTimer] Function " << func->getName() << " has already been instrimented with timers!" << std::endl;
 		assert(_processed.find(func) == _processed.end());
 	}
+	std::cerr << "[TimerInstrimentation::InsertTimer] Inserting timers into function " << func->getName() << std::endl;
 	_processed.insert(func);
 
 	std::vector<BPatch_function *> startTime;
 	std::vector<BPatch_function *> endTime;
-	
+
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	startTime = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("TIMER_SIMPLE_TIME_START"), _libtime); 
 	endTime = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("TIMER_SIMPLE_TIME_STOP"), _libtime); 

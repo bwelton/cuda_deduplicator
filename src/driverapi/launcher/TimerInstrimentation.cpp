@@ -68,10 +68,10 @@ void TimerInstrimentation::InsertTimer(BPatch_function * func, uint64_t ident) {
 	
 	std::vector<BPatch_point*> * funcEntry = func->findPoint(BPatch_locEntry);
 	std::vector<BPatch_point*> * funcExit = func->findPoint(BPatch_locExit);	
-	std::cerr << "[TimerInstrimentation::InsertTimer] Entry points found: " << funcEntry->size() << std::endl;
-	std::cerr << "[TimerInstrimentation::InsertTimer] Exit points found: " << funcExit->size() << std::endl;
-	assert(funcEntry->size() == 1);
-	assert(funcExit->size() == 1);
+	//std::cerr << "[TimerInstrimentation::InsertTimer] Entry points found: " << funcEntry->size() << std::endl;
+	//std::cerr << "[TimerInstrimentation::InsertTimer] Exit points found: " << funcExit->size() << std::endl;
+	assert(funcEntry->size() > 0);
+	assert(funcExit->size() > 0);
 
 	std::vector<BPatch_snippet*> testArgs;
 	testArgs.push_back(new BPatch_constExpr(ident));

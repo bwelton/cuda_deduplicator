@@ -57,7 +57,8 @@ void TimerInstrimentation::InsertTimer(BPatch_function * func, uint64_t ident) {
 
 	std::vector<BPatch_function *> startTime;
 	std::vector<BPatch_function *> endTime;
-
+	
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	startTime = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("TIMER_SIMPLE_TIME_START"), _libtime); 
 	endTime = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("TIMER_SIMPLE_TIME_STOP"), _libtime); 
 
@@ -71,8 +72,8 @@ void TimerInstrimentation::InsertTimer(BPatch_function * func, uint64_t ident) {
 
 	std::vector<BPatch_snippet*> testArgs;
 	testArgs.push_back(new BPatch_constExpr(ident));
-	BPatch_funcCallExpr recordFuncEntry(*(startFunc[0]), testArgs);
-	BPatch_funcCallExpr recordFuncExit(*(stopFunc[0]), testArgs);
+	BPatch_funcCallExpr recordFuncEntry(*(startTime[0]), testArgs);
+	BPatch_funcCallExpr recordFuncExit(*(endTime[0]), testArgs);
 	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
 	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncExit,*funcExit) != NULL); 	
 }

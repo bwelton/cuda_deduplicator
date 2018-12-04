@@ -66,12 +66,12 @@ public:
 	bool IsEqual(StackRecord & other);
 	std::vector<StackPoint> GetStackpoints();
 	void ReturnPreCudaCalls(std::vector<StackPoint> & ret);
+	std::vector<TF_Record> _timing;
 private:
 	uint64_t _id;
 	std::vector<StackPoint> _points;
 	std::vector<SyncRangeRecord> _ranges;
 	std::vector<uint64_t> _occurances;
-	std::vector<TF_Record> _timing;
 	//std::vector<TimingData> _timingData;
 };
 

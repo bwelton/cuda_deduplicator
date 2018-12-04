@@ -67,7 +67,7 @@ void ReadStackKeys::ProcessTFTimingData(StackRecMap & ret) {
 	TF_Record rec;
 	uint64_t total = 0;
 	uint64_t pos = 0;
-	assert(rw.Open(timelineFile.c_str(), TF_READ) == true);
+	assert(rw.Open(_bin.c_str(), TF_READ) == true);
 	while (rw.Read(rec)) {
 		if (rec.type == TF_SYNCRECORD) {
 			if (rec.s.dynId == 0)

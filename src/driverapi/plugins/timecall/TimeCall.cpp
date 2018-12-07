@@ -43,50 +43,50 @@ PluginReturn TimeCall::Postcall(std::shared_ptr<Parameters> params) {
 	return NO_ACTION;
 }
 
-thread_local std::shared_ptr<TFReaderWriter> _outFile;
-thread_local std::shared_ptr<StackKeyWriter> keyFile;
-thread_local TF_Record _tfRecord;
-thread_local std::vector<std::pair<uint64_t, std::chrono::high_resolution_clock::time_point> > TimingPairs; 
-thread_local std::vector<uint64_t> TimingCount; 
+thread_local std::shared_ptr<TFReaderWriter> TIMECALL_outFile;
+thread_local std::shared_ptr<StackKeyWriter> TIMECALL_keyFile;
+thread_local TF_Record TIMECALL_tfRecord;
+thread_local std::vector<std::pair<uint64_t, std::chrono::high_resolution_clock::time_point> > TIMECALL_TimingPairs; 
+thread_local std::vector<uint64_t> TIMECALL_TimingCount; 
 thread_local int alreadyStarted = 0;
 //std::shared_ptr<LogInfo> _timingLog;
 
 extern "C"{
 
 void INIT_TIMERS() {
-	if (_outFile.get() == NULL) {
-		_tfRecord.type = TF_SYNCRECORD;
+	if (TIMECALL_outFile.get() == NULL) {
+		TIMECALL_tfRecord.type = TF_SYNCRECORD;
 		alreadyStarted = 0;
 		std::cerr << "Starting timing log" << std::endl;
-		_outFile.reset(new TFReaderWriter());
-		_outFile->Open("TF_trace.bin", TF_WRITE);
+		TIMECALL_outFile.reset(new TFReaderWriter());
+		TIMECALL_outFile->Open("TF_trace.bin", TF_WRITE);
 	}
-	if (keyFile.get() == NULL) {
-		std::cerr << "Starting keyfile" << std::endl;
-		keyFile.reset(new StackKeyWriter(fopen("TF_timekey.bin","w")));
+	if (TIMECALL_keyFile.get() == NULL) {
+		std::cerr << "Starting TIMECALL_keyfile" << std::endl;
+		TIMECALL_keyFile.reset(new StackKeyWriter(fopen("TF_timekey.bin","w")));
 	}
 }
 
 void TIMER_SIMPLE_COUNT_ADD_ONE() {
 	INIT_TIMERS();
-	if (TimingCount.size() > 0)
-		TimingCount[TimingCount.size() - 1] += 1;
+	if (TIMECALL_TimingCount.size() > 0)
+		TIMECALL_TimingCount[TIMECALL_TimingCount.size() - 1] += 1;
 	else {
 		// Write out an unknown timing entry
 		
 
-		_outFile->Write(_tfRecord);
+		TIMECALL_outFile->Write(TIMECALL_tfRecord);
 
-		//_outFile->Write(0,0,0,0.0);
-		//_outFile->Write(0, 0.0, 1);
+		//TIMECALL_outFile->Write(0,0,0,0.0);
+		//TIMECALL_outFile->Write(0, 0.0, 1);
 		std::cout << "Timing error, trying to add one to an unknown synchronization!" << std::endl;
 	}
 }
 
 void TIMER_SIMPLE_TIME_START(uint64_t id) {
 	INIT_TIMERS();
-	TimingCount.push_back(0);
-	TimingPairs.push_back(std::make_pair(id,std::chrono::high_resolution_clock::now()));
+	TIMECALL_TimingCount.push_back(0);
+	TIMECALL_TimingPairs.push_back(std::make_pair(id,std::chrono::high_resolution_clock::now()));
 }
 
 void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
@@ -94,8 +94,8 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 	std::chrono::high_resolution_clock::time_point endTimer = std::chrono::high_resolution_clock::now();
 
 	int found = -1;
-	for (int i = TimingPairs.size(); i >= 0; i = i - 1) {
-		if (TimingPairs[i].first == id){
+	for (int i = TIMECALL_TimingPairs.size(); i >= 0; i = i - 1) {
+		if (TIMECALL_TimingPairs[i].first == id){
 			found = i;
 			break;
 		}
@@ -104,25 +104,25 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		std::cerr << "Could not find starting time for call " << id << std::endl;
 		assert(found != -1);
 	}
-	std::chrono::duration<double> diff = endTimer-TimingPairs[found].second;
+	std::chrono::duration<double> diff = endTimer-TIMECALL_TimingPairs[found].second;
 
 
-	if (TimingCount[TimingCount.size() - 1] > 0) {
+	if (TIMECALL_TimingCount[TIMECALL_TimingCount.size() - 1] > 0) {
 		std::vector<StackPoint> points;
 		bool ret = GET_FP_STACKWALK(points);
-		_tfRecord.s.dynId = id;
-		_tfRecord.s.count = TimingCount[TimingCount.size() - 1];
-		_tfRecord.s.time = diff.count();
+		TIMECALL_tfRecord.s.dynId = id;
+		TIMECALL_tfRecord.s.count = TIMECALL_TimingCount[TIMECALL_TimingCount.size() - 1];
+		TIMECALL_tfRecord.s.time = diff.count();
 		if (ret == false) {
 			std::cout << "unknown timing stack, discarding time" << std::endl;
-			_tfRecord.s.stackId  = 0;
+			TIMECALL_tfRecord.s.stackId  = 0;
 		} else {
-			uint64_t pos = keyFile->InsertStack(points);
-			_tfRecord.s.stackId = pos;
+			uint64_t pos = TIMECALL_keyFile->InsertStack(points);
+			TIMECALL_tfRecord.s.stackId = pos;
 		}	
-		_outFile->Write(_tfRecord);
+		TIMECALL_outFile->Write(TIMECALL_tfRecord);
 	}
-	TimingPairs.erase(TimingPairs.begin() + found);
+	TIMECALL_TimingPairs.erase(TIMECALL_TimingPairs.begin() + found);
 }
 
 void init(std::vector<std::string> & cmd_list) {

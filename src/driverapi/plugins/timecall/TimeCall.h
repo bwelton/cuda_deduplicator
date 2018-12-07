@@ -21,21 +21,21 @@
 #include "StackPoint.h"
 #include "TFReaderWriter.h"
 extern "C" {
-	void init(std::vector<std::string> & cmd_list);
-	PluginReturn Precall(std::shared_ptr<Parameters> params);
-	PluginReturn Postcall(std::shared_ptr<Parameters> params);
+	// void init(std::vector<std::string> & cmd_list);
+	// PluginReturn Precall(std::shared_ptr<Parameters> params);
+	// PluginReturn Postcall(std::shared_ptr<Parameters> params);
 }
 
-class TimeCall {
-public:
-	TimeCall(std::vector<std::string> & cmd_list);
-	~TimeCall();
-	PluginReturn Precall(std::shared_ptr<Parameters> params);
-	PluginReturn Postcall(std::shared_ptr<Parameters> params);
-private:
-	std::set<CallID> _callsToMonitor;
-	std::vector<std::tuple<const char *,size_t, double> > _timers;
-};
+// class TimeCall {
+// public:
+// 	TimeCall(std::vector<std::string> & cmd_list);
+// 	~TimeCall();
+// 	PluginReturn Precall(std::shared_ptr<Parameters> params);
+// 	PluginReturn Postcall(std::shared_ptr<Parameters> params);
+// private:
+// 	std::set<CallID> _callsToMonitor;
+// 	std::vector<std::tuple<const char *,size_t, double> > _timers;
+// };
 
 #define PLUG_BUILD_FACTORY(param) \
 	if (Worker.get() == NULL) { \

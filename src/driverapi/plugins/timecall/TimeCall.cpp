@@ -1,54 +1,54 @@
 #include "TimeCall.h"
-std::shared_ptr<TimeCall> Worker;
+//std::shared_ptr<TimeCall> Worker;
 thread_local int TIMECALL_exited;
-TimeCall::TimeCall(std::vector<std::string> & cmd_list) {
-	TIMECALL_exited = 0;
-	std::ifstream infile("FuncsToTime.txt");
-	std::string line;
-	while (std::getline(infile, line)) {
-		for (int i = 0; i < cmd_list.size(); i++) {
-			if (cmd_list[i] == line){
-				_callsToMonitor.insert((CallID)i);
-				std::cerr << "[TimeCall] Timing - " << cmd_list[i] << std::endl;
-				break;
-			}
-		}
-	}
-}
+// TimeCall::TimeCall(std::vector<std::string> & cmd_list) {
+// 	TIMECALL_exited = 0;
+// 	std::ifstream infile("FuncsToTime.txt");
+// 	std::string line;
+// 	while (std::getline(infile, line)) {
+// 		for (int i = 0; i < cmd_list.size(); i++) {
+// 			if (cmd_list[i] == line){
+// 				_callsToMonitor.insert((CallID)i);
+// 				std::cerr << "[TimeCall] Timing - " << cmd_list[i] << std::endl;
+// 				break;
+// 			}
+// 		}
+// 	}
+// }
 
-TimeCall::~TimeCall() {
-	TIMECALL_exited = 1;
-	if(_timers.size() > 0) {
-		FILE * out = fopen("call_timers.txt","w");
-		for(auto i : _timers)
-			fprintf(out, "%s,%llu,%f\n",std::get<0>(i), std::get<1>(i), std::get<2>(i));
-		fclose(out);
-		_timers.clear();
-	}
-}
+// TimeCall::~TimeCall() {
+// 	TIMECALL_exited = 1;
+// 	if(_timers.size() > 0) {
+// 		FILE * out = fopen("call_timers.txt","w");
+// 		for(auto i : _timers)
+// 			fprintf(out, "%s,%llu,%f\n",std::get<0>(i), std::get<1>(i), std::get<2>(i));
+// 		fclose(out);
+// 		_timers.clear();
+// 	}
+// }
 
-PluginReturn TimeCall::Precall(std::shared_ptr<Parameters> params) {
-	if (_callsToMonitor.find(params.get()->GetID()) != _callsToMonitor.end()) {
-		auto start = std::chrono::high_resolution_clock::now();
-		params.get()->Call();
-		auto stop = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> diff = stop-start;
-		_timers.push_back(std::make_tuple(params.get()->GetName(), params.get()->GetInstID(), diff.count()));
-		return PERFORMED_ACTION;
-	}
-	return NO_ACTION;
-}
+// PluginReturn TimeCall::Precall(std::shared_ptr<Parameters> params) {
+// 	if (_callsToMonitor.find(params.get()->GetID()) != _callsToMonitor.end()) {
+// 		auto start = std::chrono::high_resolution_clock::now();
+// 		params.get()->Call();
+// 		auto stop = std::chrono::high_resolution_clock::now();
+// 		std::chrono::duration<double> diff = stop-start;
+// 		_timers.push_back(std::make_tuple(params.get()->GetName(), params.get()->GetInstID(), diff.count()));
+// 		return PERFORMED_ACTION;
+// 	}
+// 	return NO_ACTION;
+// }
 
-PluginReturn TimeCall::Postcall(std::shared_ptr<Parameters> params) {
-	return NO_ACTION;
-}
+// PluginReturn TimeCall::Postcall(std::shared_ptr<Parameters> params) {
+// 	return NO_ACTION;
+// }
 
 thread_local std::shared_ptr<TFReaderWriter> TIMECALL_outFile;
 thread_local std::shared_ptr<StackKeyWriter> TIMECALL_keyFile;
 thread_local TF_Record TIMECALL_tfRecord;
 thread_local std::vector<std::pair<uint64_t, std::chrono::high_resolution_clock::time_point> > TIMECALL_TimingPairs; 
 thread_local std::vector<uint64_t> TIMECALL_TimingCount; 
-thread_local int alreadyStarted = 0;
+thread_local int TIMER_alreadyStarted = 0;
 //std::shared_ptr<LogInfo> _timingLog;
 
 extern "C"{
@@ -56,7 +56,7 @@ extern "C"{
 void INIT_TIMERS() {
 	if (TIMECALL_outFile.get() == NULL) {
 		TIMECALL_tfRecord.type = TF_SYNCRECORD;
-		alreadyStarted = 0;
+		TIMER_alreadyStarted = 0;
 		std::cerr << "Starting timing log" << std::endl;
 		TIMECALL_outFile.reset(new TFReaderWriter());
 		TIMECALL_outFile->Open("TF_trace.bin", TF_WRITE);
@@ -132,20 +132,20 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 	std::cerr << "END TIMER_SIMPLE_TIME_STOP" << std::endl;
 }
 
-void init(std::vector<std::string> & cmd_list) {
-	PLUG_BUILD_FACTORY(cmd_list)
-}
+// void init(std::vector<std::string> & cmd_list) {
+// 	PLUG_BUILD_FACTORY(cmd_list)
+// }
 
-PluginReturn Precall(std::shared_ptr<Parameters> params){
-	if (TIMECALL_exited == 1)
-		return NO_ACTION;
-	return PLUG_FACTORY_PTR->Precall(params);
-}
+// PluginReturn Precall(std::shared_ptr<Parameters> params){
+// 	if (TIMECALL_exited == 1)
+// 		return NO_ACTION;
+// 	return PLUG_FACTORY_PTR->Precall(params);
+// }
 
-PluginReturn Postcall(std::shared_ptr<Parameters> params) {
-	if (TIMECALL_exited == 1)
-		return NO_ACTION;
-	return PLUG_FACTORY_PTR->Postcall(params);
-}
+// PluginReturn Postcall(std::shared_ptr<Parameters> params) {
+// 	if (TIMECALL_exited == 1)
+// 		return NO_ACTION;
+// 	return PLUG_FACTORY_PTR->Postcall(params);
+// }
 
 }

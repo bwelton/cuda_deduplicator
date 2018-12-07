@@ -19,7 +19,7 @@ install(TARGETS StubLib
 add_library(DriverAPIWrapper SHARED "Parameters.cpp" "DriverWrapperBase.cpp" "DriverWrapperFactory.cpp" "DriverAPIWrappers.cpp" "MemoryTransfer.cpp")
 target_link_libraries(DriverAPIWrapper ${Boost_LIBRARIES})
 target_link_libraries(DriverAPIWrapper ${DYNINST_LIBRARIES})
-target_link_libraries(DriverAPIWrapper "-lpthread")
+target_link_libraries(DriverAPIWrapper "-lpthread -ldl")
 target_link_libraries(DriverAPIWrapper StubLib)
 target_link_libraries(DriverAPIWrapper "-L${GOTTCHA_LIBRARIES} -lgotcha" )
 INCLUDE_DIRECTORIES(DriverAPIWrapper ${GOTTCHA_INCLUDE})

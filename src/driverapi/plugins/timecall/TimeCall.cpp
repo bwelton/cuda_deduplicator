@@ -1,8 +1,8 @@
 #include "TimeCall.h"
 std::shared_ptr<TimeCall> Worker;
-thread_local int exited;
+thread_local int TIMECALL_exited;
 TimeCall::TimeCall(std::vector<std::string> & cmd_list) {
-	exited = 0;
+	TIMECALL_exited = 0;
 	std::ifstream infile("FuncsToTime.txt");
 	std::string line;
 	while (std::getline(infile, line)) {
@@ -17,7 +17,7 @@ TimeCall::TimeCall(std::vector<std::string> & cmd_list) {
 }
 
 TimeCall::~TimeCall() {
-	exited = 1;
+	TIMECALL_exited = 1;
 	if(_timers.size() > 0) {
 		FILE * out = fopen("call_timers.txt","w");
 		for(auto i : _timers)
@@ -130,13 +130,13 @@ void init(std::vector<std::string> & cmd_list) {
 }
 
 PluginReturn Precall(std::shared_ptr<Parameters> params){
-	if (exited == 1)
+	if (TIMECALL_exited == 1)
 		return NO_ACTION;
 	return PLUG_FACTORY_PTR->Precall(params);
 }
 
 PluginReturn Postcall(std::shared_ptr<Parameters> params) {
-	if (exited == 1)
+	if (TIMECALL_exited == 1)
 		return NO_ACTION;
 	return PLUG_FACTORY_PTR->Postcall(params);
 }

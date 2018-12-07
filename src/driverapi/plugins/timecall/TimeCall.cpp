@@ -65,9 +65,11 @@ void INIT_TIMERS() {
 		std::cerr << "Starting TIMECALL_keyfile" << std::endl;
 		TIMECALL_keyFile.reset(new StackKeyWriter(fopen("TF_timekey.bin","w")));
 	}
+	std::cerr << "Done Init" << std::endl;
 }
 
 void TIMER_SIMPLE_COUNT_ADD_ONE() {
+	std::cerr << "Start TIMER_SIMPLE_COUNT_ADD_ONE" << std::endl;
 	INIT_TIMERS();
 	if (TIMECALL_TimingCount.size() > 0)
 		TIMECALL_TimingCount[TIMECALL_TimingCount.size() - 1] += 1;
@@ -81,15 +83,19 @@ void TIMER_SIMPLE_COUNT_ADD_ONE() {
 		//TIMECALL_outFile->Write(0, 0.0, 1);
 		std::cout << "Timing error, trying to add one to an unknown synchronization!" << std::endl;
 	}
+	std::cerr << "End TIMER_SIMPLE_COUNT_ADD_ONE" << std::endl;
 }
 
 void TIMER_SIMPLE_TIME_START(uint64_t id) {
+	std::cerr << "STARD TIMER_SIMPLE_TIME_START" << std::endl;
 	INIT_TIMERS();
 	TIMECALL_TimingCount.push_back(0);
 	TIMECALL_TimingPairs.push_back(std::make_pair(id,std::chrono::high_resolution_clock::now()));
+	std::cerr << "END TIMER_SIMPLE_TIME_START" << std::endl;
 }
 
 void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
+		std::cerr << "STARD TIMER_SIMPLE_TIME_START" << std::endl;
 	INIT_TIMERS();
 	std::chrono::high_resolution_clock::time_point endTimer = std::chrono::high_resolution_clock::now();
 
@@ -123,6 +129,7 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		TIMECALL_outFile->Write(TIMECALL_tfRecord);
 	}
 	TIMECALL_TimingPairs.erase(TIMECALL_TimingPairs.begin() + found);
+	std::cerr << "END TIMER_SIMPLE_TIME_STOP" << std::endl;
 }
 
 void init(std::vector<std::string> & cmd_list) {

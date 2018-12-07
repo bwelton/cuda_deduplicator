@@ -27,11 +27,11 @@ void TimerInstrimentation::InsertTimers(StackRecMap & recs) {
 	std::vector<BPatch_point*> * funcEntry = cudaSyncFunctions[0]->findPoint(BPatch_locEntry);
 	std::vector<BPatch_snippet*> testArgs;
 	BPatch_funcCallExpr recordFuncEntry(*(addFunction[0]), testArgs);
-	//assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
 
 	uint64_t curId = 1;
 	for (auto i : instFuncs) {
-		InsertTimer(i, curId);
+		//InsertTimer(i, curId);
 		_idToFunc[curId] = i;
 		curId++;
 	}

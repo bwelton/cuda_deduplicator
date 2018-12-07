@@ -53,6 +53,7 @@ public:
 	void SetDynOps(std::shared_ptr<DynOpsClass> ops);
 	std::shared_ptr<DynOpsClass> ReturnDynOps();
 	void BeginInsertionSet();
+	void DetachForDebug();
 private:
 	bool IsMPIProgram();
 	BPatch_addressSpace * LaunchMPIProcess();

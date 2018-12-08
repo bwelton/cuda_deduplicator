@@ -144,7 +144,7 @@ void SyncTesting::TimeSynchronizations(StackRecMap & recs) {
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	TimerInstrimentation t(proc);
 	t.InsertTimers(recs);
-	proc->DetachForDebug();
+	//proc->DetachForDebug();
 	proc->RunUntilCompleation();
 	t.PostProcessing(recs);
 }

@@ -68,8 +68,8 @@ extern "C"{
 // 	std::cerr << "Done Init" << std::endl;
 // }
 
-void TIMER_SIMPLE_COUNT_ADD_ONE() {
-	std::cerr << "Start TIMER_SIMPLE_COUNT_ADD_ONE" << std::endl;
+extern void TIMER_SIMPLE_COUNT_ADD_ONE() {
+	//std::cerr << "Start TIMER_SIMPLE_COUNT_ADD_ONE" << std::endl;
 	// INIT_TIMERS();
 	// if (TIMECALL_TimingCount.size() > 0)
 	// 	TIMECALL_TimingCount[TIMECALL_TimingCount.size() - 1] += 1;
@@ -83,7 +83,7 @@ void TIMER_SIMPLE_COUNT_ADD_ONE() {
 	// 	//TIMECALL_outFile->Write(0, 0.0, 1);
 	// 	std::cout << "Timing error, trying to add one to an unknown synchronization!" << std::endl;
 	// }
-	std::cerr << "End TIMER_SIMPLE_COUNT_ADD_ONE" << std::endl;
+	//std::cerr << "End TIMER_SIMPLE_COUNT_ADD_ONE" << std::endl;
 }
 
 // void TIMER_SIMPLE_TIME_START(uint64_t id) {

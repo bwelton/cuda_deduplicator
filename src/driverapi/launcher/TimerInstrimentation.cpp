@@ -60,7 +60,7 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 		i.second.PrintStack();
 		if (i.first > 0) {
 			assert(i.second._timing.size() > 0);
-			uint64_t dynID = i.second._timing.dynId;
+			uint64_t dynID = i.second._timing[0].dynId;
 			for (auto n : i.second._timing)
 				assert(n.dynId == dynId);
 			assert(_idToFunc.find(dynId) != _idToFunc.end());

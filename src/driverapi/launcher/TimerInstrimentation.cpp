@@ -42,9 +42,9 @@ StackPoint TimerInstrimentation::GetPointFromBpatchFunc(BPatch_function * func) 
 	uint64_t addr = 0;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_point*> * funcEntry = func->findPoint(BPatch_locEntry);
-	assert(funcEntry.size() > 0);
+	assert(funcEntry->size() > 0);
 
-	assert(ops->GetFileOffset(_proc->GetAddressSpace(), funcEntry[0], addr) == true);
+	assert(ops->GetFileOffset(_proc->GetAddressSpace(), (*funcEntry)[0], addr) == true);
 	assert(addr > 0);
 
 	return StackPoint(func->getModule()->getObject()->pathName(),func->getName(), addr, addr);
@@ -60,9 +60,9 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 		i.second.PrintStack();
 		if (i.first > 0) {
 			assert(i.second._timing.size() > 0);
-			uint64_t dynID = i.second._timing.s.dynId;
+			uint64_t dynID = i.second._timing.dynId;
 			for (auto n : i.second._timing)
-				assert(n.s.dynId == dynId);
+				assert(n.dynId == dynId);
 			assert(_idToFunc.find(dynId) != _idToFunc.end());
 			i.second.ReplaceLibDynRT(_idToFunc[dynId]);
 		}

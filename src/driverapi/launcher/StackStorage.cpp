@@ -64,6 +64,15 @@ bool StackRecord::IsEqual(StackRecord & other) {
 	return true;
 }
 
+bool StackRecord::ReplaceLibDynRT(StackPoint p) {
+	uint64_t pos = GetFirstLibDynRTPosition();
+	if (pos == 0)
+		return false;
+	_points.erase(_points.begin() + pos, _points.end());
+	_points.push_back(p);
+	return true;
+}
+
 
 void StackRecord::ChangePointAtPosition(StackPoint p, uint64_t pos) {
 	if (pos < _points.size()) {

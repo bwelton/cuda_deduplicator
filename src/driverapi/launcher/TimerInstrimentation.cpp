@@ -32,9 +32,22 @@ void TimerInstrimentation::InsertTimers(StackRecMap & recs) {
 	uint64_t curId = 1;
 	for (auto i : instFuncs) {
 		InsertTimer(i, curId);
-		_idToFunc[curId] = i;
+		_idToFunc[curId] = GetPointFromBpatchFunc(i);
 		curId++;
 	}
+
+}
+
+StackPoint TimerInstrimentation::GetPointFromBpatchFunc(BPatch_function * func) {
+	uint64_t addr = 0;
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+	std::vector<BPatch_point*> * funcEntry = func->findPoint(BPatch_locEntry);
+	assert(funcEntry.size() > 0);
+
+	assert(ops->GetFileOffset(_proc->GetAddressSpace(), funcEntry[0], addr) == true);
+	assert(addr > 0);
+
+	return StackPoint(func->getModule()->getObject()->pathName(),func->getName(), addr, addr);
 
 }
 
@@ -43,8 +56,17 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 	ReadStackKeys reader(std::string("TF_timekey.bin"), std::string("TF_trace.bin"));
 	reader.GetStackRecords(tmp, std::bind(&ReadStackKeys::ProcessTFTimingData, &reader, std::placeholders::_1));
 	std::cout << "Printing decoded stack" << std::endl;
-	for (auto i : tmp) 
-		i.second.PrintStack();
+	for (auto & i : tmp) {
+		if (i.second.GetID() > 0) {
+			assert(i.second._timing.size() > 0);
+			uint64_t dynID = i.second._timing.s.dynId;
+			for (auto n : i.second._timing)
+				assert(n.s.dynId == dynId);
+			assert(_idToFunc.find(dynId) != _idToFunc.end());
+			i.second.ReplaceLibDynRT(_idToFunc[dynId]);
+		}
+	}
+		// i.second.PrintStack();
 
 	std::cout << "Printing original stack" << std::endl;
 	for (auto i : recs) 

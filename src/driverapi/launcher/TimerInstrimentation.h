@@ -57,11 +57,11 @@ private:
 	void InsertTimer(BPatch_function * func, uint64_t ident);
 
 	StackPoint GetPointFromBpatchFunc(BPatch_function * func);
-	std::map<uint64_t, BPatch_function *> _idToFunc;
+	std::map<uint64_t, StackPoint> _idToFunc;
 
 	std::set<BPatch_function*> _processed;
 	std::shared_ptr<DyninstProcess> _proc;
-	std::map<uint64_t, StackPoint> _idToCallname;
+	std::map<uint64_t, std::string> _idToCallname;
 	BPatch_object * _libcuda;
 	BPatch_object * _libtime; 
 

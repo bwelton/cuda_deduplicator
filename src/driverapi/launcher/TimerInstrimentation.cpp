@@ -60,9 +60,9 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 		i.second.PrintStack();
 		if (i.first > 0) {
 			assert(i.second._timing.size() > 0);
-			uint64_t dynID = i.second._timing[0].dynId;
+			uint64_t dynID = i.second._timing[0].s.dynId;
 			for (auto n : i.second._timing)
-				assert(n.dynId == dynID);
+				assert(n.s.dynId == dynID);
 			assert(_idToFunc.find(dynID) != _idToFunc.end());
 			i.second.ReplaceLibDynRT(_idToFunc[dynID]);
 		}

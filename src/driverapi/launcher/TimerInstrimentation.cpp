@@ -57,7 +57,8 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 	reader.GetStackRecords(tmp, std::bind(&ReadStackKeys::ProcessTFTimingData, &reader, std::placeholders::_1));
 	std::cout << "Printing decoded stack" << std::endl;
 	for (auto & i : tmp) {
-		if (i.second.GetID() > 0) {
+		i.second.PrintStack();
+		if (i.first > 0) {
 			assert(i.second._timing.size() > 0);
 			uint64_t dynID = i.second._timing.s.dynId;
 			for (auto n : i.second._timing)
@@ -65,6 +66,7 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 			assert(_idToFunc.find(dynId) != _idToFunc.end());
 			i.second.ReplaceLibDynRT(_idToFunc[dynId]);
 		}
+		i.second.PrintStack();
 	}
 		// i.second.PrintStack();
 

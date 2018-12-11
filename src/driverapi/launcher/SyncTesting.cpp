@@ -150,6 +150,17 @@ void SyncTesting::TimeSynchronizations(StackRecMap & recs) {
 }
 
 
+void SyncTesting::RunLoadStoreAnalysis(StackRecMap & recs) {
+	system("exec rm -rf ./stackOut.*");
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	std::vector<std::string> pluginNames = {"libSynchTool"};
+	CreatePluginFile(pluginNames);		
+	LoadStoreInstrimentation ls(proc);
+	ls.InsertAnalysis(recs);
+	proc->RunUntilCompleation();
+	ls.PostProcessing(recs);	
+}
+
 void SyncTesting::Run() {
 	StackRecMap syncTiming; 
 	double time;

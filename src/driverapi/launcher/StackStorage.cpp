@@ -96,10 +96,6 @@ void StackRecord::AddStackRecord(uint64_t pos) {
 	}
 }
 
-// void StackRecord::AddTimingData(uint64_t start, uint64_t len, double time) {
-// 	_timingData.push_back(TimingData(start, len, time));
-// }
-
 std::vector<std::string> StackRecord::GetLibNames() {
 	std::vector<std::string> ret;
 	for (auto i : _points) {

@@ -73,6 +73,8 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 	std::cout << "Printing original stack" << std::endl;
 	for (auto i : recs) 
 		i.second.PrintStack();
+
+	recs = tmp;
 }
 
 void TimerInstrimentation::InsertTimer(BPatch_function * func, uint64_t ident) {

@@ -183,7 +183,7 @@ Dyninst::InstructionAPI::Instruction DynOpsClass::FindInstructionAtPoint(BPatch_
 		instructionVector.clear();
 		i->getInstructions(instructionVector);
 		for (auto n : instructionVector) {
-			if (n.second == point->getAddress())
+			if (n.second == (uint64_t)point->getAddress())
 				return n.first;
 		}
 	}

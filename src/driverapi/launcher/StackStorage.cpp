@@ -68,8 +68,13 @@ bool StackRecord::ReplaceLibDynRT(StackPoint p) {
 	uint64_t pos = GetFirstLibDynRTPosition();
 	if (pos == 0)
 		return false;
-	_points.erase(_points.begin() + pos, _points.end());
-	_points.push_back(p);
+	std::vector<StackPoint> tmp;
+	tmp.push_back(p);
+	for (int i = pos; i < _points.size(); i++) 
+		tmp.push_back(_points[i]);
+	_points = tmp;
+	//_points.erase(_points.begin() + pos, _points.end());
+	//_points.push_back(p);
 	return true;
 }
 

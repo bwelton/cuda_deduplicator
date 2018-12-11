@@ -18,6 +18,9 @@ uint64_t DynOpsClass::GetSyncFunctionLocation() {
 
 	return _syncLocation;
 }
+
+
+
 int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_function * & ret, StackPoint & point) {
 	if (aspace == NULL) 
 		return -1;
@@ -168,6 +171,7 @@ std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_
 // Hack to get around point->getInsnAtPoint() not wokring
 Dyninst::InstructionAPI::Instruction DynOpsClass::FindInstructionAtPoint(BPatch_point * point) {
 	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;
+	std::cerr << "Pointer value for block " << point->getBlock() << std::endl;
 	point->getBlock()->getInstructions(instructionVector);
 	bool found = false;
 	for (auto z : instructionVector) {

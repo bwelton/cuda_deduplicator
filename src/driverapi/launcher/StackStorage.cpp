@@ -70,7 +70,7 @@ bool StackRecord::ReplaceLibDynRT(StackPoint p) {
 		return false;
 	std::vector<StackPoint> tmp;
 	tmp.push_back(p);
-	for (int i = pos; i < _points.size(); i++) 
+	for (int i = pos + 1; i < _points.size(); i++) 
 		tmp.push_back(_points[i]);
 	_points = tmp;
 	//_points.erase(_points.begin() + pos, _points.end());

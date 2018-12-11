@@ -167,21 +167,36 @@ std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_
 	return ret;
 }
 
+void DynOpsClass::GetBasicBlocks(BPatch_function * func, std::set<BPatch_basicBlock *> & ret) {
+	assert(func->getCFG() != NULL);
+	func->getCFG()->getAllBasicBlocks(ret);
+}
+
 
 // Hack to get around point->getInsnAtPoint() not wokring
 Dyninst::InstructionAPI::Instruction DynOpsClass::FindInstructionAtPoint(BPatch_point * point) {
+	std::set<BPatch_basicBlock *> blocks;
 	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;
-	std::cerr << "Pointer value for block " << point->getBlock() << std::endl;
-	point->getBlock()->getInstructions(instructionVector);
-	bool found = false;
-	for (auto z : instructionVector) {
-		if(z.second == (uint64_t)point->getAddress()) {
-			found = true;
-			return z.first;
-		} else if (found == true) {
-			 
+	GetBasicBlocks(point->getFunction(), blocks);
+
+	for (auto i : blocks) {
+		instructionVector.clear();
+		i->getInstructions(instructionVector);
+		for (auto n : instructionVector) {
+			if (n.second == point->getAddress())
+				return n.first;
 		}
 	}
+	// //point->getBlock()->getInstructions(instructionVector);
+	// bool found = false;
+	// for (auto z : instructionVector) {
+	// 	if(z.second == (uint64_t)point->getAddress()) {
+	// 		found = true;
+	// 		return z.first;
+	// 	} else if (found == true) {
+			 
+	// 	}
+	// }
 	return Dyninst::InstructionAPI::Instruction();
 }
 

@@ -17,7 +17,7 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 }
 
 uint64_t DyninstFunction::GetSmallestEntryBlockSize() {
-	BPatch_flowGraph * fg = func->getCFG();
+	BPatch_flowGraph * fg = _func->getCFG();
 	std::vector<BPatch_basicBlock *> entry;
 	uint64_t smallest = 100000000;
 	assert(fg->getEntryBasicBlock(entry) == true);

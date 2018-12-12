@@ -63,4 +63,5 @@ private:
 	std::map<uint64_t, std::pair<Dyninst::InstructionAPI::Instruction, BPatch_basicBlock *>  > _instmap;
 	BPatch_function * _func;
 	BPatch_object * _obj;
+	uint64_t _entrySize;
 };

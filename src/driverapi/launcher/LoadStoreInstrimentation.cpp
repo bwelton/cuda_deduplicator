@@ -7,10 +7,6 @@ LoadStoreInstrimentation::LoadStoreInstrimentation(std::shared_ptr<DyninstProces
 
 
 void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
-	// Setup apicapture
-	APICaptureInstrimentation procTime(_proc);
-	procTime.InsertInstrimentation();
-
 	// Create the dyninst functions from all the functions in the process.
 	std::vector<BPatch_function *> all_functions;
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();
@@ -21,6 +17,9 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 		_dyninstFunctions.push_back(std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap)));		
 	}
 
+	// Setup apicapture
+	APICaptureInstrimentation procTime(_proc);
+	procTime.InsertInstrimentation();
 }
 
 void LoadStoreInstrimentation::PostProcessing(StackRecMap & recs) {}

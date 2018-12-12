@@ -49,6 +49,7 @@ using namespace PatchAPI;
 using namespace SymtabAPI;
 
 class DyninstFunction {
+public:
 	DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker);
 private: 
 	std::shared_ptr<InstrimentationTracker> _track;

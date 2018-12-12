@@ -42,6 +42,8 @@
 #include "StackStorage.h"
 #include "ReadStackKeys.h"
 #include "TFReaderWriter.h"
+#include "DyninstFunction.h"
+#include "InstrimentationTracker.h"
 
 using namespace Dyninst;
 using namespace ParseAPI;

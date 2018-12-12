@@ -58,4 +58,5 @@ public:
 	void PostProcessing(StackRecMap & recs);
 private:
 	std::shared_ptr<DyninstProcess> _proc;
+	std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;
 };

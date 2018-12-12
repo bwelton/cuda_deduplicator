@@ -15,7 +15,7 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 
 	for (auto i : all_functions) {
-
+		_dyninstFunctions.push_back(std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker)));		
 	}
 
 }

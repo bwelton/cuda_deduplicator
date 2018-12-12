@@ -44,6 +44,7 @@
 #include "TFReaderWriter.h"
 #include "DyninstFunction.h"
 #include "InstrimentationTracker.h"
+#include "BinaryLocationIDMap.h"
 
 using namespace Dyninst;
 using namespace ParseAPI;
@@ -59,4 +60,5 @@ public:
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;
+	std::shared_ptr<BinaryLocationIDMap> _bmap;
 };

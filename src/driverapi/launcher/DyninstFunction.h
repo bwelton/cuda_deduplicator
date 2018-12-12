@@ -43,6 +43,8 @@
 #include "ReadStackKeys.h"
 #include "TFReaderWriter.h"
 #include "InstrimentationTracker.h"
+#include "BinaryLocationIDMap.h"
+
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -50,11 +52,14 @@ using namespace SymtabAPI;
 
 class DyninstFunction {
 public:
-	DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker);
+	DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker, std::shared_ptr<BinaryLocationIDMap> bmap);
 private: 
+	uint64_t GetSmallestEntryBlockSize();
+	bool IsExcludedFunction(InstType T);
 	std::shared_ptr<InstrimentationTracker> _track;
 	std::shared_ptr<DyninstProcess> _proc;
 	std::set<BPatch_basicBlock *> _bblocks;
+	std::shared_ptr<BinaryLocationIDMap> _bmap
 	std::map<uint64_t, std::pair<Dyninst::InstructionAPI::Instruction, BPatch_basicBlock *>  > _instmap;
 	BPatch_function * _func;
 	BPatch_object * _obj;

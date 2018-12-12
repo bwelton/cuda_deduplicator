@@ -13,7 +13,7 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 		}
 	}
 	_entrySize = GetSmallestEntryBlockSize();
-	
+
 }
 
 uint64_t DyninstFunction::GetSmallestEntryBlockSize() {
@@ -34,7 +34,7 @@ uint64_t DyninstFunction::GetSmallestEntryBlockSize() {
 		if (size < smallest)
 			smallest = size;
 	}
-	return size;
+	return smallest;
 }
 
 bool DyninstFunction::IsExcludedFunction(InstType T) {

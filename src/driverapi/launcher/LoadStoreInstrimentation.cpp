@@ -1,6 +1,9 @@
 #include "LoadStoreInstrimentation.h"
 
-LoadStoreInstrimentation::LoadStoreInstrimentation(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {  }
+LoadStoreInstrimentation::LoadStoreInstrimentation(std::shared_ptr<DyninstProcess> proc) : _proc(proc) { 
+	_bmap.reset(new BinaryLocationIDMap());
+
+}
 
 
 void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
@@ -15,7 +18,7 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 
 	for (auto i : all_functions) {
-		_dyninstFunctions.push_back(std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker)));		
+		_dyninstFunctions.push_back(std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap)));		
 	}
 
 }

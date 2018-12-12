@@ -63,11 +63,10 @@ public:
 	StringVector OpenAndParseExclusionFile(std::string filename);
 	bool ShouldInstrimentInstruction(BPatch_point * point);
 	void PowerFunctionFix(std::vector<BPatch_function*> & functions);
-private:
-
-	uint64_t HashPoint(BPatch_function * func, BPatch_point * point);
 	bool ShouldInstrimentFunciton(BPatch_function * func, InstType t);
 	bool ShouldInstrimentModule(BPatch_function * func, InstType t);
+private:
+	uint64_t HashPoint(BPatch_function * func, BPatch_point * point);
 	std::vector<std::string> _prevWrappedFunctions;
 	std::map<InstType, std::set<uint64_t> > _alreadyInstrimented;
 	std::ofstream _logFile;

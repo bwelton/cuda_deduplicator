@@ -180,6 +180,7 @@ void SyncTesting::Run() {
 	RunWithoutInstrimentation();
 	RunWithSyncStacktracing(syncTiming);
 	TimeSynchronizations(syncTiming);
+	RunLoadStoreAnalysis(recs);
 	return;
 	//RunWithCUPTI();
 

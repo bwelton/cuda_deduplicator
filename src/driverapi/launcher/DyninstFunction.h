@@ -67,4 +67,5 @@ private:
 	BPatch_function * _func;
 	BPatch_object * _obj;
 	uint64_t _entrySize;
+	bool _exitEntryDone;
 };

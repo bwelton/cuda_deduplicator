@@ -30,6 +30,8 @@ BPatch_object * DyninstProcess::LoadLibrary(std::string library) {
 	 * If the library is already loaded, returns the loaded library. Otherwise, calls the appropriate
 	 * dyninst load function. 
 	 */
+	if (library.find("libcuda.so") != library.end())
+		library = std::string("libcuda.so.1");
 	std::string original = library;
 	std::map<BPatch_object *, boost::filesystem::path> loadedLibraries;
 	BPatch_process * appProc = dynamic_cast<BPatch_process*>(_aspace);	

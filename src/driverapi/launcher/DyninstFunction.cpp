@@ -1,6 +1,6 @@
 #include "DyninstFunction.h"
 DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker, std::shared_ptr<BinaryLocationIDMap> bmap) : 
-		_proc(proc), _track(tracker), _func(func),  _bmap(bmap) {
+		_proc(proc), _track(tracker), _func(func),  _bmap(bmap), _exitEntryDone(false) {
 	_obj = _func->getModule()->getObject();
 	std::shared_ptr<DynOpsClass> ops = proc->ReturnDynOps();
 	ops->GetBasicBlocks(func, _bblocks);
@@ -43,8 +43,10 @@ std::string DyninstFunction::PrintInst() {
 
 void DyninstFunction::EntryExitWrapping() {
 	// Find the function calls being made
+	if(_exitEntryDone == true)
+		return;
 	std::string libname = _obj->pathName();
-	std::shared_ptr<DynOpsClass> ops = proc->ReturnDynOps();
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> entryFuncs = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RECORD_FUNCTION_ENTRY"), NULL);
 	std::vector<BPatch_function *> exitFuncs = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RECORD_FUNCTION_EXIT"), NULL);
 	assert(entryFuncs.size() == 1);
@@ -84,7 +86,7 @@ void DyninstFunction::EntryExitWrapping() {
 			std::get<0>(_insertedInst[(uint64_t)i->getAddress()]) = writeValue;
 		}
 	}
-
+	_exitEntryDone = true;
 }
 
 uint64_t DyninstFunction::GetSmallestEntryBlockSize() {

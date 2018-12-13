@@ -57,8 +57,10 @@ public:
 	LoadStoreInstrimentation(std::shared_ptr<DyninstProcess> proc);
 	void InsertAnalysis(StackRecMap & recs);
 	void PostProcessing(StackRecMap & recs);
+	void InsertEntryExit(StackRecMap & recs);
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;
+	std::map<BPatch_function *, uint64_t> _funcPositions;
 	std::shared_ptr<BinaryLocationIDMap> _bmap;
 };

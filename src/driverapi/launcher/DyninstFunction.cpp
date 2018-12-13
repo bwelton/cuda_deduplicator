@@ -52,7 +52,7 @@ std::string DyninstFunction::PrintInst(InstStats & stats) {
 	}
 	std::string ret = ss.str();
 	ss.str(std::string());
-	ss <<  "FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << (stackTraced ? " " : " FUNC_STACKTRACED ") << (lsInstrimented ? " " : " FUNC_LSINSTRIMENTED ") << std::endl;
+	ss <<  "FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << (stackTraced ? " FUNC_STACKTRACED " : " ") << (lsInstrimented ? " FUNC_LSINSTRIMENTED " : " " ) << std::endl;
 	return ss.str() + ret;
 }
 

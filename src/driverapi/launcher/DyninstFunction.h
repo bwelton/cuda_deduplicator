@@ -53,6 +53,8 @@ using namespace SymtabAPI;
 class DyninstFunction {
 public:
 	DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker, std::shared_ptr<BinaryLocationIDMap> bmap);
+	void EntryExitWrapping();
+	std::string PrintInst();
 private: 
 	uint64_t GetSmallestEntryBlockSize();
 	bool IsExcludedFunction(InstType T);
@@ -61,6 +63,7 @@ private:
 	std::set<BPatch_basicBlock *> _bblocks;
 	std::shared_ptr<BinaryLocationIDMap> _bmap;
 	std::map<uint64_t, std::pair<Dyninst::InstructionAPI::Instruction, BPatch_basicBlock *>  > _instmap;
+	std::map<uint64_t, std::tuple<int,int>> _insertedInst;
 	BPatch_function * _func;
 	BPatch_object * _obj;
 	uint64_t _entrySize;

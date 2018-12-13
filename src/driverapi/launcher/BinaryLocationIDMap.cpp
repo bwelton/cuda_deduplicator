@@ -2,13 +2,28 @@
 BinaryLocationIDMap::BinaryLocationIDMap() : _curPos(1), _libids(1) {
 
 }
+
+bool BinaryLocationIDMap::AlreadyExists(std::string & libname, uint64_t offsetAddr) {
+	if (_libnameToLibID.find(libname) == _libnameToLibID.end()) {
+		return false;
+	}
+	uint64_t tmp = _libnameToLibID[libname];
+	if (_libIdOffsetToID.find(tmp) != _libIdOffsetToID.end()) {
+		if (_libIdOffsetToID[tmp].find(offsetAddr) != _libIdOffsetToID[tmp].end())
+			return true;
+	}
+	return false;
+}
+
 uint64_t BinaryLocationIDMap::StorePosition(std::string & libname, uint64_t offsetAddr) {
 	if (_libnameToLibID.find(libname) == _libnameToLibID.end()) {
 		_libnameToLibID[libname] = _libids;
+		_libIdOffsetToID[_libids] = std::map<uint64_t,uint64_t>();
 		_libIdtoLibname[_libids] = libname;
 		_libids++;
 	}
 	_idToLibOffset[_curPos] = std::make_pair(_libnameToLibID[libname], offsetAddr);
+	_libIdOffsetToID[_libids][offsetAddr] =  _curPos;
 	_curPos++;
 	return _curPos - 1;
 }

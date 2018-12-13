@@ -17,13 +17,15 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 }
 
 std::string DyninstFunction::PrintInst(InstStats & stats) {
+	bool stackTraced = false;
+	bool lsInstrimented = false;
 	std::stringstream ss;
 	if (_insertedInst.size() == 0){
 		ss <<"FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << " NO INST" << std::endl;
 		return ss.str();
 	}
 
-	ss << "FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << std::endl;
+	//ss << "FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << std::endl;
 	for (auto i : _instmap) {
 		ss << "0x" << std::hex << i.first << ": " << i.second.first.format(0);
 		if (_insertedInst.find(i.first) !=  _insertedInst.end()) {
@@ -32,6 +34,7 @@ std::string DyninstFunction::PrintInst(InstStats & stats) {
 				std::string tmp = i.second.first.format(0);
 				stats.ct_instNames.insert(tmp.substr(0, tmp.find(' ')));
 				ss << " CALLTRACED ";
+				stackTraced = true;
 			} else if (std::get<0>(_insertedInst[i.first]) == -1){
 				ss << " FAILED CALLTRACE ";
 			}
@@ -40,13 +43,17 @@ std::string DyninstFunction::PrintInst(InstStats & stats) {
 				std::string tmp = i.second.first.format(0);
 				stats.ls_instNames.insert(tmp.substr(0, tmp.find(' ')));
 				ss << " LS APPLIED ";
+				lsInstrimented = true;
 			} else if (std::get<1>(_insertedInst[i.first]) == -1){
 				ss << " FAILED LS ";
 			}			
 		}
 		ss << "\n";
 	}
-	return ss.str();
+	std::string ret = ss.str();
+	ss.str(std::string());
+	ss <<  "FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << (stackTraced ? " " : " FUNC_STACKTRACED ") << (lsInstrimented ? " " : " FUNC_LSINSTRIMENTED ") << std::endl;
+	return ss.str() + ret;
 }
 
 void DyninstFunction::EntryExitWrapping() {

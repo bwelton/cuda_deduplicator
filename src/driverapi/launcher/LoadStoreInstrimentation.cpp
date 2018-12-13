@@ -81,8 +81,8 @@ void LoadStoreInstrimentation::PrintDebug() {
 	std::cout << "\n\nTotal Inst Points: " << stats.callTracedInsts + stats.lsInsts << std::endl;
 	t << "Total CallTrace Points: " << stats.callTracedInsts << std::endl;
 	std::cout << "Total CallTrace Points: " << stats.callTracedInsts << std::endl;
-	t << "Calltraced Instructions: "
-	std::cout << "Calltraced Instructions: "
+	t << "Calltraced Instructions: ";
+	std::cout << "Calltraced Instructions: ";
 	for (auto i : stats.ct_instNames){
 		t << i << " ";
 		std::cout << i << " ";
@@ -92,8 +92,8 @@ void LoadStoreInstrimentation::PrintDebug() {
 
 	t << "Total LS Points: " << stats.lsInsts << std::endl;
 	std::cout << "Total LS Points: " << stats.lsInsts << std::endl;
-	t << "LS Instructions: "
-	std::cout << "LS Instructions: "
+	t << "LS Instructions: ";
+	std::cout << "LS Instructions: ";
 	for (auto i : stats.ls_instNames){
 		t << i << " ";
 		std::cout << i << " ";

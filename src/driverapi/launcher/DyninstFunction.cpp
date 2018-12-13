@@ -61,6 +61,11 @@ void DyninstFunction::EntryExitWrapping() {
 	if(_exitEntryDone == true)
 		return;
 	std::string libname = _obj->pathName();
+	// Skip entry/exit instrimentation on libcuda
+	if (libname.find("libcuda.so") != std::string::npos) {
+		_exitEntryDone = true;
+		return;
+	}
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> entryFuncs = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RECORD_FUNCTION_ENTRY"), NULL);
 	std::vector<BPatch_function *> exitFuncs = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RECORD_FUNCTION_EXIT"), NULL);

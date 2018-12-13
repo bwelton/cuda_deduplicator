@@ -23,7 +23,7 @@ std::string DyninstFunction::PrintInst() {
 	std::stringstream ss;
 	ss << "FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << std::endl;
 	for (auto i : _instmap) {
-		ss << "0x" << std::hex << i.first << ": " << i.second.first->format(0);
+		ss << "0x" << std::hex << i.first << ": " << i.second.first.format(0);
 		if (_insertedInst.find(i.first) !=  _insertedInst.end()) {
 			if (std::get<0>(_insertedInst[i.first]) == 1) {
 				ss << " CALLTRACED ";

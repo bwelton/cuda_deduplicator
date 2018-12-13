@@ -42,7 +42,7 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	assert(ops->FindFuncByName(_proc->GetAddressSpace(), enterSync, std::string("SYNC_CAPTURE_SYNC_CALL")) == 1);
 	std::vector<BPatch_point*> * entryPoints = cudaSyncFunctions[0]->findPoint(BPatch_locEntry);
 	std::string tmp = cudaSyncFunctions[0]->getModule()->getObject()->pathName();
-	_bmap.StorePosition(tmp,ops->GetSyncFunctionLocation());
+	_bmap->StorePosition(tmp,ops->GetSyncFunctionLocation());
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*enterSync, recordArgs);
 	assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);

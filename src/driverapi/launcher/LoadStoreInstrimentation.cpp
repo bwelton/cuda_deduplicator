@@ -48,7 +48,7 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 
 	// Print Debug Info
-	PrintDebug();
+	PrintDebug(recs);
 }
 
 void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {

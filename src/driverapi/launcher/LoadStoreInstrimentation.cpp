@@ -71,7 +71,7 @@ void LoadStoreInstrimentation::PrintDebug() {
 	std::ofstream t;
 	t.open("DIOGENES_LSDEBUG.txt", std::ofstream::out);
 	for (auto i : _dyninstFunctions) {
-		t << i.second->PrintInst() << std::endl;
+		t << i->PrintInst() << std::endl;
 	}
 	t.close();
 }

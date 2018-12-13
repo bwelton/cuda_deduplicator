@@ -68,11 +68,39 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 }
 
 void LoadStoreInstrimentation::PrintDebug() {
+	InstStats stats;
+	stats.callTracedInsts = 0;
+	stats.lsInsts = 0;
 	std::ofstream t;
 	t.open("DIOGENES_LSDEBUG.txt", std::ofstream::out);
 	for (auto i : _dyninstFunctions) {
-		t << i->PrintInst() << std::endl;
+		t << i->PrintInst(stats);
 	}
+
+	t << "\n\nTotal Inst Points: " << stats.callTracedInsts + stats.lsInsts << std::endl;
+	std::cout << "\n\nTotal Inst Points: " << stats.callTracedInsts + stats.lsInsts << std::endl;
+	t << "Total CallTrace Points: " << stats.callTracedInsts << std::endl;
+	std::cout << "Total CallTrace Points: " << stats.callTracedInsts << std::endl;
+	t << "Calltraced Instructions: "
+	std::cout << "Calltraced Instructions: "
+	for (auto i : stats.ct_instNames){
+		t << i << " ";
+		std::cout << i << " ";
+	}
+	t << "\n";
+	std::cout << "\n";
+
+	t << "Total LS Points: " << stats.lsInsts << std::endl;
+	std::cout << "Total LS Points: " << stats.lsInsts << std::endl;
+	t << "LS Instructions: "
+	std::cout << "LS Instructions: "
+	for (auto i : stats.ls_instNames){
+		t << i << " ";
+		std::cout << i << " ";
+	}
+	t << "\n";
+	std::cout << "\n";
+	
 	t.close();
 }
 

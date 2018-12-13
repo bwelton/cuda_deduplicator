@@ -16,7 +16,7 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 
 }
 
-std::string DyninstFunction::PrintInst() {
+std::string DyninstFunction::PrintInst(InstStats & stats) {
 	std::stringstream ss;
 	if (_insertedInst.size() == 0){
 		ss <<"FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << " NO INST" << std::endl;
@@ -28,11 +28,17 @@ std::string DyninstFunction::PrintInst() {
 		ss << "0x" << std::hex << i.first << ": " << i.second.first.format(0);
 		if (_insertedInst.find(i.first) !=  _insertedInst.end()) {
 			if (std::get<0>(_insertedInst[i.first]) == 1) {
+				stats.callTracedInsts++;
+				std::string tmp = i.second.first.format(0);
+				stats.ct_instNames.insert(tmp.substr(0, tmp.find(' ')));
 				ss << " CALLTRACED ";
 			} else if (std::get<0>(_insertedInst[i.first]) == -1){
 				ss << " FAILED CALLTRACE ";
 			}
 			if (std::get<1>(_insertedInst[i.first]) == 1) {
+				stats.lsInsts++;
+				std::string tmp = i.second.first.format(0);
+				stats.ls_instNames.insert(tmp.substr(0, tmp.find(' ')));
 				ss << " LS APPLIED ";
 			} else if (std::get<1>(_insertedInst[i.first]) == -1){
 				ss << " FAILED LS ";

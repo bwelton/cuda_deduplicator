@@ -50,11 +50,19 @@ using namespace ParseAPI;
 using namespace PatchAPI;
 using namespace SymtabAPI;
 
+struct InstStats { 
+	uint64_t callTracedInsts;
+	uint64_t lsInsts;
+	std::set<std::string> ct_instNames;
+	std::set<std::string> ls_instNames;
+};
+
+
 class DyninstFunction {
 public:
 	DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker, std::shared_ptr<BinaryLocationIDMap> bmap);
 	void EntryExitWrapping();
-	std::string PrintInst();
+	std::string PrintInst(InstStats & stats);
 private: 
 	uint64_t GetSmallestEntryBlockSize();
 	bool IsExcludedFunction(InstType T);

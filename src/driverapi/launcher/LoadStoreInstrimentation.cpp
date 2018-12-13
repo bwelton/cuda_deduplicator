@@ -67,12 +67,19 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 	}
 }
 
-void LoadStoreInstrimentation::PrintDebug() {
+void LoadStoreInstrimentation::PrintDebug(StackRecMap & recs) {
+
 	InstStats stats;
 	stats.callTracedInsts = 0;
 	stats.lsInsts = 0;
 	std::ofstream t;
 	t.open("DIOGENES_LSDEBUG.txt", std::ofstream::out);
+	t << "Printing tracing stack" << std::endl;
+	for (auto & i : recs) {
+		i.second->PrintStack(t);
+	}
+	t << "\n";
+	
 	for (auto i : _dyninstFunctions) {
 		t << i->PrintInst(stats);
 	}

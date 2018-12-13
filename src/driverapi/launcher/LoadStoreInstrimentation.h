@@ -58,6 +58,7 @@ public:
 	void InsertAnalysis(StackRecMap & recs);
 	void PostProcessing(StackRecMap & recs);
 	void InsertEntryExit(StackRecMap & recs);
+	void PrintDebug();
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;

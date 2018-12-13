@@ -46,6 +46,9 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*enterSync, recordArgs);
 	assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
+
+	// Print Debug Info
+	PrintDebug();
 }
 
 void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
@@ -62,6 +65,15 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 			_dyninstFunctions[_funcPositions[func]]->EntryExitWrapping();
 		}
 	}
+}
+
+void LoadStoreInstrimentation::PrintDebug() {
+	std::ofstream t;
+	t.open("DIOGENES_LSDEBUG.txt", std::ofstream::out);
+	for (auto i : _dyninstFunctions) {
+		t << i.second->PrintInst() << std::endl;
+	}
+	t.close();
 }
 
 void LoadStoreInstrimentation::PostProcessing(StackRecMap & recs) {}

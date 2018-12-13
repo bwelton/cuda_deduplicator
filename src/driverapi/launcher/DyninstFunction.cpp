@@ -17,10 +17,12 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 }
 
 std::string DyninstFunction::PrintInst() {
-	if (_insertedInst.size() == 0)
-		return std::string("");
-
 	std::stringstream ss;
+	if (_insertedInst.size() == 0){
+		ss <<"FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << " NO INST" << std::endl;
+		return ss.str();
+	}
+
 	ss << "FUNCTION: " << _func->getName()  << " IN MODULE " << _obj->pathName() << std::endl;
 	for (auto i : _instmap) {
 		ss << "0x" << std::hex << i.first << ": " << i.second.first.format(0);

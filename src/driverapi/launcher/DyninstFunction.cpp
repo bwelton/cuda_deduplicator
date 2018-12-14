@@ -118,7 +118,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);
 	assert(recordMemAccess.size() == 1);
-
+	std::string libname = _obj->pathName();
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);
@@ -137,6 +137,8 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 			if(_bmap->AlreadyExists(libname, libOffsetAddr)){
 				writeValue = -1;
 			} else {
+				std::vector<BPatch_point*> singlePoint;
+				singlePoint.push_back(i);
 				writeValue = 1;
 				uint64_t id = _bmap->StorePosition(libname, libOffsetAddr);
 				std::vector<BPatch_snippet*> recordArgs;

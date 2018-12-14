@@ -57,12 +57,18 @@ void CheckAccesses::SyncCalled() {
 bool CheckAccesses::IsAddressRangeProtected(uint64_t addr, uint64_t count) {
 	if (_doNotCheck)
 		return false;
-	for (auto i : _prev)
-		if(i.IsInRangeWithCount(addr,count))
+	for (auto i : _prev){ 
+		if(i.IsInRangeWithCount(addr,count)){
+			_reset = true;
 			return true;
-	for (auto mn : _memoryRangesPrev)
-		if ((addr >= mn.lower() && addr <= mn.upper()) || (addr <= mn.lower() && addr +count >= mn.lower()))
+		}
+	}
+	for (auto mn : _memoryRangesPrev){
+		if ((addr >= mn.lower() && addr <= mn.upper()) || (addr <= mn.lower() && addr +count >= mn.lower())){
+			_reset = true;
 			return true;
+		}
+	}
 	//for (auto i : _unifiedMemory)
 	//	if(i.IsInRange(addr))
 	//		return true;		

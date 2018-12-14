@@ -1,5 +1,6 @@
 #include "CheckAccesses.h"
 #include <iostream>
+#define DEBUG_CHECK 1
 CheckAccesses::CheckAccesses() : _doNotCheck(false), _reset(false) {};
 
 void CheckAccesses::AddMemoryTransfer(MemoryRange & range) {
@@ -44,11 +45,16 @@ void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
 }
 void CheckAccesses::SyncCalled() {
 	if (_reset == true) {
+		#ifdef DEBUG_CHECK
+		std::cerr << "[CheckAccesses::SyncCalled] Resetting Range" << std::endl;
+		#endif
 		_prev = _current;
 		_memoryRangesPrev = _memoryRanges;
 		_reset = false;
 	} else {
+		#ifdef DEBUG_CHECK
 		std::cerr << "[CheckAccesses::SyncCalled] Adding to previous range since sync previous sync produced nothing" << std::endl;
+		#endif
 		_prev.insert(_prev.end(), _current.begin(), _current.end());
 		_memoryRangesPrev = _memoryRanges;
 	}
@@ -78,15 +84,26 @@ bool CheckAccesses::IsAddressRangeProtected(uint64_t addr, uint64_t count) {
 
 
 bool CheckAccesses::IsAddressProtected(uint64_t addr) {
+	#ifdef DEBUG_CHECK 
+	std::cerr << "[CheckAccesses::IsAddressProtected] Checking address: " << std::hex << addr << std::endl;
+	#endif
+
 	if (_doNotCheck)
 		return false;
 	for (auto i : _prev) {
 		if(i.IsInRange(addr)){
 			_reset = true;
+			#ifdef DEBUG_CHECK 
+			std::cerr << "[CheckAccesses::IsAddressProtected] Found in range: " << std::hex << addr << std::endl;
+			#endif
 			return true; 
+
 		}
 	}
 	if (contains(_memoryRangesPrev,addr) == true) {
+		#ifdef DEBUG_CHECK 
+		std::cerr << "[CheckAccesses::IsAddressProtected] Found in range (unified): " << std::hex << addr << std::endl;
+		#endif
 		_reset = true;
 		return true;
 	}

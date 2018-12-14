@@ -31,7 +31,7 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	// Setup apicapture
 	APICaptureInstrimentation procTime(_proc);
 	procTime.InsertInstrimentation();
-
+	_proc->BeginInsertionSet();
 	// Insert Entry/Exit info
 	InsertEntryExit(recs);
 

@@ -52,6 +52,8 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 
 	// Print Debug Info
 	PrintDebug(recs);
+
+	_bmap->DumpLocationMap(std::string("DIOGENES_BINMAP.txt"));
 }
 
 void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {

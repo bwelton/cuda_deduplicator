@@ -48,6 +48,7 @@ void CheckAccesses::SyncCalled() {
 		_memoryRangesPrev = _memoryRanges;
 		_reset = false;
 	} else {
+		std::cerr << "[CheckAccesses::SyncCalled] Adding to previous range since sync previous sync produced nothing" << std::endl;
 		_prev.insert(_prev.end(), _current.begin(), _current.end());
 		_memoryRangesPrev = _memoryRanges;
 	}

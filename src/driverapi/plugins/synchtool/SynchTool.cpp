@@ -12,7 +12,7 @@ extern "C" {
 
 static gotcha_wrappee_handle_t memcpyWrapper_handle;
 static void * memcpyWrapper(void * dest, void * src, size_t count);
-struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcpyWrapper_handle}};
+struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcpyWrapper_handle}};
 
 
 	void INIT_SYNC_COMMON() {
@@ -75,7 +75,7 @@ struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcp
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1)
 			return;
-		std::cerr << "Inside of address " << std::hex << addr<< std::endl;
+		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)
 		// 	justChecking = 1;
 		// else 

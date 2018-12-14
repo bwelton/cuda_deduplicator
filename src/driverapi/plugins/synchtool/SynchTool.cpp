@@ -75,7 +75,7 @@ struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcp
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1)
 			return;
-		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
+		std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)
 		// 	justChecking = 1;
 		// else 

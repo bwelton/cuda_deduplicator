@@ -69,7 +69,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		// else 
 		// 	justChecking = 1002321;
 	    INIT_SYNC_COMMON();
-		 //std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
+		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
 		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {

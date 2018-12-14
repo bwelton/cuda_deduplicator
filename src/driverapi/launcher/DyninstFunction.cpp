@@ -62,7 +62,7 @@ void DyninstFunction::EntryExitWrapping() {
 		return;
 	std::string libname = _obj->pathName();
 	// Skip entry/exit instrimentation on libcuda
-	if (libname.find("libcuda.so") != std::string::npos) {
+	if (libname.find("libcuda.so") != std::string::npos ||  _entrySize < (0x4 * 7) || IsExcludedFunction(CALL_TRACING)) {
 		_exitEntryDone = true;
 		return;
 	}
@@ -110,7 +110,7 @@ void DyninstFunction::EntryExitWrapping() {
 }
 
 void DyninstFunction::InsertLoadStoreAnalysis() {
-	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone){
+	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone || _entrySize < (0x4 * 7) ){
 		_lsDone = true;
 		return;
 	}

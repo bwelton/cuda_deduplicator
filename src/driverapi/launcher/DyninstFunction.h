@@ -63,6 +63,9 @@ public:
 	DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker, std::shared_ptr<BinaryLocationIDMap> bmap);
 	void EntryExitWrapping();
 	std::string PrintInst(InstStats & stats);
+	void InsertLoadStoreAnalysis();
+	uint64_t HandleEmulated(BPatch_basicBlock * block);
+	void GenExclusionSet(std::set<uint64_t> & excludedAddress);
 private: 
 	uint64_t GetSmallestEntryBlockSize();
 	bool IsExcludedFunction(InstType T);
@@ -76,4 +79,5 @@ private:
 	BPatch_object * _obj;
 	uint64_t _entrySize;
 	bool _exitEntryDone;
+	bool _lsDone;
 };

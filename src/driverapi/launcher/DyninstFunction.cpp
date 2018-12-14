@@ -1,6 +1,6 @@
 #include "DyninstFunction.h"
 DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker, std::shared_ptr<BinaryLocationIDMap> bmap) : 
-		_proc(proc), _track(tracker), _func(func),  _bmap(bmap), _exitEntryDone(false) {
+		_proc(proc), _track(tracker), _func(func),  _bmap(bmap), _exitEntryDone(false), _lsDone(false) {
 	_obj = _func->getModule()->getObject();
 	std::shared_ptr<DynOpsClass> ops = proc->ReturnDynOps();
 	ops->GetBasicBlocks(func, _bblocks);
@@ -107,6 +107,100 @@ void DyninstFunction::EntryExitWrapping() {
 		}
 	}
 	_exitEntryDone = true;
+}
+
+void DyninstFunction::InsertLoadStoreAnalysis() {
+	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone){
+		_lsDone = true;
+		return;
+	}
+	_lsDone = true;
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);
+	assert(recordMemAccess.size() == 1);
+
+	std::set<BPatch_opCode> axs;
+	axs.insert(BPatch_opLoad);
+	axs.insert(BPatch_opStore);
+	std::vector<BPatch_point*> * loadsAndStores = _func->findPoint(axs);
+	std::set<uint64_t> exclude;
+	GenExclusionSet(exclude);
+	for (auto i : *loadsAndStores) {
+		int writeValue = 0;
+		uint64_t addr = (uint64_t)i->getAddress();
+		if (exclude.find(addr) != exclude.end()) {
+			writeValue = -1;
+		} else {
+			uint64_t libOffsetAddr = 0;
+			if (!ops->GetFileOffset(_proc->GetAddressSpace(), i, libOffsetAddr, true))
+				libOffsetAddr = (uint64_t) i->getAddress();
+			if(_bmap->AlreadyExists(libname, libOffsetAddr)){
+				writeValue = -1;
+			} else {
+				writeValue = 1;
+				uint64_t id = _bmap->StorePosition(libname, libOffsetAddr);
+				std::vector<BPatch_snippet*> recordArgs;
+				BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
+				recordArgs.push_back(loadAddr);
+				recordArgs.push_back(new BPatch_constExpr(id));
+				BPatch_funcCallExpr recordAddrCall(*(recordMemAccess[0]), recordArgs);
+				assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,singlePoint) != NULL);
+			}
+		}
+		if(_insertedInst.find((uint64_t)i->getAddress()) == _insertedInst.end()){
+			_insertedInst[(uint64_t)i->getAddress()] = std::make_tuple(0,writeValue);
+		} else {
+			assert(std::get<1>(_insertedInst[(uint64_t)i->getAddress()]) == 0);
+			std::get<1>(_insertedInst[(uint64_t)i->getAddress()]) = writeValue;
+		}
+	}
+}
+uint64_t DyninstFunction::HandleEmulated(BPatch_basicBlock * block) {
+	// Returns the address of the reserveration use instruction.
+	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;
+	block->getInstructions(instructionVector);
+	for (auto i : instructionVector) {
+		std::string tmp = i.first.format(0);
+		// Use of reservation instructions
+		if (tmp.find("stbcx") != std::string::npos ||
+			tmp.find("sthcx") != std::string::npos ||
+			tmp.find("stwcx") != std::string::npos ||
+			tmp.find("stdcx") != std::string::npos || 
+			tmp.find("stqcx") != std::string::npos ) {
+			return i.second + 4;
+		}		
+	}
+	assert("SHOULD NOT BE HERE" == 0);
+	return 0;
+}
+void DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
+	// This is a set of instructions that should never be profiled.
+	// Right now in this set is all instructions with the following properties:
+	// 1. Ranges of emulated instructions. 
+	// 2. stfq instructions
+	
+	for (auto i : _instmap) {
+		std::string tmp = i.second.first.format(0);
+		// Reservation Instructions
+		// Find emulated start/end
+		if (tmp.find("lwarx") != std::string::npos || 
+			tmp.find("lbarx") != std::string::npos ||
+			tmp.find("lharx") != std::string::npos ||
+			tmp.find("ldarx") != std::string::npos ||
+			tmp.find("lqarx") != std::string::npos ){
+			uint64_t endingAddress = HandleEmulated(i.second.second);
+			excludedAddress.insert(i.first);
+			assert(endingAddress > i.first);
+			for (uint64_t t = i.first; t < endingAddress + 4; t = t + 4) 
+				excludedAddress.insert(t);				
+		} else {
+			if (tmp.find("stfq ") != std::string::npos)
+				excludedAddress.insert(i.first);
+			else if (tmp.find("[r1 +") != std::string::npos || tmp.find("[r1 -") != std::string::npos)
+				excludedAddress.insert(i.first);
+		}
+	}
+
 }
 
 uint64_t DyninstFunction::GetSmallestEntryBlockSize() {

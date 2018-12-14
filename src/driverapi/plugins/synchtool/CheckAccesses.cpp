@@ -46,7 +46,7 @@ void CheckAccesses::SyncCalled() {
 	if (_reset == true) {
 		_prev = _current;
 		_memoryRangesPrev = _memoryRanges;
-		_reset = false
+		_reset = false;
 	} else {
 		_prev.insert(_prev.end(), _current.begin(), _current.end());
 		_memoryRangesPrev = _memoryRanges;

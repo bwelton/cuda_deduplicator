@@ -1,6 +1,6 @@
 #include "SynchTool.h"
-volatile int exited = 0;
-volatile int inSpecialCase = 0;
+volatile int SYNCTOOL_exited = 0;
+volatile int SYNCTOOL_inSpecialCase = 0;
 std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
@@ -16,7 +16,7 @@ struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcp
 
 
 	void INIT_SYNC_COMMON() {
-		if(exited == 1)
+		if(SYNCTOOL_exited == 1)
 			return;
 		if (_dataAccessManager.get() != NULL)
 			return;
@@ -29,11 +29,11 @@ struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcp
 	}
 	void * memcpyWrapper(void * dest, void * src, size_t count) {
 		INIT_SYNC_COMMON();
-		inSpecialCase = 1;
+		SYNCTOOL_inSpecialCase = 1;
 	}
 
 	void RECORD_FUNCTION_ENTRY(uint64_t id) {
-		if(exited == 1)
+		if(SYNCTOOL_exited == 1)
 			return;
 		// if (justChecking == 8)
 		// 	justChecking = 1;
@@ -47,7 +47,7 @@ struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcp
 		_LoadStoreDriver->PushStack(id);
 	}
 	void RECORD_FUNCTION_EXIT(uint64_t id) {
-		if(exited == 1)
+		if(SYNCTOOL_exited == 1)
 			return;
 		// if (justChecking == 8)
 		// 	justChecking = 1;
@@ -62,7 +62,7 @@ struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcp
 	}
 
 	void SYNC_CAPTURE_SYNC_CALL() {
-		if(exited == 1)
+		if(SYNCTOOL_exited == 1)
 			return;
 		// if (justChecking == 8)
 		// 	justChecking = 1;
@@ -73,7 +73,7 @@ struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcp
 		_LoadStoreDriver->SyncCalled();
 	}
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
-		if(exited == 1 || inSpecialCase == 1)
+		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1)
 			return;
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)
@@ -92,12 +92,12 @@ struct gotcha_binding_t funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcp
 SynchTool::SynchTool(std::vector<std::string> & cmd_list) {
 	INIT_SYNC_COMMON();
 	_cmd_list = cmd_list;
-	exited = 0;
+	SYNCTOOL_exited = 0;
 	_sync_log.reset(new LogInfo(fopen("synch_log.out", "w")));
 }
 
 SynchTool::~SynchTool() {
-	exited = 1;
+	SYNCTOOL_exited = 1;
 	_LoadStoreDriver.reset();
 	_dataAccessManager.reset();
 }
@@ -210,13 +210,13 @@ void init(std::vector<std::string> & cmd_list) {
 }
 
 PluginReturn Precall(std::shared_ptr<Parameters> params){
-	if (exited == 1)
+	if (SYNCTOOL_exited == 1)
 		return NO_ACTION;
 	return PLUG_FACTORY_PTR->Precall(params);
 }
 
 PluginReturn Postcall(std::shared_ptr<Parameters> params) {
-	if (exited == 1)
+	if (SYNCTOOL_exited == 1)
 		return NO_ACTION;
 	return PLUG_FACTORY_PTR->Postcall(params);
 }

@@ -22,6 +22,7 @@ private:
 	bool _doNotCheck;
 	interval_set<uint64_t> _memoryRanges;
 	interval_set<uint64_t> _memoryRangesPrev;
+	bool _reset;
 };
 
 typedef std::shared_ptr<CheckAccesses> CheckAccessesPtr;

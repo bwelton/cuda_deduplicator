@@ -1,6 +1,6 @@
 #include "CheckAccesses.h"
 #include <iostream>
-CheckAccesses::CheckAccesses() : _doNotCheck(false) {};
+CheckAccesses::CheckAccesses() : _doNotCheck(false), _reset(false) {};
 
 void CheckAccesses::AddMemoryTransfer(MemoryRange & range) {
 	_doNotCheck = true;
@@ -43,8 +43,14 @@ void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
 
 }
 void CheckAccesses::SyncCalled() {
-	_prev = _current;
-	_memoryRangesPrev = _memoryRanges;
+	if (_reset == true) {
+		_prev = _current;
+		_memoryRangesPrev = _memoryRanges;
+		_reset = false
+	} else {
+		_prev.insert(_prev.end(), _current.begin(), _current.end());
+		_memoryRangesPrev = _memoryRanges;
+	}
 	_current.clear();
 }
 
@@ -67,11 +73,16 @@ bool CheckAccesses::IsAddressRangeProtected(uint64_t addr, uint64_t count) {
 bool CheckAccesses::IsAddressProtected(uint64_t addr) {
 	if (_doNotCheck)
 		return false;
-	for (auto i : _prev)
-		if(i.IsInRange(addr))
-			return true;
-	if (contains(_memoryRangesPrev,addr) == true)
+	for (auto i : _prev) {
+		if(i.IsInRange(addr)){
+			_reset = true;
+			return true; 
+		}
+	}
+	if (contains(_memoryRangesPrev,addr) == true) {
+		_reset = true;
 		return true;
+	}
 	//for (auto i : _unifiedMemory)
 	//	if(i.IsInRange(addr))
 	//		return true;		

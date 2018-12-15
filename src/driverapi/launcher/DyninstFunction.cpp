@@ -62,7 +62,7 @@ void DyninstFunction::EntryExitWrapping() {
 		return;
 	std::string libname = _obj->pathName();
 	// Skip entry/exit instrimentation on libcuda
-	if (libname.find("libcuda.so") != std::string::npos ||  _entrySize < (0x4 * 7) || IsExcludedFunction(CALL_TRACING)) {
+	if (libname.find("libcuda.so") != std::string::npos) {
 		_exitEntryDone = true;
 		return;
 	}

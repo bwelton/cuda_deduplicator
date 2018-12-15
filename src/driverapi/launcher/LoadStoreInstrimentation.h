@@ -45,7 +45,7 @@
 #include "DyninstFunction.h"
 #include "InstrimentationTracker.h"
 #include "BinaryLocationIDMap.h"
-
+#include "ReadLoadStoreFiles.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -55,6 +55,7 @@ using namespace SymtabAPI;
 class LoadStoreInstrimentation {
 public:
 	LoadStoreInstrimentation(std::shared_ptr<DyninstProcess> proc);
+	~LoadStoreInstrimentation();
 	void InsertAnalysis(StackRecMap & recs);
 	void PostProcessing(StackRecMap & recs);
 	void InsertEntryExit(StackRecMap & recs);

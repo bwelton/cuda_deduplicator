@@ -5,6 +5,14 @@ LoadStoreInstrimentation::LoadStoreInstrimentation(std::shared_ptr<DyninstProces
 
 }
 
+LoadStoreInstrimentation::~LoadStoreInstrimentation() {
+	std::shared_ptr<BinaryLocationIDMap> tmpMap = _bmap;
+	std::cerr << "Runing onetime code on exit of LS" << std::endl;
+	//_binLoc.DumpLocationMap(std::string("LS_BinLoc.txt"));
+	ReadLoadStoreFiles tmp(tmpMap.get());
+	tmp.OutputTraceKey(std::string("LS_trace.bin"), std::string("LS_tracekey.txt"));
+	tmp.CreateStackKey(std::string("LS_stackkey.bin"), std::string("LS_stackkey.txt"));
+}
 
 void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();

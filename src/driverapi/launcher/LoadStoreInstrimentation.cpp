@@ -33,7 +33,7 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 
 	for (auto i : all_functions) {
 		//_dyninstFunctions.push_back(std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap)));	
-		_dyninstFunctions[(uint64_t)i->getAddress()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
+		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	}
 
 	// Rectify function list to remove anything +0x8
@@ -86,7 +86,7 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 				std::cerr << "[LoadStoreInstrimentation::InsertEntryExit] Could not find function - " << z.funcName << std::endl;
 				continue;
 			}
-			uint64_t f_addr = (uint64_t)func->getAddress();
+			uint64_t f_addr = (uint64_t)func->getBaseAddr();
 			if (_dyninstFunctions.find(f_addr) != _dyninstFunctions.end()) {
 				_dyninstFunctions[f_addr]->EntryExitWrapping();
 			} else if (_dyninstFunctions.find(f_addr - 8) != _dyninstFunctions.end()) {

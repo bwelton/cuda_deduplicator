@@ -82,4 +82,7 @@ void LoadStoreDriver::SignalSync() {
 	_found = false;
 	_syncTriggered = true;
 	_stackAtSync = _storedStack;
+	for(auto i : _stackAtSync){
+		std::cerr << "[LoadStoreDriver::SignalSync] Stack record at sync: " << i << std::endl;
+	}
 }

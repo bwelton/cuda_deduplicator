@@ -90,6 +90,9 @@ bool CheckAccesses::IsAddressProtected(uint64_t addr) {
 
 	if (_doNotCheck)
 		return false;
+	#ifdef DEBUG_CHECK 
+	std::cerr << "[CheckAccesses::IsAddressProtected] Past Check" << std::endl;
+	#endif		
 	for (auto i : _prev) {
 		#ifdef DEBUG_CHECK 
 		std::cerr << "[CheckAccesses::IsAddressProtected] Checking range: " << std::hex << i.StartAddr() << " to " << std::hex << i.EndAddr() << std::endl;

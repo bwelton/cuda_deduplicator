@@ -1,6 +1,6 @@
 #include "CheckAccesses.h"
 #include <iostream>
-#define DEBUG_CHECK 1
+//#define DEBUG_CHECK 1
 CheckAccesses::CheckAccesses() : _doNotCheck(false), _reset(false) {};
 
 void CheckAccesses::AddMemoryTransfer(MemoryRange & range) {

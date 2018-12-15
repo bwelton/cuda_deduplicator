@@ -132,9 +132,6 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	for (auto i : *loadsAndStores) {
 		int writeValue = 0;
 		uint64_t addr = (uint64_t)i->getAddress();
-		if (addr != 0x10005230 && addr != 0x10005234){
-			continue;
-		}
 		if (exclude.find(addr) != exclude.end()) {
 			writeValue = -1;
 		} else {

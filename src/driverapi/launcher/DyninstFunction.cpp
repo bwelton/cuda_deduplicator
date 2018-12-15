@@ -114,10 +114,10 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		_lsDone = true;
 		return;
 	}
-	if (_func->getName().find("BackSub") == std::string::npos){
-		_lsDone = true;
-		return;
-	}
+	// if (_func->getName().find("BackSub") == std::string::npos){
+	// 	_lsDone = true;
+	// 	return;
+	// }
 	_lsDone = true;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);

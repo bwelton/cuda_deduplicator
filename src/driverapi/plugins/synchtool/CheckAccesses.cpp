@@ -101,9 +101,9 @@ bool CheckAccesses::IsAddressProtected(uint64_t addr) {
 		#endif		
 		if(i.IsInRange(addr)){
 			_reset = true;
-			#ifdef DEBUG_CHECK 
+			//#ifdef DEBUG_CHECK 
 			std::cerr << "[CheckAccesses::IsAddressProtected] Found in range: " << std::hex << addr << std::endl;
-			#endif
+			//#endif
 			return true; 
 
 		}

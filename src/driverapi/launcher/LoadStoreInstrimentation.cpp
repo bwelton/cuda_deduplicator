@@ -32,8 +32,20 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 
 	for (auto i : all_functions) {
-		_dyninstFunctions.push_back(std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap)));	
-		_funcPositions[i] = _dyninstFunctions.size() - 1;
+		//_dyninstFunctions.push_back(std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap)));	
+		_dyninstFunctions[(uint64_t)i->getAddress()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
+	}
+
+	// Rectify function list to remove anything +0x8
+	{
+		std::set<uint64_t> removeList;
+		for (auto i : _dyninstFunctions) {
+			if (_dyninstFunctions.find(i.first - 8) != _dyninstFunctions.end())
+				removeList.insert(i.first);
+		}
+		std::cerr << "[LoadStoreInstrimentation::InsertAnalysis] Removing " << removeList.size() << " duplicate functions without premable" << std::endl;
+		for (auto i : removeList)
+			_dyninstFunctions.erase(i);
 	}
 
 	// Setup apicapture
@@ -56,7 +68,7 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 
 	for (auto i : _dyninstFunctions)
-		i->InsertLoadStoreAnalysis();
+		i.second->InsertLoadStoreAnalysis();
 
 	// Print Debug Info
 	PrintDebug(recs);
@@ -74,8 +86,18 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 				std::cerr << "[LoadStoreInstrimentation::InsertEntryExit] Could not find function - " << z.funcName << std::endl;
 				continue;
 			}
-			assert(_funcPositions.find(func) != _funcPositions.end());
-			_dyninstFunctions[_funcPositions[func]]->EntryExitWrapping();
+			uint64_t f_addr = (uint64_t)func->getAddress();
+			if (_dyninstFunctions.find(f_addr) != _dyninstFunctions.end()) {
+				_dyninstFunctions[f_addr]->EntryExitWrapping();
+			} else if (_dyninstFunctions.find(f_addr - 8) != _dyninstFunctions.end()) {
+				_dyninstFunctions[f_addr - 8]->EntryExitWrapping();
+			} else if (_dyninstFunctions.find(f_addr + 8) != _dyninstFunctions.end()) {
+				_dyninstFunctions[f_addr + 8]->EntryExitWrapping();
+			} else {
+				assert("CANT FIND ID" == 0);
+			}
+			//assert(_funcPositions.find(func) != _funcPositions.end());
+			//_dyninstFunctions[_funcPositions[func]]->EntryExitWrapping();
 		}
 	}
 }
@@ -94,7 +116,7 @@ void LoadStoreInstrimentation::PrintDebug(StackRecMap & recs) {
 	t << "\n";
 
 	for (auto i : _dyninstFunctions) {
-		t << i->PrintInst(stats);
+		t << i.second->PrintInst(stats);
 	}
 
 	t << "\n\nTotal Inst Points: " << stats.callTracedInsts + stats.lsInsts << std::endl;

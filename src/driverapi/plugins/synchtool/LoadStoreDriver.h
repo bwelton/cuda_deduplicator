@@ -26,6 +26,7 @@ private:
 	bool _firstWrite;
 	bool _firstSync;
 	uint64_t _syncStackDepth;
+	bool _timefu;
 };
 
 typedef std::shared_ptr<LoadStoreDriver> LoadStoreDriverPtr;

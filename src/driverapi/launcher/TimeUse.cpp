@@ -106,7 +106,7 @@ void TimeUse::InsertEntryExit(StackRecMap & recs) {
 	for (auto & i : recs) {
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto & z : points) {
-			ops->FillStackpoint(_proc->GetAddressSpace(), z);
+			//ops->FillStackpoint(_proc->GetAddressSpace(), z);
 		
 			BPatch_function * func;
 			if (ops->FindFuncByStackPoint(_proc->GetAddressSpace(), func, z) <= 0) {

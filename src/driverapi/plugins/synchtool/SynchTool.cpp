@@ -103,7 +103,9 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		INIT_SYNC_COMMON();	
 		_LoadStoreDriver->SyncCalled();	
 		std::chrono::high_resolution_clock::time_point endSyncTime = std::chrono::high_resolution_clock::now();
-		_LoadStoreDriver->WriteStackTime(0,std::chrono::duration_cast<double>(endSyncTime.time_since_epoch()).count());
+		std::chrono::duration<double> dtime = std::chrono::duration_cast<nanoseconds>(endSyncTime.time_since_epoch());
+
+		_LoadStoreDriver->WriteStackTime(0,dtime.count());
 	}
 
 	void SYNC_CAPTURE_TIMEACCESS(uint64_t addr, uint64_t id) {
@@ -112,7 +114,8 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 
 		INIT_SYNC_COMMON();		
 		std::chrono::high_resolution_clock::time_point endSyncTime = std::chrono::high_resolution_clock::now();	
-		_LoadStoreDriver->RecordAccessWithTime(id, addr, std::chrono::duration_cast<double>(endSyncTime.time_since_epoch()).count());
+		std::chrono::duration<double> dtime = std::chrono::duration_cast<nanoseconds>(endSyncTime.time_since_epoch());
+		_LoadStoreDriver->RecordAccessWithTime(id, addr, dtime.count());
 
 	}
 }

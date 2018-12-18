@@ -136,7 +136,7 @@ void TimeUse::PostProcessing(StackRecMap & recs, std::vector<StackPoint> & lsPoi
 	std::cerr << "Runing onetime code on exit of LS" << std::endl;
 	//_binLoc.DumpLocationMap(std::string("LS_BinLoc.txt"));
 	ReadLoadStoreFiles tmp(tmpMap.get());
-	tmp.OutputTraceKey(std::string("FI_trace.bin"), std::string("FI_tracekey.txt"));
+	tmp.OutputTraceKeyFirstUse(std::string("FI_trace.bin"), std::string("FI_tracekey.txt"));
 	tmp.CreateStackKey(std::string("FI_stackkey.bin"), std::string("FI_stackkey.txt"));
 	lsPoints = tmp.GetTraces();
 }

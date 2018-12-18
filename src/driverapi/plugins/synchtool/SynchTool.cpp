@@ -114,7 +114,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 
 		INIT_SYNC_COMMON();		
 		std::chrono::high_resolution_clock::time_point endSyncTime = std::chrono::high_resolution_clock::now();	
-		std::chrono::duration<double> dtime = std::chrono::duration_cast<nanoseconds>(endSyncTime.time_since_epoch());
+		std::chrono::duration<double> dtime = endSyncTime.time_since_epoch();
 		_LoadStoreDriver->RecordAccessWithTime(id, addr, dtime.count());
 
 	}

@@ -5,6 +5,8 @@ std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
 FILE * _temporaryFiles;
+volatile bool SYNCTOOL_GLOBAL_SYNC_TYPE = false;
+
 bool enteredMe = false;
 volatile int justChecking = 8;
 extern "C" {
@@ -24,7 +26,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		// int result = gotcha_wrap(gotfuncs, 1, "cuda/specialcases");
 		// assert(result == GOTCHA_SUCCESS);
 		_dataAccessManager.reset(new CheckAccesses());
-		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager));
+		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager, SYNCTOOL_GLOBAL_SYNC_TYPE));
 		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
 	}
 	void * memcpyWrapper(void * dest, void * src, size_t count) {
@@ -43,7 +45,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		// //assert(1 == 0);
 		// // fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// // fflush(_temporaryFiles);
-		std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
+		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		_LoadStoreDriver->PushStack(id);
 	}
 	void RECORD_FUNCTION_EXIT(uint64_t id) {
@@ -57,7 +59,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		// //assert(1==0);
 		// // fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// // fflush(_temporaryFiles);
-		std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
+		//std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
 		_LoadStoreDriver->PopStack(id);
 	}
 
@@ -72,6 +74,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
 		_LoadStoreDriver->SyncCalled();
 	}
+
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1)
 			return;
@@ -86,6 +89,31 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 //		fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
 		_LoadStoreDriver->RecordAccess(id, addr);
+	}
+
+
+	void SYNC_SET_GLOBAL_TO_TRUE() {
+		SYNCTOOL_GLOBAL_SYNC_TYPE = true;
+	}
+
+	void SYNC_CAPTURE_SYNC_ENDTIME() {
+		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1)
+			return;
+
+		INIT_SYNC_COMMON();	
+		_LoadStoreDriver->SyncCalled();	
+		std::chrono::high_resolution_clock::time_point endSyncTime = std::chrono::high_resolution_clock::now();
+		_LoadStoreDriver->WriteStackTime(0,std::chrono::duration_cast<double>(endSyncTime.time_since_epoch()).count());
+	}
+
+	void SYNC_CAPTURE_TIMEACCESS(uint64_t addr, uint64_t id) {
+		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1)
+			return;
+
+		INIT_SYNC_COMMON();		
+		std::chrono::high_resolution_clock::time_point endSyncTime = std::chrono::high_resolution_clock::now();	
+		_LoadStoreDriver->RecordAccessWithTime(id, addr, std::chrono::duration_cast<double>(endSyncTime.time_since_epoch()).count());
+
 	}
 }
 

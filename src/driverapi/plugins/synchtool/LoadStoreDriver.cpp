@@ -1,13 +1,13 @@
 #include "LoadStoreDriver.h"
 
-LoadStoreDriver::LoadStoreDriver(CheckAccessesPtr access) : _firstSync(true), _syncTriggered(false), _firstWrite(true), _found(false), _access(access) {
+LoadStoreDriver::LoadStoreDriver(CheckAccessesPtr access, bool timefu) : _firstSync(true), _syncTriggered(false), _firstWrite(true), _found(false), _access(access), _timefu(timefu) {
 }
 
 void LoadStoreDriver::RecordAccessRange(uint64_t id, uint64_t addr, uint64_t count) {
 	if (_syncTriggered && !_found) {
 		if(_access->IsAddressRangeProtected(addr, count)) {
 			if (_firstWrite)
-				_writer.reset(new OutputWriter());
+				_writer.reset(new OutputWriter(_timefu));
 			_firstWrite = false;
 			_writer->RecordAccess(id,_stackAtSync);
 			_found = true;
@@ -19,7 +19,7 @@ void LoadStoreDriver::RecordAccess(uint64_t id, uint64_t addr) {
 	if (_syncTriggered && !_found) {
 		if(_access->IsAddressProtected(addr)) {
 			if (_firstWrite)
-				_writer.reset(new OutputWriter());
+				_writer.reset(new OutputWriter(_timefu));
 			_firstWrite = false;
 			_writer->RecordAccess(id,_stackAtSync);
 			_found = true;
@@ -82,7 +82,24 @@ void LoadStoreDriver::SignalSync() {
 	_found = false;
 	_syncTriggered = true;
 	_stackAtSync = _storedStack;
-	for(auto i : _stackAtSync){
-		std::cerr << "[LoadStoreDriver::SignalSync] Stack record at sync: " << i << std::endl;
+	// for(auto i : _stackAtSync){
+	// 	std::cerr << "[LoadStoreDriver::SignalSync] Stack record at sync: " << i << std::endl;
+	// }
+}
+
+void LoadStoreDriver::RecordAccessWithTime(uint64_t id, uint64_t addr, double timetv) {
+	if (_syncTriggered && !_found) {
+		if(_access->IsAddressProtected(addr)) {
+			WriteStackTime(id, timetv);
+			_found = true;
+		}
 	}
+}
+
+void LoadStoreDriver::WriteStackTime(uint64_t id, double tv) { 
+	if (_firstWrite){
+		_writer.reset(new OutputWriter(_timefu));
+		_firstWrite = false;
+	}
+	_writer->RecordAccess(id,_stackAtSync,tv);
 }

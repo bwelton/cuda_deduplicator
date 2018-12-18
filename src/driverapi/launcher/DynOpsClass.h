@@ -74,8 +74,8 @@ public:
 	std::vector<BPatch_function *> FindFuncsByName(BPatch_addressSpace * aspace, std::string name, BPatch_object * obj = NULL);
 	std::vector<BPatch_function *> GetFunctionsByOffeset(BPatch_addressSpace * aspace, BPatch_object * obj, uint64_t offset);
 	uint64_t GetSyncFunctionLocation();
-	void FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p);
-	
+	bool FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p);
+
 
 private:
 	std::map<uint64_t, BPatch_function *> _powerFuncmap;

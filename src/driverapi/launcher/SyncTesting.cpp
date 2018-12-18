@@ -169,7 +169,7 @@ void SyncTesting::RunTimeUse(StackRecMap & recs, std::vector<StackPoint> & uses)
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);		
 	TimeUse tu(proc);
-	tu.InsertAnalysis(recs);
+	tu.InsertAnalysis(recs, uses);
 	proc->RunUntilCompleation();
 	tu.PostProcessing(recs, uses);	
 }

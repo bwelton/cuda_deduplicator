@@ -85,7 +85,7 @@ void TimeUse::InsertTimingCalls(std::vector<StackPoint> & uses) {
 		ops->FillStackpoint(_proc->GetAddressSpace(), i);
 		BPatch_function * func;
 		if (ops->FindFuncByStackPoint(_proc->GetAddressSpace(), func, i) <= 0) {
-			std::cerr << "[TimeUse::InsertTimingCalls] Could not find function - " << u.funcName << std::endl;
+			std::cerr << "[TimeUse::InsertTimingCalls] Could not find function - " << i.funcName << std::endl;
 			continue;
 		}		
 		uint64_t f_addr = (uint64_t)func->getBaseAddr();

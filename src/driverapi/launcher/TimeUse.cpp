@@ -66,9 +66,8 @@ void TimeUse::InsertAnalysis(StackRecMap & recs, std::vector<StackPoint> & uses)
 	std::vector<BPatch_point*> * entryPoints = cudaSyncFunctions[0]->findPoint(BPatch_locExit);
 	std::string tmp = cudaSyncFunctions[0]->getModule()->getObject()->pathName();
 	_bmap->StorePosition(tmp,ops->GetSyncFunctionLocation());
-	std::vector<BPatch_snippet*> recordArgs;
-	BPatch_funcCallExpr entryExpr(*enterSync, recordArgs);
-	assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
+	BPatch_funcCallExpr setFlag(*enterSync, recordArgs);
+	assert(_proc->GetAddressSpace()->insertSnippet(setFlag,*entryPoints) != NULL);
 
 	// for (auto i : _dyninstFunctions)
 	// 	i.second->InsertLoadStoreAnalysis();
@@ -86,10 +85,10 @@ void TimeUse::InsertTimingCalls(std::vector<StackPoint> & uses) {
 		ops->FillStackpoint(_proc->GetAddressSpace(), i);
 		BPatch_function * func;
 		if (ops->FindFuncByStackPoint(_proc->GetAddressSpace(), func, i) <= 0) {
-			std::cerr << "[TimeUse::InsertTimingCalls] Could not find function - " << z.funcName << std::endl;
+			std::cerr << "[TimeUse::InsertTimingCalls] Could not find function - " << u.funcName << std::endl;
 			continue;
 		}		
-		uint64_t f_addr = (uint64_t)i->getBaseAddr();
+		uint64_t f_addr = (uint64_t)func->getBaseAddr();
 		if (_dyninstFunctions.find(f_addr) != _dyninstFunctions.end()) {
 			_dyninstFunctions[f_addr]->InsertTimingAtPoint(i);
 		} else if (_dyninstFunctions.find(f_addr - 8) != _dyninstFunctions.end()) {

@@ -20,7 +20,16 @@ uint64_t DynOpsClass::GetSyncFunctionLocation() {
 }
 
 
+bool DynOpsClass::FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p) {
+	BPatch_function * func;
 
+	assert(FindFuncByLibnameOffset(aspace,func,p.libname, p.libOffset) >= 1);
+	p.funcName = func->getName();
+	p.funcOffset = (uint64_t) func->getAddress();
+
+	return 1;
+
+}
 int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_function * & ret, StackPoint & point) {
 	if (aspace == NULL) 
 		return -1;

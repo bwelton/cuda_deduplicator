@@ -150,7 +150,7 @@ void SyncTesting::TimeSynchronizations(StackRecMap & recs) {
 }
 
 
-void SyncTesting::RunLoadStoreAnalysis(StackRecMap & recs) {
+void SyncTesting::RunLoadStoreAnalysis(StackRecMap & recs, std::vector<StackPoint> & uses) {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	std::vector<std::string> pluginNames = {"libSynchTool"};
@@ -158,8 +158,22 @@ void SyncTesting::RunLoadStoreAnalysis(StackRecMap & recs) {
 	LoadStoreInstrimentation ls(proc);
 	ls.InsertAnalysis(recs);
 	proc->RunUntilCompleation();
-	ls.PostProcessing(recs);	
+	ls.PostProcessing(recs, uses);	
 }
+
+void SyncTesting::RunTimeUse(StackRecMap & recs, std::vector<StackPoint> & uses) {
+	system("exec rm -rf ./stackOut.*");
+	if (uses.size() == 0)
+		return;
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	std::vector<std::string> pluginNames = {"libSynchTool"};
+	CreatePluginFile(pluginNames);		
+	TimeUse tu(proc);
+	tu.InsertAnalysis(recs);
+	proc->RunUntilCompleation();
+	tu.PostProcessing(recs, uses);	
+}
+
 
 void SyncTesting::Run() {
 	StackRecMap syncTiming; 
@@ -180,7 +194,9 @@ void SyncTesting::Run() {
 	RunWithoutInstrimentation();
 	RunWithSyncStacktracing(syncTiming);
 	TimeSynchronizations(syncTiming);
-	RunLoadStoreAnalysis(syncTiming);
+	std::vector<StackPoint> uses;
+	RunLoadStoreAnalysis(syncTiming, uses);
+	// RunTimeUse(sy)
 	return;
 	//RunWithCUPTI();
 

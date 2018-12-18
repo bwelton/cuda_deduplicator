@@ -66,6 +66,8 @@ public:
 	void InsertLoadStoreAnalysis();
 	uint64_t HandleEmulated(BPatch_basicBlock * block);
 	void GenExclusionSet(std::set<uint64_t> & excludedAddress);
+	void InsertTimingAtPoint(StackPoint p);
+	
 private: 
 	uint64_t GetSmallestEntryBlockSize();
 	bool IsExcludedFunction(InstType T);

@@ -141,7 +141,7 @@ void LoadStoreInstrimentation::PrintDebug(StackRecMap & recs) {
 	t.close();
 }
 
-void LoadStoreInstrimentation::PostProcessing(StackRecMap & recs) {
+void LoadStoreInstrimentation::PostProcessing(StackRecMap & recs, std::vector<StackPoint> & lsPoints) {
 
 	std::shared_ptr<BinaryLocationIDMap> tmpMap = _bmap;
 	std::cerr << "Runing onetime code on exit of LS" << std::endl;
@@ -149,5 +149,5 @@ void LoadStoreInstrimentation::PostProcessing(StackRecMap & recs) {
 	ReadLoadStoreFiles tmp(tmpMap.get());
 	tmp.OutputTraceKey(std::string("LS_trace.bin"), std::string("LS_tracekey.txt"));
 	tmp.CreateStackKey(std::string("LS_stackkey.bin"), std::string("LS_stackkey.txt"));
-
+	lsPoints = tmp.GetTraces();
 }

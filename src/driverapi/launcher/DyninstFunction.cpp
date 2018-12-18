@@ -161,6 +161,42 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		}
 	}
 }
+
+void DyninstFunction::InsertTimingAtPoint(StackPoint p) {
+	assert(p.libOffset != 0);
+
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_CAPTURE_TIMEACCESS"), NULL);	
+	assert(recordMemAccess.size() == 1);
+	std::set<BPatch_opCode> axs;
+	std::string libname = _obj->pathName();
+	axs.insert(BPatch_opLoad);
+	axs.insert(BPatch_opStore);
+	std::vector<BPatch_point*> * loadsAndStores = _func->findPoint(axs);
+	bool found = false;
+	for (auto i : *loadsAndStores) {
+		uint64_t libOffsetAddr = 0;
+		if (!ops->GetFileOffset(_proc->GetAddressSpace(), i, libOffsetAddr, true))
+			libOffsetAddr = (uint64_t) i->getAddress();	
+		if (p.libOffset == libOffsetAddr) {
+			found = true;
+			std::vector<BPatch_point*> singlePoint;
+			singlePoint.push_back(i);
+			uint64_t id = _bmap->StorePosition(libname, libOffsetAddr);
+			std::vector<BPatch_snippet*> recordArgs;
+			BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
+			recordArgs.push_back(loadAddr);
+			recordArgs.push_back(new BPatch_constExpr(id));
+			BPatch_funcCallExpr recordAddrCall(*(recordMemAccess[0]), recordArgs);
+			assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,singlePoint) != NULL);
+			break;
+		}
+	}
+	assert(found == true);
+
+
+}
+
 uint64_t DyninstFunction::HandleEmulated(BPatch_basicBlock * block) {
 	// Returns the address of the reserveration use instruction.
 	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;

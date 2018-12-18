@@ -52,14 +52,15 @@ using namespace PatchAPI;
 using namespace SymtabAPI;
 
 
-class LoadStoreInstrimentation {
+class TimeUse {
 public:
-	LoadStoreInstrimentation(std::shared_ptr<DyninstProcess> proc);
-	~LoadStoreInstrimentation();
-	void InsertAnalysis(StackRecMap & recs);
-	void PostProcessing(StackRecMap & recs, std::vector<StackPoint> & lsPoints);
+	TimeUse(std::shared_ptr<DyninstProcess> proc);
+	~TimeUse();
+	void InsertAnalysis(StackRecMap & recs, std::vector<StackPoint> & uses);
+	void PostProcessing(StackRecMap & recs, std::vector<StackPoint> & uses);
 	void InsertEntryExit(StackRecMap & recs);
 	void PrintDebug(StackRecMap & recs);
+	void InsertTimingCalls(std::vector<StackPoint> & uses);
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	//std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;

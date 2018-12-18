@@ -25,7 +25,7 @@ bool DynOpsClass::FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p) {
 
 	assert(FindFuncByLibnameOffset(aspace,func,p.libname, p.libOffset) >= 1);
 	p.funcName = func->getName();
-	p.funcOffset = (uint64_t) func->getAddress();
+	p.funcOffset = (uint64_t) func->getBaseAddr();
 
 	return 1;
 

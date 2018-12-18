@@ -30,7 +30,7 @@ bool DynOpsClass::FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p) {
 	uint64_t offset = (uint64_t)obj->fileOffsetToAddr(p.libOffset);
 
 	std::cerr << "[DynOpsClass::FillStackpoint] Address for " << p.libOffset << " is " << offset << std::endl;
-	func = img->findFunctionByAddr(offset);
+	func = aspace->findFunctionByAddr(offset);
 	assert(func != NULL);
 	
 //	assert(FindFuncByLibnameOffset(aspace,func,p.libname, p.libOffset) >= 1);

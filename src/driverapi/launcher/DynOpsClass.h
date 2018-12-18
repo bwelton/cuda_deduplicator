@@ -47,7 +47,7 @@
 #include "StackPoint.h"
 #include "StackStorage.h"
 #include "LocateCudaSynchronization.h"
-
+#include "SymbolLookup.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;

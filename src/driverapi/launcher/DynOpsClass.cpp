@@ -22,23 +22,29 @@ uint64_t DynOpsClass::GetSyncFunctionLocation() {
 
 bool DynOpsClass::FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p) {
 	BPatch_function * func;
+	SymbolLookup tmp(p.libname);
+	p.funcOffset = tmp.GetFunctionOffset(p.libOffset);
+	p.funcName = tmp.GetFuncName(p.funcOffset);
+	assert(p.funcName != std::string(""));
+	assert(p.funcOffset != 0 && p.funcOffset != -1);
 
-	BPatch_image * img = aspace->getImage();
-	BPatch_object * obj = FindObjectByName(aspace, p.libname, true);
-	assert(obj != NULL);
 
-	uint64_t offset = (uint64_t)obj->fileOffsetToAddr(p.libOffset);
+// 	BPatch_image * img = aspace->getImage();
+// 	BPatch_object * obj = FindObjectByName(aspace, p.libname, true);
+// 	assert(obj != NULL);
 
-	std::cerr << "[DynOpsClass::FillStackpoint] Address for " << p.libOffset << " is " << offset << std::endl;
-	func = aspace->findFunctionByAddr((void *)offset);
-	assert(func != NULL);
+// 	uint64_t offset = (uint64_t)obj->fileOffsetToAddr(p.libOffset);
+
+// 	std::cerr << "[DynOpsClass::FillStackpoint] Address for " << p.libOffset << " is " << offset << std::endl;
+// 	func = aspace->findFunctionByAddr((void *)offset);
+// 	assert(func != NULL);
 	
-//	assert(FindFuncByLibnameOffset(aspace,func,p.libname, p.libOffset) >= 1);
-	p.funcName = func->getName();
-	if (func->getModule()->isSharedLib())
-		p.funcOffset = (uint64_t) func->getBaseAddr() - (uint64_t) func->getModule()->getBaseAddr();
-	else
-		p.funcOffset  = (uint64_t)func->getBaseAddr();
+// //	assert(FindFuncByLibnameOffset(aspace,func,p.libname, p.libOffset) >= 1);
+// 	p.funcName = func->getName();
+// 	if (func->getModule()->isSharedLib())
+// 		p.funcOffset = (uint64_t) func->getBaseAddr() - (uint64_t) func->getModule()->getBaseAddr();
+// 	else
+// 		p.funcOffset  = (uint64_t)func->getBaseAddr();
 	return 1;
 
 }

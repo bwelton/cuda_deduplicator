@@ -196,6 +196,7 @@ void SyncTesting::Run() {
 	TimeSynchronizations(syncTiming);
 	std::vector<StackPoint> uses;
 	RunLoadStoreAnalysis(syncTiming, uses);
+	RunTimeUse(syncTiming, uses);
 	// RunTimeUse(sy)
 	return;
 	//RunWithCUPTI();

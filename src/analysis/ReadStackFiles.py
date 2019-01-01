@@ -56,6 +56,9 @@ class Stack:
                 count += 1
             else:
                 break
+        if count >= len(self._stack):
+            return ""
+            
         return self._stack[count]._funcname
 
     def HashStackDataTransfer(self):

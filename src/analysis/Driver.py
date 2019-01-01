@@ -312,8 +312,8 @@ class Driver:
         ## Map the collision stacks to timing
         colToTiming = {}
         for x in hashedIssueStacks:
-            if y in hashedStacks:
-                hashedStacks[y].CopyDuplicates(hashedIssueStacks[x])
+            if x in hashedStacks:
+                hashedStacks[x].CopyDuplicates(hashedIssueStacks[x])
             else:
                 print "Unknown Transfer - " + str(x)
 

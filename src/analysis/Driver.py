@@ -184,8 +184,8 @@ class ReadTransferCollisions:
 
 class Driver:
     def __init__(self):
-        self._inDir = sys.argv[1]
-        self._outDir = sys.argv[2]
+        self._inDir = os.getcwd()
+        self._outDir = os.getcwd()
 
     def Run(self):
         ## TIme in Seconds

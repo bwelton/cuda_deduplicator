@@ -176,9 +176,13 @@ def RemoveNewline(line):
 class StackReader:
     def __init__(self, filename):
         self._filename = filename
-        f = open(filename, "rb")
-        self._data = f.readlines()
-        f.close()
+        try:
+            f = open(filename, "rb")
+            self._data = f.readlines()
+            f.close()
+        except:
+            self._data = []
+
         self.__GetStacks()
 
     def __GetStacks(self):

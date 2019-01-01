@@ -171,9 +171,13 @@ class ReadTransferCollisions:
     def __init__(self, filename):
         self._filename = filename
         self._pos = 0
-        f = open(self._filename,"rb")
-        self._data = f.read()
-        f.close()
+        try:
+            f = open(self._filename,"rb")
+            self._data = f.read()
+            f.close()
+        except:
+            self._data = ""
+
 
     def DecodeRecord(self):
         if self._pos >= len(self._data):
@@ -248,6 +252,13 @@ class Driver:
         self.DataDeduplication()
 
     def DataDeduplication(self):
+        ##
+        #   Contents of files:
+        #   DCPUTIME_trace.bin, DTOTIME_trace.bin, DSTIME_trace.bin -> Binary TFFile (dynId=stackId,stackId,count <uint64_t's>, time <double>)
+        #   DSTIME_stacks.bin -> StackFile (standard), associated with the above files.
+        #   DT_collisions.txt -> Binary file containing the following stackid,overwrite,previousTransfer, previousTransferID (uint64_t)
+        #   DT_stacks.bin -> Stackfile (standard)
+        ##
         hashedIssueStacks = {}
         dtstack_idToHash = {}
         hashedStacks = {}
@@ -289,6 +300,7 @@ class Driver:
         readCollisionFile = ReadTransferCollisions(os.path.join(self._inDir, "DT_collisions.txt"))
         while 1:
             rec = readCollisionFile.DecodeRecord()
+            print rec
             if rec == None:
                 break
 

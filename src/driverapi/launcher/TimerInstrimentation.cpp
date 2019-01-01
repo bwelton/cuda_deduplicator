@@ -55,6 +55,8 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 	StackRecMap tmp;
 	ReadStackKeys reader(std::string("TF_timekey.bin"), std::string("TF_trace.bin"));
 	reader.GetStackRecords(tmp, std::bind(&ReadStackKeys::ProcessTFTimingData, &reader, std::placeholders::_1));
+	StackKeyWriter outKey(fopen("TF_timekey.txt","wb"));
+
 	std::cout << "Printing decoded stack" << std::endl;
 	for (auto & i : tmp) {
 		i.second.PrintStack();
@@ -67,6 +69,8 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 			i.second.ReplaceLibDynRT(_idToFunc[dynID]);
 		}
 		i.second.PrintStack();
+		std::vector<StackPoint> tmp_map = i.second.GetStackpoints();
+		outKey.InsertStack(i.first, tmp_map);
 	}
 		// i.second.PrintStack();
 

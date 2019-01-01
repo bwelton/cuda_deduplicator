@@ -42,6 +42,9 @@ class Stack:
         self._gotName = False
         self._cuda_funcs = {}
 
+    def GetID(self):
+        return self._ident
+        
     def TransGetFirstLibCuda(self):
         for x in self._stack:
             if "INTER_" in x._funcname:
@@ -58,7 +61,7 @@ class Stack:
                 break
         if count >= len(self._stack):
             return ""
-            
+
         return self._stack[count]._funcname
 
     def HashStackDataTransfer(self):

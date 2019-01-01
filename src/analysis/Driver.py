@@ -251,6 +251,7 @@ class Driver:
         outFD.close()
         self.DataDeduplication()
 
+
     def DataDeduplication(self):
         ##
         #   Contents of files:
@@ -267,60 +268,67 @@ class Driver:
         for x in stack_files:
             self._stackStore[x] = StackReader(os.path.join(self._inDir, x))
             self._stackStore[x].InverseStacks()
-        for x in stack_files:
-            print str(self._stackStore[x])
-
-        tmpStack = self._stackStore["DSTIME_stacks.bin"].GetAllStacks()
-        for x in tmpStack:
-            hashedStacks[tmpStack[x].HashStackDataTransfer()] = DataTransfer(tmpStack[x].HashStackDataTransfer(),int(x), tmpStack[x])
-            dstime_idToHash[x] = tmpStack[x].HashStackDataTransfer()
 
         timing_files = ["DSTIME_trace.bin", "DCPUTIME_trace.bin", "DTOTIME_trace.bin"]
+
+        dstime_stacks = self._stackStore["DSTIME_stacks.bin"].GetAllStacks()
         for x in timing_files:
             transferTime = TF_Trace(os.path.join(self._inDir, x))
             transferTime.DecodeFile()
             for y in transferTime._records:
-                hValue = dstime_idToHash[y[1]]
+                hValue = int(y[1])
                 if "DSTIME_trace.bin" in x:
-                    hashedStacks[hValue].PreTransSynchronization(y[-1])
+                    dstime_stacks[hValue].PreTransSynchronization(y[-1])
                 elif "DCPUTIME_trace.bin" in x:
-                    hashedStacks[hValue].AddCPUOverhead(y[-1])
+                    dstime_stacks[hValue].AddCPUOverhead(y[-1])
                 elif "DTOTIME_trace.bin" in x:
-                    print y
-                    hashedStacks[hValue].AddTotalTime(y[-1])
+                    dstime_stacks[hValue].AddTotalTime(y[-1])
                 else:
                     print "error, should not be here"
                     print y
-                    print x
-        tmpStack = self._stackStore["DT_stacks.bin"].GetAllStacks()
-        for x in tmpStack:
-            hashedIssueStacks[tmpStack[x].HashStackDataTransfer()] = DataTransfer(tmpStack[x].HashStackDataTransfer(),int(x), tmpStack[x])
-            dtstack_idToHash[x] = tmpStack[x].HashStackDataTransfer()
+                    print x            
+        # for x in stack_files:
+        #     print str(self._stackStore[x])
 
-        readCollisionFile = ReadTransferCollisions(os.path.join(self._inDir, "DT_collisions.txt"))
-        while 1:
-            rec = readCollisionFile.DecodeRecord()
-            print rec
-            if rec == None:
-                break
+        # tmpStack = self._stackStore["DSTIME_stacks.bin"].GetAllStacks()
+        # for x in tmpStack:
+        #     hashedStacks[tmpStack[x].HashStackDataTransfer()] = DataTransfer(tmpStack[x].HashStackDataTransfer(),int(x), tmpStack[x])
+        #     dstime_idToHash[x] = tmpStack[x].HashStackDataTransfer()
 
-            prevHash = 0
-            if rec[2] == 1:
-                prevHash = dtstack_idToHash[rec[3]]
-            hashedIssueStacks[dtstack_idToHash[int(rec[0])]].AddDuplicate(DuplicateEntry(rec[1],prevHash))
+        # timing_files = ["DSTIME_trace.bin", "DCPUTIME_trace.bin", "DTOTIME_trace.bin"]
+        # for x in timing_files:
+        #     transferTime = TF_Trace(os.path.join(self._inDir, x))
+        #     transferTime.DecodeFile()
 
-        ## Map the collision stacks to timing
-        colToTiming = {}
-        for x in hashedIssueStacks:
-            if x in hashedStacks:
-                hashedStacks[x].CopyDuplicates(hashedIssueStacks[x])
-            else:
-                print "Unknown Transfer - " + str(x)
+        # tmpStack = self._stackStore["DT_stacks.bin"].GetAllStacks()
+        # for x in tmpStack:
+        #     hashedIssueStacks[tmpStack[x].HashStackDataTransfer()] = DataTransfer(tmpStack[x].HashStackDataTransfer(),int(x), tmpStack[x])
+        #     dtstack_idToHash[x] = tmpStack[x].HashStackDataTransfer()
 
-        f = open("dtrans_out.csv", "w")
-        for x in hashedStacks:
-            f.write(str(hashedStacks[x].CreateOutput(dstime_idToHash)) + "\n")
-        f.close()
+        # readCollisionFile = ReadTransferCollisions(os.path.join(self._inDir, "DT_collisions.txt"))
+        # while 1:
+        #     rec = readCollisionFile.DecodeRecord()
+        #     print rec
+        #     if rec == None:
+        #         break
+
+        #     prevHash = 0
+        #     if rec[2] == 1:
+        #         prevHash = dtstack_idToHash[rec[3]]
+        #     hashedIssueStacks[dtstack_idToHash[int(rec[0])]].AddDuplicate(DuplicateEntry(rec[1],prevHash))
+
+        # ## Map the collision stacks to timing
+        # colToTiming = {}
+        # for x in hashedIssueStacks:
+        #     if x in hashedStacks:
+        #         hashedStacks[x].CopyDuplicates(hashedIssueStacks[x])
+        #     else:
+        #         print "Unknown Transfer - " + str(x)
+
+        # f = open("dtrans_out.csv", "w")
+        # for x in hashedStacks:
+        #     f.write(str(hashedStacks[x].CreateOutput(dstime_idToHash)) + "\n")
+        # f.close()
 
 
 if __name__ == "__main__":

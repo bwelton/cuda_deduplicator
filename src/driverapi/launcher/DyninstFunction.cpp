@@ -114,10 +114,6 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		_lsDone = true;
 		return;
 	}
-	// if (_func->getName().find("BackSub") == std::string::npos){
-	// 	_lsDone = true;
-	// 	return;
-	// }
 	_lsDone = true;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);
@@ -241,6 +237,9 @@ void DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 			else if (tmp.find("[r1 +") != std::string::npos || tmp.find("[r1 -") != std::string::npos)
 				excludedAddress.insert(i.first);
 			else if (tmp.find("(r1)") != std::string::npos || tmp.find("(r31)") != std::string::npos)
+				excludedAddress.insert(i.first);
+		} else {
+			if (tmp.find("lfs ") == std::string::npos)
 				excludedAddress.insert(i.first);
 		}
 	}

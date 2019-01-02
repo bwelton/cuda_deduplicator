@@ -106,6 +106,8 @@ class DataTransfer:
         self._totalTime = []
         self._cpuOverhead = []
         self._duplicates = []
+        self._inplace = []
+
 
     def FindSavings(self, idToHash):
         tmpHash = {}
@@ -161,8 +163,9 @@ class DataTransfer:
         ret += str(self._stack)
         ret += self.PrintList("Total Time" , self._totalTime)
         ret += self.PrintList("CPU Overhead" , self._cpuOverhead)
-        ret += self.PrintList("Duplicates" , self._duplicates)
         ret += self.PrintList("Pre Trans Sync" , self._preSync)
+        ret += self.PrintList("Duplicates" , self._duplicates)
+        #ret += self.PrintList("Copys over Inplace" , self._preSync)
         return ret
 
     def AddTotalTime(self, time):
@@ -173,6 +176,9 @@ class DataTransfer:
 
     def AddDuplicate(self, dupEntry):
         self._duplicates.append(dupEntry)
+
+    def InPlace(self, inplace):
+        self._inplace.append(inplace);
 
     def PreTransSynchronization(self, time):
         self._preSync.append(time)
@@ -308,8 +314,34 @@ class Driver:
                     print "error, should not be here"
                     print y
                     print x   
-        for x in dstime_stacks:
-            print dstime_stacks[x].GetFullOutput() + "\n"         
+        # for x in dstime_stacks:
+        #     print dstime_stacks[x].GetFullOutput() + "\n"         
+
+        dt_stacks =  self.GetDataTransferType(self._stackStore["DT_stacks.bin"].GetAllStacks())
+        readCollisionFile = ReadTransferCollisions(os.path.join(self._inDir, "DT_collisions.txt"))
+        while 1:
+            rec = readCollisionFile.DecodeRecord()
+            print rec
+            if rec == None:
+                break
+
+            prevHash = 0
+            if rec[2] == 1:
+                prevHash = int(rec[3])
+            dt_stacks[int(rec[0])].AddDuplicate(DuplicateEntry(rec[1],prevHash))
+
+        for x in dt_stacks:
+            found = False
+            for y in dstime_stacks:
+                if dt_stacks[x].HashStackDataTransfer() == dstime_stacks[y].HashStackDataTransfer():
+                    found = True
+                    dstime_stacks[y].CopyDuplicates(dt_stacks[x])
+                    break
+            if found == False:
+                print "COULD NOT FIND STACK "
+                print dt_stacks[x].GetFullOutput()
+                exit(-1)
+                
         # for x in stack_files:
         #     print str(self._stackStore[x])
 

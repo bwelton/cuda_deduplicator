@@ -292,7 +292,7 @@ class Driver:
 
         timing_files = ["DSTIME_trace.bin", "DCPUTIME_trace.bin", "DTOTIME_trace.bin"]
 
-        dstime_stacks = GetDataTransferType(self._stackStore["DSTIME_stacks.bin"].GetAllStacks())
+        dstime_stacks = self.GetDataTransferType(self._stackStore["DSTIME_stacks.bin"].GetAllStacks())
         for x in timing_files:
             transferTime = TF_Trace(os.path.join(self._inDir, x))
             transferTime.DecodeFile()

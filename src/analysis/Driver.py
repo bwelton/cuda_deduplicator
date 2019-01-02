@@ -356,8 +356,14 @@ class Driver:
             dstime_stacks[x].FixDuplicateID(dt_to_ds)
             print dstime_stacks[x].GetFullOutput()
 
+        totalTimeSavings = 0.0
         for x in dstime_stacks:
-            dstime_stacks[x].Analysis()
+            tmp = dstime_stacks[x].Analysis()
+            print "Stack " + str(x) + " - Estimated Savings: " + str(tmp["Estimated Savings"])
+            totalTimeSavings += float(tmp["Estimated Savings"])
+
+        print "Total estimated savings from Duplicate Transfer Issues - "  + str(totalTimeSavings)
+        
 
         # for x in stack_files:
         #     print str(self._stackStore[x])

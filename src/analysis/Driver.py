@@ -149,6 +149,21 @@ class DataTransfer:
         ret = self.Analysis(idToHash)
         return ret["id"] + "," + ret["Call Count"] + "," + ret["Cuda Call"] + "," + ret["First User Call"] + "," + ret["Duplicate Count"] + "," + ret["Estimated Savings"] + "," + ret["Overwrite Issues"]  + "," +  ret["Duplicate Matches Transfer"]
 
+    def PrintList(self, name, nlist):
+        ret = str(name) + " - Count =  " + str(len(nlist)) + " : "
+        for i in nlist:
+            ret += str(i) + " "
+        ret += "\n"
+        return ret
+
+    def GetFullOutput(self):
+        ret = ""
+        ret += str(self._stack)
+        ret += PrintList("Total Time" , self._totalTime)
+        ret += PrintList("CPU Overhead" , self._cpuOverhead)
+        ret += PrintList("Duplicates" , self._duplicates)
+        ret += PrintList("Pre Trans Sync" , self._preSync)
+        return ret
 
     def AddTotalTime(self, time):
         self._totalTime.append(time)
@@ -252,6 +267,12 @@ class Driver:
         self.DataDeduplication()
 
 
+    def GetDataTransferType(self, stacks):
+        ret = {}
+        for x in stacks:
+            ret[x] = DataTransfer(stacks[x].HashStackDataTransfer(),int(x), stacks[x])
+        return ret
+
     def DataDeduplication(self):
         ##
         #   Contents of files:
@@ -271,7 +292,7 @@ class Driver:
 
         timing_files = ["DSTIME_trace.bin", "DCPUTIME_trace.bin", "DTOTIME_trace.bin"]
 
-        dstime_stacks = self._stackStore["DSTIME_stacks.bin"].GetAllStacks()
+        dstime_stacks = GetDataTransferType(self._stackStore["DSTIME_stacks.bin"].GetAllStacks())
         for x in timing_files:
             transferTime = TF_Trace(os.path.join(self._inDir, x))
             transferTime.DecodeFile()
@@ -286,7 +307,9 @@ class Driver:
                 else:
                     print "error, should not be here"
                     print y
-                    print x            
+                    print x   
+        for x in dstime_stacks:
+            print x.GetFullOutput() + "\n"         
         # for x in stack_files:
         #     print str(self._stackStore[x])
 

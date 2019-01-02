@@ -309,7 +309,7 @@ class Driver:
                     print y
                     print x   
         for x in dstime_stacks:
-            print x.GetFullOutput() + "\n"         
+            print dstime_stacks[x].GetFullOutput() + "\n"         
         # for x in stack_files:
         #     print str(self._stackStore[x])
 

@@ -98,7 +98,7 @@ class DuplicateEntry:
         return False
 
     def __str__(self):
-        return str(self._prevTransferHash) + "|" + str(self._overwrite)
+        return "Prev Transfer: " + str(self._prevTransferHash) + "| Overwrite: " + str(self._overwrite)
 
 
 class DataTransfer:
@@ -363,7 +363,7 @@ class Driver:
             totalTimeSavings += float(tmp["Estimated Savings"])
 
         print "Total estimated savings from Duplicate Transfer Issues - "  + str(totalTimeSavings)
-        
+
 
         # for x in stack_files:
         #     print str(self._stackStore[x])

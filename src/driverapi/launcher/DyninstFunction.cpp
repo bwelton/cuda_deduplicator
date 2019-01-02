@@ -240,6 +240,8 @@ void DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 				excludedAddress.insert(i.first);
 			if (tmp.find("lfs ") == std::string::npos)
 				excludedAddress.insert(i.first);
+			if (i.first < 0x10002fe0 || i.first > 0x10002fec)
+				excludedAddress.insert(i.first);
 		} 
 	}
 

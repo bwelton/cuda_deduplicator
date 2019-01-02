@@ -159,10 +159,10 @@ class DataTransfer:
     def GetFullOutput(self):
         ret = ""
         ret += str(self._stack)
-        ret += PrintList("Total Time" , self._totalTime)
-        ret += PrintList("CPU Overhead" , self._cpuOverhead)
-        ret += PrintList("Duplicates" , self._duplicates)
-        ret += PrintList("Pre Trans Sync" , self._preSync)
+        ret += self.PrintList("Total Time" , self._totalTime)
+        ret += self.PrintList("CPU Overhead" , self._cpuOverhead)
+        ret += self.PrintList("Duplicates" , self._duplicates)
+        ret += self.PrintList("Pre Trans Sync" , self._preSync)
         return ret
 
     def AddTotalTime(self, time):

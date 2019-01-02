@@ -97,6 +97,10 @@ class DuplicateEntry:
             return True
         return False
 
+    def __str__(self):
+        return str(self._prevTransferHash) + "|" + str(self._overwrite)
+
+
 class DataTransfer:
     def __init__(self, hashVal, position, stack):
         self._hash = hashVal
@@ -112,9 +116,6 @@ class DataTransfer:
         return self._stack.HashStackDataTransfer()
 
     def FindSavings(self, idToHash):
-        tmpHash = {}
-        for x in idToHash:
-            tmpHash[idToHash[x]] = x
         overwriteIssues = 0
         previousTransfers = 0
         previousTransferList = []
@@ -127,11 +128,10 @@ class DataTransfer:
                     overwriteIssues += 1
                 else:
                     previousTransfers += 1
-                    if self._duplicates[x]._prevTransferHash in tmpHash:
-                        previousTransferList.append(tmpHash[self._duplicates[x]._prevTransferHash])
+                    previousTransferList.append(self._duplicates[x]._prevTransferHash)
         return [totalTimeSavings, overwriteIssues, previousTransferList]
 
-    def Analysis(self, idToHash):
+    def Analysis(self):
         ret = {}
         ret["id"] = str(self._pos)
         ret["Total Time Aggragate"] = str(sum(self._totalTime))
@@ -141,7 +141,7 @@ class DataTransfer:
         ret["Cuda Call"] = self._stack.TransGetFirstLibCuda()
         ret["First User Call"] = self._stack.TransGetFirstUserCall()
         ret["Duplicate Count"] = str(len(self._duplicates))
-        savings = self.FindSavings(idToHash)
+        savings = self.FindSavings()
         ret["Estimated Savings"] = str(savings[0])
         ret["Overwrite Issues"] = str(savings[1])
         ret["Duplicate Matches Transfer"] = ""
@@ -175,6 +175,12 @@ class DataTransfer:
 
     def AddCPUOverhead(self, time):
         self._cpuOverhead.append(time)
+
+
+    def FixDuplicateID(self, idMap):
+        for x in self._duplicates:
+            if x._prevTransferHash > 0:
+                x._prevTransferHash = idMap[x._prevTransferHash]
 
     def AddDuplicate(self, dupEntry):
         self._duplicates.append(dupEntry)
@@ -332,17 +338,26 @@ class Driver:
                 prevHash = int(rec[3])
             dt_stacks[int(rec[0])].AddDuplicate(DuplicateEntry(rec[1],prevHash))
 
+        dt_to_ds = {}
         for x in dt_stacks:
             found = False
             for y in dstime_stacks:
                 if dt_stacks[x].HashStackDataTransfer() == dstime_stacks[y].HashStackDataTransfer():
                     found = True
+                    dt_to_ds[x] = y
                     dstime_stacks[y].CopyDuplicates(dt_stacks[x])
                     break
             if found == False:
                 print "COULD NOT FIND STACK "
                 print dt_stacks[x].GetFullOutput()
                 exit(-1)
+
+        for x in dstime_stacks:
+            dstime_stacks[x].FixDuplicateID(dt_to_ds)
+            print dstime_stacks[x].GetFullOutput()
+
+        for x in dstime_stacks:
+            dstime_stacks[x].Analysis()
 
         # for x in stack_files:
         #     print str(self._stackStore[x])

@@ -108,6 +108,8 @@ class DataTransfer:
         self._duplicates = []
         self._inplace = []
 
+    def HashStackDataTransfer(self):
+        return self._stack.HashStackDataTransfer()
 
     def FindSavings(self, idToHash):
         tmpHash = {}
@@ -341,7 +343,7 @@ class Driver:
                 print "COULD NOT FIND STACK "
                 print dt_stacks[x].GetFullOutput()
                 exit(-1)
-                
+
         # for x in stack_files:
         #     print str(self._stackStore[x])
 

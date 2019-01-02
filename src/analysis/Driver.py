@@ -115,7 +115,7 @@ class DataTransfer:
     def HashStackDataTransfer(self):
         return self._stack.HashStackDataTransfer()
 
-    def FindSavings(self, idToHash):
+    def FindSavings(self):
         overwriteIssues = 0
         previousTransfers = 0
         previousTransferList = []

@@ -46,6 +46,8 @@ class TF_Trace:
 				self._records.append([t[0]] + self.DecodeSyncRecord())
 			elif t[0] == 2:
 				self._records.append([t[0]] + self.DecodeTransferRecord())
+		for x in self._records:
+			print x
 
 	def __str__(self):
 		ret = "TF_Trace file decoded: \n"

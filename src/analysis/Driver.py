@@ -601,6 +601,8 @@ class Driver:
                 if y in dupDataToSync:
                     continue
                 if self._syncStacks[x].CompareToDupData(self._transStacks[y]):
+                    if self._transStacks[y].Analysis()["Duplicate Count"] == 0:
+                        break
                     syncToDupData[x] = y
                     dupDataToSync[y] = x
                     break
@@ -626,6 +628,8 @@ class Driver:
                 ucall = stack.FindFirstUserCall()
                 ccall = stack.FindFirstLibCuda() 
                 analysis = self._transStacks[y].Analysis()            
+                if int(analysis["Duplicate Count"]) == 0:
+                    continue
                 print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(y),"Dup Data",str(analysis["Call Count"]), str(analysis["Duplicate Count"]), str(analysis["Estimated Savings"]), str(analysis["Duplicate Matches Transfer"]))
 
         # for x in stack_files:

@@ -131,10 +131,53 @@ class Synchronization:
     def AddUseTime(self, entry):
         self._useTimes.append(entry)
 
+    def GetCallCount(self):
+        return len(self._timingData)
+
+    def GetNumNonUses(self):
+        return len(self._timingData) - len(self._useStacks) 
+
+    def GetTimeSaved(self):
+        timingDataAvg = 0.0
+        useAverage = 0.0
+        assert len(self._timingData) >= len(self._useStacks)
+        for x in self._timingData:
+            timingDataAvg += float(x[3])
+        timingDataAvg = timingDataAvg / len(self._timingData)
+        for x in self._useStacks:
+            if x.GetTimeVal() > 0:
+                useAverage += float(x.GetTimeVal())
+            else:
+                useAverage += timingDataAvg
+        useAverage = useAverage / len(self._useStacks)
+
+        if useAverage > timingDataAvg:
+            return timingDataAvg * float(len(self._timingData))
+
+        totalSaved = 0.0
+        return useAverage * float(len(self._useStacks)) + timingDataAvg * float(len(self._timingData) - len(self._useStacks))
+
+
 
     def CopyUses(self, ls_stack):
         self._useStacks = ls_stack._useStacks
 
+    def CompareToDupData(self, dupData):
+        dupStack = dupData._stack.GetStack()
+        my_entries =  self._stack.GetStack()
+        ## We should be a subset of the duplicate data stack
+        curPos = 0
+        for x in my_entries:
+            found = False
+            for y in range(curPos,len(dupStack)):
+                if str(dupStack[y]) == str(x):
+                    curPos = y + 1
+                    found = True
+                    break
+            if found == False:
+                return False
+
+        return True
 
     def GetFITimes(self):
         retList = []
@@ -159,7 +202,6 @@ class Synchronization:
                 return False
 
         return True
-
 
     def CompareLStoTF(self, tf_stack):
         my_entries = self._stack.GetStack()
@@ -246,7 +288,7 @@ class DataTransfer:
         ret["Overwrite Issues"] = str(savings[1])
         ret["Duplicate Matches Transfer"] = ""
         for x in savings[2]:
-            ret["Duplicate Matches Transfer"] += str(x) + " | "
+            ret["Duplicate Matches Transfer"] += str(x) + " "
         return ret
 
     def CreateOutput(self, idToHash):
@@ -520,12 +562,43 @@ class Driver:
             print dstime_stacks[x].GetFullOutput()
 
         totalTimeSavings = 0.0
+        self._transStacks = dstime_stacks
+
         for x in dstime_stacks:
             tmp = dstime_stacks[x].Analysis()
             print "Stack " + str(x) + " - Estimated Savings: " + str(tmp["Estimated Savings"])
             totalTimeSavings += float(tmp["Estimated Savings"])
 
         print "Total estimated savings from Duplicate Transfer Issues - "  + str(totalTimeSavings)
+
+    def Finalize(self):
+        totalImpact = 0.0
+        print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % ('App Bin','App Function','Cuda Call','Stack ID','Type','Call Count', 'No Use', 'Est Impact', "Dup Trans")
+        syncToDupData = {}
+        dupDataToSync = {}
+
+        for x in self._syncStack:
+            for y in self._transStacks:
+                if y in dupDataToSync:
+                    continue
+                if self._syncStack.CompareToDupData(self._transStacks[y]):
+                    syncToDupData[x] = y
+                    dupDataToSync[y] = x
+                    break
+
+
+        for x in self._syncStack:
+            myType = "Sync"
+            if x in syncToDupData:
+                myType += " + DupData"
+            stack = self._stackStore["TF_timekey.txt"].GetStackAtID(int(x))
+            ucall = stack.FindFirstUserCall()
+            ccall = stack.FindFirstLibCuda()
+            if x not in syncToDupData:
+                print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(x),myType,str(self._syncStacks[x].GetCallCount()), str(self._syncStacks[x].GetNumNonUses()), str(self._syncStacks[x].GetTimeSaved()), "")
+            else: 
+                print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(x),myType,str(self._syncStacks[x].GetCallCount()), str(self._syncStacks[x].GetNumNonUses()), str(self._syncStacks[x].GetTimeSaved()), self._transStacks[syncToDupData[x]].Analysis()["Duplicate Matches Transfer"])
+
 
 
         # for x in stack_files:

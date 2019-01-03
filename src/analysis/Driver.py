@@ -157,10 +157,17 @@ class Synchronization:
         return True
 
     def CopyFirstUses(self, fi_sync):
-        fi_use = fi_sync._useStacks
-        if len(fi_use) != len(self._useStacks):
-            print "Difference in number of uses between runs - " + str(len(fi_use)) + " vs " + str(len(self._useStacks))
-            
+        if len(fi_sync) != len(self._useStacks):
+            print "Difference in number of uses between runs - " + str(len(fi_sync)) + " vs " + str(len(self._useStacks))
+        curPos = 0
+
+        for x in range(0,self._useStacks):
+            for y in range(curPos, fi_sync):
+                if str(fi_sync[y].GetUse()) == str(self._useStacks[x].GetUse()):
+                    self._useStacks[x]._timeVal = fi_sync[y]._timeVal
+                    curPos = y+1
+                    break
+
 
 
 
@@ -347,11 +354,14 @@ class Driver:
             else:
                 print "Error: Could not find FI StackKey ID of " + str(x)
 
-        # for x in fi_stacks:
-        #     tmp = fi_stacks[x].GetFITimes()
-        #     if len(tmp) > 0:
-        #         for y in ls_stacks:
-        #             if ls_stacks[y].CompareLStoFI(fi_stacks[x]):
+        for x in fi_stacks:
+            tmp = fi_stacks[x].GetFITimes()
+            if len(tmp) > 0:
+                for y in ls_stacks:
+                    if ls_stacks[y].CompareLStoFI(fi_stacks[x]):
+                        ls_stacks[y].CopyFirstUses(tmp)
+                        break
+                
 
 
 

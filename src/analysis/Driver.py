@@ -170,7 +170,7 @@ class Synchronization:
         for x in self._useStacks:
             if x._timeVal == 0:
                 print "Error: One of the timevals in this stack does not have a matching use"
-                print str(x._stack)
+                print str(x._useStack)
                 print str(self._stackID)
 
 

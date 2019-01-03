@@ -33,7 +33,10 @@ class StackEntry:
         return str(self._libname) + "@" + str(self._offset) 
 
     def PrintNormalHuman(self):
-        return str(self._funcname) + " IN " + str(self._libname) + "@" + str(self._offset)         
+        if self._filename != "" and "/" in self._filename:
+            self._filename = self._filename.split("/")[-1]
+
+        return str(self._funcname) + " IN (" + str(self._filename) + ":" + str(self._lineNum) + ")" + str(self._libname) + "@" + str(self._offset)         
     def GetFilename(self):
         return self._libname.split("/")[-1]
 
@@ -164,7 +167,7 @@ class Stack:
                             self._stack[index]._lineNum = lineMapSplit[1]
                         if lineMapSplit[0] != "":
                             self._stack[index]._fileName = lineMapSplit[0]
-                            
+
                     #print a[1]
                 else:
                     print "NON MATCH"

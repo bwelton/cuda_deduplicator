@@ -161,12 +161,17 @@ class Synchronization:
             print "Difference in number of uses between runs - " + str(len(fi_sync)) + " vs " + str(len(self._useStacks))
         curPos = 0
 
-        for x in range(0,self._useStacks):
-            for y in range(curPos, fi_sync):
+        for x in range(0,len(self._useStacks)):
+            for y in range(curPos, len(fi_sync)):
                 if str(fi_sync[y].GetUse()) == str(self._useStacks[x].GetUse()):
                     self._useStacks[x]._timeVal = fi_sync[y]._timeVal
                     curPos = y+1
                     break
+        for x in self._useStacks:
+            if x._timeVal == 0:
+                print "Error: One of the timevals in this stack does not have a matching use"
+                print str(x._stack)
+                print str(self._stackID)
 
 
 
@@ -361,7 +366,7 @@ class Driver:
                     if ls_stacks[y].CompareLStoFI(fi_stacks[x]):
                         ls_stacks[y].CopyFirstUses(tmp)
                         break
-                
+
 
 
 

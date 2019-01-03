@@ -94,9 +94,7 @@ class Stack:
     def FindFirstUserCall(self):
         startPos = 0
         self.GetNameInfo()
-
         for x in range(0,len(self._stack)):
-            print str(self._stack[x])
             if "libcuda.so" in  self._stack[x]._libname or "libcudart.so" in  self._stack[x]._libname:
                 startPos = x
                 break

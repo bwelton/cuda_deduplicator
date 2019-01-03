@@ -587,17 +587,17 @@ class Driver:
         syncToDupData = {}
         dupDataToSync = {}
 
-        for x in self._syncStack:
+        for x in self._syncStacks:
             for y in self._transStacks:
                 if y in dupDataToSync:
                     continue
-                if self._syncStack.CompareToDupData(self._transStacks[y]):
+                if self._syncStacks.CompareToDupData(self._transStacks[y]):
                     syncToDupData[x] = y
                     dupDataToSync[y] = x
                     break
 
 
-        for x in self._syncStack:
+        for x in self._syncStacks:
             myType = "Sync"
             if x in syncToDupData:
                 myType += " + DupData"

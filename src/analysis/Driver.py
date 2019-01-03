@@ -212,9 +212,11 @@ class Synchronization:
         for x in my_entries:
             found = False
             for y in range(curPos, len(tf_stack)):
+                print str(x)
+                print str(tf_stack[y])
                 if str(x) == str(tf_stack[y]):
                     found = True
-                    curPos = y
+                    curPos = y + 1
                     break
             if found == False:
                 return False

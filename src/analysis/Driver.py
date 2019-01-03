@@ -107,6 +107,11 @@ class TimingEntry:
         self._useStack = useStack
         self._timeVal = timeval
 
+    def GetUse(self):
+        return self._useStack
+
+    def GetTimeVal(self):
+        return self._timeVal
 
 class Synchronization:
     def __init__(self, stack, stackID):
@@ -125,6 +130,39 @@ class Synchronization:
 
     def AddUseTime(self, entry):
         self._useTimes.append(entry)
+
+
+    def GetFITimes(self):
+        retList = []
+        prevTime = 0.0
+        for x in self._useStacks:
+            if x.GetUse() == None:
+                prevTime = x.GetTimeVal()
+            else:
+                retList.append(TimingEntry(x.GetUse(), x.GetTimeVal() - prevTime))
+                prevTime = x.GetTimeVal()
+        return retList
+           
+    def CompareLStoFI(self, fi_sync):
+        ## these stacks should be equal in length, captured via the same exact methods
+        my_entries = self._stack.GetStack()
+        fi_entries =  fi_sync._stack.GetStack()
+        if len(my_entries) != len(fi_entries):
+            return False
+
+        for x in range(0, len(my_entries)):
+            if str(my_entries[x]) != str(fi_entries[x]):
+                return False
+
+        return True
+
+    def CopyFirstUses(self, fi_sync):
+        fi_use = fi_sync._useStacks
+        if len(fi_use) != len(self._useStacks):
+            print "Difference in number of uses between runs - " + str(len(fi_use)) + " vs " + str(len(self._useStacks))
+            
+
+
 
 
 class DataTransfer:
@@ -308,6 +346,13 @@ class Driver:
                         fi_stacks[x].AddUse(TimingEntry(None, float(y[1])))
             else:
                 print "Error: Could not find FI StackKey ID of " + str(x)
+
+        # for x in fi_stacks:
+        #     tmp = fi_stacks[x].GetFITimes()
+        #     if len(tmp) > 0:
+        #         for y in ls_stacks:
+        #             if ls_stacks[y].CompareLStoFI(fi_stacks[x]):
+
 
 
         # match = MatchTimeToLSStack(self._stackStore["TF_timekey.txt"], self._stackStore["LS_stackkey.txt"])

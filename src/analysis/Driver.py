@@ -132,6 +132,10 @@ class Synchronization:
         self._useTimes.append(entry)
 
 
+    def CopyUses(self, ls_stack):
+        self._useStacks = ls_stack._useStacks
+
+
     def GetFITimes(self):
         retList = []
         prevTime = 0.0
@@ -154,6 +158,24 @@ class Synchronization:
             if str(my_entries[x]) != str(fi_entries[x]):
                 return False
 
+        return True
+
+
+    def CompareLStoTF(self, tf_stack):
+        my_entries = self._stack.GetStack()
+        tf_stack =  tf_stack._stack.GetStack()
+
+        ## LS stack should be a subset of the TF_stack
+        curPos = 0
+        for x in my_entries:
+            found = False
+            for y in range(curPos, len(tf_stack)):
+                if str(x) == str(tf_stack[y]):
+                    found = True
+                    curPos = y
+                    break
+            if found == False:
+                return False
         return True
 
     def CopyFirstUses(self, fi_sync):
@@ -368,6 +390,17 @@ class Driver:
                     if ls_stacks[y].CompareLStoFI(fi_stacks[x]):
                         ls_stacks[y].CopyFirstUses(tmp)
                         break
+
+        alreadyMatch = {}
+        for x in ls_stacks:
+            for y in self._syncStacks:
+                if y in alreadyMatch:
+                    continue
+                if ls_stacks[x].CompareLStoTF(self._syncStacks[y]):
+                    self._syncStacks[y].CopyUses(ls_stacks[x])
+                    alreadyMatch[y] = 1
+                    break
+        
 
 
 

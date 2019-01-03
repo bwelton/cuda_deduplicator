@@ -409,8 +409,8 @@ class Driver:
         self._syncStacks = self.GetSynchronizationType(self._stackStore["TF_timekey.txt"].GetAllStacks())
         for x in tf_trace._records:
             # entry: dynID,stackId,count,time
-            if int(x[1]) in self._syncStacks:
-                self._syncStacks[x[1]].AddTFTime(x)
+            if int(x[2]) in self._syncStacks:
+                self._syncStacks[x[2]].AddTFTime(x)
             else:
                 print "ERROR: Could not find stack id - " + str(x[1])
 

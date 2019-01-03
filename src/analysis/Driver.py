@@ -149,7 +149,10 @@ class Synchronization:
                 useAverage += float(x.GetTimeVal())
             else:
                 useAverage += timingDataAvg
-        useAverage = useAverage / len(self._useStacks)
+        if len(self._useStacks) == 0:
+            useAverage = 0.0
+        else:
+            useAverage = useAverage / len(self._useStacks)
 
         if useAverage > timingDataAvg:
             return timingDataAvg * float(len(self._timingData))

@@ -298,7 +298,7 @@ class Driver:
         fi_stacks = self.GetSynchronizationType(self._stackStore["FI_stackkey.txt"].GetAllStacks())
         fi_usepoints = self.GetSynchronizationType(self._stackStore["FI_tracekey.txt"].GetAllStacks())
 
-          for x in fi_trace._entriesMap:
+        for x in fi_trace._entriesMap:
             if x in fi_stacks:
                 if fi_trace._entriesMap[x] in fi_usepoints:
                     fi_stacks[x].AddUse(TimingEntry(fi_usepoints[fi_trace._entriesMap[x][0]]._stack, float(fi_trace._entriesMap[x][1])))

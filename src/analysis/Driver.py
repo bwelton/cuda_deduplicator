@@ -444,7 +444,9 @@ class Driver:
                     alreadyMatch[y] = 1
                     found = True
                     break
-            assert found == True
+            if found != True:
+                print "ERROR Could not find LS stack - " + str(x) 
+                assert found == True
 
 
 

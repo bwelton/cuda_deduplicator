@@ -212,10 +212,14 @@ class Synchronization:
         for x in my_entries:
             found = False
             for y in range(curPos, len(tf_stack)):
-                print "Comparitor"
-                print str(x)
-                print str(tf_stack[y])
-                print "End Comparitor"
+                entryX = str(x)
+                entryY = str(tf_stack[y])
+                if "libcudart.so" in entryX:
+                    entryX = "libcudart.so@" + entryX.split("@")[1]
+                if "libcudart.so" in entryY:
+                    entryY = "libcudart.so@" +entryX.split("@")[1]
+                print entryX
+                print entryY
                 if str(x) == str(tf_stack[y]):
                     found = True
                     curPos = y + 1

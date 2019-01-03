@@ -92,7 +92,7 @@ void ReadLoadStoreFiles::OutputTraceKeyFirstUse(std::string inDataFile, std::str
 			writer.InsertStack(locationId, tmp);
 			seenIds.insert(locationId);
 		}
-		readCount += (sizeof(uint64_t) * 2);
+		readCount += (sizeof(uint64_t) * 2) + sizeof(double);
 	}
 	fclose(inFile);
 }

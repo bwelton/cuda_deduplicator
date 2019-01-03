@@ -141,6 +141,8 @@ class Synchronization:
         timingDataAvg = 0.0
         useAverage = 0.0
         assert len(self._timingData) >= len(self._useStacks)
+        if len(self._timingData) == 0:
+            return 0.0
         for x in self._timingData:
             timingDataAvg += float(x[3])
         timingDataAvg = timingDataAvg / len(self._timingData)

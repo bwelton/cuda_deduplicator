@@ -34,9 +34,12 @@ class StackEntry:
 
     def PrintNormalHuman(self):
         if self._fileName != "" and "/" in self._fileName:
-            self._fileName = self._fileName.split("/")[-1]
-
-        return (str(self._funcname) + " IN (" + str(self._fileName) + ":" + str(self._lineNum) + ")" + str(self._libname) + "@" + str(self._offset)).replace("\n","")
+            self._fileName = self._fileName.split("/")[-1] 
+        tmpWriteLine = self._lineNum
+        if tmpWriteLine != "":
+            tmpWriteLine = tmpWriteLine.replace("\n","")
+            tmpWriteLine = str(int(tmpWriteLine,16))
+        return (str(self._funcname) + " IN (" + str(self._fileName) + ":" + str(tmpWriteLine) + ")" + str(self._libname) + "@" + str(self._offset)).replace("\n","")
     def GetFilename(self):
         return self._libname.split("/")[-1]
 

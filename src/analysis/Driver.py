@@ -556,6 +556,8 @@ class Driver:
             prevHash = 0
             if rec[2] == 1:
                 prevHash = int(rec[3])
+            if rec[1] == 0 and rec[2] == 0:
+                continue
             dt_stacks[int(rec[0])].AddDuplicate(DuplicateEntry(rec[1],prevHash))
 
         dt_to_ds = {}

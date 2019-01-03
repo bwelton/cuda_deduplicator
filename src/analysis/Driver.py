@@ -220,7 +220,7 @@ class Synchronization:
                     entryY = "libcudart.so@" +entryX.split("@")[1]
                 print entryX
                 print entryY
-                if str(x) == str(tf_stack[y]):
+                if entryX == entryY:
                     found = True
                     curPos = y + 1
                     break

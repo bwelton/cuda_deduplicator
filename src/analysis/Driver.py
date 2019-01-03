@@ -393,14 +393,16 @@ class Driver:
 
         alreadyMatch = {}
         for x in ls_stacks:
+            found = False
             for y in self._syncStacks:
                 if y in alreadyMatch:
                     continue
                 if ls_stacks[x].CompareLStoTF(self._syncStacks[y]):
                     self._syncStacks[y].CopyUses(ls_stacks[x])
                     alreadyMatch[y] = 1
+                    found = True
                     break
-        
+            assert found == True
 
 
 

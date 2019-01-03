@@ -218,8 +218,8 @@ class Synchronization:
                     entryX = "libcudart.so@" + entryX.split("@")[1]
                 if "libcudart.so" in entryY:
                     entryY = "libcudart.so@" +entryX.split("@")[1]
-                print entryX
-                print entryY
+                # print entryX
+                # print entryY
                 if entryX == entryY:
                     found = True
                     curPos = y + 1
@@ -494,7 +494,7 @@ class Driver:
         #     outFD.write('%-20.20s,%-20.20s,%-20.20s,%-10.10s,%-20.20s,%-10.10s,%-10.10s\n' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4])))
         # outFD.close()
         self.DataDeduplication()
-
+        self.Finalize()
 
     def GetDataTransferType(self, stacks):
         ret = {}

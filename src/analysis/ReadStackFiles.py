@@ -36,7 +36,7 @@ class StackEntry:
         if self._fileName != "" and "/" in self._fileName:
             self._fileName = self._fileName.split("/")[-1]
 
-        return str(self._funcname) + " IN (" + str(self._fileName) + ":" + str(self._lineNum) + ")" + str(self._libname) + "@" + str(self._offset)         
+        return (str(self._funcname) + " IN (" + str(self._fileName) + ":" + str(self._lineNum) + ")" + str(self._libname) + "@" + str(self._offset)).replace("\n","")
     def GetFilename(self):
         return self._libname.split("/")[-1]
 

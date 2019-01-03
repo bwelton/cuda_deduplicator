@@ -1,7 +1,7 @@
 import sys
 import struct
 
-class LS_TraceBin:
+class FI_TraceBin:
 	def __init__(self, filename):
 		self._filename = filename
 		f = open(self._filename,"rb")
@@ -13,17 +13,17 @@ class LS_TraceBin:
 		# uint64_t pointID, uint64_t stackID
 		self._entries = []
 		self._entriesMap = {}
-		length = int(int(len(self._data) / 8) / 2)
+		length = int(int(len(self._data) / 8) / 3)
 		for x in range(0, length):
-			tmp = struct.unpack_from("QQ", self._data, offset=(x*16))
+			tmp = struct.unpack_from("QQd", self._data, offset=(x*8*3))
 			self._entries.append(tmp)
 			if tmp[1] not in self._entriesMap:
 				self._entriesMap[tmp[1]] = []
-			self._entriesMap[tmp[1]].append(tmp[0])
+			self._entriesMap[tmp[1]].append([tmp[0],tmp[2]])
 			
 	
 	def __str__(self):
-		ret = "LS_Trace file  (LS Trace Key ID, LS Stack Trace ID)\n"
+		ret = "LS_Trace file  (FI Trace Key ID, FI Stack Trace ID)\n"
 		for x in self._entries:
 			ret += str(x[0]) + "," + str(x[1]) + "\n"
 		return ret

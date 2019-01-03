@@ -4,6 +4,7 @@ import struct
 from  ReadStackFiles import StackReader
 from LS_TraceBin import LS_TraceBin
 from TF_trace import TF_Trace
+from FI_TraceBin import FI_TraceBin
 
 class MatchTimeToLSStack:
     def __init__(self, TF_timekey, LS_stackkey):
@@ -99,6 +100,31 @@ class DuplicateEntry:
 
     def __str__(self):
         return "Prev Transfer: " + str(self._prevTransferHash) + "| Overwrite: " + str(self._overwrite)
+
+
+class TimingEntry:
+    def __init__(self, useStack, timeval):
+        self._useStack = useStack
+        self._timeVal = timeval
+
+
+class Synchronization:
+    def __init__(self, stack, stackID):
+        self._stack = stack
+        self._stackID = stackID
+        self._timingData = []
+        self._useStacks = []
+        self._useTimes = []
+
+
+    def AddTFTime(self, entry):
+        self._timingData.append(entry)
+
+    def AddUse(self, stack):
+        self._useStacks.append(stack)
+
+    def AddUseTime(self, entry):
+        self._useTimes.append(entry)
 
 
 class DataTransfer:
@@ -220,6 +246,12 @@ class Driver:
         self._inDir = os.getcwd()
         self._outDir = os.getcwd()
 
+    def GetSynchronizationType(self, stacks):
+        ret = {}
+        for x in stacks:
+            ret[int(x)] = Synchronization(stacks[x], int(x))
+        return ret
+
     def Run(self):
         ## TIme in Seconds
         TIME = 109.00
@@ -227,7 +259,7 @@ class Driver:
         ## LS_stackkey -> Necessary Synchronization
         ## LS_tracekey -> Locations of first access
         ## TF_timekey -> Timing for each synchronization.
-        stack_files = ["LS_stackkey.txt", "LS_tracekey.txt", "TF_timekey.txt"]
+        stack_files = ["LS_stackkey.txt", "LS_tracekey.txt", "TF_timekey.txt","FI_tracekey.txt","FI_stackkey.txt"]
 
         for x in stack_files:
             self._stackStore[x] = StackReader(os.path.join(self._inDir, x))
@@ -244,40 +276,72 @@ class Driver:
         tf_trace = TF_Trace(os.path.join(self._inDir, "TF_trace.bin"))
         tf_trace.DecodeFile()
         #print str(tf_trace)
-        match = MatchTimeToLSStack(self._stackStore["TF_timekey.txt"], self._stackStore["LS_stackkey.txt"])
-        m = match.GetMatchSet()
-        singleSetTF = []
-        for x in m:
-            singleSetTF.append(x[0])
-        notInSet = tf_trace.GetNotInSet(singleSetTF)
-        #print notInSet
-        timeSavedEstimate = 0.0
-        for x in notInSet:
-            timeSavedEstimate += x[-1]
-        tmp_sort = {}
-        for x in notInSet:
-            if x[2] not in tmp_sort:
-                tmp_sort[x[2]] = x
+
+        self._syncStacks = self.GetSynchronizationType(self._stackStore["TF_timekey.txt"].GetAllStacks())
+        for x in tf_trace._records:
+            # entry: dynID,stackId,count,time
+            if int(x[1]) in self._syncStacks:
+                self._syncStacks[x[1]].AddTFTime(x)
             else:
-                tmp_sort[x[2]][-1] += x[-1]
-                tmp_sort[x[2]][-2] += x[-2]
-        notInSet = []
-        for x in tmp_sort:
-            notInSet.append(tmp_sort[x])
-        print "\n\n\n\n"
-        print "Estimated time savings from unnecessary synchroniations/data transfers: " + str(timeSavedEstimate)
-        print "Table of unnecessary operation\n"
-        print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % ('App Bin','App Function','Cuda Call','Stack ID','Type','Call Count', 'Est Impact')
-        outFD = open("results_output.csv", "w")
-        outFD.write('%-20.20s,%-20.20s,%-20.20s,%-10.10s,%-20.20s,%-10.10s,%-10.10s\n' % ('App Bin','App Function','Cuda Call','Stack ID','Type','Call Count', 'Est Impact'))
-        for x in notInSet:
-            i = x[2]
-            stack = self._stackStore["TF_timekey.txt"].GetStackAtID(int(i))
-            ucall = stack.FindFirstUserCall()
-            ccall = stack.FindFirstLibCuda()
-            print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4]))
-            outFD.write('%-20.20s,%-20.20s,%-20.20s,%-10.10s,%-20.20s,%-10.10s,%-10.10s\n' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4])))
-        outFD.close()
+                print "ERROR: Could not find stack id - " + str(x[1])
+
+        ls_stacks = self.GetSynchronizationType(self._stackStore["LS_stackkey.txt"].GetAllStacks())
+        ls_usepoints = self.GetSynchronizationType(self._stackStore["LS_tracekey.txt"].GetAllStacks())
+        for x in ls_trace._entriesMap:
+            if x in ls_stacks:
+                ls_stacks[x].AddUse(TimingEntry(ls_usepoints[ls_trace._entriesMap[x]]._stack, 0.0))
+            else:
+                print "Error: Could not find LS StackKey ID of " + str(x)
+
+        fi_trace = FI_TraceBin(os.path.join(self._inDir, "FI_trace.bin"))
+        fi_trace.DecodeFile()
+        fi_stacks = self.GetSynchronizationType(self._stackStore["FI_stackkey.txt"].GetAllStacks())
+        fi_usepoints = self.GetSynchronizationType(self._stackStore["FI_tracekey.txt"].GetAllStacks())
+
+          for x in fi_trace._entriesMap:
+            if x in fi_stacks:
+                if fi_trace._entriesMap[x] in fi_usepoints:
+                    fi_stacks[x].AddUse(TimingEntry(fi_usepoints[fi_trace._entriesMap[x][0]]._stack, float(fi_trace._entriesMap[x][1])))
+                else:
+                    fi_stacks[x].AddUse(TimingEntry(None, float(fi_trace._entriesMap[x][1])))
+            else:
+                print "Error: Could not find FI StackKey ID of " + str(x)
+
+
+        # match = MatchTimeToLSStack(self._stackStore["TF_timekey.txt"], self._stackStore["LS_stackkey.txt"])
+        # m = match.GetMatchSet()
+        # singleSetTF = []
+        # for x in m:
+        #     singleSetTF.append(x[0])
+        # notInSet = tf_trace.GetNotInSet(singleSetTF)
+        # #print notInSet
+        # timeSavedEstimate = 0.0
+        # for x in notInSet:
+        #     timeSavedEstimate += x[-1]
+        # tmp_sort = {}
+        # for x in notInSet:
+        #     if x[2] not in tmp_sort:
+        #         tmp_sort[x[2]] = x
+        #     else:
+        #         tmp_sort[x[2]][-1] += x[-1]
+        #         tmp_sort[x[2]][-2] += x[-2]
+        # notInSet = []
+        # for x in tmp_sort:
+        #     notInSet.append(tmp_sort[x])
+        # print "\n\n\n\n"
+        # print "Estimated time savings from unnecessary synchroniations/data transfers: " + str(timeSavedEstimate)
+        # print "Table of unnecessary operation\n"
+        # print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % ('App Bin','App Function','Cuda Call','Stack ID','Type','Call Count', 'Est Impact')
+        # outFD = open("results_output.csv", "w")
+        # outFD.write('%-20.20s,%-20.20s,%-20.20s,%-10.10s,%-20.20s,%-10.10s,%-10.10s\n' % ('App Bin','App Function','Cuda Call','Stack ID','Type','Call Count', 'Est Impact'))
+        # for x in notInSet:
+        #     i = x[2]
+        #     stack = self._stackStore["TF_timekey.txt"].GetStackAtID(int(i))
+        #     ucall = stack.FindFirstUserCall()
+        #     ccall = stack.FindFirstLibCuda()
+        #     print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4]))
+        #     outFD.write('%-20.20s,%-20.20s,%-20.20s,%-10.10s,%-20.20s,%-10.10s,%-10.10s\n' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(i),"Sync",str(x[3]), str(x[4])))
+        # outFD.close()
         self.DataDeduplication()
 
 

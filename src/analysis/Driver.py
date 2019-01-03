@@ -212,8 +212,10 @@ class Synchronization:
         for x in my_entries:
             found = False
             for y in range(curPos, len(tf_stack)):
+                print "Comparitor"
                 print str(x)
                 print str(tf_stack[y])
+                print "End Comparitor"
                 if str(x) == str(tf_stack[y]):
                     found = True
                     curPos = y + 1

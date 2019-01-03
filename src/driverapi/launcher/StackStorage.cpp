@@ -113,6 +113,8 @@ void StackRecord::GetStackSymbols(SymbolMap & m) {
 		//std::cerr << _points[i].libname << " " << _points[i].libOffset << std::endl;
 		_points[i].funcOffset = m[_points[i].libname]->GetFunctionOffset(_points[i].libOffset);
 		_points[i].funcName = m[_points[i].libname]->GetFuncName(_points[i].libOffset);
+		_points[i].fileName = tmp.second.filename;
+		_points[i].lineNum = tmp.second.lineNum;
 		_points[i].empty = false;
 	}
 #ifdef DEBUG_STACKRECORD
@@ -140,7 +142,7 @@ void StackRecord::PrintStack(std::stringstream & outStream) {
 
 void StackRecord::PrintEncodedStack(std::ofstream & outStream) {
 	for (auto i : _points) {
-		outStream << "$" << i.libname << "@" << i.funcName << "@" << std::hex << i.libOffset;
+		outStream << "$" << i.libname << "@" << i.funcName << "|" << i.fileName << "|" << i.lineNum << "@" << std::hex << i.libOffset;
 	}
 }
 

@@ -54,12 +54,19 @@ struct StackPoint {
 	uint64_t timerID;
 	bool inMain;
 	bool empty;
+	// Not used for anything other than giving to python analysis tool....
+	uint64_t lineNum;
+	std::string fileName;
 	StackPoint(std::string _libname, std::string _funcName, uint64_t _libOffset, uint64_t _funcOffset) : empty(false), libname(_libname), funcName(_funcName), libOffset(_libOffset), funcOffset(_funcOffset) 
 	{
+		fileName = std::string("");
+		lineNum = 0;
 		inMain = false;
 	};
 
 	StackPoint() : empty(true), libOffset(0), funcOffset(0), funcName(std::string("")), libname(std::string("")) {
+		fileName = std::string("");
+		lineNum = 0;
 		inMain = false;
 	};
 

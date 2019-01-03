@@ -64,16 +64,16 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 	lines.first = func->getName();
 	lines.second.filename = func->getModule()->fullName();
 	lines.second.lineNum = 0;
-	if (ret.size() == 0) {
-#ifdef DEBUG_SYMBOLLOOKUP
-		// std::cerr << "Did not return a symbol" << std::endl;
-#endif
-		return false;
-	}
+// 	if (ret.size() == 0) {
+// #ifdef DEBUG_SYMBOLLOOKUP
+// 		// std::cerr << "Did not return a symbol" << std::endl;
+// #endif
+// 		return false;
+// 	}
 
-	if (ret[0]->isFunction() == false){
-		return false;
-	}
+// 	if (ret[0]->isFunction() == false){
+// 		return false;
+// 	}
 	std::vector<Dyninst::SymtabAPI::Statement::Ptr> lineNumbers;
 	_obj->getSourceLines(lineNumbers, offset);
 	if (lineNumbers.size() > 0) {

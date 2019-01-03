@@ -143,6 +143,7 @@ void SyncTesting::RunWithoutInstrimentation() {
 void SyncTesting::TimeSynchronizations(StackRecMap & recs) {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	proc->RunCudaInit();
 	TimerInstrimentation t(proc);
 	t.InsertTimers(recs);
 	//proc->DetachForDebug();
@@ -154,6 +155,7 @@ void SyncTesting::TimeSynchronizations(StackRecMap & recs) {
 void SyncTesting::RunLoadStoreAnalysis(StackRecMap & recs, std::vector<StackPoint> & uses) {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	proc->RunCudaInit();
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);		
 	LoadStoreInstrimentation ls(proc);
@@ -167,6 +169,7 @@ void SyncTesting::RunTimeUse(StackRecMap & recs, std::vector<StackPoint> & uses)
 	if (uses.size() == 0)
 		return;
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	proc->RunCudaInit();
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);		
 	TimeUse tu(proc);

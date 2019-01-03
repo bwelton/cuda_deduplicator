@@ -163,7 +163,9 @@ class Synchronization:
 
         for x in range(0,len(self._useStacks)):
             for y in range(curPos, len(fi_sync)):
-                if str(fi_sync[y].GetUse()) == str(self._useStacks[x].GetUse()):
+                assert len(fi_sync[y].GetUse().GetStack()) == 1
+                assert len(self._useStacks[x].GetUse().GetStack()) == 1
+                if str(fi_sync[y].GetUse().GetStack()[0]) == str(self._useStacks[x].GetUse().GetStack()[0]):
                     self._useStacks[x]._timeVal = fi_sync[y]._timeVal
                     curPos = y+1
                     break

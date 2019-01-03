@@ -30,6 +30,9 @@ class StackEntry:
         return False
 
     def __str__(self):
+        ## Special case because libcudart is weird
+        if "libcudart.so" in self._libname:
+            return "libcudart.so" + "@" + str(self._offset) 
         return str(self._libname) + "@" + str(self._offset) 
 
     def PrintNormalHuman(self):

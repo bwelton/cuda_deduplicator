@@ -591,7 +591,7 @@ class Driver:
             for y in self._transStacks:
                 if y in dupDataToSync:
                     continue
-                if self._syncStacks.CompareToDupData(self._transStacks[y]):
+                if self._syncStacks[x].CompareToDupData(self._transStacks[y]):
                     syncToDupData[x] = y
                     dupDataToSync[y] = x
                     break

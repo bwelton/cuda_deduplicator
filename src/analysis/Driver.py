@@ -301,10 +301,11 @@ class Driver:
 
         for x in fi_trace._entriesMap:
             if x in fi_stacks:
-                if fi_trace._entriesMap[x] in fi_usepoints:
-                    fi_stacks[x].AddUse(TimingEntry(fi_usepoints[fi_trace._entriesMap[x][0]]._stack, float(fi_trace._entriesMap[x][1])))
-                else:
-                    fi_stacks[x].AddUse(TimingEntry(None, float(fi_trace._entriesMap[x][1])))
+                for y in fi_trace._entriesMap[x]:
+                    if y[0] in fi_usepoints:
+                        fi_stacks[x].AddUse(TimingEntry(fi_usepoints[y[0]]._stack, float(y[1])))
+                    else:
+                        fi_stacks[x].AddUse(TimingEntry(None, float(y[1])))
             else:
                 print "Error: Could not find FI StackKey ID of " + str(x)
 

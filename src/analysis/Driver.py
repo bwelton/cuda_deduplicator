@@ -144,6 +144,7 @@ class Synchronization:
         if len(self._timingData) == 0:
             return 0.0
         for x in self._timingData:
+            print x[3]
             timingDataAvg += float(x[3])
         timingDataAvg = timingDataAvg / len(self._timingData)
         for x in self._useStacks:

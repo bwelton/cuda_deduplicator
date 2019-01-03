@@ -82,8 +82,10 @@ void ReadLoadStoreFiles::OutputTraceKeyFirstUse(std::string inDataFile, std::str
 		fread(&locationId, 1, sizeof(uint64_t), inFile);
 		fread(&stackId, 1, sizeof(uint64_t), inFile);
 		fread(&time, 1, sizeof(double), inFile);
-		if (locationId == 0)
+		if (locationId == 0){
+			readCount += (sizeof(uint64_t) * 2) + sizeof(double);
 			continue;
+		}
 		std::vector<StackPoint> tmp;
 		if(seenIds.find(locationId) == seenIds.end()){
 			tmp.push_back(_map->BuildStackPoint(locationId));

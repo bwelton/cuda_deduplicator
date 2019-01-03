@@ -7,6 +7,7 @@ DyninstProcess::DyninstProcess(boost::program_options::variables_map vm, bool de
 	_aspace = NULL;
 	_MPIProc = false;
 	_openInsertions = false;
+	_insertedInit = false;
 }
 
 void DyninstProcess::SetDynOps(std::shared_ptr<DynOpsClass> ops) {
@@ -15,6 +16,21 @@ void DyninstProcess::SetDynOps(std::shared_ptr<DynOpsClass> ops) {
 
 std::shared_ptr<DynOpsClass> DyninstProcess::ReturnDynOps() {
 	return _ops;
+}
+
+void DyninstProcess::RunCudaInit() {
+	if (_insertedInit)
+		return;
+
+	BPatch_object * libcuda = LoadLibrary(std::string("libcuda.so.1"));
+	std::vector<BPatch_function *> cuInit = _ops->FindFuncsByName(_aspace, std::string("cuInit"), libcuda);
+	assert(cuInit.size() == 1);
+	std::vector<BPatch_snippet*> recordArgs;
+	recordArgs.push_back(new BPatch_constExpr(uint64_t(0)));
+	BPatch_funcCallExpr entryExpr(*(cuInit[0]), recordArgs);
+	std::cerr << "[DyninstProcess::RunCudaInit] Fireing off one time call to call cuInit\n";
+	dynamic_cast<BPatch_process*>(_aspace)->oneTimeCode(entryExpr);
+	_insertedInit = true;
 }
 
 void DyninstProcess::BeginInsertionSet() {

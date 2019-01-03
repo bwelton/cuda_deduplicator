@@ -120,6 +120,7 @@ void SyncTesting::TimeTransfers() {
 void SyncTesting::RunWithSyncStacktracing(StackRecMap & recs) {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	proc->RunCudaInit();
 	StacktraceSynchronizations sync(proc);
 	sync.InsertStacktracing();
 	proc->RunUntilCompleation();	

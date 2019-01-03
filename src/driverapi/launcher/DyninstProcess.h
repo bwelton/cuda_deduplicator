@@ -54,12 +54,14 @@ public:
 	std::shared_ptr<DynOpsClass> ReturnDynOps();
 	void BeginInsertionSet();
 	void DetachForDebug();
+	void RunCudaInit();
 private:
 	bool IsMPIProgram();
 	BPatch_addressSpace * LaunchMPIProcess();
 	std::shared_ptr<DynOpsClass> _ops;
 	bool _debug;
 	bool _MPIProc;
+	bool _insertedInit;
 	BPatch_addressSpace * _aspace;
 	boost::program_options::variables_map _vm;
 	bool _openInsertions;

@@ -289,7 +289,8 @@ class Driver:
         ls_usepoints = self.GetSynchronizationType(self._stackStore["LS_tracekey.txt"].GetAllStacks())
         for x in ls_trace._entriesMap:
             if x in ls_stacks:
-                ls_stacks[x].AddUse(TimingEntry(ls_usepoints[ls_trace._entriesMap[x]]._stack, 0.0))
+                for y in ls_trace._entriesMap[x]:
+                    ls_stacks[x].AddUse(TimingEntry(ls_usepoints[y]._stack, 0.0))
             else:
                 print "Error: Could not find LS StackKey ID of " + str(x)
 

@@ -599,7 +599,13 @@ class Driver:
             else: 
                 print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(x),myType,str(self._syncStacks[x].GetCallCount()), str(self._syncStacks[x].GetNumNonUses()), str(self._syncStacks[x].GetTimeSaved()), self._transStacks[syncToDupData[x]].Analysis()["Duplicate Matches Transfer"])
 
-
+        for y in self._transStacks:
+            if y not in dupDataToSync:
+                stack = self._transStacks[y]._stack
+                ucall = stack.FindFirstUserCall()
+                ccall = stack.FindFirstLibCuda() 
+                analysis = self._transStacks[y].Analysis()            
+                print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(y),"Dup Data",str(analysis["Call Count"]), str(analysis["Duplicate Count"]), str(analysis["Estimated Savings"]), str(analysis["Duplicate Matches Transfer"]))
 
         # for x in stack_files:
         #     print str(self._stackStore[x])

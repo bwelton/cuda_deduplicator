@@ -588,6 +588,8 @@ class Driver:
         dupDataToSync = {}
 
         for x in self._syncStacks:
+            if x == 0:
+                continue
             for y in self._transStacks:
                 if y in dupDataToSync:
                     continue
@@ -598,6 +600,8 @@ class Driver:
 
 
         for x in self._syncStacks:
+            if x == 0:
+                continue
             myType = "Sync"
             if x in syncToDupData:
                 myType += " + DupData"

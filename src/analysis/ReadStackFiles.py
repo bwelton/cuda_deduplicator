@@ -6,6 +6,8 @@ class StackEntry:
         self._libname = libname
         self._offset = offset
         self._funcname = ""
+        self._lineNum = ""
+        self._fileName = ""
 
         ## remove the version number from the .so
         if self._libname.find(".so") != -1:
@@ -156,6 +158,13 @@ class Stack:
                         self._stack[index]._funcname = "Unknown"
                     else:
                         self._stack[index]._funcname = lines[0]
+                    lineMapSplit = a[3].split("|")
+                    if len(lineMapSplit) == 2:
+                        if lineMapSplit[1] != "":
+                            self._stack[index]._lineNum = lineMapSplit[1]
+                        if lineMapSplit[0] != "":
+                            self._stack[index]._fileName = lineMapSplit[0]
+                            
                     #print a[1]
                 else:
                     print "NON MATCH"

@@ -20,7 +20,8 @@ class FI_TraceBin:
 			if tmp[1] not in self._entriesMap:
 				self._entriesMap[tmp[1]] = []
 			self._entriesMap[tmp[1]].append([tmp[0],tmp[2]])
-			
+		for x in self._entries:
+			print x		
 	
 	def __str__(self):
 		ret = "LS_Trace file  (FI Trace Key ID, FI Stack Trace ID)\n"

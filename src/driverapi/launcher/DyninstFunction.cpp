@@ -115,6 +115,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		return;
 	}
 	_lsDone = true;
+	return;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);
 	assert(recordMemAccess.size() == 1);

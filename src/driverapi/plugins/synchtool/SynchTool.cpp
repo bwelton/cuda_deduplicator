@@ -164,10 +164,10 @@ void SynchTool::FreeMemoryAllocation(std::shared_ptr<Parameters> params) {
 	tmp.unifiedMemory = 1;
 	tmp.stream = 0;
 	_dataAccessManager->RemoveUnifiedMemoryRange(tmp);
-	std::stringstream ss;
-	ss << "[SynchTool] cudaMemoryFree at call - " << params.get()->GetName() << " with the following info\n" 
-	   << "\tCPU Starting Address = 0x" << std::hex << tmp.begin << std::dec;
-	std::cerr << ss.str() << std::endl; 
+	// std::stringstream ss;
+	// ss << "[SynchTool] cudaMemoryFree at call - " << params.get()->GetName() << " with the following info\n" 
+	//    << "\tCPU Starting Address = 0x" << std::hex << tmp.begin << std::dec;
+	// std::cerr << ss.str() << std::endl; 
 }
 
 void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {

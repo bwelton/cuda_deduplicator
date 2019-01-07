@@ -607,6 +607,7 @@ class Driver:
                     dupDataToSync[y] = x
                     break
 
+        stackPrinter = []
 
         for x in self._syncStacks:
             if x == 0:
@@ -618,9 +619,9 @@ class Driver:
             ucall = stack.FindFirstUserCall()
             ccall = stack.FindFirstLibCuda()
             if x not in syncToDupData:
-                print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(x),myType,str(self._syncStacks[x].GetCallCount()), str(self._syncStacks[x].GetNumNonUses()), str(self._syncStacks[x].GetTimeSaved()), "")
+                stackPrinter.append([float(self._syncStacks[x].GetTimeSaved()),'%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(x),myType,str(self._syncStacks[x].GetCallCount()), str(self._syncStacks[x].GetNumNonUses()), str(self._syncStacks[x].GetTimeSaved()), "")])
             else: 
-                print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(x),myType,str(self._syncStacks[x].GetCallCount()), str(self._syncStacks[x].GetNumNonUses()), str(self._syncStacks[x].GetTimeSaved()), self._transStacks[syncToDupData[x]].Analysis()["Duplicate Matches Transfer"])
+                stackPrinter.append([float(self._syncStacks[x].GetTimeSaved()), '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(x),myType,str(self._syncStacks[x].GetCallCount()), str(self._syncStacks[x].GetNumNonUses()), str(self._syncStacks[x].GetTimeSaved()), self._transStacks[syncToDupData[x]].Analysis()["Duplicate Matches Transfer"])])
 
         for y in self._transStacks:
             if y not in dupDataToSync:
@@ -630,7 +631,12 @@ class Driver:
                 analysis = self._transStacks[y].Analysis()            
                 if int(analysis["Duplicate Count"]) == 0:
                     continue
-                print '%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(y),"Dup Data",str(analysis["Call Count"]), str(analysis["Duplicate Count"]), str(analysis["Estimated Savings"]), str(analysis["Duplicate Matches Transfer"]))
+                stackPrinter.append([float(self._syncStacks[x].GetTimeSaved()),'%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s | %-10.10s | %-10.10s | %-10.10s | %-10.10s' % (ucall.GetFilename(),str(ucall._funcname),str(ccall._funcname),str(y),"Dup Data",str(analysis["Call Count"]), str(analysis["Duplicate Count"]), str(analysis["Estimated Savings"]), str(analysis["Duplicate Matches Transfer"]))])
+        stackPrinter.sort(key=lambda tup: tup[0])
+
+        for x in stackPrinter:
+            print x[1]
+            
 
         # for x in stack_files:
         #     print str(self._stackStore[x])

@@ -459,7 +459,7 @@ class Driver:
                     break
             if found != True:
                 print "ERROR Could not find LS stack - " + str(x) 
-                assert found == True
+                #assert found == True
 
 
 

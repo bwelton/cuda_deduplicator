@@ -52,7 +52,15 @@ class Stack:
 
     def GetID(self):
         return self._ident
-        
+    
+    def TrimStacks(self):
+        self.GetNameInfo()
+        for x in range(0,len(self._stack)):
+            if "INTER_" in self._stack[x]._funcname:
+                self._stack = self._stack[0:x]
+                break
+
+
     def TransGetFirstLibCuda(self):
         for x in self._stack:
             if "INTER_" in x._funcname:
@@ -95,7 +103,7 @@ class Stack:
         startPos = 0
         self.GetNameInfo()
         for x in range(0,len(self._stack)):
-            if "libcuda.so" in  self._stack[x]._libname or "libcudart.so" in  self._stack[x]._libname:
+            if "libcuda.so" in  self._stack[x]._libname or "libcudart.so" in  self._stack[x]._libname or "cuda-9.2.148/nvidia" in self._stack[x]._libname:
                 startPos = x
                 break
             else:

@@ -101,7 +101,7 @@ class Stack:
 
     def InNvidiaFPLibs(self):
         for x in self._stack:
-            if "libcublas" in x._stack[x]._libname or "libcusparse" in x._stack[x]._libname:
+            if "libcublas" in x._libname or "libcusparse" in x._libname:
                 return True
         return False
 

@@ -116,7 +116,11 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	}
 	_lsDone = true;
 	if (_func->getName().find("__device_stub__") != std::string::npos || 
-		_func->getName().find("thrust::") != std::string::npos)
+		_func->getName().find("thrust::") != std::string::npos ||
+		_func->getName().find("std::string::_Rep") != std::string::npos ||
+		_func->getName().find("cudaRegisterAll") != std::string::npos ||
+		_func->getName().find("YAML::") != std::string::npos ||
+		_func->getName().find("__tcf_0") != std::string::npos)
 		return;
 	//return;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();

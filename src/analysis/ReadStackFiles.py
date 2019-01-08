@@ -99,6 +99,12 @@ class Stack:
     def GetStack(self):
         return self._stack
 
+    def InNvidiaFPLibs(self):
+        for x in self._stack:
+            if "libcublas" in x._stack[x]._libname or "libcusparse" in x._stack[x]._libname:
+                return True
+        return False
+
     def FindFirstUserCall(self):
         startPos = 0
         self.GetNameInfo()

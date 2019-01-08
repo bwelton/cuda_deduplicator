@@ -616,6 +616,8 @@ class Driver:
             if x in syncToDupData:
                 myType += " + DupData"
             stack = self._stackStore["TF_timekey.txt"].GetStackAtID(int(x))
+            if stack.InNvidiaFPLibs():
+                continue
             ucall = stack.FindFirstUserCall()
             ccall = stack.FindFirstLibCuda()
             if x not in syncToDupData:
@@ -626,6 +628,8 @@ class Driver:
         for y in self._transStacks:
             if y not in dupDataToSync:
                 stack = self._transStacks[y]._stack
+                if stack.InNvidiaFPLibs():
+                    continue
                 ucall = stack.FindFirstUserCall()
                 ccall = stack.FindFirstLibCuda() 
                 analysis = self._transStacks[y].Analysis()            
@@ -636,7 +640,7 @@ class Driver:
 
         for x in stackPrinter:
             print x[1]
-            
+
 
         # for x in stack_files:
         #     print str(self._stackStore[x])

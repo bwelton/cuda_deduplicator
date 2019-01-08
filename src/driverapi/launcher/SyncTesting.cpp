@@ -192,9 +192,9 @@ void SyncTesting::Run() {
 	// 	_model.AddExecutionTime(time);
 	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	// }
-	CaptureDriverCalls();
-	TimeTransfers();
-	CaptureDuplicateTransfers();
+	//CaptureDriverCalls();
+	//TimeTransfers();
+	//CaptureDuplicateTransfers();
 	RunWithoutInstrimentation();
 	RunWithSyncStacktracing(syncTiming);
 	TimeSynchronizations(syncTiming);

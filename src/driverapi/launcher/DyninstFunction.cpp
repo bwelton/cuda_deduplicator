@@ -239,7 +239,7 @@ void DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 				excludedAddress.insert(i.first);
 			else if (tmp.find("(r1)") != std::string::npos || tmp.find("(r31)") != std::string::npos)
 				excludedAddress.insert(i.first);
-			if (tmp.find("lbz") != std::string::npos)
+			if (tmp.find("lbz") == std::string::npos)
 				excludedAddress.insert(i.first);
 			// if (tmp.find("lfs ") == std::string::npos)
 			// 	excludedAddress.insert(i.first);

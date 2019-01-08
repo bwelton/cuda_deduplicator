@@ -115,6 +115,8 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		return;
 	}
 	_lsDone = true;
+	if (_func->getName().find("__device_stub__") != std::string::npos)
+		return;
 	//return;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);
@@ -239,8 +241,8 @@ void DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 				excludedAddress.insert(i.first);
 			else if (tmp.find("(r1)") != std::string::npos || tmp.find("(r31)") != std::string::npos)
 				excludedAddress.insert(i.first);
-			if (tmp.find("lbz") == std::string::npos)
-				excludedAddress.insert(i.first);
+			// if (tmp.find("lbz") != std::string::npos)
+			// 	excludedAddress.insert(i.first);
 			// if (tmp.find("lfs ") == std::string::npos)
 			// 	excludedAddress.insert(i.first);
 			// if (i.first < 0x10002fe0 || i.first > 0x10002fec)

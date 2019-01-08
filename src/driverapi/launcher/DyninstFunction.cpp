@@ -115,7 +115,8 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		return;
 	}
 	_lsDone = true;
-	if (_func->getName().find("__device_stub__") != std::string::npos)
+	if (_func->getName().find("__device_stub__") != std::string::npos || 
+		_func->getName().find("thrust::") != std::string::npos)
 		return;
 	//return;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();

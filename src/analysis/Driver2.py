@@ -431,7 +431,7 @@ class ProcessTransCollisions:
             rec = readCollisionFile.DecodeRecord()
             if rec == None:
                 break
-            if ret[0] == 0:
+            if rec[0] == 0:
                 continue
             prevHash = 0
             if rec[2] == 1:

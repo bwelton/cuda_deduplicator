@@ -1,5 +1,7 @@
-from Driver2 import JSStack, JSStackEntry
 import json
+import os
+from Driver2 import JSStack, JSStackEntry
+
 
 ## View 1: Top Level View
 #  cudaCall callCount %unnecessary estimated time savings
@@ -21,6 +23,5 @@ data = json.load(f)
 stacks = []
 for x in data:
 	stacks.append(JSStack(data=x))
-	
 
-
+print len(stacks)

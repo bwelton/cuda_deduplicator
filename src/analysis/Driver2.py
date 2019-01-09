@@ -168,9 +168,6 @@ class JSStack:
     def __init__(self, data = None):
         self._globalID = 0
         self._chopped = False
-        if data != None:
-            self.from_dict(data)
-            return
         self._stack = []
         self._ident = {"tf_id": 0, "ls_id" : 0, "dstime_id" : 0, "fi_id" : 0, "dt_id" : 0}
         self._count = 0
@@ -183,6 +180,52 @@ class JSStack:
         self._transferCount = 0
         self._transferCollisions = []
         self._overwrites = 0
+        if data != None:
+            self.from_dict(data)
+            return
+
+    def GetTotalTime(self):
+        if self._ttime > 0.0:
+            return self._ttime
+        if self._transTime > 0.0:
+            return self._transTime
+
+        print "Error, we have a stack without any sort of time associated with it!"
+        print "Error at global id: " + str(self._globalID)
+        return None
+
+    def GetCount(self):
+        if self._count > 0:
+            return self._count
+        if self._transferCount > 0:
+            return self._transferCount
+         print "Error, we have a stack without any sort of count associated with it!"
+        print "Error at global id: " + str(self._globalID)
+        return None           
+
+    def GetUnnecessaryCount(self):
+        tranferCount = self._count - self._syncUses
+        ddCount = self._transferCount - len(self._transferCollisions) - self._overwrites
+        if tranferCount > ddCount:
+            return tranferCount
+        return ddCount
+    def GetEstimatedSavings(self):
+        fiAvg = 0.0
+        avgTime = 0.0
+        if self._count > 0
+            avgTime = float(self._ttime) / float(self._count)
+        syncSavings = self._ttime - (avgTime * float(self._syncUses))
+        
+        avgTrans = 0.0
+        if self._transferCount > 0:
+            avgTrans = float(self._transTime) / float(self._transferCount)
+        transSavings = avgTrans * (len(self._transferCollisions) + self._overwrites)
+
+        if syncSavings > transSavings:
+            return syncSavings
+        return transSavings
+
+
 
     def AddTransferCollision(self, otherGlobalId, overwrite):
         if otherGlobalId != 0:
@@ -307,18 +350,18 @@ class JSStack:
     def from_dict(self, data):
         for x in self._ident:
             self._ident[x] = data[x]
-        self._globalID = ret["GlobalID"]
+        self._globalID = data["GlobalID"]
         self._count = data["count"] 
         self._ttime = data["total_time"] 
         self._syncUses = data["Sync Uses"] 
         self._useDelay = data["Use Delay"] 
         self._duplicates = data["Duplicates"]
         self._fiCount = data["FICount"]
-        self._transferCount = ret["Transfer Count"]
-        self._transTime = ret["Transfer Time"]
-        self._transferCollisions = ret["TransferCollisions"]
-        self._overwrites = ret["TransferOverwrites"]
-        for x in ret["Stack"]:
+        self._transferCount = data["Transfer Count"]
+        self._transTime = data["Transfer Time"]
+        self._transferCollisions = data["TransferCollisions"]
+        self._overwrites = data["TransferOverwrites"]
+        for x in data["Stack"]:
             self._stack.append(JSStackEntry(x))
 
 

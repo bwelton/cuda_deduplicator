@@ -595,10 +595,8 @@ class StackContainer:
 
 
 
-
-
-
-n = StackContainer()
-n.ReadStackFiles({"tf_id": "TF_timekey.txt", "ls_id" : "LS_stackkey.txt", "dstime_id" : "DSTIME_stacks.bin", "fi_id" : "FI_stackkey.txt", "dt_id" : "DT_stacks.bin"})
+if __name__ == "__main__":
+    n = StackContainer()
+    n.ReadStackFiles({"tf_id": "TF_timekey.txt", "ls_id" : "LS_stackkey.txt", "dstime_id" : "DSTIME_stacks.bin", "fi_id" : "FI_stackkey.txt", "dt_id" : "DT_stacks.bin"})
 
 

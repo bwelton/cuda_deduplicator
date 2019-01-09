@@ -4,6 +4,8 @@ import os
 import subprocess
 import os.path
 from TF_trace import TF_Trace
+from LS_TraceBin import LS_TraceBin
+from FI_TraceBin import FI_TraceBin
 
 cachedMD5 = {}
 stackPoints = {}
@@ -173,6 +175,7 @@ class JSStack:
         self._ttime = 0.0
         self._syncUses = 0
         self._useDelay = 0.0
+        self._fiCount = 0
         self._duplicates = 0
 
     def GetLineInfo(self):
@@ -182,6 +185,16 @@ class JSStack:
     def AddTotalTime(self, time):
         self._count += 1
         self._ttime += time
+
+    def AddSyncUses(self, count):
+        self._syncUses += count
+
+    def AddFirstUse(self, uses):
+        for x in range(1, len(uses)):
+            if uses[x][0] > 0:
+                self._useDelay = self._useDelay + (uses[x][1] - uses[x-1][1])
+                self._fiCount += 1
+
 
 
     def GetStackCompairtors(self):
@@ -263,6 +276,7 @@ class JSStack:
         ret["Sync Uses"] = int(self._syncUses)
         ret["Use Delay"] = float(self._useDelay)
         ret["Duplicates"] = int(self._duplicates)
+        ret["FICount"] = int(self._fiCount)
         ret["Stack"] = [x.to_dict() for x in self._stack]
         return ret
 
@@ -273,7 +287,8 @@ class JSStack:
         self._ttime = data["total_time"] 
         self._syncUses = data["Sync Uses"] 
         self._useDelay = data["Use Delay"] 
-        self._duplicates = data["Duplicates"] 
+        self._duplicates = data["Duplicates"]
+        self._fiCount = data["FICount"]
         for x in ret["Stack"]:
             self._stack.append(JSStackEntry(x))
 
@@ -290,7 +305,6 @@ def BuildMap(stacks, key_id):
 class ProcessTimeFile:
     def __init__(self, final):
         self._final = final
-
 
     def Process(self):
         m = BuildMap(self._final, "tf_id")
@@ -309,6 +323,37 @@ class ProcessTimeFile:
             else:
                 self._final[m[x[2]]].AddTotalTime(float(x[4]))
         return self._final
+
+class ProcessLSTrace:
+    def __init__(self, final):
+        self._final = final
+
+    def Process(self):
+        m = BuildMap(self._final, "ls_id")
+        ls_trace = LS_TraceBin( "LS_trace.bin")
+        ls_trace.DecodeFile()
+        for x in ls_trace._entriesMap:
+            if int(x) not in m and int(x) != 0:
+                print "Error: Could not find ls id of - " + str(x)
+            else if int(x) != 0:
+                self._final[m[x]].AddSyncUses(len(ls_trace._entriesMap[x]))
+        return self._final
+
+
+class ProcessFITrace:
+    def __init__(self, final):
+        self._final = final
+
+    def Process(self):
+        m = BuildMap(self._final, "fi_id")
+        fi_tracebin = FI_TraceBin("FI_trace.bin")
+        fi_tracebin.DecodeFile()
+        for x in fi_tracebin._entriesMap:
+            if int(x) not in m and int(x) != 0:
+                print "Warn: Could not find fi id of - " + str(x)
+            else if int(x) != 0:
+                self._final[m[x]].AddFirstUse(fi_tracebin._entriesMap[x])
+        return self._final    
 
 
 
@@ -438,6 +483,9 @@ class StackContainer:
         proc = ProcessTimeFile(final)
         final = proc.Process()
 
+        proc = ProcessLSTrace(final)
+        final = proc.Process()
+        
         self.DumpStack(final, "combined_stacks")
 
 

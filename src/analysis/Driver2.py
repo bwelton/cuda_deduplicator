@@ -3,6 +3,7 @@ import json
 import os
 import subprocess
 import os.path
+import struct
 from TF_trace import TF_Trace
 from LS_TraceBin import LS_TraceBin
 from FI_TraceBin import FI_TraceBin
@@ -165,6 +166,7 @@ class JSStackEntry:
 
 class JSStack:
     def __init__(self, data = None):
+        self._globalID = 0
         self._chopped = False
         if data != None:
             self.from_dict(data)
@@ -177,6 +179,17 @@ class JSStack:
         self._useDelay = 0.0
         self._fiCount = 0
         self._duplicates = 0
+        self._transTime = 0.0
+        self._transferCount = 0
+        self._transferCollisions = []
+        self._overwrites = 0
+
+    def AddTransferCollision(self, otherGlobalId, overwrite):
+        if otherGlobalId != 0:
+            self._transferCollisions.append(otherGlobalId)
+        else:
+            if overwrite == 1:
+                self._overwrites += 1
 
     def GetLineInfo(self):
         for x in self._stack:
@@ -188,6 +201,10 @@ class JSStack:
 
     def AddSyncUses(self, count):
         self._syncUses += count
+
+    def AddDataTransfer(self, time):
+        self._transTime += time
+        self._transferCount += 1
 
     def AddFirstUse(self, uses):
         for x in range(1, len(uses)):
@@ -271,24 +288,36 @@ class JSStack:
 
     def to_dict(self):
         ret = dict(self._ident)
+        ret["GlobalID"] = self._globalID
         ret["count"] = self._count
         ret["total_time"] = float(self._ttime)
         ret["Sync Uses"] = int(self._syncUses)
         ret["Use Delay"] = float(self._useDelay)
         ret["Duplicates"] = int(self._duplicates)
         ret["FICount"] = int(self._fiCount)
+        ret["Transfer Time"] = float(self._transTime)
+        ret["Transfer Count"] = int(self._transferCount)
         ret["Stack"] = [x.to_dict() for x in self._stack]
+        ret["TransferCollisions"] = self._transferCollisions 
+        ret["TransferOverwrites"] = self._overwrites
         return ret
 
+    def GetGlobalId(self):
+        return self._globalID
     def from_dict(self, data):
         for x in self._ident:
             self._ident[x] = data[x]
+        self._globalID = ret["GlobalID"]
         self._count = data["count"] 
         self._ttime = data["total_time"] 
         self._syncUses = data["Sync Uses"] 
         self._useDelay = data["Use Delay"] 
         self._duplicates = data["Duplicates"]
         self._fiCount = data["FICount"]
+        self._transferCount = ret["Transfer Count"]
+        self._transTime = ret["Transfer Time"]
+        self._transferCollisions = ret["TransferCollisions"]
+        self._overwrites = ret["TransferOverwrites"]
         for x in ret["Stack"]:
             self._stack.append(JSStackEntry(x))
 
@@ -335,7 +364,7 @@ class ProcessLSTrace:
         for x in ls_trace._entriesMap:
             if int(x) not in m and int(x) != 0:
                 print "Error: Could not find ls id of - " + str(x)
-            else if int(x) != 0:
+            elif int(x) != 0:
                 self._final[m[x]].AddSyncUses(len(ls_trace._entriesMap[x]))
         return self._final
 
@@ -351,10 +380,75 @@ class ProcessFITrace:
         for x in fi_tracebin._entriesMap:
             if int(x) not in m and int(x) != 0:
                 print "Warn: Could not find fi id of - " + str(x)
-            else if int(x) != 0:
+            elif int(x) != 0:
                 self._final[m[x]].AddFirstUse(fi_tracebin._entriesMap[x])
         return self._final    
 
+class ProcessDSTime:
+    def __init__(self, final):
+        self._final = final
+
+    def Process(self):
+        m = BuildMap(self._final, "dstime_id")
+        transferTime = TF_Trace("DTOTIME_trace.bin")
+        transferTime.DecodeFile()
+        for x in transferTime._records:
+            assert x[0] == 2
+            stackId = int(x[2])
+            time = float(x[3])
+            if stackId not in m and stackId != 0:
+                print "Error could not find dstiming stack with id of - " + str(stackId)
+            elif stackId != 0:
+                self._final[m[stackId]].AddDataTransfer(time)
+        return self._final
+
+class ReadTransferCollisions:
+    def __init__(self, filename):
+        self._filename = filename
+        self._pos = 0
+        try:
+            f = open(self._filename,"rb")
+            self._data = f.read()
+            f.close()
+        except:
+            self._data = ""
+
+
+    def DecodeRecord(self):
+        if self._pos >= len(self._data):
+            return None
+        tmp = struct.unpack_from("QQQQ", self._data, offset=self._pos)
+        self._pos += (8*4)
+        return list(tmp)
+
+class ProcessTransCollisions:
+    def __init__(self, final):
+        self._final = final
+    def Process(self):
+        m = BuildMap(self._final, "dt_id")
+        readCollisionFile = ReadTransferCollisions( "DT_collisions.txt")
+        while 1:
+            rec = readCollisionFile.DecodeRecord()
+            if rec == None:
+                break
+            if ret[0] == 0:
+                continue
+            prevHash = 0
+            if rec[2] == 1:
+                prevHash = int(rec[3])
+            if rec[1] == 0 and rec[2] == 0:
+                continue
+            if prevHash != 0:
+                if prevHash not in m:
+                    print "Could not find previous hash id of - " + str(prevHash)
+                    prevHash = 999999999
+                else:
+                    prevHash = self._final[m[prevHash]].GetGlobalId()
+            if int(rec[0]) not in m:
+                print "Could not find transfer with dt_id of - " + str(rec[0])
+            else:
+                self._final[m[int(rec[0])]].AddTransferCollision(prevHash, rec[1])
+        return self._final
 
 
 class StackContainer:
@@ -476,16 +570,27 @@ class StackContainer:
                 assert x.GetID("tf_id") == 0
                 final.append(x)
         GetLineInfo()
-
+        gloId = 1
         for x in final:
             x.GetLineInfo()
+            x._globalID = gloId
+            gloId += 1
+
         self.DumpStack(final, "combined_stacks")
         proc = ProcessTimeFile(final)
         final = proc.Process()
 
         proc = ProcessLSTrace(final)
         final = proc.Process()
-        
+
+        proc = ProcessFITrace(final)
+        final = proc.Process()
+
+        proc = ProcessDSTime(final)
+        final = proc.Process()
+
+        proc = ProcessTransCollisions(final)
+        final = proc.Process()
         self.DumpStack(final, "combined_stacks")
 
 

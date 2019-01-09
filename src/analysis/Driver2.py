@@ -199,7 +199,7 @@ class JSStack:
             return self._count
         if self._transferCount > 0:
             return self._transferCount
-         print "Error, we have a stack without any sort of count associated with it!"
+        print "Error, we have a stack without any sort of count associated with it!"
         print "Error at global id: " + str(self._globalID)
         return None           
 
@@ -212,7 +212,7 @@ class JSStack:
     def GetEstimatedSavings(self):
         fiAvg = 0.0
         avgTime = 0.0
-        if self._count > 0
+        if self._count > 0:
             avgTime = float(self._ttime) / float(self._count)
         syncSavings = self._ttime - (avgTime * float(self._syncUses))
         
@@ -329,6 +329,9 @@ class JSStack:
         return self.CompareFIToLS(other)
 
 
+    def GetStacks(self):
+        return self._stack
+        
     def to_dict(self):
         ret = dict(self._ident)
         ret["GlobalID"] = self._globalID

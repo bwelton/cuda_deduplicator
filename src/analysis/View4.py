@@ -1,7 +1,8 @@
 import json
 import os
 from Driver2 import JSStack, JSStackEntry
-
+import sys
+DEPTH = int(sys.argv[1])
 
 class Aggregator:
 	def __init__(self, stackEntry, cudaCall):
@@ -47,9 +48,34 @@ def GetFirstUserCall(stack):
 	tmp = stack.GetStacks()
 	for x in range(0, len(tmp)):
 		if tmp[x].GetFunctionName() in cudaCalls:
-			return [tmp[x].GetFunctionName(),tmp[x-1]]
+			return [tmp[x].GetFunctionName(),x-1]
 	return None
 
+def GetCustomID(stack, startPos):
+	global DEPTH
+	tmp = stack.GetStacks()	
+	count = 0
+	ident = ""
+	for x in range(startPos, 0, -1):
+		ident += tmp[x].GetComparitor() + ":"
+		count += 1
+		if count >= DEPTH:
+			break
+	return ident[:-1]
+
+def GetLineInfo(stack, startPos):
+	global DEPTH
+	ret = []
+	tmp = stack.GetStacks()	
+	count = 0
+	ident = ""
+	for x in range(startPos, 0, -1):
+		ret.append(tmp[x].to_dict()["funcname"])
+		count += 1
+		if count >= DEPTH:
+			break
+	# print ret
+	return list(reversed(ret))
 
 indiPoints = {}
 
@@ -59,33 +85,39 @@ for x in stacks:
 	#print userCall
 	if userCall == None:
 		continue
-	h = userCall[1].GetComparitor()
+	h = GetCustomID(x, userCall[1])
 	if h not in indiPoints:
-		indiPoints[h] = Aggregator(userCall[1], userCall[0])
+		indiPoints[h] = Aggregator(GetLineInfo(x, userCall[1]), userCall[0])
 	indiPoints[h].AddStack(x)
 
 
 
-print "%-80.80s | %-10.10s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % ("File Name", "Line Number", 
+print "%-80.80s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % ("Function", 
 	"Cuda Call", "Call Count", "Unnecessary Calls", "Total Time", "Time Saved")
 print ""
 
 tmpStore = []
 for x in indiPoints:
 	usage = indiPoints[x].GetUsageInfo()
-	stackInfo = usage["StackEntry"].to_dict()
+	#stackInfo = usage["StackEntry"].to_dict()
 	idList = ""
 	for y in indiPoints[x]._stacks:
 		idList += str(y.GetGlobalId()) + " "
-	tmp = stackInfo["filename"].split("/")
-	if len(tmp) > 0:
-		stackInfo["filename"] = tmp[-1]
-	tmpStore.append([usage["TimeSaved"],"%-80.80s | %-10.10s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %s" % (stackInfo["filename"],
-		str(stackInfo["linenum"]),usage["CudaCall"],str(usage["CallCount"]),str(usage["UnnecessaryCalls"]), str(usage["TotalTime"]), str(usage["TimeSaved"]), idList)])
-
+	printList = []
+	for y in usage["StackEntry"]:
+		# print y
+		tmp = ("%-80.80s" % y)
+		if len(printList) > 0:
+			printList.append((" " * len(printList)) + tmp[:-len(printList)])
+		else:
+			printList.append(y)
+	# print printList
+	tmpStore.append([usage["TimeSaved"],"%-80.80s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %s" % (printList[0],usage["CudaCall"],str(usage["CallCount"]),str(usage["UnnecessaryCalls"]), str(usage["TotalTime"]), str(usage["TimeSaved"]), idList)])
+	for x in range(1, len(printList)):
+		tmpStore[-1][-1] += "\n" + "%-80.80s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %s" %(printList[x],"","","","","","")
 
 tmpStore.sort(key=lambda x: x[0])
 
 for x in tmpStore:
 	print x[1]
-
+	print "-" * 80*20*20*20*20*20

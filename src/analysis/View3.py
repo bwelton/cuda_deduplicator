@@ -59,7 +59,7 @@ for x in stacks:
 	#print userCall
 	if userCall == None:
 		continue
-	h = userCall[1].GetComparitor()
+	h = x.GetGlobalId()
 	if h not in indiPoints:
 		indiPoints[h] = Aggregator(userCall[1], userCall[0])
 	indiPoints[h].AddStack(x)

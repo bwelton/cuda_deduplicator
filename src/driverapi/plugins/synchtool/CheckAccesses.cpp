@@ -46,6 +46,7 @@ void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
 
 }
 void CheckAccesses::SyncCalled() {
+	_reset = true;
 	if (_reset == true) {
 		#ifdef DEBUG_CHECK
 		std::cerr << "[CheckAccesses::SyncCalled] Resetting Range" << std::endl;

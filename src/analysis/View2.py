@@ -54,7 +54,9 @@ def GetFirstUserCall(stack):
 indiPoints = {}
 
 for x in stacks:
+	#print x
 	userCall = GetFirstUserCall(x)
+	#print userCall
 	if userCall == None:
 		continue
 	h = userCall[1].GetComparitor()
@@ -64,7 +66,7 @@ for x in stacks:
 
 
 
-print "%-20.20s | %-10.10s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % ("File Name", "Line Number", 
+print "%-80.80s | %-10.10s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % ("File Name", "Line Number", 
 	"Cuda Call", "Call Count", "Unnecessary Calls", "Total Time", "Time Saved")
 print ""
 
@@ -72,7 +74,15 @@ tmpStore = []
 for x in indiPoints:
 	usage = indiPoints[x].GetUsageInfo()
 	stackInfo = usage["StackEntry"].to_dict()
-	tmpStore.append([usage["TimeSaved"],"%-20.20s | %-10.10s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % (stackInfo["filename"],
+	tmp = stackInfo["filename"].split("/")
+	if len(tmp) > 0:
+		stackInfo["filename"] = tmp[-1]
+	tmpStore.append([usage["TimeSaved"],"%-80.80s | %-10.10s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % (stackInfo["filename"],
 		str(stackInfo["linenum"]),usage["CudaCall"],str(usage["CallCount"]),str(usage["UnnecessaryCalls"]), str(usage["TotalTime"]), str(usage["TimeSaved"]))])
-	
+
+
+tmpStore.sort(key=lambda x: x[0])
+
+for x in tmpStore:
+	print x[1]
 

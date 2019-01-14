@@ -373,7 +373,7 @@ def BuildMap(stacks, key_id):
     ret = {}
     for x in range(0, len(stacks)):
         if stacks[x].GetID(key_id) != 0:
-            print stacks[x].GetID(key_id)
+            #print stacks[x].GetID(key_id)
             assert stacks[x].GetID(key_id) not in ret
             ret[stacks[x].GetID(key_id)] = x
     return ret

@@ -66,8 +66,8 @@ for x in stacks:
 
 
 
-print "%-80.80s | %-10.10s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % ("File Name", "Line Number", 
-	"Cuda Call", "Call Count", "Unnecessary Calls", "Total Time", "Time Saved")
+print "%-60.60s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-4.4s" % ("File Name", 
+	"Cuda Call", "Call Count", "Unnecessary Calls", "Total Time", "Time Saved", "ID")
 print ""
 
 tmpStore = []
@@ -80,8 +80,8 @@ for x in indiPoints:
 	tmp = stackInfo["filename"].split("/")
 	if len(tmp) > 0:
 		stackInfo["filename"] = tmp[-1]
-	tmpStore.append([usage["TimeSaved"],"%-80.80s | %-10.10s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %s" % (stackInfo["filename"],
-		str(stackInfo["linenum"]),usage["CudaCall"],str(usage["CallCount"]),str(usage["UnnecessaryCalls"]), str(usage["TotalTime"]), str(usage["TimeSaved"]), idList)])
+	tmpStore.append([usage["TimeSaved"],"%-60.60s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-4.4s" % (stackInfo["funcname"],
+		usage["CudaCall"],str(usage["CallCount"]),str(usage["UnnecessaryCalls"]), str(usage["TotalTime"]), str(usage["TimeSaved"]), idList)])
 
 
 tmpStore.sort(key=lambda x: x[0])
@@ -89,3 +89,5 @@ tmpStore.sort(key=lambda x: x[0])
 for x in tmpStore:
 	print x[1]
 
+print "%-60.60s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-4.4s" % ("File Name", 
+	"Cuda Call", "Call Count", "Unnecessary Calls", "Total Time", "Time Saved", "ID")

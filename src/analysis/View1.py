@@ -18,7 +18,7 @@ class Aggregator:
 		self._timeRecoverable += time
 
 	def PrintSummary(self, name):
-		print "%-20.20s | %-20.20s | %-20.20s | %-10.10s | %-20.20s" % (name, str(self._count), str(self._time), str(self._unnecessary), str(self._timeRecoverable))
+		return [self._timeRecoverable,"%-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % (name, str(self._count), str(self._time), str(self._unnecessary), str(self._timeRecoverable))]
 
 
 ## View 1: Top Level View
@@ -58,7 +58,17 @@ for x in stacks:
 	cudaCalls[callId].AddCall(x.GetCount(), x.GetTotalTime())
 	cudaCalls[callId].Unnecessary(x.GetUnnecessaryCount(), x.GetEstimatedSavings())
 
+outList = []
+
 for x in cudaCalls:
 	if cudaCalls[x] != None:
-		cudaCalls[x].PrintSummary(x)
+		outList.append(cudaCalls[x].PrintSummary(x))
+
+outList.sort(key=lambda x: x[0])
+
+
+print "%-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % ("Function", "Call Count", "Time (s)", "Unnecessary Calls", "Time Recoverable")
+for x in outList:
+	print x[1]
+
 

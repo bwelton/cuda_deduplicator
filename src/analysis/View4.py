@@ -120,4 +120,4 @@ tmpStore.sort(key=lambda x: x[0])
 
 for x in tmpStore:
 	print x[1]
-	print "-" * 80*20*20*20*20*20
+	print "-" * (80+20+20+20+20+20)

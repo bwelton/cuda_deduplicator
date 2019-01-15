@@ -64,7 +64,7 @@ struct StoreDelta {
 	};
 
 	void NextSyncStart(std::chrono::high_resolution_clock::time_point & timePoint) {
-		if (id > 0) {
+		if (_prevId > 0) {
 			std::chrono::duration<double> diff = timePoint - _start;
 			Write(_prevId, diff.count());
 		}

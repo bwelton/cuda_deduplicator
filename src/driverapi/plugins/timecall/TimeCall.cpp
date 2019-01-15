@@ -42,13 +42,44 @@ PluginReturn TimeCall::Precall(std::shared_ptr<Parameters> params) {
 PluginReturn TimeCall::Postcall(std::shared_ptr<Parameters> params) {
 	return NO_ACTION;
 }
+struct StoreDelta {
+	std::chrono::high_resolution_clock::time_point _start;
+	uint64_t _prevId;
+	FILE * __outFile;
+	StoreDelta() {
+		_prevId = 0;
+		_start = std::chrono::high_resolution_clock::time_point();
+		__outFile = fopen("TF_delta.bin","w");
+	};
+	~StoreDelta() {
+		fclose(__outFile);
+	};
+	void Write(uint64_t id, double time) {
+		fwrite(&id, 1, sizeof(uint64_t), __outFile);
+		fwrite(&time, 1, sizeof(double), __outFile);
+	};
+	void AddEndingTime(uint64_t id, std::chrono::high_resolution_clock::time_point & timePoint) {
+		_prevId = id;
+		_start = timePoint;
+	};
 
+	void NextSyncStart(std::chrono::high_resolution_clock::time_point & timePoint) {
+		if (id > 0) {
+			std::chrono::duration<double> diff = timePoint - _start;
+			Write(_prevId, diff.count());
+		}
+	};
+};
 thread_local std::shared_ptr<TFReaderWriter> TIMECALL_outFile;
 thread_local std::shared_ptr<StackKeyWriter> TIMECALL_keyFile;
+thread_local std::shared_ptr<StoreDelta> TIMECALL_deltafile;
 thread_local TF_Record TIMECALL_tfRecord;
 thread_local std::vector<std::pair<uint64_t, std::chrono::high_resolution_clock::time_point> > TIMECALL_TimingPairs; 
 thread_local std::vector<uint64_t> TIMECALL_TimingCount; 
 thread_local int alreadyStarted = 0;
+
+
+
 //std::shared_ptr<LogInfo> _timingLog;
 
 extern "C"{
@@ -64,6 +95,9 @@ void INIT_TIMERS() {
 	if (TIMECALL_keyFile.get() == NULL) {
 		std::cerr << "Starting TIMECALL_keyfile" << std::endl;
 		TIMECALL_keyFile.reset(new StackKeyWriter(fopen("TF_timekey.bin","w")));
+	}
+	if (TIMECALL_deltafile.get() == NULL) {
+		TIMECALL_deltafile.reset(new StoreDelta());
 	}
 	std::cerr << "Done Init" << std::endl;
 }
@@ -110,8 +144,8 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		std::cerr << "Could not find starting time for call " << id << std::endl;
 		assert(found != -1);
 	}
+	
 	std::chrono::duration<double> diff = endTimer-TIMECALL_TimingPairs[found].second;
-
 
 	if (TIMECALL_TimingCount[TIMECALL_TimingCount.size() - 1] > 0) {
 		std::vector<StackPoint> points;
@@ -125,7 +159,9 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		} else {
 			uint64_t pos = TIMECALL_keyFile->InsertStack(points);
 			TIMECALL_tfRecord.s.stackId = pos;
-		}	
+		}
+		TIMECALL_deltafile->NextSyncStart(TIMECALL_TimingPairs[found].second);
+		TIMECALL_deltafile->AddEndingTime(TIMECALL_tfRecord.s.stackId,endTimer);
 		TIMECALL_outFile->Write(TIMECALL_tfRecord);
 	}
 	TIMECALL_TimingPairs.erase(TIMECALL_TimingPairs.begin() + found);

@@ -178,11 +178,20 @@ class JSStack:
         self._duplicates = 0
         self._transTime = 0.0
         self._transferCount = 0
+        self._deltaTime = 0.0
+        self._deltaCount = 0
+
         self._transferCollisions = []
         self._overwrites = 0
         if data != None:
             self.from_dict(data)
             return
+
+
+    def AddDelta(self, delta): 
+        self._deltaCount += 1
+        self._deltaTime += delta
+
 
     def GetTotalTime(self):
         if self._ttime > 0.0:
@@ -205,16 +214,26 @@ class JSStack:
 
     def GetUnnecessaryCount(self):
         tranferCount = self._count - self._syncUses
-        ddCount = self._transferCount - len(self._transferCollisions) - self._overwrites
+        ddCount = len(self._transferCollisions) - self._overwrites
         if tranferCount > ddCount:
             return tranferCount
         return ddCount
     def GetEstimatedSavings(self):
+        deltaAvg = 0.0
+        if self._deltaCount > 0:
+            deltaAvg = float(self._deltaTime /  float(self._deltaCount))
+
+
         fiAvg = 0.0
         avgTime = 0.0
         if self._count > 0:
             avgTime = float(self._ttime) / float(self._count)
-        syncSavings = self._ttime - (avgTime * float(self._syncUses))
+
+        syncSavings = 0.0
+        if avgTime < deltaAvg or self._deltaCount == 0:
+            syncSavings = self._ttime - (avgTime * float(self._syncUses))
+        else:
+            syncSavings = (deltaAvg * self._count) - (deltaAvg * float(self._syncUses))
         
         avgTrans = 0.0
         if self._transferCount > 0:
@@ -346,6 +365,8 @@ class JSStack:
         ret["Stack"] = [x.to_dict() for x in self._stack]
         ret["TransferCollisions"] = self._transferCollisions 
         ret["TransferOverwrites"] = self._overwrites
+        ret["DeltaTime"] = self._deltaTime
+        ret["DeltaCount"] = self._deltaCount
         return ret
 
     def GetGlobalId(self):
@@ -364,6 +385,8 @@ class JSStack:
         self._transTime = data["Transfer Time"]
         self._transferCollisions = data["TransferCollisions"]
         self._overwrites = data["TransferOverwrites"]
+        self._deltaTime  = data["DeltaTime"]
+        self._deltaCount = data["DeltaCount"]
         for x in data["Stack"]:
             self._stack.append(JSStackEntry(x))
 
@@ -637,6 +660,20 @@ class StackContainer:
 
         proc = ProcessTransCollisions(final)
         final = proc.Process()
+        curMap = BuildMap(final, "tf_id")
+        tfDelta = None
+        with open("TF_delta.bin", "rb") as file:
+            tfDelta = file.read()
+            deltalength = int(int(len(tfDelta) / 8) / 2)
+            for x in range(0, deltalength):
+                deltatmp = struct.unpack_from("Qd", tfDelta, offset=(x*8*2))
+                if int(deltatmp[0]) in curMap:
+                    final[curMap[deltatmp[0]]].AddDelta(deltatmp[1])
+                else:
+                    print "Could not find TF with ID of - " + str(deltatmp[0])
+
+
+
         self.DumpStack(final, "combined_stacks")
 
 

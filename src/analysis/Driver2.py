@@ -180,6 +180,8 @@ class JSStack:
         self._transferCount = 0
         self._deltaTime = 0.0
         self._deltaCount = 0
+        self._syncOnlyTime = 0.0
+        self._syncOnlyCount = 0
 
         self._transferCollisions = []
         self._overwrites = 0
@@ -199,6 +201,10 @@ class JSStack:
 
     def GetDelta(self):
         return [self._deltaCount, self._deltaTime]
+
+    def AddSyncTime(self, time):
+        self._syncOnlyTime += time
+        self._syncOnlyCount += 1
 
     def AddDelta(self, delta): 
         self._deltaCount += 1
@@ -379,6 +385,8 @@ class JSStack:
         ret["TransferOverwrites"] = self._overwrites
         ret["DeltaTime"] = self._deltaTime
         ret["DeltaCount"] = self._deltaCount
+        ret["SyncOnlyTime"] = self._syncOnlyTime
+        ret["SyncOnlyCount"] = self._syncOnlyCount
         return ret
 
     def GetGlobalId(self):
@@ -399,6 +407,8 @@ class JSStack:
         self._overwrites = data["TransferOverwrites"]
         self._deltaTime  = data["DeltaTime"]
         self._deltaCount = data["DeltaCount"]
+        self._syncOnlyTime = data["SyncOnlyTime"]
+        self._syncOnlyCount = data["SyncOnlyCount"]
         for x in data["Stack"]:
             self._stack.append(JSStackEntry(x))
 
@@ -674,6 +684,8 @@ class StackContainer:
         final = proc.Process()
         curMap = BuildMap(final, "tf_id")
         tfDelta = None
+
+        ## Read Delta
         with open("TF_delta.bin", "rb") as file:
             tfDelta = file.read()
             deltalength = int(int(len(tfDelta) / 8) / 2)
@@ -684,8 +696,16 @@ class StackContainer:
                 else:
                     print "Could not find TF with ID of - " + str(deltatmp[0])
 
-
-
+        ## Read Sync Time 
+        with open("TF_delta.bin", "rb") as file:
+            tfDelta = file.read()
+            deltalength = int(int(len(tfDelta) / 8) / 2)
+            for x in range(0, deltalength):
+                deltatmp = struct.unpack_from("Qd", tfDelta, offset=(x*8*2))
+                if int(deltatmp[0]) in curMap:
+                    final[curMap[deltatmp[0]]].AddSyncTime(deltatmp[1])
+                else:
+                    print "Could not find TF with ID of - " + str(deltatmp[0])
         self.DumpStack(final, "combined_stacks")
 
 

@@ -93,7 +93,7 @@ struct TrackSyncTime {
 		((double *)_data)[1] = diff.count();
 	};
 
-	inline void write(uint64_t id) {
+	inline void Write(uint64_t id) {
 		((uint64_t*)_data)[0] = id;
 		fwrite(&_data, sizeof(double), 2, _outFile);
 		_data[0] = 0.0;
@@ -151,7 +151,6 @@ void TIMER_SIMPLE_COUNT_ADD_ONE() {
 	else {
 		// Write out an unknown timing entry
 		
-
 		TIMECALL_outFile->Write(TIMECALL_tfRecord);
 
 	// 	//TIMECALL_outFile->Write(0,0,0,0.0);
@@ -211,6 +210,7 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		TIMECALL_deltafile->NextSyncStart(TIMECALL_TimingPairs[found].second);
 		TIMECALL_deltafile->AddEndingTime(TIMECALL_tfRecord.s.stackId,endTimer);
 		TIMECALL_outFile->Write(TIMECALL_tfRecord);
+		TIMECALL_trackSyncTime->Write(pos);
 	}
 	TIMECALL_TimingPairs.erase(TIMECALL_TimingPairs.begin() + found);
 	//std::cerr << "END TIMER_SIMPLE_TIME_STOP" << std::endl;

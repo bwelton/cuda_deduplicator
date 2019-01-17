@@ -188,6 +188,18 @@ class JSStack:
             return
 
 
+    def GetSyncUses(self):
+        return self._syncUses
+
+    def GetCount(self):
+        return self._count
+
+    def GetTotalTime(self):
+        return self._ttime
+
+    def GetDelta(self):
+        return [self._deltaCount, self._deltaTime]
+
     def AddDelta(self, delta): 
         self._deltaCount += 1
         self._deltaTime += delta

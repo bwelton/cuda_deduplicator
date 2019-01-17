@@ -70,8 +70,44 @@ struct StoreDelta {
 		}
 	};
 };
+
+struct TrackSyncTime {
+	FILE * _outFile;
+	std::chrono::high_resolution_clock::time_point _start;
+	double _data[2];
+	TrackSyncTime() {
+		assert(sizeof(uint64_t) == sizeof(double));
+		_outFile = fopen("TF_synctime.bin","w");
+	};
+
+	~TrackSyncTime() {
+		fclose(_outFile);
+	};
+
+	inline void Start() {
+		_start = std::chrono::high_resolution_clock::now();
+	};
+
+	inline void End() {
+		std::chrono::duration<double> diff = std::chrono::high_resolution_clock::now() - _start;
+		((double *)_data)[1] = diff.count();
+	};
+
+	inline void write(uint64_t id) {
+		((uint64_t*)_data)[0] = id;
+		fwrite(&_data, sizeof(double), 2, _outFile);
+		_data[0] = 0.0;
+		_data[1] = 0.0;
+	};
+
+
+};
+
+
 thread_local std::shared_ptr<TFReaderWriter> TIMECALL_outFile;
 thread_local std::shared_ptr<StackKeyWriter> TIMECALL_keyFile;
+thread_local std::shared_ptr<TrackSyncTime>  TIMECALL_trackSyncTime;
+
 thread_local std::shared_ptr<StoreDelta> TIMECALL_deltafile;
 thread_local TF_Record TIMECALL_tfRecord;
 thread_local std::vector<std::pair<uint64_t, std::chrono::high_resolution_clock::time_point> > TIMECALL_TimingPairs; 
@@ -99,14 +135,19 @@ void INIT_TIMERS() {
 	if (TIMECALL_deltafile.get() == NULL) {
 		TIMECALL_deltafile.reset(new StoreDelta());
 	}
+	if (TIMECALL_trackSyncTime.get() == NULL) {
+		TIMECALL_trackSyncTime.reset(new TrackSyncTime());
+	}
 	std::cerr << "Done Init" << std::endl;
 }
 
 void TIMER_SIMPLE_COUNT_ADD_ONE() {
 	//std::cerr << "Start TIMER_SIMPLE_COUNT_ADD_ONE" << std::endl;
 	INIT_TIMERS();
-	if (TIMECALL_TimingCount.size() > 0)
+	if (TIMECALL_TimingCount.size() > 0){
+		TIMECALL_trackSyncTime->Start();
 		TIMECALL_TimingCount[TIMECALL_TimingCount.size() - 1] += 1;
+	}
 	else {
 		// Write out an unknown timing entry
 		
@@ -118,6 +159,13 @@ void TIMER_SIMPLE_COUNT_ADD_ONE() {
 	 	std::cout << "Timing error, trying to add one to an unknown synchronization!" << std::endl;
 	}
 	//std::cerr << "End TIMER_SIMPLE_COUNT_ADD_ONE" << std::endl;
+}
+
+void TIMER_END_SYNCHRONIZATION_CALL() {
+	INIT_TIMERS();
+	if (TIMECALL_TimingCount.size() > 0){
+		TIMECALL_trackSyncTime->End();
+	}
 }
 
 void TIMER_SIMPLE_TIME_START(uint64_t id) {

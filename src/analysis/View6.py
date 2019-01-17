@@ -6,7 +6,7 @@ from Driver2 import JSStack, JSStackEntry, BuildMap
 class NeighborStack:
 	def __init__(self, stack):
 		self._stack = stack
-		self._data = {"Count": stack.GetCount(), "Remaining": stack.GetCount() - stack.GetSyncUses(), "UseAverage" :0.0,
+		self._data = {"Count": stack.GetCount(), "Remaining": 0 if stack.GetSyncUses() > 0 else stack.GetCount(), "UseAverage" :0.0,
 					  "SyncUses" : stack.GetSyncUses(), "DeltaAvg" : 0.0}
 		if  stack.GetCount() > 0:
 			self._data["UseAverage"] = float(stack.GetTotalTime() / stack.GetCount())

@@ -29,6 +29,15 @@ void TimerInstrimentation::InsertTimers(StackRecMap & recs) {
 	BPatch_funcCallExpr recordFuncEntry(*(addFunction[0]), testArgs);
 	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*funcEntry) != NULL);
 
+
+	addFunction.clear();
+	addFunction = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("TIMER_END_SYNCHRONIZATION_CALL"), _libtime); 
+	assert(addFunction.size() == 1);
+
+	std::vector<BPatch_point*> * funcExit = cudaSyncFunctions[0]->findPoint(BPatch_locExit);
+	BPatch_funcCallExpr recordFuncExit(*(addFunction[0]), testArgs);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncExit,*funcExit) != NULL);
+
 	uint64_t curId = 1;
 	for (auto i : instFuncs) {
 		InsertTimer(i, curId);

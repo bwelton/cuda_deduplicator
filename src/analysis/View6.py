@@ -6,8 +6,12 @@ from Driver2 import JSStack, JSStackEntry, BuildMap
 class NeighborStack:
 	def __init__(self, stack):
 		self._stack = stack
-		self._data = {"Count": stack.GetCount(), "Remaining": stack.GetCount() - stack.GetSyncUses(), "UseAverage" : float(stack.GetTotalTime() / stack.GetCount()),
-					  "SyncUses" : stack.GetSyncUses(), "DeltaAvg" : float(stack.GetDelta()[1] / stack.GetDelta()[0])}
+		self._data = {"Count": stack.GetCount(), "Remaining": stack.GetCount() - stack.GetSyncUses(), "UseAverage" :0.0,
+					  "SyncUses" : stack.GetSyncUses(), "DeltaAvg" : 0.0}
+		if  stack.GetCount() > 0:
+			self._data["UseAverage"] = float(stack.GetTotalTime() / stack.GetCount())
+		if stack.GetDelta()[0] > 0:
+			self._data["DeltaAvg"] = float(stack.GetDelta()[1] / stack.GetDelta()[0])
 
 	def GetUse(self):
 		ret = {}
@@ -30,6 +34,10 @@ class StackEntry:
 		self._allStacks = {}
 		self._neighbors = {}
 
+	def GetTimeSavable(self):
+		if (self._deltaTimes > self._totalTime):
+			return self._totalTime
+		return self._deltaTimes
 
 	def BuildRelationships(self, idMap, idList, tf_records):
 		myId = self._stack.GetID("tf_id")
@@ -116,6 +124,15 @@ stackEntries = []
 for x in stacks:
 	stackEntries.append(StackEntry(x))
 	stackEntries[-1].BuildRelationships(idMap,stacks,tf_trace._records)
+
+for x in stackEntries:
+	print "Time saveable in global id - " + str(x._stack.GetGlobalId()) + " equals " +  str(x.GetTimeSavable())
+	neighborIDs = []
+	for y in x._neighbors:
+		neighborIDs.append(x._neighbors[y]._stack.GetGlobalId())
+
+	print "With the following neighbors:"
+	print neighborIDs
 
 	#print x
 	# userCall = GetFirstUserCall(x)

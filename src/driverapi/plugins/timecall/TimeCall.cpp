@@ -77,7 +77,7 @@ struct TrackSyncTime {
 	double _data[2];
 	TrackSyncTime() {
 		assert(sizeof(uint64_t) == sizeof(double));
-		_outFile = fopen("TF_synctime.bin","w");
+		_outFile = fopen("TF_synctime.bin","wb");
 	};
 
 	~TrackSyncTime() {
@@ -210,7 +210,7 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		TIMECALL_deltafile->NextSyncStart(TIMECALL_TimingPairs[found].second);
 		TIMECALL_deltafile->AddEndingTime(TIMECALL_tfRecord.s.stackId,endTimer);
 		TIMECALL_outFile->Write(TIMECALL_tfRecord);
-		TIMECALL_trackSyncTime->Write(TIMECALL_tfRecord.s.stackId );
+		TIMECALL_trackSyncTime->Write(TIMECALL_tfRecord.s.stackId);
 	}
 	TIMECALL_TimingPairs.erase(TIMECALL_TimingPairs.begin() + found);
 	//std::cerr << "END TIMER_SIMPLE_TIME_STOP" << std::endl;

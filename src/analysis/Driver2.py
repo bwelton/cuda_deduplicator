@@ -697,7 +697,7 @@ class StackContainer:
                     print "Could not find TF with ID of - " + str(deltatmp[0])
 
         ## Read Sync Time 
-        with open("TF_delta.bin", "rb") as file:
+        with open("TF_synctime.bin", "rb") as file:
             tfDelta = file.read()
             deltalength = int(int(len(tfDelta) / 8) / 2)
             for x in range(0, deltalength):

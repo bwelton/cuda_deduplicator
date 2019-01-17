@@ -208,7 +208,7 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 			TIMECALL_tfRecord.s.stackId = pos;
 		}
 		TIMECALL_deltafile->NextSyncStart(TIMECALL_TimingPairs[found].second);
-		TIMECALL_deltafile->AddEndingTime(TIMECALL_tfRecord.s.stackId,endTimer);
+		TIMECALL_deltafile->AddEndingTime(TIMECALL_tfRecord.s.dynId,endTimer);
 		TIMECALL_outFile->Write(TIMECALL_tfRecord);
 		TIMECALL_trackSyncTime->Write(TIMECALL_tfRecord.s.stackId);
 	}

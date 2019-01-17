@@ -211,6 +211,7 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 		TIMECALL_deltafile->AddEndingTime(TIMECALL_tfRecord.s.stackId,endTimer);
 		TIMECALL_outFile->Write(TIMECALL_tfRecord);
 		TIMECALL_trackSyncTime->Write(TIMECALL_tfRecord.s.stackId);
+		TIMECALL_TimingCount.pop_back();
 	}
 	TIMECALL_TimingPairs.erase(TIMECALL_TimingPairs.begin() + found);
 	//std::cerr << "END TIMER_SIMPLE_TIME_STOP" << std::endl;

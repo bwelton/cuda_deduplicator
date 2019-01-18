@@ -301,6 +301,8 @@ class JSStack:
         return ret
 
     def AddEntry(self, libname, liboffset):
+        if "cudadedup-develop-" in libname:
+            return
         self._stack.append(JSStackEntry(data=None,libname=libname, liboffset=int(liboffset), pos=len(self._stack)))
 
     def SetID(self, idName, value):

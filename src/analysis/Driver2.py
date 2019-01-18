@@ -301,8 +301,8 @@ class JSStack:
         return ret
 
     def AddEntry(self, libname, liboffset):
-        if "cudadedup-develop-" in libname:
-            return
+        # if "cudadedup-develop-" in libname:
+        #     return
         self._stack.append(JSStackEntry(data=None,libname=libname, liboffset=int(liboffset), pos=len(self._stack)))
 
     def SetID(self, idName, value):
@@ -321,6 +321,13 @@ class JSStack:
 
         self._stack = tmp
 
+
+    def DropTimerEntries(self):
+        for x in range(0,len(self._stack)):
+            if "plugins/libTimeCall.so" in self._stack[x].GetLibName():
+                self._stack = self._stack[0:x]
+                self._chopped = True
+                return        
     def ChopStack(self):
         ## remove diogenes crap from these stacks
         if self._chopped == True:
@@ -420,7 +427,7 @@ def BuildMap(stacks, key_id):
     ret = {}
     for x in range(0, len(stacks)):
         if stacks[x].GetID(key_id) != 0:
-            #print stacks[x].GetID(key_id)
+            #print stacks[x].to_dict()
             assert stacks[x].GetID(key_id) not in ret
             ret[stacks[x].GetID(key_id)] = x
     return ret
@@ -612,7 +619,8 @@ class StackContainer:
         # for x in stacks["ls_id"]:
         #     print "ls_id: " + str(x.GetID("fi_id"))
         #     print x.GetStackCompairtors()            
-        
+        for x in stacks["tf_id"]:
+            x.DropTimerEntries()
         for x in stacks["fi_id"]:
             found = False
             for y in stacks["tf_id"]:
@@ -621,6 +629,7 @@ class StackContainer:
                     assert y.GetID("ls_id") == 0 and y.GetID("fi_id") == 0
                     y.SetID("ls_id", x.GetID("ls_id"))
                     y.SetID("fi_id", x.GetID("fi_id"))
+                    print y.GetID("tf_id")
                     break
             if found == False:
                 print "Could not find an associated FI stack for FI ID - " + str(x.GetID("fi_id")) + "," + str(x.GetID("ls_id"))
@@ -641,9 +650,11 @@ class StackContainer:
                 discards.append(x)
 
         idsCopied = {}
-
+        tfMap = {}
         for x in stacks["tf_id"]:
             found = False
+            if x.GetID("tf_id") == 0:
+                continue
             for y in stacks["dstime_id"]:
                 if x.CompareTFToDT(y):
                     found = True
@@ -652,14 +663,20 @@ class StackContainer:
                     y.SetID("ls_id", x.GetID("ls_id"))
                     y.SetID("fi_id", x.GetID("fi_id"))                    
                     y.SetID("tf_id", x.GetID("tf_id"))
+
                     final.append(y)
                     break
             if found == False:
                 print "Could not find tf_id in transfer log (synchronization only) " + str(x.GetID("tf_id")) 
+                if x.GetID("tf_id") == 2:
+                    print x.to_dict()
+                    print "IN FALSE"
                 final.append(x)
 
+        self.DumpStack(final, "combined_stacks")      
         for x in stacks["dstime_id"]:
             if x.GetID("dstime_id") not in idsCopied:
+                print "No synchronization for - " + str(x.GetID("dstime_id"))
                 assert x.GetID("tf_id") == 0
                 final.append(x)
         GetLineInfo()
@@ -669,7 +686,7 @@ class StackContainer:
             x._globalID = gloId
             gloId += 1
 
-        self.DumpStack(final, "combined_stacks")
+ 
         proc = ProcessTimeFile(final)
         final = proc.Process()
 

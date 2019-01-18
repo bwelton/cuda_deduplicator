@@ -3,6 +3,11 @@ import os
 from TF_trace import TF_Trace
 from Driver2 import JSStack, JSStackEntry, BuildMap
 
+
+
+
+
+
 class NeighborStack:
 	def __init__(self, stack):
 		self._stack = stack
@@ -116,6 +121,42 @@ def GetFirstUserCall(stack):
 			return [tmp[x].GetFunctionName(),tmp[x-1]]
 	return None
 
+
+def GetRawFunctionName(funcName):
+	pos = funcName.find("(")
+	pos2 = funcName.find("<")
+	if pos == -1:
+		return funcName
+	if pos2 < pos:
+		return funcName.split("<")[0]
+	return funcName
+
+def GetLineInfo(stack, startPos, depth):
+	ret = []
+	tmp = stack.GetStacks()	
+	count = 0
+	ident = ""
+	for x in range(startPos, 0, -1):
+		ret.append(GetRawFunctionName(tmp[x].to_dict()["funcname"]))
+		count += 1
+		if count >= DEPTH:
+			break
+	# print ret
+	return list(reversed(ret))
+
+def ReturnIndentedStack(stack, depth):
+	ret = GetLineInfo(stack, GetFirstUserCall(stack)[1], depth)
+	printList = []
+	for y in ret:
+		# print y
+		tmp = ("%-60.60s" % y)
+		if len(printList) > 0:
+			printList.append((" " * len(printList)*2) + tmp[:-len(printList)*2])
+		else:
+			printList.append(y)
+	return printList
+	
+
 tf_trace = TF_Trace("TF_trace.bin")
 tf_trace.DecodeFile()
 indiPoints = {}
@@ -128,7 +169,7 @@ for x in stacks:
 for x in stackEntries:
 	print "Time saveable in global id - " + str(x._stack.GetGlobalId()) + " equals " +  str(x.GetTimeSavable())
 	neighborIDs = []
-	for y in x._neighbors:
+	for y in x._neighbors: 
 		neighborIDs.append(x._neighbors[y]._stack.GetGlobalId())
 
 	print "With the following neighbors:"

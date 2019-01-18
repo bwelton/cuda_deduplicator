@@ -103,7 +103,7 @@ for x in indiPoints:
 	idList = ""
 	for y in indiPoints[x]._stacks:
 		idList += str(y.GetGlobalId()) + " "
-	idList = ""
+	#idList = ""
 	printList = []
 	for y in usage["StackEntry"]:
 		# print y

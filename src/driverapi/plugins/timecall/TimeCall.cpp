@@ -181,12 +181,14 @@ void TIMER_SIMPLE_TIME_STOP(uint64_t id) {
 	std::chrono::high_resolution_clock::time_point endTimer = std::chrono::high_resolution_clock::now();
 
 	int found = -1;
-	for (int i = TIMECALL_TimingPairs.size(); i >= 0; i = i - 1) {
+	for (int i = TIMECALL_TimingPairs.size() - 1; i >= 0; i = i - 1) {
 		if (TIMECALL_TimingPairs[i].first == id){
 			found = i;
 			break;
 		}
 	}
+	if (found != TIMECALL_TimingPairs.size() - 1)
+		std::cerr << "We are not the last one" << std::endl;
 	if (found == -1) {
 		std::cerr << "Could not find starting time for call " << id << std::endl;
 		assert(found != -1);

@@ -196,7 +196,7 @@ class JSStack:
     def GetCount(self):
         return self._count
 
-    def GetTotalTime(self):
+    def GetTotalSyncTime(self):
         return self._ttime
 
     def GetDelta(self):
@@ -439,18 +439,20 @@ class ProcessTimeFile:
         m = BuildMap(self._final, "tf_id")
         tf_trace = TF_Trace("TF_trace.bin")
         tf_trace.DecodeFile()
+        f = open("TF_Trace.txt","w")
         for x in tf_trace._records:
             ## x[0] = format (2 = sync record)
             ## x[1] = dynId
             ## x[2] = stackId
             ## x[3] = count (only used on x86_64)
             ## x[4] = time (double)
-
+            f.write(str(x[1]) + "," + str(x[2]) + "," + str(x[3]) + "," + str(x[4]) + "\n")
             assert x[0] == 1
             if x[2] not in m:
                 print "Error: Missing entry for TF Stack ID - " + str(x[2])
             else:
                 self._final[m[x[2]]].AddTotalTime(float(x[4]))
+        f.close()
         return self._final
 
 class ProcessLSTrace:

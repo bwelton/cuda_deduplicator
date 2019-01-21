@@ -14,7 +14,7 @@ class NeighborStack:
 		self._data = {"Count": stack.GetCount(), "Remaining": 0 if stack.GetSyncUses() > 0 else stack.GetCount(), "UseAverage" :0.0,
 					  "SyncUses" : stack.GetSyncUses(), "DeltaAvg" : 0.0}
 		if  stack.GetCount() > 0:
-			self._data["UseAverage"] = float(stack.GetTotalTime() / stack.GetCount())
+			self._data["UseAverage"] = float(stack.GetTotalSyncTime() / stack.GetCount())
 		if stack.GetDelta()[0] > 0:
 			self._data["DeltaAvg"] = float(stack.GetDelta()[1] / stack.GetDelta()[0])
 
@@ -40,6 +40,8 @@ class StackEntry:
 		self._neighbors = {}
 
 	def GetTimeSavable(self):
+		print self._deltaTimes
+		print self._totalTime
 		if (self._deltaTimes > self._totalTime):
 			return self._totalTime
 		return self._deltaTimes

@@ -138,7 +138,7 @@ void INIT_TIMERS() {
 	if (TIMECALL_trackSyncTime.get() == NULL) {
 		TIMECALL_trackSyncTime.reset(new TrackSyncTime());
 	}
-	std::cerr << "Done Init" << std::endl;
+	//std::cerr << "Done Init" << std::endl;
 }
 
 void TIMER_SIMPLE_COUNT_ADD_ONE() {

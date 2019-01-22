@@ -4,6 +4,28 @@ from TF_trace import TF_Trace
 from Driver2 import JSStack, JSStackEntry, BuildMap
 
 
+cudaFunctions = os.path.join(os.path.dirname(os.path.realpath(__file__)),"cudaFunctions.txt")
+f = open(cudaFunctions, "r")
+data = f.readlines()
+f.close()
+
+def RemoveNewline(line):
+    return line.replace("\n","")
+
+cudaCalls = {}
+for x in data:
+	cudaCalls[RemoveNewline(x)] = None
+
+def GetFirstUserCall2(stack):
+	global cudaCalls
+	tmp = stack.GetStacks()
+	for x in range(0, len(tmp)): 
+		if tmp[x].GetFunctionName() in cudaCalls:
+			print tmp[x].GetFunctionName()
+			return [tmp[x-1].GetFunctionName(),tmp[x],tmp[x-1]]
+	return None
+
+
 
 
 
@@ -46,6 +68,51 @@ class StackEntry:
 			return self._totalTime
 		return self._deltaTimes
 
+
+
+	def GetPrintout(self):
+		transIssues = 0
+		syncIssues = 0
+		issuesMatrix = {}
+		callsSeen = {}
+		for x in self._neighbors:
+			issue = {"Sync": False, "Trans" : False}
+			if len(self._neighbors[x]._stack._transferCollisions) > 0 or self._neighbors[x]._stack._overwrites > 0:
+				issue["Trans"] = True
+				transIssues += 1
+			if self._neighbors[x]._stack._syncUses < self._neighbors[x]._stack._count:
+				syncIssues += 1
+				issue["Sync"] = True
+			issuesMatrix[x] = issue
+
+			call = GetFirstUserCall2(self._neighbors[x]._stack)
+			if call == None:
+				continue
+			# print call
+			if call[0] not in callsSeen:
+				callsSeen[call[0]] = []
+			callsSeen[call[0]].append([x,call])
+
+		ret = "=" * 80
+		ret += "\n= Time Recoverable: {0:2.3f}s ({1:2.2f}% of execution time) ".format(self.GetTimeSavable(), (self.GetTimeSavable() / 38.943) * 100.0) + " " * 25 + " ="
+		ret += "\n= Sync Issues: {0:3d}    Transfer Issues: {1:3d}".format(syncIssues, transIssues) + " " * 37 + "="
+		ret += "\n=" + "-" * 78 + "="
+		ret += "\n= {0:34s} | {1:4s} | {2:10s} | {3:11s} | {4:5s} ".format("Function Call", "Line", "Cuda Call", "Issue Type", "Count") + "="
+		for x in callsSeen:
+			ret += "\n= {0:34.34s} | {1:4.4s} | {2:10.10s} | {3:11.11s} | {4:5.5s} ".format(x, "---", "----------", "-----------", "----") + "="
+			for y in callsSeen[x]:
+				issueId = ""
+				if issuesMatrix[y[0]]["Sync"] == True:
+					issueId = "Sync"
+					if issuesMatrix[y[0]]["Trans"] == True:
+						issueId += "+Trans"
+				elif issuesMatrix[y[0]]["Trans"] == True:
+					issueId = "Trans"
+				ret += "\n= {0:34.34s} | {1:4d} | {2:10.10s} | {3:11.11s} | {4:5d} ".format("^^^", y[1][2].to_dict()["linenum"], y[1][1].GetFunctionName(), issueId, self._neighbors[y[0]]._stack.GetCount()) + "="
+		ret += "\n=" + "-" * 78 + "="
+
+
+		print ret 
 	def BuildRelationships(self, idMap, idList, tf_records):
 		myId = self._stack.GetID("tf_id")
 		if myId == 0 or myId == 1:
@@ -171,6 +238,7 @@ for x in stacks:
 for x in stackEntries:
 	print "Time saveable in global id - " + str(x._stack.GetGlobalId()) + " equals " +  str(x.GetTimeSavable())
 	neighborIDs = []
+	x.GetPrintout()
 	for y in x._neighbors: 
 		neighborIDs.append(x._neighbors[y]._stack.GetGlobalId())
 

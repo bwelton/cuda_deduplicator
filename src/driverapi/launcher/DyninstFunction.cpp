@@ -1,4 +1,5 @@
 #include "DyninstFunction.h"
+uint64_t DYNINST_FUNC_CCOUNT = 0;
 DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker, std::shared_ptr<BinaryLocationIDMap> bmap) : 
 		_proc(proc), _track(tracker), _func(func),  _bmap(bmap), _exitEntryDone(false), _lsDone(false) {
 	_obj = _func->getModule()->getObject();
@@ -116,11 +117,15 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	}
 	_lsDone = true;
 	if (_func->getName().find("__device_stub__") != std::string::npos || 
+		//_func->getName().find("thrust::") != std::string::npos ||
 		_func->getName().find("std::string::_Rep") != std::string::npos ||
 		_func->getName().find("cudaRegisterAll") != std::string::npos ||
 		_func->getName().find("YAML::") != std::string::npos ||
 		_func->getName().find("__tcf_0") != std::string::npos)
 		return;
+	if (_func->getName().find("thrust::") != std::string::npos && DYNINST_FUNC_CCOUNT > 50)
+		return;
+	DYNINST_FUNC_CCOUNT++;
 	//return;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);

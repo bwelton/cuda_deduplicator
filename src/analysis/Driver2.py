@@ -262,7 +262,31 @@ class JSStack:
             return syncSavings
         return transSavings
 
+    def GetEstimatedSavings2(self):
+        deltaAvg = 0.0
+        if self._deltaCount > 0:
+            deltaAvg = float(self._deltaTime /  float(self._deltaCount))
 
+
+        fiAvg = 0.0
+        avgTime = 0.0
+        if self._count > 0:
+            avgTime = float(self._syncOnlyTime) / float(self._count)
+
+        syncSavings = 0.0
+        if avgTime < deltaAvg or self._deltaCount == 0:
+            syncSavings = self._syncOnlyTime - (avgTime * float(self._syncUses))
+        else:
+            syncSavings = (deltaAvg * self._count) - (deltaAvg * float(self._syncUses))
+        
+        avgTrans = 0.0
+        if self._transferCount > 0:
+            avgTrans = float(self._transTime) / float(self._transferCount)
+        transSavings = avgTrans * (len(self._transferCollisions) + self._overwrites)
+
+        if syncSavings > transSavings:
+            return syncSavings
+        return transSavings
 
     def AddTransferCollision(self, otherGlobalId, overwrite):
         if otherGlobalId != 0:

@@ -123,7 +123,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		_func->getName().find("YAML::") != std::string::npos ||
 		_func->getName().find("__tcf_0") != std::string::npos)
 		return;
-	if (_func->getName().find("thrust::") != std::string::npos && DYNINST_FUNC_CCOUNT > 50)
+	if (_func->getName().find("thrust::") != std::string::npos && DYNINST_FUNC_CCOUNT > 100)
 		return;
 	DYNINST_FUNC_CCOUNT++;
 	//return;

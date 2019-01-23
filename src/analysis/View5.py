@@ -19,7 +19,7 @@ class Aggregator:
 			ret["CallCount"] += x.GetCount()
 			ret["UnnecessaryCalls"] += x.GetUnnecessaryCount()
 			ret["TotalTime"] += x.GetTotalTime()
-			ret["TimeSaved"] += x.GetEstimatedSavings()
+			ret["TimeSaved"] += x.GetEstimatedSavings2()
 		return ret
 
 cudaFunctions = os.path.join(os.path.dirname(os.path.realpath(__file__)),"cudaFunctions.txt")

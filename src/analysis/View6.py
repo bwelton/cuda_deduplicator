@@ -92,7 +92,7 @@ class StackEntry:
 			if call[0] not in callsSeen:
 				callsSeen[call[0]] = []
 			callsSeen[call[0]].append([x,call])
-
+		callCount = 0
 		ret = "=" * 80
 		ret += "\n= Time Recoverable: {0:2.3f}s ({1:2.2f}% of execution time) ".format(self.GetTimeSavable(), (self.GetTimeSavable() / 38.943) * 100.0) + " " * 25 + " ="
 		ret += "\n= Sync Issues: {0:3d}    Transfer Issues: {1:3d}".format(syncIssues, transIssues) + " " * 37 + "="
@@ -101,6 +101,7 @@ class StackEntry:
 		for x in callsSeen:
 			ret += "\n= {0:34.34s} | {1:4.4s} | {2:10.10s} | {3:11.11s} | {4:5.5s} ".format(x, "---", "----------", "-----------", "----") + "="
 			for y in callsSeen[x]:
+				callCount += 1
 				issueId = ""
 				if issuesMatrix[y[0]]["Sync"] == True:
 					issueId = "Sync"
@@ -111,8 +112,10 @@ class StackEntry:
 				ret += "\n= {0:34.34s} | {1:4d} | {2:10.10s} | {3:11.11s} | {4:5d} ".format("^^^", y[1][2].to_dict()["linenum"], y[1][1].GetFunctionName(), issueId, self._neighbors[y[0]]._stack.GetCount()) + "="
 		ret += "\n=" + "-" * 78 + "="
 
-
-		print ret 
+		saveTime = 0.0
+		if self.GetTimeSavable() > 0 and callCount > 0:
+			saveTime = float(self.GetTimeSavable()) / float(callCount)
+		return [saveTime, ret]
 	def BuildRelationships(self, idMap, idList, tf_records):
 		myId = self._stack.GetID("tf_id")
 		if myId == 0 or myId == 1:
@@ -234,16 +237,18 @@ stackEntries = []
 for x in stacks:
 	stackEntries.append(StackEntry(x))
 	stackEntries[-1].BuildRelationships(idMap,stacks,tf_trace._records)
+timeSavableEntries = []
 
 for x in stackEntries:
 	print "Time saveable in global id - " + str(x._stack.GetGlobalId()) + " equals " +  str(x.GetTimeSavable())
 	neighborIDs = []
-	x.GetPrintout()
+	timeSavableEntries.append(x.GetPrintout())
 	for y in x._neighbors: 
 		neighborIDs.append(x._neighbors[y]._stack.GetGlobalId())
 
 	print "With the following neighbors:"
 	print neighborIDs
+
 
 	#print x
 	# userCall = GetFirstUserCall(x)
@@ -255,6 +260,12 @@ for x in stackEntries:
 	# 	indiPoints[h] = Aggregator(userCall[1], userCall[0])
 	# indiPoints[h].AddStack(x)
 
+timeSavableEntries.sort(key=lambda x: x[0])
+
+for x in timeSavableEntries:
+	if x[0] == 0:
+		continue
+	print x[1]
 
 
 # print "%-60.60s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-4.4s" % ("File Name", 

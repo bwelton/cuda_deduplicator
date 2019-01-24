@@ -78,6 +78,8 @@ void LoadStoreDriver::SyncCalled() {
 }
 
 void LoadStoreDriver::SignalSync() {
+	if (_firstWrite)
+		_writer.reset(new OutputWriter(_timefu));
 	_writer->WriteSequenceInfo(_storedStack,_access->GetNewDependents());
 	_access->SyncCalled();
 	_found = false;

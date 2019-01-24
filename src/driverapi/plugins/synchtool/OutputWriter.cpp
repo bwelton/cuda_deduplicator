@@ -29,7 +29,7 @@ void OutputWriter::RecordAccess(uint64_t id, std::vector<uint64_t> & currentStac
 }
 
 void OutputWriter::WriteSequenceInfo(std::vector<uint64_t> & currentStack, bool newDependents) {
-	if (timeType == true) 
+	if (_timeType == true) 
 		return;
 	uint64_t hash = HashStack(currentStack);	
 	if (_prevStacks.find(hash) == _prevStacks.end()) {

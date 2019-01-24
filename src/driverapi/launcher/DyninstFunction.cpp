@@ -123,9 +123,9 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		_func->getName().find("YAML::") != std::string::npos ||
 		_func->getName().find("__tcf_0") != std::string::npos)
 		return;
-//	if (_func->getName().find("thrust::") != std::string::npos && DYNINST_FUNC_CCOUNT > 150)
-//		return;
-//	DYNINST_FUNC_CCOUNT++;
+	if (_func->getName().find("thrust::") != std::string::npos && DYNINST_FUNC_CCOUNT > 200)
+		return;
+	DYNINST_FUNC_CCOUNT++;
 	//return;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);

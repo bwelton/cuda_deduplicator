@@ -259,7 +259,11 @@ class JSStack:
         transSavings = avgTrans * (len(self._transferCollisions) + self._overwrites)
 
         if syncSavings > transSavings:
+            if syncSavings > self._ttime:
+                return self._ttime
             return syncSavings
+        if transSavings > self._ttime:
+            return self._ttime
         return transSavings
 
     def GetEstimatedSavings2(self):
@@ -285,6 +289,8 @@ class JSStack:
         transSavings = avgTrans * (len(self._transferCollisions) + self._overwrites)
 
         if syncSavings > transSavings:
+            if syncSavings > self._ttime:
+                return self._ttime
             return syncSavings
         return transSavings
 
@@ -422,6 +428,15 @@ class JSStack:
         ret["SyncOnlyCount"] = self._syncOnlyCount
         return ret
 
+    def HasTransferIssues(self):
+        if len(self._transferCollisions) > 0 or self._duplicates > 0:
+            return True 
+        return False
+
+    def HasSynchronizationIssues(self):
+        if self._syncUses < self._count:
+            return True
+        return False
     def GetGlobalId(self):
         return self._globalID
     def from_dict(self, data):
@@ -484,7 +499,11 @@ class ProcessLSTrace:
         self._final = final
 
     def Process(self):
+        if os.path.isfile("LS_trace.bin") == False:
+            return self._final
+
         m = BuildMap(self._final, "ls_id")
+
         ls_trace = LS_TraceBin( "LS_trace.bin")
         ls_trace.DecodeFile()
         for x in ls_trace._entriesMap:
@@ -500,6 +519,8 @@ class ProcessFITrace:
         self._final = final
 
     def Process(self):
+        if os.path.isfile("FI_trace.bin") == False:
+            return self._final
         m = BuildMap(self._final, "fi_id")
         fi_tracebin = FI_TraceBin("FI_trace.bin")
         fi_tracebin.DecodeFile()
@@ -592,7 +613,7 @@ class StackContainer:
             data = f.readlines()
             f.close()
         except:
-            return None
+            return []
         ret = []
         for x in data:
             tmp = RemoveNewline(x).split("$")
@@ -684,6 +705,7 @@ class StackContainer:
             for y in stacks["dstime_id"]:
                 if x.CompareTFToDT(y):
                     found = True
+                    print "Found DSTime"
                     assert y.GetID("tf_id") == 0
                     idsCopied[y.GetID("dstime_id")] = True
                     y.SetID("ls_id", x.GetID("ls_id"))
@@ -722,6 +744,8 @@ class StackContainer:
         proc = ProcessFITrace(final)
         final = proc.Process()
 
+
+        print final
         proc = ProcessDSTime(final)
         final = proc.Process()
 
@@ -752,7 +776,6 @@ class StackContainer:
                 else:
                     print "Could not find TF with ID of - " + str(deltatmp[0])
         self.DumpStack(final, "combined_stacks")
-
 
 
 if __name__ == "__main__":

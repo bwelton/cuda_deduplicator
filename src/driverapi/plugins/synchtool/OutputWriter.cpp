@@ -1,9 +1,10 @@
 #include "OutputWriter.h"
 
-OutputWriter::OutputWriter(bool timeType) : _curPos(1), _timeType(timeType) {
+OutputWriter::OutputWriter(bool timeType) : _curPos(1), _timeType(timeType), _prevDependency(0) {
 	if (timeType == false) {
 		_accessFile.reset(new OutputFile(std::string("LS_trace.bin")));
 		_stackKeyFile.reset(new OutputFile(std::string("LS_stackkey.bin")));
+		_syncAccess.reset(new OutputFile(std::string("LS_syncaccess.bin")));
 	} else {
 		_firstUse.reset(new OutputFile(std::string("FI_stackkey.bin")));
 		_timingValues.reset(new OutputFile(std::string("FI_trace.bin")));
@@ -25,6 +26,24 @@ void OutputWriter::RecordAccess(uint64_t id, std::vector<uint64_t> & currentStac
 	} else {
 		_timingValues->Write(id, _prevStacks[hash], timeID);
 	}
+}
+
+void OutputWriter::WriteSequenceInfo(std::vector<uint64_t> & currentStack, bool newDependents) {
+	if (timeType == true) 
+		return;
+	uint64_t hash = HashStack(currentStack);	
+	if (_prevStacks.find(hash) == _prevStacks.end()) {
+		_stackKeyFile->Write(_curPos, currentStack);
+		_prevStacks[hash] = _curPos;
+		_curPos++;
+	}
+	if (newDependents) {
+		_prevDependency = _prevStacks[hash];
+		_syncAccess->WriteSequenceInfo(_prevDependency, 1, 0);
+	} else {
+		_syncAccess->WriteSequenceInfo(_prevStacks[hash], 0, _prevDependency);		
+	}
+
 }
 
 uint64_t OutputWriter::HashStack(std::vector<uint64_t> & currentStack) {

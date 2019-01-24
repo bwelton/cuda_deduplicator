@@ -22,6 +22,12 @@ struct OutputFile {
 		fwrite(&timeID, 1, sizeof(double), outFile);
 	}
 
+	void WriteSequenceInfo(uint64_t stackId, uint64_t newDependents, uint64_t dependency) {
+		fwrite(&stackId, 1, sizeof(uint64_t), outFile);
+		fwrite(&newDependents, 1, sizeof(uint64_t), outFile);
+		fwrite(&dependency, 1, sizeof(uint64_t), outFile);		
+	}
+
 	void Write(uint64_t stackId, std::vector<uint64_t> & currentStack) {
 		uint64_t size = sizeof(uint64_t) + currentStack.size() * sizeof(uint64_t);
 		fwrite(&size, 1, sizeof(uint64_t), outFile);
@@ -42,7 +48,9 @@ public:
 	OutputWriter(bool timeType = false);
 	void RecordAccess(uint64_t id, std::vector<uint64_t> & currentStack, double timeID = 0.0);
 	uint64_t HashStack(std::vector<uint64_t> & currentStack);
+	void WriteSequenceInfo(std::vector<uint64_t> & currentStack, bool newDependents);
 private:
+	uint64_t _prevDependency;
 	uint64_t _curPos;
 	bool _timeType;
 	std::map<uint64_t, uint64_t> _prevStacks;
@@ -50,6 +58,7 @@ private:
 	std::shared_ptr<OutputFile> _stackKeyFile;
 	std::shared_ptr<OutputFile> _firstUse;
 	std::shared_ptr<OutputFile> _timingValues;
+	std::shared_ptr<OutputFile> _syncAccess;
 };
 
 typedef std::shared_ptr<OutputWriter> OutputWriterPtr;

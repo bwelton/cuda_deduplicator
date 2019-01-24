@@ -15,6 +15,7 @@ public:
 	bool IsAddressRangeProtected(uint64_t addr, uint64_t count);
 	void AddUnifiedMemRange(MemoryRange & range);
 	void RemoveUnifiedMemoryRange(MemoryRange & range);
+	bool GetNewDependents();
 private:
 	std::vector<MemoryRange> _prev;
 	std::vector<MemoryRange> _current;	
@@ -23,6 +24,7 @@ private:
 	interval_set<uint64_t> _memoryRanges;
 	interval_set<uint64_t> _memoryRangesPrev;
 	bool _reset;
+	bool _newDependents;
 };
 
 typedef std::shared_ptr<CheckAccesses> CheckAccessesPtr;

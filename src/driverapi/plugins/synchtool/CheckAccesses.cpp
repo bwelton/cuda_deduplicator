@@ -1,16 +1,18 @@
 #include "CheckAccesses.h"
 #include <iostream>
 //#define DEBUG_CHECK 1
-CheckAccesses::CheckAccesses() : _doNotCheck(false), _reset(false) {};
+CheckAccesses::CheckAccesses() : _doNotCheck(false), _reset(false), _newDependents(false) {};
 
 void CheckAccesses::AddMemoryTransfer(MemoryRange & range) {
 	_doNotCheck = true;
 	_current.push_back(range);
+	_newDependents = true;
 	_doNotCheck = false;
 }
 
 void CheckAccesses::AddUnifiedMemRange(MemoryRange & range) {
 	_doNotCheck = true;
+	_newDependents = true;
 	_unifiedMemory.push_back(range);
 	_memoryRanges += interval<uint64_t>::closed(range.StartAddr(), range.EndAddr());
 	//std::cerr << "Range interval after adding range - " << interval<uint64_t>::closed(range.StartAddr(), range.EndAddr()) << std::endl;
@@ -45,8 +47,12 @@ void CheckAccesses::RemoveUnifiedMemoryRange(MemoryRange & range) {
 	_doNotCheck = false;
 
 }
+
+bool CheckAccesses::GetNewDependents() {
+	return _newDependents;
+}
 void CheckAccesses::SyncCalled() {
-	_reset = true;
+	//_reset = true;
 	if (_reset == true) {
 		#ifdef DEBUG_CHECK
 		std::cerr << "[CheckAccesses::SyncCalled] Resetting Range" << std::endl;
@@ -61,6 +67,7 @@ void CheckAccesses::SyncCalled() {
 		_prev.insert(_prev.end(), _current.begin(), _current.end());
 		_memoryRangesPrev = _memoryRanges;
 	}
+	_newDependents = false;
 	_current.clear();
 }
 

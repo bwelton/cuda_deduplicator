@@ -78,10 +78,12 @@ void LoadStoreDriver::SyncCalled() {
 }
 
 void LoadStoreDriver::SignalSync() {
+	_writer->WriteSequenceInfo(_storedStack,_access->GetNewDependents());
 	_access->SyncCalled();
 	_found = false;
 	_syncTriggered = true;
 	_stackAtSync = _storedStack;
+
 	// for(auto i : _stackAtSync){
 	// 	std::cerr << "[LoadStoreDriver::SignalSync] Stack record at sync: " << i << std::endl;
 	// }

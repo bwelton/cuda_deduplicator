@@ -20,6 +20,7 @@ class Aggregator:
 			ret["UnnecessaryCalls"] += x.GetUnnecessaryCount()
 			ret["TotalTime"] += x.GetTotalTime()
 			ret["TimeSaved"] += x.GetEstimatedSavings2()
+			ret["Removed"] += x.GetEstimatedSavings()
 		return ret
 
 cudaFunctions = os.path.join(os.path.dirname(os.path.realpath(__file__)),"cudaFunctions.txt")
@@ -105,8 +106,8 @@ for x in stacks:
 
 
 
-print "%-60.60s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % ("Stack Trace", 
-	"Cuda Call", "Call Count", "Unnecessary Calls", "Total Time", "Time Recoverable")
+print "%-30.30s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-10.10s" % ("Stack Trace", 
+	"Cuda Call", "Call Count", "Unnecessary Calls", "Total Time", "Time Recoverable", "If Removed")
 print ""
 
 tmpStore = []
@@ -126,14 +127,14 @@ for x in indiPoints:
 		else:
 			printList.append(y)
 	# print printList
-	tmpStore.append([usage["TimeSaved"],"%-60.60s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %s" % (printList[0],usage["CudaCall"],str(usage["CallCount"]),str(usage["UnnecessaryCalls"]), str(usage["TotalTime"]), str(usage["TimeSaved"]), idList)])
+	tmpStore.append([usage["TimeSaved"],"%-30.30s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-10.10s" % (printList[0],usage["CudaCall"],str(usage["CallCount"]),str(usage["UnnecessaryCalls"]), str(usage["TotalTime"]), str(usage["TimeSaved"]), str(usage["Removed"]))])
 	for x in range(1, len(printList)):
-		tmpStore[-1][-1] += "\n" + "%-60.60s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %s" %(printList[x],"","","","","","")
+		tmpStore[-1][-1] += "\n" + "%-30.30s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-10.10s" %(printList[x],"","","","","","")
 
 tmpStore.sort(key=lambda x: x[0])
 
 for x in tmpStore:
 	print x[1]
-	print "-" * (60+20+20+20+20+37)
-print "%-60.60s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s" % ("Stack Trace", 
-	"Cuda Call", "Call Count", "Unnecessary Calls", "Total Time", "Time Recoverable")
+	print "-" * (30+20+20+20+20+37+10)
+print "%-60.60s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-20.20s | %-10.10s" % ("Stack Trace", 
+	"Cuda Call", "Call Count", "Unnecessary Calls", "Total Time", "Time Recoverable", "If Removed")

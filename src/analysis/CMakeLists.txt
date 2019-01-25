@@ -9,6 +9,7 @@ install(FILES ${PROJECT_SOURCE_DIR}/src/analysis/Driver.py
 		${PROJECT_SOURCE_DIR}/src/analysis/View3.py
 		${PROJECT_SOURCE_DIR}/src/analysis/View4.py
 		${PROJECT_SOURCE_DIR}/src/analysis/View6.py
+		${PROJECT_SOURCE_DIR}/src/analysis/TemplateFolder.py
 		${PROJECT_SOURCE_DIR}/src/analysis/ReadStackFiles.py
 		${PROJECT_SOURCE_DIR}/src/analysis/CheckLSDecode.py
 		${PROJECT_SOURCE_DIR}/src/analysis/CompareOutputs.py

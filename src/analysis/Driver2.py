@@ -190,6 +190,35 @@ class JSStack:
             self.from_dict(data)
             return
 
+    def GetStackPos(self, spos):
+        if spos >= len(self._stack):
+            return None
+        return self._stack[spos]
+
+    def TruncateToCudaCall(self, cudaCalls):
+        endPos = -1
+        for x in range(0,len(self._stack)):
+            if self._stack[x].GetFunctionName() in cudaCalls:
+                endPos = x
+                break
+        if endPos == -1:
+            return
+        self._stack = self._stack[0:endPos]
+
+
+    def StripTemplate(self, spos):
+        if spos >= len(self._stack):
+            return None
+
+        funcName = self._stack[spos].GetFunctionName()
+
+        pos = funcName.find("(")
+        pos2 = funcName.find("<")
+        if pos == -1:
+            return funcName
+        if pos2 < pos:
+            return funcName.split("<")[0]
+        return funcName
 
     def GetDependency(self):
         return list(self._dependencies)
@@ -410,6 +439,9 @@ class JSStack:
 
     def CompareDStoDT(self, other):
         return self.CompareFIToLS(other)
+
+    def GetStackLen(self):
+        return len(self._stack)
 
 
     def GetStacks(self):

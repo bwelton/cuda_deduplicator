@@ -4,6 +4,7 @@ import os
 import subprocess
 import os.path
 import struct
+from sets import Set
 from TF_trace import TF_Trace
 from LS_TraceBin import LS_TraceBin
 from FI_TraceBin import FI_TraceBin
@@ -182,13 +183,19 @@ class JSStack:
         self._deltaCount = 0
         self._syncOnlyTime = 0.0
         self._syncOnlyCount = 0
-
+        self._dependencies = Set()
         self._transferCollisions = []
         self._overwrites = 0
         if data != None:
             self.from_dict(data)
             return
 
+
+    def GetDependency(self):
+        return list(self._dependencies)
+
+    def AddDependency(self,ident):
+        self._dependencies.add(ident)
 
     def GetSyncUses(self):
         return self._syncUses
@@ -426,6 +433,7 @@ class JSStack:
         ret["DeltaCount"] = self._deltaCount
         ret["SyncOnlyTime"] = self._syncOnlyTime
         ret["SyncOnlyCount"] = self._syncOnlyCount
+        ret["Dependencies"] = list(self._dependencies)
         return ret
 
     def HasTransferIssues(self):
@@ -457,6 +465,7 @@ class JSStack:
         self._deltaCount = data["DeltaCount"]
         self._syncOnlyTime = data["SyncOnlyTime"]
         self._syncOnlyCount = data["SyncOnlyCount"]
+        self._dependencies = Set(data["Dependencies"])
         for x in data["Stack"]:
             self._stack.append(JSStackEntry(x))
 
@@ -775,8 +784,36 @@ class StackContainer:
                     final[curMap[deltatmp[0]]].AddSyncTime(deltatmp[1])
                 else:
                     print "Could not find TF with ID of - " + str(deltatmp[0])
+
+        ## Read Timeline File
+        curMap = BuildMap(final, "ls_id")
+        with open("LS_syncaccess.bin", "rb") as file:
+            tfDelta = file.read()            
+            deltalength = int(int(len(tfDelta) / 8) / 3)
+            for x in range(0, deltalength):
+                deltatmp = struct.unpack_from("QQQ", tfDelta, offset=(x*8*3))
+                if deltatmp[0] in curMap:
+                    n = deltatmp[2]
+                    if n != 0 and n in curMap:
+                        n = curMap[n]
+                    else:
+                        n = 0
+                    if deltatmp[1] == 1:
+                        final[curMap[deltatmp[0]]].AddDependency(curMap[deltatmp[0]])
+                    else:
+                        if n == 0:
+                            print "Could not find global id for syncaccess - " + str(n)
+                        else:
+                            final[curMap[deltatmp[0]]].AddDependency(n)
+                else:
+                    print "Could not find global id for synch access at - " + str(deltatmp[0])
+                                
+                
         self.DumpStack(final, "combined_stacks")
 
+        
+
+        
 
 if __name__ == "__main__":
     n = StackContainer()

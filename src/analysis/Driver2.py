@@ -167,6 +167,7 @@ class JSStackEntry:
 
 class JSStack:
     def __init__(self, data = None):
+        self._cachedTime = None
         self._globalID = 0
         self._chopped = False
         self._stack = []
@@ -191,7 +192,7 @@ class JSStack:
             return
 
     def GetStackPos(self, spos):
-        if spos >= len(self._stack):
+        if spos >= len(self._stack) or spos < 0:
             return None
         return self._stack[spos]
 
@@ -199,15 +200,17 @@ class JSStack:
         endPos = -1
         for x in range(0,len(self._stack)):
             if self._stack[x].GetFunctionName() in cudaCalls:
-                endPos = x
+                endPos = x + 1
                 break
         if endPos == -1:
+            return
+        if len(self._stack) <= endPos:
             return
         self._stack = self._stack[0:endPos]
 
 
     def StripTemplate(self, spos):
-        if spos >= len(self._stack):
+        if spos >= len(self._stack) or spos < 0:
             return None
 
         funcName = self._stack[spos].GetFunctionName()
@@ -257,6 +260,10 @@ class JSStack:
         print "Error at global id: " + str(self._globalID)
         return None
 
+
+    def CheckIfDependsRequired(self):
+        return self.GetGlobalId() in self._dependencies
+
     def GetCount(self):
         if self._count > 0:
             return self._count
@@ -301,6 +308,66 @@ class JSStack:
         if transSavings > self._ttime:
             return self._ttime
         return transSavings
+
+    def TotalSavingsSinglePoint(self):
+        if self._cachedTime  != None:
+            return self._cachedTime
+        ret = {"Total" : 0.0 ,"CallCount": 0, "SyncRemoved" : 0.0 , "TransRemoved" : 0.0, "TransCount" : 0, "OpRemoved" : 0.0, "RequiredTrans" : 0}
+
+        deltaAvg = 0.0
+        if self._deltaCount > 0:
+            deltaAvg = float(self._deltaTime /  float(self._deltaCount))    
+
+        syncOnlyTime = 0.0
+        if self._syncOnlyTime > 0:
+            syncOnlyTime =  float(float(self._syncOnlyTime) / float(self._syncOnlyCount))
+
+        avgTime = 0.0
+        if self._count > 0:
+            avgTime = float(self._ttime) / float(self._count)       
+
+        opTime = avgTime - syncOnlyTime
+        if opTime < 0.0:
+            opTime = 0.0
+        syncSavings = 0.0
+
+        if syncOnlyTime < deltaAvg or self._deltaCount == 0:
+            if self.CheckIfDependsRequired():
+                syncSavings = self._syncOnlyTime - (syncOnlyTime * float(self._syncUses))
+                #syncSavings = 0.0
+            else:
+                syncSavings = self._syncOnlyTime
+        else:
+            if self.CheckIfDependsRequired():
+                syncSavings = (deltaAvg * self._count) - (deltaAvg * float(self._syncUses))
+            else:
+                syncSavings = (deltaAvg * self._count)
+
+        avgTrans = 0.0
+        if self._transferCount > 0:
+            avgTrans = float(opTime)
+        transSavings = avgTrans * (len(self._transferCollisions) + self._overwrites)
+
+        if syncSavings + transSavings > self._ttime:
+            ret["Total"] = self._ttime
+        else:
+            ret["Total"] = syncSavings + transSavings
+
+        ret["SyncRemoved"] = syncSavings
+        ret["CallCount"] = self._count
+        ret["TransRemoved"] = transSavings
+        ret["TransCount"] = (len(self._transferCollisions) + self._overwrites)
+        if self.CheckIfDependsRequired():
+            ret["OpRemoved"] = syncSavings + opTime * self._count
+        else:
+            ret["OpRemoved"] = syncSavings + opTime * (self._count - self._syncUses)
+
+        ret["RequiredTrans"] = self._transferCount - ret["TransCount"]
+        if ret["OpRemoved"] > self._ttime:
+            ret["OpRemoved"] = self._ttime
+
+        self._cachedTime  = ret
+        return ret
 
     def GetEstimatedSavings2(self):
         deltaAvg = 0.0

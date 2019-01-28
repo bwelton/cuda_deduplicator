@@ -110,7 +110,7 @@ class StackEntry:
 
 		saveTime = 0.0
 		if self.GetTimeSavable() > 0 and callCount > 0:
-			saveTime = float(self.GetTimeSavable()) / float(callCount)
+			saveTime = float(self.GetTimeSavable())
 		return [saveTime, ret]
 	def BuildRelationships(self, idMap, idList, tf_records):
 		myId = self._stack.GetID("tf_id")
@@ -236,6 +236,10 @@ for x in stacks:
 	stackEntries[-1].BuildRelationships(idMap,stacks,tf_trace._records)
 timeSavableEntries = []
 
+
+
+
+
 for x in stackEntries:
 	print "Time saveable in global id - " + str(x._stack.GetGlobalId()) + " equals " +  str(x.GetTimeSavable())
 	neighborIDs = []
@@ -258,6 +262,7 @@ for x in stackEntries:
 	# indiPoints[h].AddStack(x)
 
 timeSavableEntries.sort(key=lambda x: x[0])
+
 j = json.dumps(timeSavableEntries, indent=4)
 f = open("sequential_pproc.json", "wb")
 f.write(j)

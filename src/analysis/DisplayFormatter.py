@@ -42,7 +42,7 @@ class DisplayFormatter:
 
 	def GetRowEntry(self, ident, questions):
 		ret = [{},questions]
-		ret[1][0]["choices"] = [Separator("Time(secs) (% of execution time)")]
+		ret[1][0]["choices"] = [Separator("Time(s) (% of execution time)")]
 		alwaysDisplay = [Separator(), "Back/Previous", "Exit"]
 		assert ident in self._data
 		for x in self._data[ident]:
@@ -58,10 +58,11 @@ class DisplayFormatter:
 			ret = self.GetRowEntry(displayChain[-1], questions)
 			os.system('clear')
 			answers = prompt(ret[1], style=custom_style_2)
+			if "MyChoice" not in answers:
+				continue
 			if answers["MyChoice"] == "Exit":
 				print("Exiting Now - Bye")
 				return
-
 			if answers["MyChoice"] == "Back/Previous":
 				if len(displayChain) > 1:
 					displayChain.pop()

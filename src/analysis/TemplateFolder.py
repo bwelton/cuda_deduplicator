@@ -237,13 +237,13 @@ class TemplateFolder:
             rows = [TextRow([x[1]],0)]
             myID = FOLD_ID.GetID()
             FOLD_ID.AddElement(myID, rows)
-            beforeSort.append([x[0], TextRow(["{0:3.3f}({1:2.2f}%) Synchronization Sequence".format(x[0],x[1]/TOTAL_TIME)], 0, myID)])
+            beforeSort.append([x[0], TextRow(["{0:3.3f}({1:2.2f}%) Synchronization Sequence".format(x[0],(x[0]/TOTAL_TIME) * 100)], 0, myID)])
         beforeSort.sort(key=lambda x: x[0],reverse=True)
 
         rows = []
         for x in beforeSort:
             rows.append(x[1])
-            
+
         FOLD_ID.AddElement(presentationID, rows)
         FOLD_ID.SetStart(presentationID)
         for x in postProc:

@@ -1,5 +1,6 @@
 import json
 import os
+from sets import Set
 from TF_trace import TF_Trace
 from Driver2 import JSStack, JSStackEntry, BuildMap
 
@@ -238,17 +239,48 @@ timeSavableEntries = []
 
 
 
-
-
+findLongest = []
 for x in stackEntries:
-	print "Time saveable in global id - " + str(x._stack.GetGlobalId()) + " equals " +  str(x.GetTimeSavable())
-	neighborIDs = []
-	timeSavableEntries.append(x.GetPrintout())
-	for y in x._neighbors: 
-		neighborIDs.append(x._neighbors[y]._stack.GetGlobalId())
+	tmp = x.GetPrintout()
+	if tmp[0] / EXEC_TIME < 0.001:
+		continue
+	findLongest.append([len(x._neighborsx),x, tmp])
 
-	print "With the following neighbors:"
-	print neighborIDs
+
+findLongest.sort(key=lambda x: x[0], reverse=True)
+
+discards = {}
+for x in range(0, len(findLongest)):
+	if x in discards:
+		continue
+	entries = Set(findLongest[x][1]._neighbors.keys())
+	for y in range(x+1, len(findLongest)):
+		other = Set(findLongest[y][1]._neighbors.keys())
+		if entries.issuperset(other):
+			discards[y] = 1
+		elif entries.issubset(other):
+			discards[x] = 1
+			break
+
+
+for x in range(0,len(findLongest)):
+	if x in discards:
+		continue
+	timeSavableEntries.append(findLongest[x][2])
+	
+
+# for x in stackEntries:
+# 	print "Time saveable in global id - " + str(x._stack.GetGlobalId()) + " equals " +  str(x.GetTimeSavable())
+# 	neighborIDs = []
+# 	tmp = x.GetPrintout()
+# 	if tmp[0] / EXEC_TIME < 0.001:
+# 		continue
+# 	timeSavableEntries.append(tmp)
+# 	for y in x._neighbors: 
+# 		neighborIDs.append(x._neighbors[y]._stack.GetGlobalId())
+
+# 	print "With the following neighbors:"
+# 	print neighborIDs
 
 
 	#print x

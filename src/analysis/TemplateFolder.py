@@ -140,8 +140,8 @@ class StackDepthLevel:
             times = self.GetRecursiveTime(self._data["EntryLists"][x])
             if times[1] < 0.001:
                 continue
-            rows.append(TextRow(["{0:3.3f}({1:2.2f}%) {2:s} (Fold ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryLists"][x].GetDepthID())], myDepth, self._data["EntryLists"][x].GetDepthID()))
-            ret += " " + myDepth * "  " + "{0:3.3f}({1:2.2f}%) {2:s} (Fold ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryLists"][x].GetDepthID()) + "\n"
+            rows.append(TextRow(["{0:3.3f}s({1:2.2f}%) {2:s} (DEBUG ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryLists"][x].GetDepthID())], myDepth, self._data["EntryLists"][x].GetDepthID()))
+            ret += " " + myDepth * "  " + "{0:3.3f}s({1:2.2f}%) {2:s} (DEBUG ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryLists"][x].GetDepthID()) + "\n"
             tmp = self.GetDependencies(self._data["EntryLists"][x])
             if len(tmp) == 0:
                 rows.append(TextRow(["Synchronization and/or Transfer unncessary"], myDepth + 1))
@@ -163,7 +163,7 @@ class StackDepthLevel:
             myself = self.GetRecursiveTime(self._data["EntryLists"][x])
             # if myself[1] <  0.001:
             #     continue
-            newLine = "{0:3.3f}({1:2.2f}%) {2:s} (Fold ID: {3:d})".format(myself[0], myself[1] *100, x, self._data["EntryLists"][x].GetDepthID())
+            newLine = "{0:3.3f}s({1:2.2f}%) {2:s} (DEBUG ID: {3:d})".format(myself[0], myself[1] *100, x, self._data["EntryLists"][x].GetDepthID())
             newList.append(newLine)
             ret += self._data["EntryLists"][x].Get("DepthLevel").GetOuputStrings(newList)
         return ret
@@ -225,7 +225,7 @@ class TemplateFolder:
         # ordering.sort(key=lambda x: x[0],reverse=True)
         for x in self._data["EntryListsBot"]:
             times = self._data["EntryListsBot"][x].Get("DepthLevel").GetAllTime()
-            startID = "{0:3.3f}({1:2.2f}%) {2:s} (Fold ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryListsBot"][x].GetDepthID())
+            startID = "{0:6.3f}s({1:5.2f}%) Template/Function Fold ({2:s})  (DEBUG ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryListsBot"][x].GetDepthID())
             beforeSort.append([times[0],TextRow([startID],0,self._data["EntryListsBot"][x].GetDepthID())])
             ret = self._data["EntryListsBot"][x].Get("DepthLevel").GetOuputStrings(prior=[startID])
             for y in ret:
@@ -237,7 +237,7 @@ class TemplateFolder:
             rows = [TextRow([x[1]],0)]
             myID = FOLD_ID.GetID()
             FOLD_ID.AddElement(myID, rows)
-            beforeSort.append([x[0], TextRow(["{0:3.3f}({1:2.2f}%) Synchronization Sequence".format(x[0],(x[0]/TOTAL_TIME) * 100)], 0, myID)])
+            beforeSort.append([x[0], TextRow(["{0:6.3f}s({1:5.2f}%) Sequence".format(x[0],(x[0]/TOTAL_TIME) * 100)], 0, myID)])
         beforeSort.sort(key=lambda x: x[0],reverse=True)
 
         rows = []

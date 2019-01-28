@@ -1,9 +1,12 @@
 import json
 import os
+from sets import Set
+
 from TF_trace import TF_Trace
 from Driver2 import JSStack, JSStackEntry, BuildMap
+from DisplayFormatter import DisplayFormatter, TextRow
 import copy
-FOLD_ID = 1
+FOLD_ID = DisplayFormatter()
 TOTAL_TIME = 17.0
 cudaFunctions = os.path.join(os.path.dirname(os.path.realpath(__file__)),"cudaFunctions.txt")
 f = open(cudaFunctions, "r")
@@ -17,6 +20,9 @@ cudaCalls = {}
 for x in data:
     cudaCalls[RemoveNewline(x)] = None
 
+mapFromGIDToStackDepth = {}
+postProc = {}
+findStackDepth = {}
 stackMap = {}
 
 def IsCudaCall(funcName):
@@ -39,14 +45,20 @@ class EntryList:
         return self._data[ident]
 
     def AddStack(self, globalID):
+        global mapFromGIDToStackDepth
+        if globalID not in mapFromGIDToStackDepth:
+            mapFromGIDToStackDepth[globalID] = []
+
+        mapFromGIDToStackDepth[globalID].append(self.GetDepthID())
         self._data["IdList"].append(globalID)
 
 
 class StackDepthLevel:
     def __init__(self):
         global FOLD_ID
-        self._data = {"EntryLists" : {} , "FoldID" : FOLD_ID}
-        FOLD_ID = FOLD_ID + 1
+        global findStackDepth
+        self._data = {"EntryLists" : {} , "FoldID" : FOLD_ID.GetID()}
+        findStackDepth[self._data["FoldID"]] = self
         self._entires = {}
 
     def __CreateEntryList(self, name):
@@ -74,7 +86,6 @@ class StackDepthLevel:
         global stackMap
         global TOTAL_TIME
         ret = [0.0,0.0]
-
         idList = entry.Get("IdList")
         for x in idList:
             if x == 0:
@@ -98,34 +109,60 @@ class StackDepthLevel:
         return ret
 
     def GetDependencies(self, entry):
-        return []
+        idList = entry.Get("IdList")
+        dependencies = Set()
+        ret = Set()
+        for x in idList:
+            dependencies = dependencies | Set(stackMap[x].GetDependency())
+        for x in dependencies:
+            ret.add(mapFromGIDToStackDepth[x][0])
+        print ret
+        return list(ret)
 
 
-    def GetMyString(self, priors = []):
+    def GetMyString(self, priors = [], outputData = True):
+        global FOLD_ID
         myDepth = len(priors)
+        rows = []
+
         ret = "=" * 100 + "\n"
         ret = " " + "FOLD_ID=" + str(self._data["FoldID"]) + "\n"
         for x in range(0,len(priors)):
+            rows.append(TextRow([priors[x]],x))
             ret += " " + "  " * x + priors[x] + "\n"
+        orderedList = []
         for x in self._data["EntryLists"]:
+            orderedList.append([self.GetRecursiveTime(self._data["EntryLists"][x])[0],x])
+        orderedList.sort(key=lambda x: x[0],reverse=True)
+
+        for y in orderedList:
+            x = y[1]
             times = self.GetRecursiveTime(self._data["EntryLists"][x])
             if times[1] < 0.001:
                 continue
+            rows.append(TextRow(["{0:3.3f}({1:2.2f}%) {2:s} (Fold ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryLists"][x].GetDepthID())], myDepth, self._data["EntryLists"][x].GetDepthID()))
             ret += " " + myDepth * "  " + "{0:3.3f}({1:2.2f}%) {2:s} (Fold ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryLists"][x].GetDepthID()) + "\n"
-            ret += " " + myDepth * "  " + "      Depends on synchronizations/transfers at\n"
-
-            for y in self.GetDependencies(self._data["EntryLists"][x]):
-                for z in y:
-                    ret += " " + myDepth * "  " + "           "  + z + "\n"
-
+            tmp = self.GetDependencies(self._data["EntryLists"][x])
+            if len(tmp) == 0:
+                rows.append(TextRow(["Synchronization and/or Transfer unncessary"], myDepth + 1))
+            else:
+                conditonID = FOLD_ID.GetID()
+                postProc[conditonID] =  tmp        
+                rows.append(TextRow(["Conditionally unnecessary synchronization/transfer (see: conditions)"], myDepth + 1,  conditonID))
+            #ret += " " + myDepth * "  " + "      Depends on synchronizations/transfers at\n"
+            # for nm in self.GetDependencies(self._data["EntryLists"][x]):
+            #     ret += " " + myDepth * "  " + "           "  + str(nm)+ "\n"
+        self._data["outstring"] = ret
+        if outputData == True:
+            FOLD_ID.AddElement(self._data["FoldID"], rows)
         return ret
     def GetOuputStrings(self, prior = []):
         ret = [self.GetMyString(prior)]
         for x in self._data["EntryLists"]:
             newList = copy.deepcopy(prior)
             myself = self.GetRecursiveTime(self._data["EntryLists"][x])
-            if myself[1] <  0.001:
-                continue
+            # if myself[1] <  0.001:
+            #     continue
             newLine = "{0:3.3f}({1:2.2f}%) {2:s} (Fold ID: {3:d})".format(myself[0], myself[1] *100, x, self._data["EntryLists"][x].GetDepthID())
             newList.append(newLine)
             ret += self._data["EntryLists"][x].Get("DepthLevel").GetOuputStrings(newList)
@@ -166,16 +203,34 @@ class TemplateFolder:
             self._data["EntryListsTop"][funcName].Get("DepthLevel").AddEntry(x, 1, "Down")     
 
     def Build(self):
+        global FOLD_ID
+        global postProc
+        global findStackDepth
         #self.BuildTopDown()
         self.BuildBottomUp()
         f = open("BottomUpTest.txt", "w")
+        rows = []
+        presentationID = FOLD_ID.GetID()
+        ordering = []
         for x in self._data["EntryListsBot"]:
+            ordering.append([self._data["EntryListsBot"][x].Get("DepthLevel").GetAllTime()[0], x])
+        ordering.sort(key=lambda x: x[0],reverse=True)
+        for y in ordering:
+            x = y[1]
             times = self._data["EntryListsBot"][x].Get("DepthLevel").GetAllTime()
             startID = "{0:3.3f}({1:2.2f}%) {2:s} (Fold ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryListsBot"][x].GetDepthID())
-            print startID
+            rows.append(TextRow([startID],0,self._data["EntryListsBot"][x].GetDepthID()))
             ret = self._data["EntryListsBot"][x].Get("DepthLevel").GetOuputStrings(prior=[startID])
             for y in ret:
                 f.write(y + "\n")
+        FOLD_ID.AddElement(presentationID, rows)
+        FOLD_ID.SetStart(presentationID)
+        for x in postProc:
+            rows = [TextRow(["Unnecessary if the following operations are kept"],0)]
+            for y in postProc[x]:
+                rows.append(TextRow([findStackDepth[y]._data["outstring"]],1))
+            FOLD_ID.AddElement(x, rows)
+
         f.close()
 
 if __name__ == "__main__":
@@ -185,6 +240,6 @@ if __name__ == "__main__":
     for z in data:
         myStacks.append(JSStack(data=z))
     test = TemplateFolder(myStacks)
-
     test.Build()
+    FOLD_ID.BeginDisplay()
 

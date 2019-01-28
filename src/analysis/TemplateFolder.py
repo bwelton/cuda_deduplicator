@@ -205,24 +205,45 @@ class TemplateFolder:
     def Build(self):
         global FOLD_ID
         global postProc
+        global TOTAL_TIME
         global findStackDepth
         #self.BuildTopDown()
         self.BuildBottomUp()
+        sequentialEntries = []
+        with open("sequential_pproc.json", "rb") as sequential:
+            sequentialEntries = json.load(sequential)
+
+
+        
+
         f = open("BottomUpTest.txt", "w")
-        rows = []
+        beforeSort = []
         presentationID = FOLD_ID.GetID()
-        ordering = []
+        # ordering = []
+        # for x in self._data["EntryListsBot"]:
+        #     ordering.append([self._data["EntryListsBot"][x].Get("DepthLevel").GetAllTime()[0], x])
+        # ordering.sort(key=lambda x: x[0],reverse=True)
         for x in self._data["EntryListsBot"]:
-            ordering.append([self._data["EntryListsBot"][x].Get("DepthLevel").GetAllTime()[0], x])
-        ordering.sort(key=lambda x: x[0],reverse=True)
-        for y in ordering:
-            x = y[1]
             times = self._data["EntryListsBot"][x].Get("DepthLevel").GetAllTime()
             startID = "{0:3.3f}({1:2.2f}%) {2:s} (Fold ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryListsBot"][x].GetDepthID())
-            rows.append(TextRow([startID],0,self._data["EntryListsBot"][x].GetDepthID()))
+            beforeSort.append([times[0],TextRow([startID],0,self._data["EntryListsBot"][x].GetDepthID())])
             ret = self._data["EntryListsBot"][x].Get("DepthLevel").GetOuputStrings(prior=[startID])
             for y in ret:
                 f.write(y + "\n")
+
+        for x in sequentialEntries:
+            if x[0] / TOTAL_TIME < 0.001:
+                continue
+            rows = [TextRow([x[1]],0)]
+            myID = FOLD_ID.GetID()
+            FOLD_ID.AddElement(myID, rows)
+            beforeSort.append([x[0], TextRow(["{0:3.3f}({1:2.2f}%) Synchronization Sequence".format(x[0],x[1]/TOTAL_TIME)], 0, myID)])
+        beforeSort.sort(key=lambda x: x[0],reverse=True)
+
+        rows = []
+        for x in beforeSort:
+            rows.append(x[1])
+            
         FOLD_ID.AddElement(presentationID, rows)
         FOLD_ID.SetStart(presentationID)
         for x in postProc:

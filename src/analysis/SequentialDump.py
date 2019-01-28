@@ -258,14 +258,10 @@ for x in stackEntries:
 	# indiPoints[h].AddStack(x)
 
 timeSavableEntries.sort(key=lambda x: x[0])
-
-class GetSavables:
-	def __init__(self):
-		pass
-
-	def GetTimeSavables(self):
-		global timeSavableEntries
-		return timeSavableEntries
+j = json.dumps(timeSavableEntries, indent=4)
+f = open("sequential_pproc.json", "wb")
+f.write(j)
+f.close()
 
 
 # for x in timeSavableEntries:

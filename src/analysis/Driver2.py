@@ -220,7 +220,7 @@ class JSStack:
         if pos == -1:
             return funcName
         if pos2 < pos:
-            return funcName.split("<")[0]
+            return funcName.split("<")[0] + "<...>"
         return funcName
 
     def GetDependency(self):

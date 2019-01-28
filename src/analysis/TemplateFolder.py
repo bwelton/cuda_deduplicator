@@ -116,7 +116,7 @@ class StackDepthLevel:
             dependencies = dependencies | Set(stackMap[x].GetDependency())
         for x in dependencies:
             ret.add(mapFromGIDToStackDepth[x][0])
-        print ret
+        # print ret
         return list(ret)
 
 
@@ -124,9 +124,9 @@ class StackDepthLevel:
         global FOLD_ID
         myDepth = len(priors)
         rows = []
-
-        ret = "=" * 100 + "\n"
-        ret = " " + "FOLD_ID=" + str(self._data["FoldID"]) + "\n"
+        ret = "\n"
+        # ret = "=" * 100 + "\n"
+        # ret = " " + "FOLD_ID=" + str(self._data["FoldID"]) + "\n"
         for x in range(0,len(priors)):
             rows.append(TextRow([priors[x]],x))
             ret += " " + "  " * x + priors[x] + "\n"

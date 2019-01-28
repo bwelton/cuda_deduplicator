@@ -2,7 +2,7 @@ from __future__ import print_function, unicode_literals
 from pprint import pprint
 from PyInquirer import style_from_dict, Token, prompt, Separator
 from examples import custom_style_2
-
+import os
 
 class TextRow:
 	def __init__(self, text, depth, linkIDs=None):
@@ -56,6 +56,7 @@ class DisplayFormatter:
 		while 1:
 			questions = [{'type': 'list', 'name' : "MyChoice", "message": "", 'choices': []}]
 			ret = self.GetRowEntry(displayChain[-1], questions)
+			os.system('clear')
 			answers = prompt(ret[1], style=custom_style_2)
 			if answers["MyChoice"] == "Exit":
 				print("Exiting Now - Bye")

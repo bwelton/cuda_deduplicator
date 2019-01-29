@@ -1,5 +1,6 @@
 import json
 import os
+from DisplayFormatter import TextRow, DisplayFormatter
 from sets import Set
 from TF_trace import TF_Trace
 from Driver2 import JSStack, JSStackEntry, BuildMap
@@ -9,6 +10,10 @@ cudaFunctions = os.path.join(os.path.dirname(os.path.realpath(__file__)),"cudaFu
 f = open(cudaFunctions, "r")
 data = f.readlines()
 f.close()
+
+localDisplay =  DisplayFormatter()
+localDisplay._globalID = 10000000
+
 
 def RemoveNewline(line):
     return line.replace("\n","")
@@ -56,6 +61,8 @@ class StackEntry:
 		self._deltaCount = 0
 		self._allStacks = {}
 		self._neighbors = {}
+		self._perNeighborTimes = {}
+		self._ordering = []
 
 	def GetTimeSavable(self):
 		print self._deltaTimes
@@ -63,6 +70,87 @@ class StackEntry:
 		if (self._deltaTimes > self._totalTime):
 			return self._totalTime
 		return self._deltaTimes
+
+	def GetSubsequenceSavings(self, start, end):
+		startPos = self._ordering.find(start)
+		endPos = self._ordering.find(end)
+		dtimes = 0.0
+		ttimes = 0.0
+		for x in range(startPos, endPos+1):
+			ttimes += self._perNeighborTimes[self._ordering[x]][0]
+			dtimes += self._perNeighborTimes[self._ordering[x]][1]
+		if dtimes > ttimes:
+			return ttimes
+		return dtimes
+
+	def BuildSequenceTable(self):
+		retTable = []
+		for x in range(0, len(self._ordering)):
+			retTable.append([0.0 for x in len(self._ordering)])
+			for y in range(x+1, len(self._ordering)):
+				retTable[x][y] = self.GetSubsequenceSavings(self._ordering[x], self._ordering[y])
+
+		return retTable
+
+
+	def BuildSpecificView(self, start, end, seqtable):
+		global localDisplay
+		myID = localDisplay.GetID()
+		start = self._ordering.find(element)
+		textRow = "Time Recoverable In Subsequence: {0:2.3f}s ({1:2.2f}% of execution time) ".format(seqtable[start][end], (seqtable[start][end] / EXEC_TIME) * 100.0) + " " * 25
+		for x in range(start+1, end):
+			
+
+
+
+
+	def CreateDisplayOutput(self):
+		global localDisplay
+		global EXEC_TIME
+
+		idMaper = {}
+		transIssues = 0
+		syncIssues = 0
+		issuesMatrix = {}
+		callsSeen = {}
+		for x in self._neighbors:
+			issue = {"Sync": False, "Trans" : False}
+			if len(self._neighbors[x]._stack._transferCollisions) > 0 or self._neighbors[x]._stack._overwrites > 0:
+				issue["Trans"] = True
+				transIssues += 1
+			if self._neighbors[x]._stack._syncUses < self._neighbors[x]._stack._count:
+				syncIssues += 1
+				issue["Sync"] = True
+			issuesMatrix[x] = issue
+
+			call = GetFirstUserCall2(self._neighbors[x]._stack)
+			if call == None:
+				continue
+			# print call
+			if x not in callsSeen:
+				callsSeen[x] = []
+			callsSeen[x].append([x,call])
+		textRow = "Time Recoverable: {0:2.3f}s ({1:2.2f}% of execution time) ".format(self.GetTimeSavable(), (self.GetTimeSavable() / EXEC_TIME) * 100.0) + " " * 25
+		headerRows = [TextRow([textRow],0)]
+		textRow = "Number of Sync Issues: {0:3d}    Number of Transfer Issues: {1:3d}".format(syncIssues, transIssues) + " " * 37
+		headerRows.append(TextRow[[textRow],0])
+		textRow = ""
+		headerRows.append(TextRow[[textRow],0])
+		textRow = "Select start/ending subsequence to get refined estimate"
+		headerRows.append(TextRow[[textRow],0])
+
+		sequenceTable = self.BuildSequenceTable()
+		neighborList = []
+		curCount = 1
+		for x in self._ordering:
+			rowString = "{0:2d}. {1:s} in {2:s} at line {3:d}".format(curCount, callsSeen[x][1].GetFunctionName(), callsSeen[x][0].to_dict()["filename"],callsSeen[x][0].to_dict()["linenum"])
+			neighborList.append(rowString)
+			idMaper[x] = localDisplay.GetID()
+
+
+
+
+
 
 
 
@@ -138,8 +226,13 @@ class StackEntry:
 				continue
 			if  entryId not in self._neighbors:
 				self._neighbors[entryId] = self._allStacks[entryId]
+				self._perNeighborTimes[entryId] = [0.0,0.0]
+				self._ordering.append(entryId)
+
 			self._totalTime += useData["UseAverage"]
+			self._perNeighborTimes[entryId][0] += useData["UseAverage"]
 			self._deltaTimes += useData["DeltaAvg"]
+			self._perNeighborTimes[entryId][1] += useData["DeltaAvg"]
 			self._count += 1
 			self._deltaCount += 1
 
@@ -244,7 +337,7 @@ for x in stackEntries:
 	tmp = x.GetPrintout()
 	if tmp[0] / EXEC_TIME < 0.001:
 		continue
-	findLongest.append([len(x._neighborsx),x, tmp])
+	findLongest.append([len(x._neighbors),x, tmp])
 
 
 findLongest.sort(key=lambda x: x[0], reverse=True)
@@ -267,7 +360,7 @@ for x in range(0,len(findLongest)):
 	if x in discards:
 		continue
 	timeSavableEntries.append(findLongest[x][2])
-	
+
 
 # for x in stackEntries:
 # 	print "Time saveable in global id - " + str(x._stack.GetGlobalId()) + " equals " +  str(x.GetTimeSavable())

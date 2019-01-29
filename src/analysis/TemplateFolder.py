@@ -225,12 +225,19 @@ class TemplateFolder:
         # ordering.sort(key=lambda x: x[0],reverse=True)
         for x in self._data["EntryListsBot"]:
             times = self._data["EntryListsBot"][x].Get("DepthLevel").GetAllTime()
-            startID = "{0:6.3f}s({1:5.2f}%) Template/Function Fold ({2:s})  (DEBUG ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryListsBot"][x].GetDepthID())
+            startID = "{0:6.3f}s({1:5.2f}%) Fold on {2:s} (DEBUG ID: {3:d})".format(times[0], times[1] *100, x, self._data["EntryListsBot"][x].GetDepthID())
             beforeSort.append([times[0],TextRow([startID],0,self._data["EntryListsBot"][x].GetDepthID())])
             ret = self._data["EntryListsBot"][x].Get("DepthLevel").GetOuputStrings(prior=[startID])
             for y in ret:
                 f.write(y + "\n")
+        beforeSort.sort(key=lambda x: x[0],reverse=True)
+        outRows = []
+        outRows.append(TextRow(["Template and Function Folds"],0))
+        outRows.append(TextRow(["==================================="],0))
+        for x in beforeSort:
+            outRows.append(x[1])
 
+        beforeSort = []
         for x in sequentialEntries:
             if x[0] / TOTAL_TIME < 0.001:
                 continue
@@ -240,11 +247,14 @@ class TemplateFolder:
             beforeSort.append([x[0], TextRow(["{0:6.3f}s({1:5.2f}%) Sequence".format(x[0],(x[0]/TOTAL_TIME) * 100)], 0, myID)])
         beforeSort.sort(key=lambda x: x[0],reverse=True)
 
-        rows = []
+        outRows.append(TextRow(["Sequences of Unnecessary Operations"],0))
+        outRows.append(TextRow(["==================================="],0))        
         for x in beforeSort:
-            rows.append(x[1])
-
-        FOLD_ID.AddElement(presentationID, rows)
+            outRows.append(x[1])
+        outRows.append(TextRow(["Single Points of Interest"],0))
+        outRows.append(TextRow(["==================================="],0))    
+        outRows.append(TextRow(["(Coming Soon)"],0))  
+        FOLD_ID.AddElement(presentationID, outRows)
         FOLD_ID.SetStart(presentationID)
         for x in postProc:
             rows = [TextRow(["Unnecessary if the following operations are kept"],0)]

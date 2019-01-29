@@ -3,9 +3,12 @@ from pprint import pprint
 from PyInquirer import style_from_dict, Token, prompt, Separator
 from examples import custom_style_2
 import os
-
+import uuid
 class TextRow:
-	def __init__(self, text, depth, linkIDs=None):
+	def __init__(self, text, depth, linkIDs=None, data = None):
+		if data != None:
+			self._data = data
+			return
 		self._data = {"Text" : text, "depth" : depth, "LinkIDs" : linkIDs}
 
 	def GenerateRow(self):
@@ -36,6 +39,28 @@ class DisplayFormatter:
 	def AddElement(self, myID, textRows):
 		assert myID not in self._data
 		self._data[myID] = textRows 
+
+	def SerializeElements(self, idsToSerialize):
+		ret = {"Elements" : []}
+
+		for x in idsToSerialize:
+			assert x in self._data
+			tmp = []
+			for y in self._data[x]:
+				tmp.append(y._data)
+			ret["Elements"].append({"DisplayID": x, "TextRows" : tmp})
+		return ret
+
+	def ElementFromFile(self, data):
+		if "Elements" not in data:
+			return
+
+		for x in data["Elements"]:
+			assert x["DisplayID"] not in self._data
+			self._data[x["DisplayID"]] = []
+			for y in data["Elements"]["TextRows"]:
+				self._data[x["DisplayID"]].append(TextRow(0,0,data=y))		
+
 
 	def SetStart(self, ident):
 		self._data["Start"] = ident

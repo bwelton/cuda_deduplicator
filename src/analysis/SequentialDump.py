@@ -72,8 +72,8 @@ class StackEntry:
 		return self._deltaTimes
 
 	def GetSubsequenceSavings(self, start, end):
-		startPos = self._ordering.find(start)
-		endPos = self._ordering.find(end)
+		startPos = self._ordering.index(start)
+		endPos = self._ordering.index(end)
 		dtimes = 0.0
 		ttimes = 0.0
 		for x in range(startPos, endPos+1):
@@ -86,23 +86,67 @@ class StackEntry:
 	def BuildSequenceTable(self):
 		retTable = []
 		for x in range(0, len(self._ordering)):
-			retTable.append([0.0 for x in len(self._ordering)])
-			for y in range(x+1, len(self._ordering)):
+			retTable.append([0.0 for z in self._ordering])
+			for y in range(x, len(self._ordering)):
 				retTable[x][y] = self.GetSubsequenceSavings(self._ordering[x], self._ordering[y])
 
+
+		for x in range(0, len(self._ordering)):
+			ret = ""
+			for y in range(0, len(self._ordering)):
+				ret += " {0:4.2}".format(retTable[x][y])
+			print ret
 		return retTable
 
 
-	def BuildSpecificView(self, start, end, seqtable):
+	def BuildSpecificView(self, startPos, endPos, seqtable, callsSeen):
 		global localDisplay
 		myID = localDisplay.GetID()
-		start = self._ordering.find(element)
-		textRow = "Time Recoverable In Subsequence: {0:2.3f}s ({1:2.2f}% of execution time) ".format(seqtable[start][end], (seqtable[start][end] / EXEC_TIME) * 100.0) + " " * 25
-		for x in range(start+1, end):
-			
+		start = self._ordering.index(startPos)
+		end = self._ordering.index(endPos)
+		textRow = ["Time Recoverable In Subsequence: {0:2.3f}s ({1:2.2f}% of execution time) ".format(seqtable[start][end], (seqtable[start][end] / EXEC_TIME) * 100.0) + " " * 25]
+		for x in range(0, len(self._ordering)):
+			if x >= start and x <=end:
+				textRow.append("{0:2d}. {1:s} in {2:s} at line {3:d}".format(x, callsSeen[self._ordering[x]][1].GetFunctionName(), callsSeen[self._ordering[x]][2].to_dict()["filename"],callsSeen[self._ordering[x]][2].to_dict()["linenum"]))
 
+		localDisplay.AddElement(myID, [TextRow(textRow,0)])
+		return myID
 
+	def BuildStartSequences(self, startPos,seqtable, callsSeen):
+		global localDisplay
+		myID = localDisplay.GetID()
+		textRow = [TextRow(["Time Recoverable: {0:2.3f}s ({1:2.2f}% of execution time) ".format(self.GetTimeSavable(), (self.GetTimeSavable() / EXEC_TIME) * 100.0) + " " * 25],0)]
+		textRow.append(TextRow([""],0))
+		textRow.append(TextRow([""],0))
+		textRow.append(TextRow(["Select ending of subsequence to get refined estimate"],0))
+		start = self._ordering.index(startPos)
+		for x in range(0, len(self._ordering)):
+			if x < start:
+				textRow.append(TextRow(["{0:2d}. {1:s} in {2:s} at line {3:d}".format(x+1, callsSeen[self._ordering[x]][1].GetFunctionName(), callsSeen[self._ordering[x]][2].to_dict()["filename"],callsSeen[self._ordering[x]][2].to_dict()["linenum"])],0))
+			elif x == start:
+				# print callsSeen[self._ordering[x]]
+				# print callsSeen[self._ordering[x]][2].to_dict()["filename"]
+				# print callsSeen[self._ordering[x]][1].GetFunctionName()
 
+				item = ["[Start] {0:2d}. {1:s} in {2:s} at line {3:d}".format(x+1, 
+					callsSeen[self._ordering[x]][1].GetFunctionName(), 
+					callsSeen[self._ordering[x]][2].to_dict()["filename"], 
+					callsSeen[self._ordering[x]][2].to_dict()["linenum"])]
+				textRow.append(TextRow(item,0))
+			else:
+				# print callsSeen[self._ordering[x]]
+				# print self._ordering[x]
+				# print callsSeen[self._ordering[x]][1].GetFunctionName()
+				# print callsSeen[self._ordering[x]][2].to_dict()["filename"]
+				# print callsSeen[self._ordering[x]][2].to_dict()["linenum"]
+				otherId =  self.BuildSpecificView(startPos, self._ordering[x], seqtable, callsSeen)
+				textRow.append(TextRow(["{0:2d}. {1:s} in {2:s} at line {3:d}".format(x+1, 
+					callsSeen[self._ordering[x]][1].GetFunctionName(), 
+					callsSeen[self._ordering[x]][2].to_dict()["filename"],
+					callsSeen[self._ordering[x]][2].to_dict()["linenum"])],
+					0,otherId))
+		localDisplay.AddElement(myID, textRow)
+		return myID
 
 	def CreateDisplayOutput(self):
 		global localDisplay
@@ -129,29 +173,35 @@ class StackEntry:
 			# print call
 			if x not in callsSeen:
 				callsSeen[x] = []
-			callsSeen[x].append([x,call])
+			callsSeen[x] = call
+
+		myID = localDisplay.GetID()
 		textRow = "Time Recoverable: {0:2.3f}s ({1:2.2f}% of execution time) ".format(self.GetTimeSavable(), (self.GetTimeSavable() / EXEC_TIME) * 100.0) + " " * 25
 		headerRows = [TextRow([textRow],0)]
 		textRow = "Number of Sync Issues: {0:3d}    Number of Transfer Issues: {1:3d}".format(syncIssues, transIssues) + " " * 37
-		headerRows.append(TextRow[[textRow],0])
+		headerRows.append(TextRow([textRow],0))
 		textRow = ""
-		headerRows.append(TextRow[[textRow],0])
+		headerRows.append(TextRow([textRow],0))
 		textRow = "Select start/ending subsequence to get refined estimate"
-		headerRows.append(TextRow[[textRow],0])
+		headerRows.append(TextRow([textRow],0))
 
+		print "Building Sequence Table for - " + str(self.GetTimeSavable())
 		sequenceTable = self.BuildSequenceTable()
-		neighborList = []
+		print self._perNeighborTimes
+		headerRows = []
 		curCount = 1
+		print callsSeen
 		for x in self._ordering:
-			rowString = "{0:2d}. {1:s} in {2:s} at line {3:d}".format(curCount, callsSeen[x][1].GetFunctionName(), callsSeen[x][0].to_dict()["filename"],callsSeen[x][0].to_dict()["linenum"])
-			neighborList.append(rowString)
-			idMaper[x] = localDisplay.GetID()
+			startID = self.BuildStartSequences(x, sequenceTable, callsSeen)
+			rowString = TextRow(["{0:2d}. {1:s} in {2:s} at line {3:d}".format(curCount, callsSeen[x][1].GetFunctionName(), callsSeen[x][2].to_dict()["filename"],callsSeen[x][2].to_dict()["linenum"])], 0, startID)
+			headerRows.append(rowString)
+			curCount+= 1
 
 
-
-
-
-
+		localDisplay.AddElement(myID, headerRows)
+		fileName = callsSeen[self._ordering[0]][2]._fileName.split("/")[-1]
+		return [self.GetTimeSavable(),myID,TextRow(["{0:2.3f}s ({1:2.2f})% Sequence starting at call {2:s} in {3:s} at line {4:d}".format(self.GetTimeSavable(), (self.GetTimeSavable() / EXEC_TIME) * 100.0,
+			callsSeen[self._ordering[0]][0][:30], fileName, callsSeen[self._ordering[0]][2]._lineNum)],0,myID)]
 
 
 	def GetPrintout(self):
@@ -337,7 +387,8 @@ for x in stackEntries:
 	tmp = x.GetPrintout()
 	if tmp[0] / EXEC_TIME < 0.001:
 		continue
-	findLongest.append([len(x._neighbors),x, tmp])
+	
+	findLongest.append([len(x._neighbors),x, tmp, x.CreateDisplayOutput()])
 
 
 findLongest.sort(key=lambda x: x[0], reverse=True)
@@ -355,11 +406,17 @@ for x in range(0, len(findLongest)):
 			discards[x] = 1
 			break
 
-
+outJson = {"initial":[]}
 for x in range(0,len(findLongest)):
 	if x in discards:
 		continue
+	outJson["initial"].append(findLongest[x][3][2]._data)
+	outJson["initial"][-1]["timeData"] = float(findLongest[x][3][0])
 	timeSavableEntries.append(findLongest[x][2])
+
+outJson["Elements"] = localDisplay.SerializeElements()["Elements"]
+
+
 
 
 # for x in stackEntries:
@@ -388,11 +445,14 @@ for x in range(0,len(findLongest)):
 
 timeSavableEntries.sort(key=lambda x: x[0])
 
+j2 = json.dumps(outJson, indent=4)
 j = json.dumps(timeSavableEntries, indent=4)
 f = open("sequential_pproc.json", "wb")
 f.write(j)
 f.close()
-
+f = open("sequential.json", "wb")
+f.write(j2)
+f.close()
 
 # for x in timeSavableEntries:
 # 	if x[0] == 0:

@@ -238,13 +238,18 @@ class TemplateFolder:
             outRows.append(x[1])
 
         beforeSort = []
-        for x in sequentialEntries:
-            if x[0] / TOTAL_TIME < 0.001:
-                continue
-            rows = [TextRow([x[1]],0)]
-            myID = FOLD_ID.GetID()
-            FOLD_ID.AddElement(myID, rows)
-            beforeSort.append([x[0], TextRow(["{0:6.3f}s({1:5.2f}%) Sequence".format(x[0],(x[0]/TOTAL_TIME) * 100)], 0, myID)])
+        seqLoad = open("sequential.json", "rb")
+        sequenceData = json.load(seqLoad)
+        FOLD_ID.ElementFromFile({"Elements":sequenceData["Elements"]})
+        for x in sequenceData["initial"]:
+            beforeSort.append([x["timeData"],TextRow(0,0,data=x)])
+        # for x in sequentialEntries:
+        #     if x[0] / TOTAL_TIME < 0.001:
+        #         continue
+        #     rows = [TextRow([x[1]],0)]
+        #     myID = FOLD_ID.GetID()
+        #     FOLD_ID.AddElement(myID, rows)
+        #     beforeSort.append([x[0], TextRow(["{0:6.3f}s({1:5.2f}%) Sequence".format(x[0],(x[0]/TOTAL_TIME) * 100)], 0, myID)])
         beforeSort.sort(key=lambda x: x[0],reverse=True)
 
         outRows.append(TextRow(["Sequences of Unnecessary Operations"],0))

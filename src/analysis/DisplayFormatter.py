@@ -29,6 +29,7 @@ class TextRow:
 class DisplayFormatter:
 	def __init__(self):
 		self._data = {}
+		self._addedIds = []
 		self._globalID = 2
 
 	def GetID(self):
@@ -38,14 +39,16 @@ class DisplayFormatter:
 
 	def AddElement(self, myID, textRows):
 		assert myID not in self._data
+		self._addedIds.append(myID)
 		self._data[myID] = textRows 
 
-	def SerializeElements(self, idsToSerialize):
+	def SerializeElements(self):
 		ret = {"Elements" : []}
 
-		for x in idsToSerialize:
+		for x in self._addedIds:
 			assert x in self._data
 			tmp = []
+			# printself._data[x]
 			for y in self._data[x]:
 				tmp.append(y._data)
 			ret["Elements"].append({"DisplayID": x, "TextRows" : tmp})
@@ -58,7 +61,7 @@ class DisplayFormatter:
 		for x in data["Elements"]:
 			assert x["DisplayID"] not in self._data
 			self._data[x["DisplayID"]] = []
-			for y in data["Elements"]["TextRows"]:
+			for y in x["TextRows"]:
 				self._data[x["DisplayID"]].append(TextRow(0,0,data=y))		
 
 

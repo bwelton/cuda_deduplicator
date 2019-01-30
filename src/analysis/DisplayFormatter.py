@@ -26,6 +26,9 @@ class TextRow:
 	def GetLinkID(self):
 		return self._data["LinkIDs"]
 
+	def SetLinkID(self, ident):
+		self._data["LinkIDs"] = ident
+
 class DisplayFormatter:
 	def __init__(self):
 		self._data = {}

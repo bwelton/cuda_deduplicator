@@ -117,6 +117,8 @@ class StackEntry:
 		myID = localDisplay.GetID()
 		textRow = [TextRow(["Time Recoverable: {0:2.3f}s ({1:2.2f}% of execution time) ".format(self.GetTimeSavable(), (self.GetTimeSavable() / EXEC_TIME) * 100.0) + " " * 25],0)]
 		textRow.append(TextRow(["Select ending of subsequence to get refined estimate"],0))
+		textRow.append(TextRow([""],0))
+		
 		start = self._ordering.index(startPos)
 		for x in range(0, len(self._ordering)):
 			if x < start:

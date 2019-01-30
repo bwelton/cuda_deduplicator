@@ -209,9 +209,9 @@ class TemplateFolder:
         global findStackDepth
         #self.BuildTopDown()
         self.BuildBottomUp()
-        sequentialEntries = []
-        with open("sequential_pproc.json", "rb") as sequential:
-            sequentialEntries = json.load(sequential)
+        # sequentialEntries = []
+        # with open("sequential_pproc.json", "rb") as sequential:
+        #     sequentialEntries = json.load(sequential)
 
 
         
@@ -238,27 +238,47 @@ class TemplateFolder:
             outRows.append(x[1])
 
         beforeSort = []
-        seqLoad = open("sequential.json", "rb")
-        sequenceData = json.load(seqLoad)
-        FOLD_ID.ElementFromFile({"Elements":sequenceData["Elements"]})
-        for x in sequenceData["initial"]:
-            beforeSort.append([x["timeData"],TextRow(0,0,data=x)])
-        # for x in sequentialEntries:
-        #     if x[0] / TOTAL_TIME < 0.001:
-        #         continue
-        #     rows = [TextRow([x[1]],0)]
-        #     myID = FOLD_ID.GetID()
-        #     FOLD_ID.AddElement(myID, rows)
-        #     beforeSort.append([x[0], TextRow(["{0:6.3f}s({1:5.2f}%) Sequence".format(x[0],(x[0]/TOTAL_TIME) * 100)], 0, myID)])
-        beforeSort.sort(key=lambda x: x[0],reverse=True)
+        if os.path.exists("sequential.json"):
+            with open("sequential.json", "rb") as seqLoad:
+                sequenceData = json.load(seqLoad)
+                FOLD_ID.ElementFromFile({"Elements":sequenceData["Elements"]})
+                for x in sequenceData["initial"]:
+                    beforeSort.append([x["timeData"],TextRow(0,0,data=x)])
+                # for x in sequentialEntries:
+                #     if x[0] / TOTAL_TIME < 0.001:
+                #         continue
+                #     rows = [TextRow([x[1]],0)]
+                #     myID = FOLD_ID.GetID()
+                #     FOLD_ID.AddElement(myID, rows)
+                #     beforeSort.append([x[0], TextRow(["{0:6.3f}s({1:5.2f}%) Sequence".format(x[0],(x[0]/TOTAL_TIME) * 100)], 0, myID)])
+                beforeSort.sort(key=lambda x: x[0],reverse=True)
 
-        outRows.append(TextRow(["Sequences of Unnecessary Operations"],0))
-        outRows.append(TextRow(["==================================="],0))        
-        for x in beforeSort:
-            outRows.append(x[1])
+                outRows.append(TextRow(["Sequences of Unnecessary Operations"],0))
+                outRows.append(TextRow(["==================================="],0))        
+                for x in beforeSort:
+                    outRows.append(x[1])
+
+
         outRows.append(TextRow(["Single Points of Interest"],0))
-        outRows.append(TextRow(["==================================="],0))    
-        outRows.append(TextRow(["(Coming Soon)"],0))  
+        outRows.append(TextRow(["==================================="],0))
+        beforeSort = []
+        if os.path.exists("single_point.json"):
+            with open("single_point.json", "rb") as seqLoad:
+                sequenceData = json.load(seqLoad)
+                FOLD_ID.ElementFromFile({"Elements":sequenceData["Elements"]})
+                for x in sequenceData["initial"]:
+                    beforeSort.append([x["timeData"],TextRow(0,0,data=x)])
+                # for x in sequentialEntries:
+                #     if x[0] / TOTAL_TIME < 0.001:
+                #         continue
+                #     rows = [TextRow([x[1]],0)]
+                #     myID = FOLD_ID.GetID()
+                #     FOLD_ID.AddElement(myID, rows)
+                #     beforeSort.append([x[0], TextRow(["{0:6.3f}s({1:5.2f}%) Sequence".format(x[0],(x[0]/TOTAL_TIME) * 100)], 0, myID)])
+                beforeSort.sort(key=lambda x: x[0],reverse=True)  
+                for x in beforeSort:
+                    outRows.append(x[1])
+        # outRows.append(TextRow(["(Coming Soon)"],0))  
         FOLD_ID.AddElement(presentationID, outRows)
         FOLD_ID.SetStart(presentationID)
         for x in postProc:

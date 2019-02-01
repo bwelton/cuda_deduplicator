@@ -5,9 +5,10 @@ from sets import Set
 from TF_trace import TF_Trace
 from Driver2 import JSStack, JSStackEntry, BuildMap
 from DisplayFormatter import DisplayFormatter, TextRow
+from ReadExecTime import ReadExecTime
 import copy
 FOLD_ID = DisplayFormatter()
-TOTAL_TIME = 17.0
+TOTAL_TIME = ReadExecTime()
 cudaFunctions = os.path.join(os.path.dirname(os.path.realpath(__file__)),"cudaFunctions.txt")
 f = open(cudaFunctions, "r")
 data = f.readlines()
@@ -115,6 +116,8 @@ class StackDepthLevel:
         for x in idList:
             dependencies = dependencies | Set(stackMap[x].GetDependency())
         for x in dependencies:
+            if x == 1:
+                continue
             ret.add(mapFromGIDToStackDepth[x][0])
         # print ret
         return list(ret)

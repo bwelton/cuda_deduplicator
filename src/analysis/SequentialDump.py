@@ -4,8 +4,8 @@ from DisplayFormatter import TextRow, DisplayFormatter
 from sets import Set
 from TF_trace import TF_Trace
 from Driver2 import JSStack, JSStackEntry, BuildMap
-
-EXEC_TIME = 17.0
+from ReadExecTime import ReadExecTime
+EXEC_TIME = ReadExecTime()
 cudaFunctions = os.path.join(os.path.dirname(os.path.realpath(__file__)),"cudaFunctions.txt")
 f = open(cudaFunctions, "r")
 data = f.readlines()
@@ -106,6 +106,8 @@ class StackEntry:
 		end = self._ordering.index(endPos)
 		textRow = ["Time Recoverable In Subsequence: {0:2.3f}s ({1:2.2f}% of execution time) ".format(seqtable[start][end], (seqtable[start][end] / EXEC_TIME) * 100.0) + " " * 25]
 		for x in range(0, len(self._ordering)):
+			if self._ordering[x] not in callsSeen:
+				continue
 			if x >= start and x <=end:
 				textRow.append("{0:2d}. {1:s} in {2:s} at line {3:d}".format(x, callsSeen[self._ordering[x]][1].GetFunctionName(), callsSeen[self._ordering[x]][2].to_dict()["filename"],callsSeen[self._ordering[x]][2].to_dict()["linenum"]))
 
@@ -121,6 +123,8 @@ class StackEntry:
 		
 		start = self._ordering.index(startPos)
 		for x in range(0, len(self._ordering)):
+			if self._ordering[x] not in callsSeen:
+				continue
 			if x < start:
 				textRow.append(TextRow(["{0:2d}. {1:s} in {2:s} at line {3:d}".format(x+1, callsSeen[self._ordering[x]][1].GetFunctionName(), callsSeen[self._ordering[x]][2].to_dict()["filename"],callsSeen[self._ordering[x]][2].to_dict()["linenum"])],0))
 			elif x == start:
@@ -168,6 +172,7 @@ class StackEntry:
 			issuesMatrix[x] = issue
 
 			call = GetFirstUserCall2(self._neighbors[x]._stack)
+			print "My X is " + str(x)
 			if call == None:
 				continue
 			# print call
@@ -192,6 +197,8 @@ class StackEntry:
 		curCount = 1
 		print callsSeen
 		for x in self._ordering:
+			if x not in callsSeen:
+				continue
 			startID = self.BuildStartSequences(x, sequenceTable, callsSeen)
 			rowString = TextRow(["{0:2d}. {1:s} in {2:s} at line {3:d}".format(curCount, callsSeen[x][1].GetFunctionName(), callsSeen[x][2].to_dict()["filename"],callsSeen[x][2].to_dict()["linenum"])], 0, startID)
 			headerRows.append(rowString)
@@ -388,28 +395,29 @@ for x in stackEntries:
 	if tmp[0] / EXEC_TIME < 0.001:
 		continue
 	
-	findLongest.append([len(x._neighbors),x, tmp, x.CreateDisplayOutput()])
+	findLongest.append([tmp[0],x, tmp, x.CreateDisplayOutput()])
 
 
 findLongest.sort(key=lambda x: x[0], reverse=True)
 
 discards = {}
 for x in range(0, len(findLongest)):
-	if x in discards:
-		continue
+	print x
+	print findLongest[x]
 	entries = Set(findLongest[x][1]._neighbors.keys())
 	for y in range(x+1, len(findLongest)):
 		other = Set(findLongest[y][1]._neighbors.keys())
 		if entries.issuperset(other):
 			discards[y] = 1
 		elif entries.issubset(other):
-			discards[x] = 1
-			break
+			discards[y] = 1
 
+print discards
 outJson = {"initial":[]}
 for x in range(0,len(findLongest)):
 	if x in discards:
 		continue
+	print x
 	outJson["initial"].append(findLongest[x][3][2]._data)
 	outJson["initial"][-1]["timeData"] = float(findLongest[x][3][0])
 	timeSavableEntries.append(findLongest[x][2])

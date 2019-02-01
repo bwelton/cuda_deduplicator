@@ -31,6 +31,7 @@ class TextRow:
 
 class DisplayFormatter:
 	def __init__(self):
+		self._debugFile = open("captureScreens.txt","w")
 		self._data = {}
 		self._addedIds = []
 		self._globalID = 2
@@ -80,6 +81,8 @@ class DisplayFormatter:
 			ret[0][x.GenerateRow()] = x.GetLinkID()
 			ret[1][0]["choices"].append(x.GenerateRow())
 		ret[1][0]["choices"] += alwaysDisplay
+		for x in ret[1][0]["choices"]:
+			self._debugFile.write(str(x) +"\n")
 		return ret
 
 	def BeginDisplay(self):

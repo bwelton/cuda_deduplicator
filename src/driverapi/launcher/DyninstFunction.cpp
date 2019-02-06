@@ -233,8 +233,8 @@ bool DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 	bool FoundReturn = false;
 	for (auto i : _instmap) {
 		std::string tmp = i.second.first.format(0);
-		// if (i.second.first.getCategory() == Dyninst::InstructionAPI::Instruction::InsnCategory::c_CallInsn)
-		// 	FoundReturn = true;
+		if (i.second.first.getCategory() == Dyninst::InstructionAPI::Instruction::InsnCategory::c_CallInsn)
+			FoundReturn = true;
 		// Reservation Instructions
 		// Find emulated start/end
 		if (tmp.find("lwarx") != std::string::npos || 

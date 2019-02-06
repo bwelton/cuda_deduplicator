@@ -25,7 +25,7 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();
 	img->getProcedures(all_functions);
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
-	_proc->GetAddressSpace()->allowTraps(false);
+	//_proc->GetAddressSpace()->allowTraps(false);
 	for (auto i : all_functions) {
 		//_dyninstFunctions.push_back(std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap)));	
 		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));

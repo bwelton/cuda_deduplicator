@@ -34,6 +34,7 @@
 #include "BPatch_addressSpace.h"
 #include "BPatch_statement.h"
 #include "BPatch_basicBlock.h"
+#include "InstructionCategories.h"
 #include "dynC.h"
 #include "set"
 #include "LogInfo.h"

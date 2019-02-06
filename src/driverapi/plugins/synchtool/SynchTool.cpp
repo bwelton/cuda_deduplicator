@@ -9,6 +9,8 @@ volatile bool SYNCTOOL_GLOBAL_SYNC_TYPE = false;
 
 bool enteredMe = false;
 volatile int justChecking = 8;
+volatile bool SYNCTOOL_DONOTCHECK = false;
+volatile bool SYNCTOOL_INCUDACALL = false; 
 extern "C" {
 
 
@@ -76,7 +78,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 	}
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
-		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1)
+		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true)
 			return;
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)
@@ -200,6 +202,7 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 }
 
 PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
+	SYNCTOOL_INCUDACALL = true;
 	Parameters * p = params.get();
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
@@ -231,6 +234,7 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 			UnifiedAllocation(params);	
 		}
 	}
+	SYNCTOOL_INCUDACALL = false;
 	return NO_ACTION;
 }
 

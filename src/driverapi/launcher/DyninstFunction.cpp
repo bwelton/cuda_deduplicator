@@ -136,7 +136,10 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	axs.insert(BPatch_opStore);
 	std::vector<BPatch_point*> * loadsAndStores = _func->findPoint(axs);
 	std::set<uint64_t> exclude;
-	GenExclusionSet(exclude);
+
+	// Check for non-returning functions (not supported)
+	if (!GenExclusionSet(exclude))
+		return;
 	for (auto i : *loadsAndStores) {
 		int writeValue = 0;
 		uint64_t addr = (uint64_t)i->getAddress();
@@ -220,17 +223,18 @@ uint64_t DyninstFunction::HandleEmulated(BPatch_basicBlock * block) {
 			return i.second + 4;
 		}		
 	}
-	assert("SHOULD NOT BE HERE" == 0);
 	return 0;
 }
-void DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
+bool DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 	// This is a set of instructions that should never be profiled.
 	// Right now in this set is all instructions with the following properties:
 	// 1. Ranges of emulated instructions. 
 	// 2. stfq instructions
-	
+	bool FoundReturn = false;
 	for (auto i : _instmap) {
 		std::string tmp = i.second.first.format(0);
+		// if (i.second.first.getCategory() == Dyninst::InstructionAPI::Instruction::InsnCategory::c_CallInsn)
+		// 	FoundReturn = true;
 		// Reservation Instructions
 		// Find emulated start/end
 		if (tmp.find("lwarx") != std::string::npos || 
@@ -239,6 +243,9 @@ void DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 			tmp.find("ldarx") != std::string::npos ||
 			tmp.find("lqarx") != std::string::npos ){
 			uint64_t endingAddress = HandleEmulated(i.second.second);
+			// We have noidea where the emulation ends, it is unsafe to do anything here.
+			if (endingAddress == 0)
+				return false;
 			excludedAddress.insert(i.first);
 			assert(endingAddress > i.first);
 			for (uint64_t t = i.first; t < endingAddress + 4; t = t + 4) 
@@ -258,7 +265,7 @@ void DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 			// 	excludedAddress.insert(i.first);
 		} 
 	}
-
+	return FoundReturn;
 }
 
 uint64_t DyninstFunction::GetSmallestEntryBlockSize() {

@@ -233,7 +233,7 @@ bool DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 	bool FoundReturn = false;
 	for (auto i : _instmap) {
 		std::string tmp = i.second.first.format(0);
-		if (i.second.first.getCategory() == 0)
+		if (i.second.first.getCategory() == c_CallInsn)
 			FoundReturn = true;
 		// Reservation Instructions
 		// Find emulated start/end

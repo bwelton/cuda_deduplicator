@@ -1,7 +1,7 @@
 #include "DyninstFunction.h"
 uint64_t DYNINST_FUNC_CCOUNT = 0;
 DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker, std::shared_ptr<BinaryLocationIDMap> bmap) : 
-		_proc(proc), _track(tracker), _func(func),  _bmap(bmap), _exitEntryDone(false), _lsDone(false) {
+		_proc(proc), _track(tracker), _func(func),  _bmap(bmap), _exitEntryDone(false), _lsDone(false), _wrapper(proc) {
 	_obj = _func->getModule()->getObject();
 	std::shared_ptr<DynOpsClass> ops = proc->ReturnDynOps();
 	ops->GetBasicBlocks(func, _bblocks);
@@ -126,11 +126,16 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	if (_func->getName().find("thrust::") != std::string::npos && DYNINST_FUNC_CCOUNT > 200)
 		return;
 	DYNINST_FUNC_CCOUNT++;
+
+	if(_wrapper.InsertLoadStoreInstrimentation(_func))
+		return;
 	//return;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);
 	assert(recordMemAccess.size() == 1);
 	std::string libname = _obj->pathName();
+	if (libname.find("libc-") !+ std::string::npos)
+		return;
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);

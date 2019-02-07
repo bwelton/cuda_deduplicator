@@ -12,6 +12,7 @@ install(FILES ${PROJECT_SOURCE_DIR}/src/analysis/Driver.py
 		${PROJECT_SOURCE_DIR}/src/analysis/TemplateFolder.py
 		${PROJECT_SOURCE_DIR}/src/analysis/DisplayFormatter.py
 		${PROJECT_SOURCE_DIR}/src/analysis/SequentialDump.py
+		${PROJECT_SOURCE_DIR}/src/analysis/BuildSinglePoint.py
 		${PROJECT_SOURCE_DIR}/src/analysis/ReadStackFiles.py
 		${PROJECT_SOURCE_DIR}/src/analysis/CheckLSDecode.py
 		${PROJECT_SOURCE_DIR}/src/analysis/CompareOutputs.py

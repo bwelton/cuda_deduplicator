@@ -43,7 +43,7 @@ std::string DyninstFunction::PrintInst(InstStats & stats) {
 				stats.lsInsts++;
 				std::string tmp = i.second.first.format(0);
 				stats.ls_instNames.insert(tmp.substr(0, tmp.find(' ')));
-				ss << " LS APPLIED ";
+				ss << " LS APPLIED ID IS " << std::get<2>(_insertedInst[i.first]);
 				lsInstrimented = true;
 			} else if (std::get<1>(_insertedInst[i.first]) == -1){
 				ss << " FAILED LS ";
@@ -101,7 +101,7 @@ void DyninstFunction::EntryExitWrapping() {
 		}
 
 		if(_insertedInst.find((uint64_t)i->getAddress()) == _insertedInst.end()){
-			_insertedInst[(uint64_t)i->getAddress()] = std::make_tuple(writeValue,0);
+			_insertedInst[(uint64_t)i->getAddress()] = std::make_tuple(writeValue,0,0);
 		} else {
 			assert(std::get<0>(_insertedInst[(uint64_t)i->getAddress()]) == 0);
 			std::get<0>(_insertedInst[(uint64_t)i->getAddress()]) = writeValue;
@@ -136,7 +136,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	axs.insert(BPatch_opStore);
 	std::vector<BPatch_point*> * loadsAndStores = _func->findPoint(axs);
 	std::set<uint64_t> exclude;
-
+	uint64_t setID = 0;
 	// Check for non-returning functions (not supported)
 	if (!GenExclusionSet(exclude))
 		return;
@@ -160,12 +160,13 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 				BPatch_snippet * loadAddr = new BPatch_effectiveAddressExpr();
 				recordArgs.push_back(loadAddr);
 				recordArgs.push_back(new BPatch_constExpr(id));
+				setID = id;
 				BPatch_funcCallExpr recordAddrCall(*(recordMemAccess[0]), recordArgs);
 				assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,singlePoint) != NULL);
 			}
 		}
 		if(_insertedInst.find((uint64_t)i->getAddress()) == _insertedInst.end()){
-			_insertedInst[(uint64_t)i->getAddress()] = std::make_tuple(0,writeValue);
+			_insertedInst[(uint64_t)i->getAddress()] = std::make_tuple(0,writeValue,setID);
 		} else {
 			assert(std::get<1>(_insertedInst[(uint64_t)i->getAddress()]) == 0);
 			std::get<1>(_insertedInst[(uint64_t)i->getAddress()]) = writeValue;

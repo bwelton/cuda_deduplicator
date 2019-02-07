@@ -55,6 +55,7 @@ public:
 	void BeginInsertionSet();
 	void DetachForDebug();
 	void RunCudaInit();
+	void SetTrampGuard();
 private:
 	bool IsMPIProgram();
 	BPatch_addressSpace * LaunchMPIProcess();

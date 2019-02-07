@@ -180,6 +180,9 @@ BPatch_addressSpace * DyninstProcess::LaunchProcess() {
 	return _aspace;
 }
 
+void DyninstProcess::SetTrampGuard() {
+	bpatch.setTrampRecursive(true);
+}
 
 
 BPatch_addressSpace * DyninstProcess::LaunchMPIProcess() {

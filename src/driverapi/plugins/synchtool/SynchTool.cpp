@@ -46,11 +46,22 @@ void diogenes_memcpy_wrapper(void * dest, void * source, uint64_t size, uint64_t
 	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
 		return;
 
-	fprintf(stderr, "In Memcpy Check - Source=%p, Dest=%p, size=%llu\n",source, dest, size);
+	//fprintf(stderr, "In Memcpy Check - Source=%p, Dest=%p, size=%llu\n",source, dest, size);
 	diogenes_memrange_check((uint64_t)source, size, id);
 	diogenes_memrange_check((uint64_t)dest, size, id);
 }
 
+void diogenes_memset_wrapper(void * dest, int value, uint64_t size, uint64_t id) {
+	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
+		return;	
+	diogenes_memrange_check((uint64_t)dest, size, id);
+}
+
+void diogenes_bzero_wrapper(void * dest, uint64_t size, uint64_t id) {
+	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
+		return;	
+	diogenes_memrange_check((uint64_t)dest, size, id);	
+}
 
 
 

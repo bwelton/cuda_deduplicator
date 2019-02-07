@@ -17,6 +17,8 @@ void OneTimeFillMap() {
 	};
 	DFW_MAP[tmp.wrap] = tmp;
 
+
+	// The memcpy like functions that share (dest, source, size) parameters
 	tmp = {
 		.wrap =  std::string("__memcpy_power7"),
 		.library = std::string("libc-2.17.so"),
@@ -24,6 +26,56 @@ void OneTimeFillMap() {
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
 	};
 	DFW_MAP[tmp.wrap] = tmp;
+
+	tmp = {
+		.wrap =  std::string("__memcmp_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+
+	tmp = {
+		.wrap =  std::string("__mempcpy_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+
+	// Memset style with (dest, value, size)
+	tmp = {
+		.wrap =  std::string("__memset_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+
+	tmp = {
+		.wrap =  std::string("__memchr_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+
+	tmp = {
+		.wrap =  std::string("__memrchr_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	// bzero (dest, size)
+	tmp = {
+		.wrap =  std::string("__bzero_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_bzero_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;	
+	
 }
 
 DyninstFunctionWraps::DyninstFunctionWraps(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}

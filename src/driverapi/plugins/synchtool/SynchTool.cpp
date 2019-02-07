@@ -10,7 +10,7 @@ volatile bool SYNCTOOL_GLOBAL_SYNC_TYPE = false;
 bool enteredMe = false;
 volatile int justChecking = 8;
 volatile bool SYNCTOOL_DONOTCHECK = false;
-volatile bool SYNCTOOL_INCUDACALL = false; 
+volatile bool SYNCTOOL_INCUDACALL = false;
 extern "C" {
 
 
@@ -78,9 +78,11 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 	}
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
-		std::cerr << "Inside of address " << id << std::endl;
-		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true)
+
+		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true || SYNCTOOL_DONOTCHECK == true)
 			return;
+		SYNCTOOL_DONOTCHECK = true;
+		std::cerr << "Inside of address " << id << std::endl;
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)
 		// 	justChecking = 1;

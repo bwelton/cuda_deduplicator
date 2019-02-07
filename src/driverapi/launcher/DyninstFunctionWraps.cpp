@@ -287,15 +287,15 @@ bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func
 	std::vector<BPatch_point*> * loadsAndStores = func->findPoint(axs);
 	std::vector<BPatch_point*> * locationEntry = func->findPoint(BPatch_locEntry);
 	assert(recordMemAccess.size() == 1);
-	assert(loadsAndStores->size() > 0);
+	// assert(loadsAndStores->size() > 0);
 	assert(locationEntry->size() > 0);
 
 	std::string libname = obj->pathName();
-	uint64_t addr = (uint64_t)(*loadsAndStores)[0]->getAddress();
+	uint64_t addr = (uint64_t)(*locationEntry)[0]->getAddress();
 
 	uint64_t libOffsetAddr = 0;
-	if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*loadsAndStores)[0], libOffsetAddr, true))
-		libOffsetAddr = (uint64_t) (*loadsAndStores)[0]->getAddress();
+	if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*locationEntry)[0], libOffsetAddr, true))
+		libOffsetAddr = (uint64_t) (*locationEntry)[0]->getAddress();
 
 	assert(bmap->AlreadyExists(libname, libOffsetAddr) == false);
 	uint64_t id = bmap->StorePosition(libname, libOffsetAddr);
@@ -309,6 +309,6 @@ bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func
 	}
 	recordArgs.push_back(new BPatch_constExpr(id));
 	BPatch_funcCallExpr recordAddrCall(*(recordMemAccess[0]), recordArgs);
-	assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,*loadsAndStores) != NULL);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,*locationEntry) != NULL);
 	return true;
 }

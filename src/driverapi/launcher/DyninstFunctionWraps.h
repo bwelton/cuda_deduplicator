@@ -61,7 +61,7 @@ struct DFW_wrapper{
 class DyninstFunctionWraps {
 public:
 	DyninstFunctionWraps(std::shared_ptr<DyninstProcess> proc);
-	bool InsertLoadStoreInstrimentation(BPatch_function * func);
+	bool InsertLoadStoreInstrimentation(BPatch_function * func, std::shared_ptr<BinaryLocationIDMap> bmap);
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 };

@@ -127,7 +127,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		return;
 	DYNINST_FUNC_CCOUNT++;
 
-	if(_wrapper.InsertLoadStoreInstrimentation(_func))
+	if(_wrapper.InsertLoadStoreInstrimentation(_func, _bmap))
 		return;
 	//return;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();

@@ -13,24 +13,39 @@ volatile bool SYNCTOOL_DONOTCHECK = false;
 volatile bool SYNCTOOL_INCUDACALL = false;
 extern "C" {
 
+// Warpper Functions;
+
+void INIT_SYNC_COMMON() {
+	if(SYNCTOOL_exited == 1)
+		return;
+	if (_dataAccessManager.get() != NULL)
+		return;
+	// gotcha_set_priority("cuda/specialcases", 1);
+	// int result = gotcha_wrap(gotfuncs, 1, "cuda/specialcases");
+	// assert(result == GOTCHA_SUCCESS);
+	_dataAccessManager.reset(new CheckAccesses());
+	_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager, SYNCTOOL_GLOBAL_SYNC_TYPE));
+	//_temporaryFiles = fopen("TemporaryOutput.txt","w");
+}
+
+void diogenes_strcpy_wrapper(char * source, char * destination, uint64_t id) {
+	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
+		return;
+
+	INIT_SYNC_COMMON();
+
+	fprintf(stderr, "In StrcpyWrapper with %p source and %p dest and id %llu\n", source,destination,id);
+}
+
+
+
+
+
 
 static gotcha_wrappee_handle_t memcpyWrapper_handle;
 static void * memcpyWrapper(void * dest, void * src, size_t count);
 struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapper,&memcpyWrapper_handle}};
 
-
-	void INIT_SYNC_COMMON() {
-		if(SYNCTOOL_exited == 1)
-			return;
-		if (_dataAccessManager.get() != NULL)
-			return;
-		// gotcha_set_priority("cuda/specialcases", 1);
-		// int result = gotcha_wrap(gotfuncs, 1, "cuda/specialcases");
-		// assert(result == GOTCHA_SUCCESS);
-		_dataAccessManager.reset(new CheckAccesses());
-		_LoadStoreDriver.reset(new LoadStoreDriver(_dataAccessManager, SYNCTOOL_GLOBAL_SYNC_TYPE));
-		//_temporaryFiles = fopen("TemporaryOutput.txt","w");
-	}
 	void * memcpyWrapper(void * dest, void * src, size_t count) {
 		INIT_SYNC_COMMON();
 		SYNCTOOL_inSpecialCase = 1;

@@ -79,9 +79,9 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 
-		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true || SYNCTOOL_DONOTCHECK == true)
+		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true )
 			return;
-		SYNCTOOL_DONOTCHECK = true;
+		// SYNCTOOL_DONOTCHECK = true;
 		std::cerr << "Inside of address " << id << std::endl;
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)
@@ -94,7 +94,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 //		fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
 		_LoadStoreDriver->RecordAccess(id, addr);
-		SYNCTOOL_DONOTCHECK = false;
+		// SYNCTOOL_DONOTCHECK = false;
 	}
 
 

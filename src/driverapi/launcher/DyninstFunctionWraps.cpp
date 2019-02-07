@@ -55,8 +55,8 @@ bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func
 	for (auto i : DFW_MAP[tmpName].argMap){
 		assert(i.first <= recordArgs.size());
 		while (i.first < recordArgs.size())
-			recordArgs.push_back(BPatch_constExpr(uint64_t(0)));
-		recordArgs.push_back(BPatch_paramExpr(i.second));
+			recordArgs.push_back(new BPatch_constExpr(uint64_t(0)));
+		recordArgs.push_back(new BPatch_paramExpr(i.second));
 	}
 	recordArgs.push_back(id);
 	BPatch_funcCallExpr recordAddrCall(*(recordMemAccess[0]), recordArgs);

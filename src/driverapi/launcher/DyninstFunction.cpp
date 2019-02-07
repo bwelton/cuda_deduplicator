@@ -111,6 +111,8 @@ void DyninstFunction::EntryExitWrapping() {
 }
 
 void DyninstFunction::InsertLoadStoreAnalysis() {
+	if(_wrapper.InsertLoadStoreInstrimentation(_func, _bmap))
+		return;
 	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone || _entrySize < (0x4 * 7) ){
 		_lsDone = true;
 		return;
@@ -127,8 +129,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		return;
 	DYNINST_FUNC_CCOUNT++;
 
-	if(_wrapper.InsertLoadStoreInstrimentation(_func, _bmap))
-		return;
+
 	//return;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);

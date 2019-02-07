@@ -94,6 +94,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 //		fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
 		_LoadStoreDriver->RecordAccess(id, addr);
+		SYNCTOOL_DONOTCHECK = false;
 	}
 
 

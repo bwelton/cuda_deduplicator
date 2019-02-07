@@ -28,13 +28,19 @@ void INIT_SYNC_COMMON() {
 	//_temporaryFiles = fopen("TemporaryOutput.txt","w");
 }
 
-void diogenes_strcpy_wrapper(char * source, char * destination, uint64_t id) {
+void diogenes_memrange_check(uint64_t addr, uint64_t size, uint64_t id) {
+	INIT_SYNC_COMMON();
+	_LoadStoreDriver->RecordAccessRange(id, addr, size);
+}
+
+void diogenes_strcpy_wrapper(char * destination, char * source, uint64_t id) {
 	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
 		return;
 
 	INIT_SYNC_COMMON();
 
-	fprintf(stderr, "In StrcpyWrapper with %p source and %p dest and id %llu\n", source,destination,id);
+	diogenes_memrange_check((uint64_t)source, strlen(source), id);
+	diogenes_memrange_check((uint64_t)destination, strlen(destination), id);
 }
 
 

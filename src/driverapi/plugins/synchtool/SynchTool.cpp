@@ -82,7 +82,8 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true )
 			return;
 		// SYNCTOOL_DONOTCHECK = true;
-		std::cerr << "Inside of address " << id << std::endl;
+		fprintf(stderr, "Inside of address %llu\n",id);
+		
 		//std::cerr << "Inside of address " << std::hex << addr<< std::endl;
 		// if (justChecking == 8)
 		// 	justChecking = 1;

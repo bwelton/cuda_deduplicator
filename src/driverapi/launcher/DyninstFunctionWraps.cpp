@@ -33,23 +33,26 @@ bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func
 	std::cerr << "[DyninstFunctionWraps::InsertLoadStoreInstrimentation] Inserting custom function wrap for function " 
 		      << func->getName() << " In library " <<  DFW_MAP[tmpName].library << std::endl;
 
-
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), DFW_MAP[tmpName].wrapperName, NULL);
+	std::set<BPatch_opCode> axs;
+	axs.insert(BPatch_opLoad);
+	axs.insert(BPatch_opStore);
 	std::vector<BPatch_point*> * loadsAndStores = func->findPoint(axs);
 	std::vector<BPatch_point*> * locationEntry = func->findPoint(BPatch_locEntry);
 	assert(recordMemAccess.size() == 1);
 	assert(loadsAndStores->size() > 0);
 	assert(locationEntry->size() > 0);
 
-	std::string libname = _obj->pathName();
+	std::string libname = obj->pathName();
 	uint64_t addr = (uint64_t)(*loadsAndStores)[0]->getAddress();
 
 	uint64_t libOffsetAddr = 0;
 	if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*loadsAndStores)[0], libOffsetAddr, true))
-		libOffsetAddr = (uint64_t) i->getAddress();
+		libOffsetAddr = (uint64_t) (*loadsAndStores)[0]->getAddress();
 
 	assert(bmap->AlreadyExists(libname, libOffsetAddr) == false);
-	uint64_t id = _bmap->StorePosition(libname, libOffsetAddr);
+	uint64_t id = bmap->StorePosition(libname, libOffsetAddr);
 
 	std::vector<BPatch_snippet*> recordArgs;
 	for (auto i : DFW_MAP[tmpName].argMap){
@@ -58,7 +61,7 @@ bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func
 			recordArgs.push_back(new BPatch_constExpr(uint64_t(0)));
 		recordArgs.push_back(new BPatch_paramExpr(i.second));
 	}
-	recordArgs.push_back(id);
+	recordArgs.push_back(new BPatch_constExpr(id));
 	BPatch_funcCallExpr recordAddrCall(*(recordMemAccess[0]), recordArgs);
 	assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,*loadsAndStores) != NULL);
 	return true;

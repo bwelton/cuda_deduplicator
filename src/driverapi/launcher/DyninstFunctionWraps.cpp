@@ -17,8 +17,46 @@ void OneTimeFillMap() {
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
 	DFW_MAP[tmp.wrap] = tmp;
+
+	tmp = {
+		.wrap =  std::string("__strcpy_power8"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+
+	tmp = {
+		.wrap =  std::string("strcpy"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__strcpy_small"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__stpcpy_power8"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__stpcpy_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+
+	tmp = {
+		.wrap =  std::string("__stpcpy_ppc"),
 		.library = std::string("libc-2.17.so"),
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
@@ -31,7 +69,27 @@ void OneTimeFillMap() {
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
 	DFW_MAP[tmp.wrap] = tmp;
-
+	tmp = {
+		.wrap =  std::string("__strcmp_power8"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__strcmp_ppc"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("strcmp"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__strcasecmp_power7"),
 		.library = std::string("libc-2.17.so"),
@@ -40,6 +98,13 @@ void OneTimeFillMap() {
 	};
 	DFW_MAP[tmp.wrap] = tmp;
 
+	tmp = {
+		.wrap =  std::string("__strcasecmp_ppc"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
 
 	// String Cat style (dest, source) where len = len(dest) + len(source)
 	tmp = {

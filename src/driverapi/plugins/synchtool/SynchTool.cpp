@@ -40,7 +40,13 @@ void diogenes_strcpy_wrapper(char * destination, char * source, uint64_t id) {
 	diogenes_memrange_check((uint64_t)source, strlen(source), id);
 	diogenes_memrange_check((uint64_t)destination, strlen(destination), id);
 }
+void diogenes_strcat_wrapper(char * destination, char * source, uint64_t id) {
+	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
+		return;
 
+	diogenes_memrange_check((uint64_t)source, strlen(source), id);
+	diogenes_memrange_check((uint64_t)destination, strlen(destination) + strlen(source), id);
+}
 
 void diogenes_memcpy_wrapper(void * dest, void * source, uint64_t size, uint64_t id) {
 	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
@@ -63,7 +69,12 @@ void diogenes_bzero_wrapper(void * dest, uint64_t size, uint64_t id) {
 	diogenes_memrange_check((uint64_t)dest, size, id);	
 }
 
-
+void diogenes_strncpy_wrapper(char * dest, char * source, uint64_t size, uint64_t id) {
+	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
+		return;	
+	diogenes_memrange_check((uint64_t)dest, size, id);		
+	diogenes_memrange_check((uint64_t)source, size, id);
+}
 
 
 static gotcha_wrappee_handle_t memcpyWrapper_handle;

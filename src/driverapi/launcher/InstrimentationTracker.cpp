@@ -318,6 +318,8 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
     else
     	toSkip = &_callTracingFuncSkips;
     std::string funcName = func->getName();
+    std::string unalteredFunc = func->getName();
+
     // Strip parameters/etc
     // if (funcName.find("<") != std::string::npos){
     // 	funcName.erase(funcName.find("<"));
@@ -334,7 +336,7 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
     }
     if (t == LOAD_STORE_INST)
 	    for (auto i : _prevWrappedFunctions) {
-	    	if (funcName.find(i) == 0 || funcNameMangled.find(i) == 0)
+	    	if ( unalteredFunc == i || funcName.find(i) == 0 || funcNameMangled.find(i) == 0)
 	    		return false;
 	    }
 

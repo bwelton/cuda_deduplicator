@@ -334,7 +334,7 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
     }
     if (t == LOAD_STORE_INST)
 	    for (auto i : _prevWrappedFunctions) {
-	    	if (funcName.find(i) != std::string::npos || funcNameMangled.find(i) != std::string::npos)
+	    	if (funcName.find(i) == 0 || funcNameMangled.find(i) == 0)
 	    		return false;
 	    }
 

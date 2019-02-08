@@ -33,6 +33,12 @@ void diogenes_memrange_check(uint64_t addr, uint64_t size, uint64_t id) {
 	_LoadStoreDriver->RecordAccessRange(id, addr, size);
 }
 
+void diogenes_strchr_wrapper(char * destination, uint64_t id) {
+	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
+		return;
+	diogenes_memrange_check((uint64_t)destination, strlen(destination), id);
+}
+
 void diogenes_strcpy_wrapper(char * destination, char * source, uint64_t id) {
 	if(SYNCTOOL_exited == 1 || SYNCTOOL_INCUDACALL == true)
 		return;

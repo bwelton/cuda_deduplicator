@@ -9,9 +9,39 @@ void OneTimeFillMap() {
 	DFW_wrapper tmp;
 	DFW_MAP.clear();
 
+	// String search for char functions
+	tmp = {
+		.wrap =  std::string("strchr"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strchr_wrapper"),
+		.argMap = {std::make_pair(0,0)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__strchr_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strchr_wrapper"),
+		.argMap = {std::make_pair(0,0)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__GI_strchr"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strchr_wrapper"),
+		.argMap = {std::make_pair(0,0)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+
 	// string copy style wrapper (dest, source)
 	tmp = {
 		.wrap =  std::string("__strcpy_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__GI_strstr"),
 		.library = std::string("libc-2.17.so"),
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
@@ -266,7 +296,13 @@ void OneTimeFillMap() {
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
 	};
 	DFW_MAP[tmp.wrap] = tmp;
-
+	tmp = {
+		.wrap =  std::string("__memcmp_power7"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("memcmp"),
 		.library = std::string("libc-2.17.so"),
@@ -516,6 +552,13 @@ void OneTimeFillMap() {
 
 	// Memset style with (dest, value, size)
 	tmp = {
+		.wrap =  std::string("__GI_wmemset"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
 		.wrap =  std::string("__memset_power7"),
 		.library = std::string("libc-2.17.so"),
 		.wrapperName = std::string("diogenes_memset_wrapper"),
@@ -556,6 +599,7 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_memset_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
 	};
+	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__memset_chk"),
 		.library = std::string("libc-2.17.so"),
@@ -570,7 +614,13 @@ void OneTimeFillMap() {
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
 	};
 	DFW_MAP[tmp.wrap] = tmp;
-
+	tmp = {
+		.wrap =  std::string("__memrchr"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__memrchr_power7"),
 		.library = std::string("libc-2.17.so"),

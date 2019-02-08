@@ -15,17 +15,20 @@ struct OutputFile {
 	void Write(uint64_t id, uint64_t stackId) {
 		fwrite(&id, 1, sizeof(uint64_t), outFile);
 		fwrite(&stackId, 1, sizeof(uint64_t), outFile);
+		fflush(outFile);
 	}
 	void Write(uint64_t id, uint64_t stackId, double timeID) {
 		fwrite(&id, 1, sizeof(uint64_t), outFile);
 		fwrite(&stackId, 1, sizeof(uint64_t), outFile);
 		fwrite(&timeID, 1, sizeof(double), outFile);
+		fflush(outFile);
 	}
 
 	void WriteSequenceInfo(uint64_t stackId, uint64_t newDependents, uint64_t dependency) {
 		fwrite(&stackId, 1, sizeof(uint64_t), outFile);
 		fwrite(&newDependents, 1, sizeof(uint64_t), outFile);
-		fwrite(&dependency, 1, sizeof(uint64_t), outFile);		
+		fwrite(&dependency, 1, sizeof(uint64_t), outFile);
+		fflush(outFile);		
 	}
 
 	void Write(uint64_t stackId, std::vector<uint64_t> & currentStack) {
@@ -35,6 +38,7 @@ struct OutputFile {
 		//std::cerr << "[OutputFile] Writing currentStack of size - " << currentStack.size() << std::endl;
 		for (auto i : currentStack)
 			fwrite(&i, 1, sizeof(uint64_t), outFile);
+		fflush(outFile);
 	}
 
 	~OutputFile() {

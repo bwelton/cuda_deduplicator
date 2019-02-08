@@ -135,7 +135,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 
-		fprintf(stderr, "Inside of stack %llu\n",id);
+		//fprintf(stderr, "Inside of stack %llu\n",id);
 		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true )
 			return;
 		// SYNCTOOL_DONOTCHECK = true;

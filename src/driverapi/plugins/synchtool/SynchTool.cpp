@@ -132,9 +132,9 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
 		_LoadStoreDriver->SyncCalled();
 	}
-
+	extern void DYNINST_disableCondInst();
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
-
+		DYNINST_disableCondInst();
 		//fprintf(stderr, "Inside of stack %llu\n",id);
 		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true )
 			return;

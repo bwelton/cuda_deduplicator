@@ -502,6 +502,13 @@ void OneTimeFillMap() {
 	};
 	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
+		.wrap =  std::string("memset"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
 		.wrap =  std::string("__libc_memset"),
 		.library = std::string("libc-2.17.so"),
 		.wrapperName = std::string("diogenes_memset_wrapper"),

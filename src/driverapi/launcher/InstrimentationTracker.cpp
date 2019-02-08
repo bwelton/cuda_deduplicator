@@ -327,9 +327,10 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
     if (funcName.find("(") != std::string::npos){
     	funcName.erase(funcName.find("("));
     }
-    std::cerr << "Testing My FuncName = " << funcName << std::endl;
 
     std::string funcNameMangled = func->getMangledName();
+    std::cerr << "Testing My FuncName = " << funcName << " with original " << unalteredFunc << " and mangled " << funcNameMangled <<  std::endl;
+
     for (auto i : *toSkip) {
     	if (funcName.find(i) != std::string::npos || funcNameMangled.find(i) != std::string::npos)
     		return false;

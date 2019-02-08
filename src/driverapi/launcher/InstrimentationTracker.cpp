@@ -319,9 +319,9 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
     	toSkip = &_callTracingFuncSkips;
     std::string funcName = func->getName();
     // Strip parameters/etc
-    if (funcName.find("<") != std::string::npos){
-    	funcName.erase(funcName.find("<"));
-    }
+    // if (funcName.find("<") != std::string::npos){
+    // 	funcName.erase(funcName.find("<"));
+    // }
     if (funcName.find("(") != std::string::npos){
     	funcName.erase(funcName.find("("));
     }

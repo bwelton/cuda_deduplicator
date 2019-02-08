@@ -338,7 +338,6 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
 	    		return false;
 	    }
 
-	std::cerr << ""
 	// if (funcNameMangled.find("thunk") != std::string::npos)
 	// 	return false;
 	// if (t == LOAD_STORE_INST){

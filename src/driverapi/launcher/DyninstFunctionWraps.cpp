@@ -132,6 +132,34 @@ void OneTimeFillMap() {
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
 	};
 	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__strncpy_power8"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strncpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("strncpy"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strncpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__strncpy_ppc"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strncpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__strncpy_chk"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_strncpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
 
 	tmp = {
 		.wrap =  std::string("__strncasecmp_power7"),
@@ -144,6 +172,21 @@ void OneTimeFillMap() {
 	
 
 	// The memcpy like functions that share (dest, source, size) parameters
+	tmp = {
+		.wrap =  std::string("__GI_memmove"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__memmove_chk"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+
 	tmp = {
 		.wrap =  std::string("__memcpy_power7"),
 		.library = std::string("libc-2.17.so"),
@@ -332,7 +375,20 @@ void OneTimeFillMap() {
 	DFW_MAP[tmp.wrap] = tmp;
 
 
-
+	tmp = {
+		.wrap =  std::string("mempcpy"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__GI_mempcpy"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memcpy_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
 
 	// Memset style with (dest, value, size)
 	tmp = {
@@ -342,7 +398,40 @@ void OneTimeFillMap() {
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
 	};
 	DFW_MAP[tmp.wrap] = tmp;
-
+	tmp = {
+		.wrap =  std::string("__memset_power6"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__memset_power4"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__memset_ppc"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
+	tmp = {
+		.wrap =  std::string("__libc_memset"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	tmp = {
+		.wrap =  std::string("__memset_chk"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_memset_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1),std::make_pair(2,2)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__memchr_power7"),
 		.library = std::string("libc-2.17.so"),

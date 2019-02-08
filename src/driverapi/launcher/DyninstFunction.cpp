@@ -135,8 +135,8 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);
 	assert(recordMemAccess.size() == 1);
 	std::string libname = _obj->pathName();
-	if (libname.find("libc-") != std::string::npos)
-		return;
+// if (libname.find("libc-") != std::string::npos)
+// 	return;
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);

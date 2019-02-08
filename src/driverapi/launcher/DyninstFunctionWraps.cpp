@@ -537,10 +537,15 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_bzero_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
-
-
 	DFW_MAP[tmp.wrap] = tmp;	
-	
+	tmp = {
+		.wrap =  std::string("bzero"),
+		.library = std::string("libc-2.17.so"),
+		.wrapperName = std::string("diogenes_bzero_wrapper"),
+		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
+	};
+	DFW_MAP[tmp.wrap] = tmp;	
+
 }
 
 DyninstFunctionWraps::DyninstFunctionWraps(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}

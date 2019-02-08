@@ -320,10 +320,10 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
     std::string funcName = func->getName();
     // Strip parameters/etc
     if (funcName.find("<") != funcName.end()){
-    	funcName.erase(funcName.find("<"),funcName.size());
+    	funcName.erase(funcName.find("<"));
     }
     if (funcName.find("(") != funcName.end()){
-    	funcName.erase(funcName.find("("),funcName.size());
+    	funcName.erase(funcName.find("("));
     }
     std::cerr << "Testing My FuncName = " << funcName << std::endl;
 

@@ -318,20 +318,27 @@ bool InstrimentationTracker::ShouldInstrimentFunciton(BPatch_function * func, In
     else
     	toSkip = &_callTracingFuncSkips;
     std::string funcName = func->getName();
+    // Strip parameters/etc
+    if (funcName.find("<") != funcName.end()){
+    	funcName.erase(funcName.find("<"),funcName.size());
+    }
+    if (funcName.find("(") != funcName.end()){
+    	funcName.erase(funcName.find("("),funcName.size());
+    }
+    std::cerr << "Testing My FuncName = " << funcName << std::endl;
+
     std::string funcNameMangled = func->getMangledName();
     for (auto i : *toSkip) {
-    	if (funcName.find(i) != std::string::npos || funcNameMangled.find(i) != std::string::npos) {
-		std::cerr << "[InstrimentationTracker::ShouldInstrimentFunciton] Skipping function - " << funcName << std::endl;
+    	if (funcName.find(i) != std::string::npos || funcNameMangled.find(i) != std::string::npos)
     		return false;
-	}
     }
     if (t == LOAD_STORE_INST)
 	    for (auto i : _prevWrappedFunctions) {
-	    	if (funcName.find(i) != std::string::npos || funcNameMangled.find(i) != std::string::npos) {
-			std::cerr << "[InstrimentationTracker::ShouldInstrimentFunciton] Skipping wrapped function - " << funcName << std::endl;
+	    	if (funcName.find(i) != std::string::npos || funcNameMangled.find(i) != std::string::npos)
 	    		return false;
-		}
 	    }
+
+	std::cerr << ""
 	// if (funcNameMangled.find("thunk") != std::string::npos)
 	// 	return false;
 	// if (t == LOAD_STORE_INST){

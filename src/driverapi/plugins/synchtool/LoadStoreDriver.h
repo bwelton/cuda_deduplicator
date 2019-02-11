@@ -8,8 +8,7 @@
 // Synchronization and use = Enabled
 // Within Instrimetnation =  disabled
 
-extern void DYNINST_disableCondInst();
-extern void DYNINST_enableCondInst();
+
 struct InstrimentationControl {
 	enum INST_STATE
 	{
@@ -18,25 +17,15 @@ struct InstrimentationControl {
 		SYNC_USEFOUND,
 	};
 	INST_STATE _state;
-	InstrimentationControl() : _state(DISABLED) {};
+	InstrimentationControl();
 
-	void EnteringInst() {
-		DYNINST_disableCondInst();
-	};
+	void EnteringInst();
 
-	void SyncCalled() {
-		_state = SYNC_NOUSE;
-	};
+	void SyncCalled();
 
-	void FoundUse() {
-		_state = SYNC_USEFOUND;
-	};
+	void FoundUse();
 
-	void ExitingInst() {
-		if (_state == SYNC_NOUSE) {
-			DYNINST_enableCondInst();
-		}
-	};
+	void ExitingInst();
 	
 };
 

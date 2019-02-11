@@ -1,4 +1,25 @@
 #include "LoadStoreDriver.h"
+extern void DYNINST_disableCondInst();
+extern void DYNINST_enableCondInst();
+InstrimentationControl::InstrimentationControl() : _state(DISABLED) {}
+
+void InstrimentationControl::EnteringInst() {
+	DYNINST_disableCondInst();
+}
+
+void InstrimentationControl::SyncCalled() {
+	_state = SYNC_NOUSE;
+}
+
+void InstrimentationControl::FoundUse() {
+	_state = SYNC_USEFOUND;
+}
+
+void InstrimentationControl::ExitingInst() {
+	if (_state == SYNC_NOUSE) {
+		DYNINST_enableCondInst();
+	}
+}
 
 LoadStoreDriver::LoadStoreDriver(CheckAccessesPtr access, bool timefu) : _firstSync(true), _syncTriggered(false), _firstWrite(true), _found(false), _access(access), _timefu(timefu) {
 }

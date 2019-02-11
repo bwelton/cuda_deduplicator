@@ -127,7 +127,8 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		_LoadStoreDriver->PopStack(id);
 		_LoadStoreDriver->ExitingInstrimentation();
 	}
-
+extern void DYNINST_disableCondInst();
+extern void DYNINST_enableCondInst();
 	void SYNC_CAPTURE_SYNC_CALL() {
 		if(SYNCTOOL_exited == 1)
 			return;
@@ -136,8 +137,9 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		// else 
 		// 	justChecking = 1002321;
 	    INIT_SYNC_COMMON();
-		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
+		DYNINST_disableCondInst();
 		_LoadStoreDriver->EnterInstrimentation();
+		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
 		_LoadStoreDriver->SyncCalled();
 		_LoadStoreDriver->ExitingInstrimentation();
 	}

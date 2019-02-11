@@ -120,14 +120,14 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	_lsDone = true;
 	if (_func->getName().find("__device_stub__") != std::string::npos || 
 		//_func->getName().find("thrust::") != std::string::npos ||
-		_func->getName().find("std::string::_Rep") != std::string::npos ||
+		//_func->getName().find("std::string::_Rep") != std::string::npos ||
 		_func->getName().find("cudaRegisterAll") != std::string::npos ||
-		_func->getName().find("YAML::") != std::string::npos ||
+		//_func->getName().find("YAML::") != std::string::npos ||
 		_func->getName().find("__tcf_0") != std::string::npos)
 		return;
-	if (_func->getName().find("thrust::") != std::string::npos && DYNINST_FUNC_CCOUNT > 200)
-		return;
-	DYNINST_FUNC_CCOUNT++;
+//	if (_func->getName().find("thrust::") != std::string::npos && DYNINST_FUNC_CCOUNT > 200)
+//		return;
+//	DYNINST_FUNC_CCOUNT++;
 
 
 	//return;
@@ -181,8 +181,9 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 }
 
 void DyninstFunction::InsertTimingAtPoint(StackPoint p) {
+	if (p.libname.find("libc-2.17.so") != std::string::npos)
+		return;
 	assert(p.libOffset != 0);
-
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_CAPTURE_TIMEACCESS"), NULL);	
 	assert(recordMemAccess.size() == 1);

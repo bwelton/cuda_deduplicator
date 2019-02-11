@@ -1,4 +1,11 @@
 #include "SyncTesting.h"
+#include <chrono>
+#define  TIMER_FUNCTION_CALL(A,B) std::chrono::high_resolution_clock::time_point starttime = std::chrono::high_resolution_clock::now();\
+	A;\
+	std::chrono::high_resolution_clock::time_point endtime = std::chrono::high_resolution_clock::now();\
+	std::chrono::duration<double> diff = endtime - starttime;\
+	std::cerr << B << " : " << diff.count() << std::endl;
+
 
 SyncTesting::SyncTesting(boost::program_options::variables_map vm) :
 	_vm(vm) {
@@ -47,7 +54,7 @@ void SyncTesting::CaptureDriverCalls() {
 
 	APICaptureInstrimentation inst(proc);
 	inst.InsertInstrimentation();
-	proc->RunUntilCompleation();
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Driver API Time is (sec) = ")
 	// {
 	// 	double time;
 	// 	TimeApplications base(_vm);
@@ -74,7 +81,8 @@ void SyncTesting::CaptureDuplicateTransfers() {
 
 	APICaptureInstrimentation inst(proc);
 	inst.InsertInstrimentation();
-	proc->RunUntilCompleation();
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Capture duplicate transfer time (sec) = ")
+
 	// {
 	// 	double time;
 	// 	TimeApplications base(_vm);
@@ -100,7 +108,8 @@ void SyncTesting::TimeTransfers() {
 
 	APICaptureInstrimentation inst(proc);
 	inst.InsertInstrimentation();
-	proc->RunUntilCompleation();
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of transfers = ")
+
 	// {
 	// 	double time;
 	// 	TimeApplications base(_vm);
@@ -123,7 +132,8 @@ void SyncTesting::RunWithSyncStacktracing(StackRecMap & recs) {
 	proc->RunCudaInit();
 	StacktraceSynchronizations sync(proc);
 	sync.InsertStacktracing();
-	proc->RunUntilCompleation();	
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Identification of Synchronizations Time = ")
+
 	sync.ReadResults(recs);
 
 }
@@ -147,7 +157,8 @@ void SyncTesting::TimeSynchronizations(StackRecMap & recs) {
 	TimerInstrimentation t(proc);
 	t.InsertTimers(recs);
 	//proc->DetachForDebug();
-	proc->RunUntilCompleation();
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of synchronizations = ")
+
 	t.PostProcessing(recs);
 }
 
@@ -160,7 +171,8 @@ void SyncTesting::RunLoadStoreAnalysis(StackRecMap & recs, std::vector<StackPoin
 	CreatePluginFile(pluginNames);		
 	LoadStoreInstrimentation ls(proc);
 	ls.InsertAnalysis(recs);
-	proc->RunUntilCompleation();
+	//proc->DetachForDebug();
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Load Store Analysis Time = ")
 	ls.PostProcessing(recs, uses);	
 }
 
@@ -174,7 +186,7 @@ void SyncTesting::RunTimeUse(StackRecMap & recs, std::vector<StackPoint> & uses)
 	CreatePluginFile(pluginNames);		
 	TimeUse tu(proc);
 	tu.InsertAnalysis(recs, uses);
-	proc->RunUntilCompleation();
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Sync-Uset time = ")
 	tu.PostProcessing(recs, uses);	
 }
 

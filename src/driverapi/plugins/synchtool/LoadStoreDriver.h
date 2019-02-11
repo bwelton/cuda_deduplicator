@@ -3,10 +3,48 @@
 #include <memory>
 #include "CheckAccesses.h"
 #include "OutputWriter.h"
+// No Synchronization = Disabled
+// Synchronization and No Use = Enabled
+// Synchronization and use = Enabled
+// Within Instrimetnation =  disabled
+
+extern void DYNINST_disableCondInst();
+extern void DYNINST_enableCondInst();
+struct InstrimentationControl {
+	enum INST_STATE
+	{
+		DISABLED = 0,
+		SYNC_NOUSE,
+		SYNC_USEFOUND,
+	};
+	INST_STATE _state;
+	InstrimentationControl() : _state(DISABLED) {};
+
+	void EnteringInst() {
+		DYNINST_disableCondInst();
+	};
+
+	void SyncCalled() {
+		_state = SYNC_NOUSE;
+	};
+
+	void FoundUse() {
+		_state = SYNC_USEFOUND;
+	};
+
+	void ExitingInst() {
+		if (_state == SYNC_NOUSE) {
+			DYNINST_enableCondInst();
+		}
+	};
+	
+};
 
 class LoadStoreDriver {
 public:
 	LoadStoreDriver(CheckAccessesPtr access, bool timefu = false);
+	void EnterInstrimentation();
+	void ExitingInstrimentation();
 	void RecordAccess(uint64_t id, uint64_t addr);
 	void PushStack(uint64_t stack);
 	void PopStack(uint64_t stack);
@@ -27,6 +65,7 @@ private:
 	bool _firstSync;
 	uint64_t _syncStackDepth;
 	bool _timefu;
+	InstrimentationControl _instControler;
 };
 
 typedef std::shared_ptr<LoadStoreDriver> LoadStoreDriverPtr;

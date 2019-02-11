@@ -30,7 +30,9 @@ void INIT_SYNC_COMMON() {
 
 void diogenes_memrange_check(uint64_t addr, uint64_t size, uint64_t id) {
 	INIT_SYNC_COMMON();
+	_LoadStoreDriver->EnterInstrimentation();
 	_LoadStoreDriver->RecordAccessRange(id, addr, size);
+	_LoadStoreDriver->ExitingInstrimentation();
 }
 
 void diogenes_strchr_wrapper(char * destination, uint64_t id) {
@@ -95,16 +97,19 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 	void RECORD_FUNCTION_ENTRY(uint64_t id) {
 		if(SYNCTOOL_exited == 1)
 			return;
+
 		// if (justChecking == 8)
 		// 	justChecking = 1;
 		// else 
 		// 	justChecking = 1002321;
 		INIT_SYNC_COMMON();
+		_LoadStoreDriver->EnterInstrimentation();
 		// //assert(1 == 0);
 		// // fprintf(_temporaryFiles,"[SynchTool] Captured function entry - %llu\n", id);
 		// // fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured function entry - " << id << std::endl;
 		_LoadStoreDriver->PushStack(id);
+		_LoadStoreDriver->ExitingInstrimentation();
 	}
 	void RECORD_FUNCTION_EXIT(uint64_t id) {
 		if(SYNCTOOL_exited == 1)
@@ -118,7 +123,9 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		// // fprintf(_temporaryFiles,"[SynchTool] Captured function exit - %llu\n", id);
 		// // fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured function exit - " << id << std::endl;
+		_LoadStoreDriver->EnterInstrimentation();
 		_LoadStoreDriver->PopStack(id);
+		_LoadStoreDriver->ExitingInstrimentation();
 	}
 
 	void SYNC_CAPTURE_SYNC_CALL() {
@@ -130,14 +137,19 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		// 	justChecking = 1002321;
 	    INIT_SYNC_COMMON();
 		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
+		_LoadStoreDriver->EnterInstrimentation();
 		_LoadStoreDriver->SyncCalled();
+		_LoadStoreDriver->ExitingInstrimentation();
 	}
-	extern void DYNINST_disableCondInst();
-	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
 
+	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
+		INIT_SYNC_COMMON();
+		_LoadStoreDriver->EnterInstrimentation();
 		//fprintf(stderr, "Inside of stack %llu\n",id);
-		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true )
+		if(SYNCTOOL_exited == 1 || SYNCTOOL_inSpecialCase == 1 || SYNCTOOL_INCUDACALL == true ){
+			_LoadStoreDriver->ExitingInstrimentation();
 			return;
+		}
 		// SYNCTOOL_DONOTCHECK = true;
 		//fprintf(stderr, "Inside of address %llu\n",id);
 		
@@ -146,12 +158,13 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		// 	justChecking = 1;
 		// else 
 		// 	justChecking = 1002321;
-		INIT_SYNC_COMMON();
+		//INIT_SYNC_COMMON();
 		//assert(1==0);
 //		fprintf(_temporaryFiles,"[SynchTool] Captured memory access - %llu, %llu\n", addr, id);
 //		fflush(_temporaryFiles);
 		//std::cerr << "[SynchTool] Captured memory access at " << id << " with mem location " << std::hex << addr << std::dec << std::endl;
 		_LoadStoreDriver->RecordAccess(id, addr);
+		_LoadStoreDriver->ExitingInstrimentation();
 		// SYNCTOOL_DONOTCHECK = false;
 	}
 
@@ -265,6 +278,7 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 
 PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 	SYNCTOOL_INCUDACALL = true;
+	_LoadStoreDriver->EnterInstrimentation();
 	Parameters * p = params.get();
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
@@ -284,11 +298,12 @@ PluginReturn SynchTool::Precall(std::shared_ptr<Parameters> params) {
 			FreeMemoryAllocation(params);
 		}		
 	}
-
+	_LoadStoreDriver->ExitingInstrimentation();
 	return NO_ACTION;
 }
 
 PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
+	_LoadStoreDriver->EnterInstrimentation();
 	Parameters * p = params.get();
 	// If the call is not a synchronization
 	if (ID_InternalSynchronization != p->GetID()){
@@ -296,6 +311,7 @@ PluginReturn SynchTool::Postcall(std::shared_ptr<Parameters> params) {
 			UnifiedAllocation(params);	
 		}
 	}
+	_LoadStoreDriver->ExitingInstrimentation();
 	SYNCTOOL_INCUDACALL = false;
 	return NO_ACTION;
 }

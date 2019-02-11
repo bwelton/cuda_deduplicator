@@ -11,6 +11,7 @@ void LoadStoreDriver::RecordAccessRange(uint64_t id, uint64_t addr, uint64_t cou
 			_firstWrite = false;
 			_writer->RecordAccess(id,_stackAtSync);
 			_found = true;
+			_instControler.FoundUse();
 		}
 	}
 }
@@ -23,8 +24,17 @@ void LoadStoreDriver::RecordAccess(uint64_t id, uint64_t addr) {
 			_firstWrite = false;
 			_writer->RecordAccess(id,_stackAtSync);
 			_found = true;
+			_instControler.FoundUse();
 		}
 	}
+}
+
+void LoadStoreDriver::EnterInstrimentation() {
+	_instControler.EnteringInst();
+}
+
+void LoadStoreDriver::ExitingInstrimentation() {
+	_instControler.ExitingInst();
 }
 
 void LoadStoreDriver::PushStack(uint64_t stack) {
@@ -87,7 +97,7 @@ void LoadStoreDriver::SignalSync() {
 	_found = false;
 	_syncTriggered = true;
 	_stackAtSync = _storedStack;
-
+	_instControler.SyncCalled();
 	// for(auto i : _stackAtSync){
 	// 	std::cerr << "[LoadStoreDriver::SignalSync] Stack record at sync: " << i << std::endl;
 	// }

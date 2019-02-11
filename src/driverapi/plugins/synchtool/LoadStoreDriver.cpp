@@ -1,6 +1,6 @@
 #include "LoadStoreDriver.h"
-extern void DYNINST_disableCondInst();
-extern void DYNINST_enableCondInst();
+extern "C" void DYNINST_disableCondInst();
+extern "C" void DYNINST_enableCondInst();
 InstrimentationControl::InstrimentationControl() : _state(DISABLED) {}
 
 void InstrimentationControl::EnteringInst() {

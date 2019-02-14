@@ -3,6 +3,8 @@ uint64_t DYNINST_FUNC_CCOUNT = 0;
 DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, std::shared_ptr<InstrimentationTracker> tracker, std::shared_ptr<BinaryLocationIDMap> bmap) : 
 		_proc(proc), _track(tracker), _func(func),  _bmap(bmap), _exitEntryDone(false), _lsDone(false), _wrapper(proc) {
 	_obj = _func->getModule()->getObject();
+	_addedLS = false;
+	_addedTRAC = false;
 	std::shared_ptr<DynOpsClass> ops = proc->ReturnDynOps();
 	ops->GetBasicBlocks(func, _bblocks);
 	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;
@@ -91,7 +93,7 @@ void DyninstFunction::EntryExitWrapping() {
 			recordArgs.push_back(new BPatch_constExpr(id));
 			BPatch_funcCallExpr entryExpr(*entryFuncs[0], recordArgs);
 			BPatch_funcCallExpr exitExpr(*exitFuncs[0], recordArgs);
-
+			_addedTRAC = true;
 			if (_proc->GetAddressSpace()->insertSnippet(entryExpr,singlePoint, BPatch_callBefore) == NULL) {
 				std::cerr << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert entry tracking into " << _func->getName() << std::endl;
 			}
@@ -115,6 +117,8 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		return;
 	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone || _entrySize < (0x4 * 7) ){
 		_lsDone = true;
+		if (_obj->pathName().find("cuibm") != std::string::npos && _addedTRAC == false )
+			_func->relocateFunction();
 		return;
 	}
 	_lsDone = true;
@@ -169,6 +173,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 				setID = id;
 				BPatch_funcCallExpr recordAddrCall(*(recordMemAccess[0]), recordArgs);
 				assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,singlePoint) != NULL);
+				_addedLS = true;
 			}
 		}
 		if(_insertedInst.find((uint64_t)i->getAddress()) == _insertedInst.end()){
@@ -178,6 +183,9 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 			std::get<1>(_insertedInst[(uint64_t)i->getAddress()]) = writeValue;
 		}
 	}
+	if (_obj->pathName().find("cuibm") != std::string::npos && _addedTRAC == false  && _addedLS == false)
+               _func->relocateFunction();
+
 }
 
 void DyninstFunction::InsertTimingAtPoint(StackPoint p) {

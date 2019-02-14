@@ -29,6 +29,8 @@ void INIT_SYNC_COMMON() {
 }
 
 void diogenes_memrange_check(uint64_t addr, uint64_t size, uint64_t id) {
+	if (SYNCTOOL_exited == 1)
+		return;
 	INIT_SYNC_COMMON();
 	_LoadStoreDriver->EnterInstrimentation();
 	_LoadStoreDriver->RecordAccessRange(id, addr, size);
@@ -127,8 +129,8 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 		_LoadStoreDriver->PopStack(id);
 		_LoadStoreDriver->ExitingInstrimentation();
 	}
-extern void DYNINST_disableCondInst();
-extern void DYNINST_enableCondInst();
+//extern void DYNINST_disableCondInst();
+//extern void DYNINST_enableCondInst();
 	void SYNC_CAPTURE_SYNC_CALL() {
 		if(SYNCTOOL_exited == 1)
 			return;
@@ -137,7 +139,7 @@ extern void DYNINST_enableCondInst();
 		// else 
 		// 	justChecking = 1002321;
 	    INIT_SYNC_COMMON();
-		DYNINST_disableCondInst();
+		//DYNINST_disableCondInst();
 		_LoadStoreDriver->EnterInstrimentation();
 		std::cerr << "[SynchTool] Captured Synchronization call" << std::endl;
 		_LoadStoreDriver->SyncCalled();
@@ -145,6 +147,8 @@ extern void DYNINST_enableCondInst();
 	}
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
+		
+		//fprintf(stderr, "Inside of stack %llu\n",id);
 		INIT_SYNC_COMMON();
 		_LoadStoreDriver->EnterInstrimentation();
 		//fprintf(stderr, "Inside of stack %llu\n",id);

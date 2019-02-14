@@ -4,7 +4,7 @@ extern "C" void DYNINST_enableCondInst();
 InstrimentationControl::InstrimentationControl() : _state(DISABLED) {}
 
 void InstrimentationControl::EnteringInst() {
-	DYNINST_disableCondInst();
+//	DYNINST_disableCondInst();
 }
 
 void InstrimentationControl::SyncCalled() {
@@ -17,7 +17,7 @@ void InstrimentationControl::FoundUse() {
 
 void InstrimentationControl::ExitingInst() {
 	if (_state == SYNC_NOUSE) {
-		DYNINST_enableCondInst();
+//		DYNINST_enableCondInst();
 	}
 }
 

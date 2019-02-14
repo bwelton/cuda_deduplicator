@@ -85,4 +85,6 @@ private:
 	uint64_t _entrySize;
 	bool _exitEntryDone;
 	bool _lsDone;
+	bool _addedLS;
+	bool _addedTRAC;
 };

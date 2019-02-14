@@ -171,7 +171,7 @@ void SyncTesting::RunLoadStoreAnalysis(StackRecMap & recs, std::vector<StackPoin
 	CreatePluginFile(pluginNames);		
 	LoadStoreInstrimentation ls(proc);
 	ls.InsertAnalysis(recs);
-	//proc->DetachForDebug();
+//	proc->DetachForDebug();
 	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Load Store Analysis Time = ")
 	ls.PostProcessing(recs, uses);	
 }

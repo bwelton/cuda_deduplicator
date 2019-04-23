@@ -2,7 +2,7 @@
 FixCudaFree::FixCudaFree(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 
 void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
-	_bmap.reset(new BinaryLocationIDMap())
+	_bmap.reset(new BinaryLocationIDMap());
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 	std::vector<BPatch_function *> all_functions;

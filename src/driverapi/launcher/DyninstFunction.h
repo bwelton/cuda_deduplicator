@@ -47,6 +47,7 @@
 #include "BinaryLocationIDMap.h"
 
 #include "DyninstFunctionWraps.h"
+#include "DyninstCallsite.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -69,7 +70,7 @@ public:
 	uint64_t HandleEmulated(BPatch_basicBlock * block);
 	bool GenExclusionSet(std::set<uint64_t> & excludedAddress);
 	void InsertTimingAtPoint(StackPoint p);
-	
+	void GetCallsites(std::vector<DyninstCallsite> & ret);
 private: 
 	uint64_t GetSmallestEntryBlockSize();
 	bool IsExcludedFunction(InstType T);

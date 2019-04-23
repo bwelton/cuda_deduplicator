@@ -788,6 +788,7 @@ class StackContainer:
                     break
             if found == False:
                 print "Could not find an associated FI stack for FI ID - " + str(x.GetID("fi_id")) + "," + str(x.GetID("ls_id"))
+                print x.to_dict()
                 discards.append(x)
         final = []
         for x in stacks["dt_id"]:

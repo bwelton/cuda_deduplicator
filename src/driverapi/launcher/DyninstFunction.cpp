@@ -286,6 +286,17 @@ bool DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 	return FoundReturn;
 }
 
+void DyninstFunction::GetCallsites(std::vector<DyninstCallsite> & ret) {
+	BPatch_Vector<BPatch_point *> *points = _func->findPoint(BPatch_subroutine);
+	if (points == NULL)
+		return;
+	for (x : *points) {
+		ret.push_back(DyninstCallsite(_proc, _func, x));
+	}
+	
+}
+
+
 uint64_t DyninstFunction::GetSmallestEntryBlockSize() {
 	BPatch_flowGraph * fg = _func->getCFG();
 	std::vector<BPatch_basicBlock *> entry;

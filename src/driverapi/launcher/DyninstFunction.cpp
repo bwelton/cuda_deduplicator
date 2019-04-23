@@ -290,7 +290,7 @@ void DyninstFunction::GetCallsites(std::vector<DyninstCallsite> & ret) {
 	BPatch_Vector<BPatch_point *> *points = _func->findPoint(BPatch_subroutine);
 	if (points == NULL)
 		return;
-	for (x : *points) {
+	for (auto x : *points) {
 		ret.push_back(DyninstCallsite(_proc, _func, x));
 	}
 	

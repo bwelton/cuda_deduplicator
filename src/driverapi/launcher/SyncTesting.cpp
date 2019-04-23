@@ -167,6 +167,17 @@ void SyncTesting::TimeSynchronizations(StackRecMap & recs) {
 	t.PostProcessing(recs);
 }
 
+void SyncTesting::FixProblems(StackRecMap & recs) {
+	system("exec rm -rf ./stackOut.*");
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	proc->RunCudaInit();
+	FixCudaFree t(proc);
+	t.InsertAnalysis(recs);
+	//proc->DetachForDebug();
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of synchronizations = ")
+
+	//t.PostProcessing(recs);
+}
 
 void SyncTesting::RunLoadStoreAnalysis(StackRecMap & recs, std::vector<StackPoint> & uses) {
 	system("exec rm -rf ./stackOut.*");
@@ -210,11 +221,14 @@ void SyncTesting::Run() {
 	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	// }
 	//CaptureDriverCalls();
+	StackRecMap empty_map;
+	FixProblems(empty_map);
 	TimeTransfers();
 	CaptureDuplicateTransfers();
 	RunWithoutInstrimentation();
 	RunWithSyncStacktracing(syncTiming);
 	TimeSynchronizations(syncTiming);
+
 	std::vector<StackPoint> uses;
 	RunLoadStoreAnalysis(syncTiming, uses);
 	RunTimeUse(syncTiming, uses);

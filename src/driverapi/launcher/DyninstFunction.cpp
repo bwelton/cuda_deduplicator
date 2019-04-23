@@ -69,6 +69,7 @@ void DyninstFunction::EntryExitWrapping() {
 		_exitEntryDone = true;
 		return;
 	}
+
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> entryFuncs = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RECORD_FUNCTION_ENTRY"), NULL);
 	std::vector<BPatch_function *> exitFuncs = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RECORD_FUNCTION_EXIT"), NULL);
@@ -139,8 +140,9 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_MEM_ACCESS"), NULL);
 	assert(recordMemAccess.size() == 1);
 	std::string libname = _obj->pathName();
-// if (libname.find("libc-") != std::string::npos)
-// 	return;
+ 	if (libname.find("/lib64/ld64") != std::string::npos || 
+	    libname.find("lib/spectrum_mpi/") != std::string::npos)
+ 		return;
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);

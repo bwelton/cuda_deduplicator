@@ -100,7 +100,10 @@ void SyncTesting::CaptureDuplicateTransfers() {
 }
 void SyncTesting::TimeTransfers() {
 	system("exec rm -rf ./stackOut.*");
-	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	std::shared_ptr<DyninstProcess> proc;
+	{
+	TIMER_FUNCTION_CALL(proc = LaunchApplication(false), "[PARSE_TIME]")
+	}
 	std::vector<std::string> pluginNames = {"libDataSyncTimer"};
 	CreatePluginFile(pluginNames);	
 	std::cerr << "Running " << _programName << " to time transfers" << std::endl;
@@ -108,8 +111,10 @@ void SyncTesting::TimeTransfers() {
 
 	APICaptureInstrimentation inst(proc);
 	inst.InsertInstrimentation();
+	{
+	//proc->DetachForDebug();
 	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of transfers = ")
-
+	}
 	// {
 	// 	double time;
 	// 	TimeApplications base(_vm);

@@ -97,9 +97,11 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 	// 	dup2(fileno(stdout), fileno(stderr));		
 	// }
 
+	//std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
 	if (_MPIProc) {
 		appProc->continueExecution();
-		appProc->continueExecution();
+		//sleep(5);
+		//appProc->continueExecution();
 	}
 	assert(appProc->continueExecution() == true);
 	// while(appProc->isStopped() == true && appProc->terminationStatus() == NoExit){
@@ -107,12 +109,15 @@ bool DyninstProcess::RunUntilCompleation(std::string filename) {
 	// }
 	while(!appProc->isTerminated()) {
 		//std::cerr << "Iteration of Termination loop" << std::endl;
-		bpatch.waitForStatusChange();
+		bpatch.pollForStatusChange();
+		//bpatch.waitForStatusChange();
 		sleep(2);
-		if (appProc->isStopped())
+		if (appProc->isStopped()){
 			if(appProc->isTerminated())
 				break;
-		assert(appProc->continueExecution() == true);
+
+			assert(appProc->continueExecution() == true);
+		}
 	}
 
 
@@ -131,7 +136,7 @@ bool DyninstProcess::IsMPIProgram() {
 	 * Checks to see if the program we are launching is an MPI program. If so, return true. Otherwise return false.
 	 */
 	std::vector<std::string> progName = _vm["prog"].as<std::vector<std::string> >();
-	if (progName[0].find("mpirun") != std::string::npos || progName[0].find("mpiexec") != std::string::npos) 
+	if (progName[0].find("mpirun") != std::string::npos || progName[0].find("/ij") != std::string::npos) 
 		return true;
 	return false;	
 }
@@ -211,7 +216,7 @@ BPatch_addressSpace * DyninstProcess::LaunchMPIProcess() {
 
 	}
 	argv[progName.size()] = NULL;
-	assert(appPosition != -1);
+//	assert(appPosition != -1);
 	int pid = -1;
 	// Launch the other procees
 	pid_t child_pid = fork();
@@ -226,8 +231,9 @@ BPatch_addressSpace * DyninstProcess::LaunchMPIProcess() {
 		assert(1==0);
 	} else {
 		sleep(5);
+		pid = child_pid;
 		// Find the PID of the launched process
-		std::stringstream ss;
+/*		std::stringstream ss;
 		boost::filesystem::path tmp(progName[appPosition]);
 		std::string filename = tmp.filename().string();
 		ss << "pidof " << filename << std::endl;
@@ -243,13 +249,14 @@ BPatch_addressSpace * DyninstProcess::LaunchMPIProcess() {
 				break;
 			sleep(2);
 		}
+		*/
 		assert(pid != -1);
 	}
 	bpatch.setInstrStackFrames(true);
 	bpatch.setTrampRecursive(false);
 	bpatch.setLivenessAnalysis(false);	
-	std::cerr << "[DyninstProcess::LaunchMPIProcess] Attaching to process " << argv[appPosition] << " at pid " << pid << std::endl;
-	handle = bpatch.processAttach((const char *)argv[appPosition], pid);
+	std::cerr << "[DyninstProcess::LaunchMPIProcess] Attaching to process " << argv[0] << " at pid " << pid << std::endl;
+	handle = bpatch.processAttach((const char *)argv[0], pid);
 	bpatch.setLivenessAnalysis(false);
 	bpatch.setInstrStackFrames(true);
 	bpatch.setTrampRecursive(false);

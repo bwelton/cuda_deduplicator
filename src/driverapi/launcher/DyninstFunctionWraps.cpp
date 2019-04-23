@@ -74,6 +74,7 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
+	/*
 	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__GI_stpcpy"),
@@ -103,6 +104,7 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
+/
 	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__strcmp_power7"),
@@ -131,6 +133,7 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
+	*/
 	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__strcasecmp_power7"),
@@ -659,8 +662,8 @@ bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func
 	if (obj->pathName().find(DFW_MAP[tmpName].library) == std::string::npos)
 		return false;
 
-	std::cerr << "[DyninstFunctionWraps::InsertLoadStoreInstrimentation] Inserting custom function wrap for function " 
-		      << func->getName() << " In library " <<  DFW_MAP[tmpName].library << std::endl;
+//	std::cerr << "[DyninstFunctionWraps::InsertLoadStoreInstrimentation] Inserting custom function wrap for function " 
+//		      << func->getName() << " In library " <<  DFW_MAP[tmpName].library << std::endl;
 
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> recordMemAccess = ops->FindFuncsByName(_proc->GetAddressSpace(), DFW_MAP[tmpName].wrapperName, NULL);
@@ -691,6 +694,9 @@ bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func
 		recordArgs.push_back(new BPatch_paramExpr(i.second));
 	}
 	recordArgs.push_back(new BPatch_constExpr(id));
+
+	std::cerr << "[DyninstFunctionWraps::InsertLoadStoreInstrimentation] Inserting custom function wrap for function " 
+		      << func->getName() << " In library " <<  DFW_MAP[tmpName].library << " with id of " << id << std::endl;
 	BPatch_funcCallExpr recordAddrCall(*(recordMemAccess[0]), recordArgs);
 	assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,*locationEntry) != NULL);
 	return true;

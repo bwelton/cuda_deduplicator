@@ -19,9 +19,9 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 
 }
 void DyninstFunction::GetFuncInfo(std::string & libName, std::string & funcName) {
-	libname = _obj->pathName();
+	libName = _obj->pathName();
 	funcName = _func->getName();
-	
+
 }
 std::string DyninstFunction::PrintInst(InstStats & stats) {
 	bool stackTraced = false;

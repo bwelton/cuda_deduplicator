@@ -72,9 +72,9 @@ public:
 	bool GenExclusionSet(std::set<uint64_t> & excludedAddress);
 	void InsertTimingAtPoint(StackPoint p);
 	void GetCallsites(std::vector<DyninstCallsite> & ret);
+	bool IsExcludedFunction(InstType T);
 private: 
 	uint64_t GetSmallestEntryBlockSize();
-	bool IsExcludedFunction(InstType T);
 	DyninstFunctionWraps _wrapper;
 	std::shared_ptr<InstrimentationTracker> _track;
 	std::shared_ptr<DyninstProcess> _proc;

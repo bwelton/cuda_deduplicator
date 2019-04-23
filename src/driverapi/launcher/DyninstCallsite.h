@@ -47,7 +47,7 @@
 #include "BinaryLocationIDMap.h"
 
 #include "DyninstFunctionWraps.h"
-#include "DyninstFunction.h"
+// #include "DyninstFunction.h"
 using namespace Dyninst;
 using namespace ParseAPI;
 using namespace PatchAPI;
@@ -55,12 +55,12 @@ using namespace SymtabAPI;
 
 class DyninstCallsite {
 public: 
-	DyninstCallsite(std::shared_ptr<DyninstProcess> proc, DyninstFunction * func, BPatch_point & point);
+	DyninstCallsite(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, BPatch_point & point);
 	void ReplaceFunctionCall(BPatch_function * _newCall);
 	std::string * GetCalledFunction();
 private:
 	std::shared_ptr<DyninstProcess> _proc;
-	DyninstFunction * _func;
+	BPatch_function * _func;
 	BPatch_point _point;
 	std::string _calledFunc;
 	bool _replaced;

@@ -291,7 +291,7 @@ void DyninstFunction::GetCallsites(std::vector<DyninstCallsite> & ret) {
 	if (points == NULL)
 		return;
 	for (auto x : *points) {
-		ret.push_back(DyninstCallsite(_proc, _func, x));
+		ret.push_back(DyninstCallsite(_proc, _func, *x));
 	}
 	
 }

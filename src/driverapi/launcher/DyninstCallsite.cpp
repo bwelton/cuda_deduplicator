@@ -1,5 +1,5 @@
 #include "DyninstCallsite.h"
-DyninstCallsite::DyninstCallsite(std::shared_ptr<DyninstProcess> proc, DyninstFunction * func, BPatch_point & point) : _proc(proc), _func(func), _point(point), _calledFunc(std::string("UNKNOWN")), _replaced(false) {
+DyninstCallsite::DyninstCallsite(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, BPatch_point & point) : _proc(proc), _func(func), _point(point), _calledFunc(std::string("UNKNOWN")), _replaced(false) {
 	BPatch_function * tmp = point.getCalledFunction();
 	if (tmp == NULL)
 		return;

@@ -12,7 +12,7 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	}
 
-	std::string binary_name = std::string("cuibm");
+	std::string binary_name = std::string("main");
 	std::string tmpLibname = std::string("");
 	std::string tmpFuncName = std::string("");
 	for (auto i : _dyninstFunctions) {

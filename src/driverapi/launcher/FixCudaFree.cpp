@@ -22,9 +22,14 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 		//if (tmpLibname.find(binary_name) != std::string::npos) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
-			for (auto x : callsites)
+			for (auto x : callsites) {
 				if (x.GetCalledFunction()->find("cudaFree") != std::string::npos)
 					std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << std::endl;
+				if (x.GetCalledFunction()->find("cudaMalloc") != std::string::npos)
+					std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << std::endl;
+				if (x.GetCalledFunction()->find("malloc") != std::string::npos)
+					std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << std::endl;
+			}
 		//}
 	}
 

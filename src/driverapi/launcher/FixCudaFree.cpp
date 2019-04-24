@@ -19,15 +19,18 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 		if (i.second->IsExcludedFunction(LOAD_STORE_INST))
 			continue;
 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
+		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos)
+			continue;
+
 		//if (tmpLibname.find(binary_name) != std::string::npos) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
-				if (x.GetCalledFunction()->find("cudaFree") != std::string::npos)
+				if (*(x.GetCalledFunction()) == std::string("cudaFree"))
 					std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
-				if (x.GetCalledFunction()->find("cudaMalloc") != std::string::npos)
+				if (*(x.GetCalledFunction()) == std::string("cudaMalloc"))
 					std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
-				if (x.GetCalledFunction()->find("malloc") != std::string::npos)
+				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc"))
 					std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 			}
 		//}

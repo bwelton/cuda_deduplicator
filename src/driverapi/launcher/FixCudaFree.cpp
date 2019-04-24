@@ -19,13 +19,13 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 		if (i.second->IsExcludedFunction(LOAD_STORE_INST))
 			continue;
 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
-		if (tmpLibname.find(binary_name) != std::string::npos) {
+		//if (tmpLibname.find(binary_name) != std::string::npos) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites)
 				if (x.GetCalledFunction()->find("cudaFree") != std::string::npos)
 					std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << std::endl;
-		}
+		//}
 	}
 
 }

@@ -24,7 +24,7 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites)
 				if (x.GetCalledFunction()->find("cudaFree") != std::string::npos)
-					std::cerr << "Found function call to cudaFree in " << tmpFuncName << std::endl;
+					std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << std::endl;
 		}
 	}
 

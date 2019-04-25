@@ -7,7 +7,7 @@
 #include <cuda.h>
 extern "C" {
 cudaError_t  DIOGENES_cudaFreeWrapper(void * mem) {
-	std::cerr << "I am freeing an address of .... " << std::hex << (uint64_t) mem << std::endl;
+	fprintf(stderr,"I am freeing an address of %p \n", mem);
 	return cudaFree(mem);
 }
 

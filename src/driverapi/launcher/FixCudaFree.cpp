@@ -1,10 +1,24 @@
 #include "FixCudaFree.h"
 FixCudaFree::FixCudaFree(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 
+
+
 void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 	_bmap.reset(new BinaryLocationIDMap());
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
 	BPatch_object * wrapper = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libDiogenesMemManager.so"));
+
+
+	std::vector<BPatch_function *> cudaFreeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaFreeWrapper"), wrapper);
+	std::vector<BPatch_function *> cudaMallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMallocWrapper"), wrapper);
+	std::vector<BPatch_function *> cudaMemcpyWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMemcpyAsyncWrapper"), wrapper);
+	std::vector<BPatch_function *> mallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_MALLOCWrapper"), wrapper);
+
+	assert(cudaFreeWrapper.size() > 0)
+	assert(cudaMallocWrapper.size() > 0)
+	assert(cudaMemcpyWrapper.size() > 0)
+	assert(mallocWrapper.size() > 0)
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 	std::vector<BPatch_function *> all_functions;
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();
@@ -16,6 +30,7 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 	std::string binary_name = std::string("main");
 	std::string tmpLibname = std::string("");
 	std::string tmpFuncName = std::string("");
+	_proc->BeginInsertionSet();
 	for (auto i : _dyninstFunctions) {
 		if (i.second->IsExcludedFunction(LOAD_STORE_INST))
 			continue;
@@ -29,8 +44,10 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
-				if (*(x.GetCalledFunction()) == std::string("cudaFree"))
+				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
 					std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
+					x.ReplaceFunctionCall(cudaFreeWrapper[0]);
+				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc"))
 					std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc"))

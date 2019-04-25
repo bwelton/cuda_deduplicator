@@ -51,8 +51,10 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 					//	return;
 					//}
 				}
-				if (*(x.GetCalledFunction()) == std::string("cudaMalloc"))
+				if (*(x.GetCalledFunction()) == std::string("cudaMalloc")) {
 					std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
+					x.ReplaceFunctionCall(cudaMallocWrapper[0]);
+				}
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc"))
 					std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaMemcpyAsync"))

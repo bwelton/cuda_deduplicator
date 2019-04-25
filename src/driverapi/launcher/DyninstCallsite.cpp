@@ -6,6 +6,11 @@ DyninstCallsite::DyninstCallsite(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 
 	_calledFunc = tmp->getName();
 }
+
+uint64_t DyninstCallsite::GetPointAddress() {
+	return (uint64_t)_point.getAddress();
+}
+
 std::string * DyninstCallsite::GetCalledFunction() {
 	return &_calledFunc;
 }

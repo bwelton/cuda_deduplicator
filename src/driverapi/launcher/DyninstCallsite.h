@@ -58,6 +58,7 @@ public:
 	DyninstCallsite(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, BPatch_point & point);
 	void ReplaceFunctionCall(BPatch_function * _newCall);
 	std::string * GetCalledFunction();
+	uint64_t GetPointAddress();
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	BPatch_function * _func;

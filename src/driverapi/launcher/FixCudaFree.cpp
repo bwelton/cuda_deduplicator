@@ -46,7 +46,8 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 			for (auto x : callsites) {
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
 					std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
-					x.ReplaceFunctionCall(cudaFreeWrapper[0]);
+					if (x.GetPointAddress() == (uint64_t) 0x10009364)
+						x.ReplaceFunctionCall(cudaFreeWrapper[0]);
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc"))
 					std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;

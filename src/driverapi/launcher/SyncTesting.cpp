@@ -173,7 +173,7 @@ void SyncTesting::FixProblems(StackRecMap & recs) {
 	proc->RunCudaInit();
 	FixCudaFree t(proc);
 	t.InsertAnalysis(recs);
-	//proc->DetachForDebug();
+	proc->DetachForDebug();
 	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of synchronizations = ")
 
 	//t.PostProcessing(recs);

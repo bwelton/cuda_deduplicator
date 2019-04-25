@@ -37,7 +37,7 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
 		if (tmpFuncName.find("DIOGENES_") != std::string::npos || tmpLibname.find("/lib/plugins/") != std::string::npos)
 			continue;
-		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos)
+		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos || tmpLibname.find("libcudart") != std::string::npos)
 			continue;
 
 		//if (tmpLibname.find(binary_name) != std::string::npos) {
@@ -45,9 +45,10 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
-					std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
-					if (x.GetPointAddress() == (uint64_t) 0x10009364)
+					if (x.GetPointAddress() == (uint64_t) 0x10009364) {
 						x.ReplaceFunctionCall(cudaFreeWrapper[0]);
+						std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
+					}
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc"))
 					std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;

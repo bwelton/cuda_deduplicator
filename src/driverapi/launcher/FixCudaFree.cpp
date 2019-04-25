@@ -30,7 +30,7 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 	std::string binary_name = std::string("main");
 	std::string tmpLibname = std::string("");
 	std::string tmpFuncName = std::string("");
-	//_proc->BeginInsertionSet();
+	_proc->BeginInsertionSet();
 	for (auto i : _dyninstFunctions) {
 		if (i.second->IsExcludedFunction(LOAD_STORE_INST))
 			continue;
@@ -45,11 +45,11 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
-					if (x.GetPointAddress() == (uint64_t) 0x10006cc4) {
+					//if (x.GetPointAddress() == (uint64_t) 0x10006cc4) {
 						x.ReplaceFunctionCall(cudaFreeWrapper[0]);
 						std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
-						return;
-					}
+					//	return;
+					//}
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc"))
 					std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;

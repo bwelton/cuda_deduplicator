@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>    
 #include <string>
+#include <stdio.h> 
 #include <map>
 // CUDA include
 #include <cuda_runtime_api.h>

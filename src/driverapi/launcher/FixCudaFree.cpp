@@ -15,10 +15,10 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 	std::vector<BPatch_function *> cudaMemcpyWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMemcpyAsyncWrapper"), wrapper);
 	std::vector<BPatch_function *> mallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_MALLOCWrapper"), wrapper);
 
-	assert(cudaFreeWrapper.size() > 0)
-	assert(cudaMallocWrapper.size() > 0)
-	assert(cudaMemcpyWrapper.size() > 0)
-	assert(mallocWrapper.size() > 0)
+	assert(cudaFreeWrapper.size() > 0);
+	assert(cudaMallocWrapper.size() > 0);
+	assert(cudaMemcpyWrapper.size() > 0);
+	assert(mallocWrapper.size() > 0);
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 	std::vector<BPatch_function *> all_functions;
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();

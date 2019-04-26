@@ -4,6 +4,7 @@
 #include <string>
 #include <stdio.h> 
 #include <map>
+#include <sstream> 
 // CUDA include
 #include <cuda_runtime_api.h>
 #include <cuda.h>
@@ -79,7 +80,7 @@ MemManage::MemManage() :  _cpuStats(new MemStats(std::string("CPU"))), _gpuStats
 
 }
 
-void MemManage::GPUAllocate (void** mem, uint64_t size) {
+cudaError_t MemManage::GPUAllocate (void** mem, uint64_t size) {
 	cudaError_t tmp = cudaMalloc(mem, size);
 	if (tmp == cudaSuccess){
 		_gpuStats->AllocatedMemory(size);

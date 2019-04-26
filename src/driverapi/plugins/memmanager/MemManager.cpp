@@ -85,8 +85,8 @@ MemManage::MemManage() :  _cpuStats(new MemStats(std::string("CPU"))), _gpuStats
 bool FindFreeMemory(std::map<uint64_t, std::vector<void *> >  & memRegions, void ** mem, uint64_t size) {
 	if(memRegions.find(size) != memRegions.end())
 		if (memRegions[size].size() > 0){
-			*mem = (memRegions.back());
-			memRegions.pop_back();
+			*mem = (memRegions[size].back());
+			memRegions[size].pop_back();
 			return true;
 		}
 

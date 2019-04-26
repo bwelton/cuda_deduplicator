@@ -35,6 +35,7 @@ public:
 
 private:
 	std::map<uint64_t, uint64_t> _gpuMem;
+	std::map<uint64_t, std::vector<void *> > _gpuMemSize;
 	std::map<uint64_t, uint64_t> _cpuMem;
 	std::shared_ptr<MemStats> _cpuStats;
 	std::shared_ptr<MemStats> _gpuStats;
@@ -80,20 +81,39 @@ MemManage::MemManage() :  _cpuStats(new MemStats(std::string("CPU"))), _gpuStats
 
 }
 
+bool FindFreeMemory(std::map<uint64_t, std::vector<void *> >  & memRegions, void ** mem, uint64_t size) {
+	if(memRegions.find(size) != memRegions.end())
+		if (memRegions[size].size() > 0){
+			*mem = (memRegions.back());
+			memRegions.pop_back();
+			return true;
+		}
+
+	return false;
+}
+
 cudaError_t MemManage::GPUAllocate (void** mem, uint64_t size) {
+	if (FindFreeMemory(_gpuMemSize, mem, size))
+		return cudaSuccess;
+
+	// Allocate if we must...
 	cudaError_t tmp = cudaMalloc(mem, size);
 	if (tmp == cudaSuccess){
 		_gpuStats->AllocatedMemory(size);
+		if (_gpuMemSize.find(size) == _gpuMemSize.end())
+			_gpuMemSize[size] = std::vector<void *>();
 		_gpuMem[*((uint64_t*)mem)] = size;
 	}
 	return tmp;
 }
 
 cudaError_t MemManage::GPUFree(void * mem){
-	if (_gpuMem.find((uint64_t)mem) != _gpuMem.end()){
-		_gpuStats->FreedMemory(_gpuMem[(uint64_t)mem]);
-	} else
-		std::cerr << "[MemManage::GPUFree] We have no idea what this memory address is... " << std::hex << mem << std::endl;
+	if (_gpuMem.find((uint64_t)mem) != _gpuMem.end()) {
+		_gpuMemSize[_gpuMem[(uint64_t)mem]].push_back(mem);
+		return cudaSuccess;
+	} 
+	// Free the memory, we have no idea what this is.
+	
 	return cudaFree(mem);
 }
 

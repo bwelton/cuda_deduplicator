@@ -41,7 +41,7 @@ private:
 	//
 };
 
-MemStats::MemStats(std::string name) :  _current(0), _max(0), _allocatedCount(0), _freedCount(0), _type(name), {}
+MemStats::MemStats(std::string name) :  _current(0), _max(0), _allocatedCount(0), _freedCount(0), _type(name) {}
 
 MemStats::~MemStats() {
 	std::stringstream ss;
@@ -126,7 +126,7 @@ std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
 extern "C" {
 cudaError_t  DIOGENES_cudaFreeWrapper(void * mem) {
 	PLUG_BUILD_FACTORY()
-	return PLUG_FACTORY_PTR->GPUFree();
+	return PLUG_FACTORY_PTR->GPUFree(mem);
 	// //fprintf(stderr,"I am freeing an address of %p \n", mem);
 	// return cudaFree(mem);
 }

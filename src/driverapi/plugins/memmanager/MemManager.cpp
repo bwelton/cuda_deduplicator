@@ -5,6 +5,7 @@
 #include <stdio.h> 
 #include <map>
 #include <sstream> 
+#include <vector>
 // CUDA include
 #include <cuda_runtime_api.h>
 #include <cuda.h>

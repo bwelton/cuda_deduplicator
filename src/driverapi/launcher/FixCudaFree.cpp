@@ -32,8 +32,8 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 	std::string tmpFuncName = std::string("");
 	_proc->BeginInsertionSet();
 	for (auto i : _dyninstFunctions) {
-		if (i.second->IsExcludedFunction(LOAD_STORE_INST))
-			continue;
+		// if (i.second->IsExcludedFunction(LOAD_STORE_INST))
+		// 	continue;
 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
 		if (tmpFuncName.find("DIOGENES_") != std::string::npos || tmpLibname.find("/lib/plugins/") != std::string::npos)
 			continue;

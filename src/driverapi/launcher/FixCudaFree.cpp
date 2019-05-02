@@ -28,7 +28,7 @@ DebugInstrimentationTemp::~DebugInstrimentationTemp() {
 }
 
 bool DebugInstrimentationTemp::InstrimentFunction(std::string & funcName, std::string & libraryName, uint64_t offset) {
-	std::stringsteam ss;
+	std::stringstream ss;
 	ss << funcName <<"," << libraryName << "," << std::hex << offset << std::endl;
 	std::string tmp = ss.str();
 	if (_instFunctions.size() > 0) {

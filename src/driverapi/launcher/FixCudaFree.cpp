@@ -1,5 +1,6 @@
 #include "FixCudaFree.h"
 #include <fstream>
+#include <sstream>
 #include <set>
 
 class DebugInstrimentationTemp {

@@ -16,6 +16,7 @@ public:
 	~MemStats();
 	void AllocatedMemory(uint64_t size);
 	void FreedMemory(uint64_t size);
+	void UsedCache(size_t size);
 private:
 	std::map<uint64_t, uint64_t> _sizes;
 	uint64_t _current;
@@ -23,6 +24,7 @@ private:
 	uint64_t _allocatedCount;
 	uint64_t _freedCount;
 	std::string _type;
+	uint64_t _cacheHits;
 };
 
 
@@ -33,11 +35,8 @@ public:
 	cudaError_t GPUFree(void * mem);
 	void * CPUAllocate(uint64_t size);
 	void CPUFree(void * mem);
-	void UsedCache(size_t size);
-
 private:
 	std::map<uint64_t, uint64_t> _gpuMem;
-	uint64_t _cacheHits;
 	std::map<uint64_t, std::vector<void *> > _gpuMemSize;
 	std::map<uint64_t, uint64_t> _cpuMem;
 	std::shared_ptr<MemStats> _cpuStats;

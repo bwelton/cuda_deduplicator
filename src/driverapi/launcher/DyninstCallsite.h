@@ -59,6 +59,7 @@ public:
 	void ReplaceFunctionCall(BPatch_function * _newCall);
 	std::string * GetCalledFunction();
 	uint64_t GetPointAddress();
+	uint64_t GetPointFileAddress();
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	BPatch_function * _func;

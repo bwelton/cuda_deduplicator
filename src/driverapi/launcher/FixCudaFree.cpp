@@ -1,9 +1,59 @@
 #include "FixCudaFree.h"
+#include <fstream>
+#include <set>
+
+class DebugInstrimentationTemp {
+public:
+	DebugInstrimentationTemp(std::string infile, std::string outfile);
+	void PopulateInstructions();
+	bool InstrimentFunction(std::string & funcName, std::string & libraryName, uint64_t offset);
+	~DebugInstrimentationTemp();
+private:
+	std::ofstream _outFile;
+	std::ifstream _inFile;
+	std::set<std::string> _instFunctions;
+};
+
+DebugInstrimentationTemp::DebugInstrimentationTemp(std::string infile, std::string outfile) {
+	_inFile.open(infile.c_str());
+	if (_inFile.good()){
+		PopulateInstructions();
+		_inFile.close();
+	}
+	_outFile.open(outfile.c_str());
+}
+DebugInstrimentationTemp::~DebugInstrimentationTemp() {
+	_outFile.close();
+}
+
+bool DebugInstrimentationTemp::InstrimentFunction(std::string & funcName, std::string & libraryName, uint64_t offset) {
+	std::stringsteam ss;
+	ss << funcName <<"," << libraryName << "," << std::hex << offset << std::endl;
+	std::string tmp = ss.str();
+	if (_instFunctions.size() > 0) {
+		if (_instFunctions.find(tmp) == _instFunctions.end())
+			return false;
+	}
+	_outFile << tmp;
+	return true;
+}
+
+void DebugInstrimentationTemp::PopulateInstructions() {
+	std::string line;
+	while (std::getline(_inFile, line)) {
+		std::cout << "[DebugInstrimentationTemp::PopulateInstructions] Reading funciton id - " << line;
+		_instFunctions.insert(line);
+	}
+}
+
+
 FixCudaFree::FixCudaFree(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 
 
 
 void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
+	DebugInstrimentationTemp debugOutput(std::string("DIOGENES_limitFunctions.txt"), std::string("DIOGENES_funcsInstrimented.txt"));
+
 	_bmap.reset(new BinaryLocationIDMap());
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
@@ -35,6 +85,7 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 		// if (i.second->IsExcludedFunction(LOAD_STORE_INST))
 		// 	continue;
 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
+
 		if (tmpFuncName.find("DIOGENES_") != std::string::npos || tmpLibname.find("/lib/plugins/") != std::string::npos)
 			continue;
 		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos || tmpLibname.find("libcudart") != std::string::npos)
@@ -45,6 +96,8 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
+					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+						continue;
 					//if (x.GetPointAddress() == (uint64_t) 0x10006cc4) {
 						x.ReplaceFunctionCall(cudaFreeWrapper[0]);
 						std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
@@ -52,11 +105,13 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 					//}
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc")) {
+					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+						continue;
 					std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 					x.ReplaceFunctionCall(cudaMallocWrapper[0]);
 				}
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc")){
-					x.ReplaceFunctionCall(mallocWrapper[0]);
+					//x.ReplaceFunctionCall(mallocWrapper[0]);
 					std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMemcpyAsync"))

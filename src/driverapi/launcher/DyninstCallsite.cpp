@@ -11,6 +11,13 @@ uint64_t DyninstCallsite::GetPointAddress() {
 	return (uint64_t)_point.getAddress();
 }
 
+uint64_t DyninstCallsite::GetPointFileAddress() {
+	uint64_t libOffsetAddr = 0;
+	if (!_proc->ReturnDynOps()->GetFileOffset(_proc->GetAddressSpace(), &_point, libOffsetAddr, true))
+		libOffsetAddr = GetPointAddress();
+	return libOffsetAddr;
+}
+
 std::string * DyninstCallsite::GetCalledFunction() {
 	return &_calledFunc;
 }

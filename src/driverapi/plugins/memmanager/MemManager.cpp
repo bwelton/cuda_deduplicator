@@ -9,7 +9,7 @@
 // CUDA include
 #include <cuda_runtime_api.h>
 #include <cuda.h>
-
+#define MEMMANAGE_DEBUG 1
 class MemStats {
 public:
 	MemStats(std::string name);
@@ -33,9 +33,11 @@ public:
 	cudaError_t GPUFree(void * mem);
 	void * CPUAllocate(uint64_t size);
 	void CPUFree(void * mem);
+	void UsedCache(size_t size);
 
 private:
 	std::map<uint64_t, uint64_t> _gpuMem;
+	uint64_t _cacheHits;
 	std::map<uint64_t, std::vector<void *> > _gpuMemSize;
 	std::map<uint64_t, uint64_t> _cpuMem;
 	std::shared_ptr<MemStats> _cpuStats;
@@ -43,7 +45,7 @@ private:
 	//
 };
 
-MemStats::MemStats(std::string name) :  _current(0), _max(0), _allocatedCount(0), _freedCount(0), _type(name) {}
+MemStats::MemStats(std::string name) :  _current(0), _max(0), _allocatedCount(0), _freedCount(0), _type(name), _cacheHits(0) {}
 
 MemStats::~MemStats() {
 	std::stringstream ss;
@@ -51,14 +53,26 @@ MemStats::~MemStats() {
 	ss << "Allocator Type: " << _type << std::endl;
 	ss << "Alloc Count: " << _allocatedCount << " Free Count: " << _freedCount << std::endl;
 	ss << "Max Allocated: " << _max << std::endl;
+	ss << "Cache Hits: " << _cacheHits << std::endl;
 	ss << "Sizes Allocated... " << std::endl;
+
 	for (auto i : _sizes) {
 		ss << i.first << " " << i.second << std::endl;
 	}
 	std::cerr << ss.str();
 }
 
+void MemStats::UsedCache(size_t size) {
+#ifdef MEMMANAGE_DEBUG
+	std::cout << "[MemStats::UsedCache] Cached memory range used for alloc of size - " << size << std::endl;
+#endif
+	_cacheHits++;
+}
+
 void MemStats::AllocatedMemory(uint64_t size) {
+#ifdef MEMMANAGE_DEBUG
+	std::cout << "[MemStats::AllocatedMemory] Allocating Memory of size - " << size << std::endl;
+#endif
 	if (_sizes.find(size) == _sizes.end())
 		_sizes[size] = 1;
 	else
@@ -70,6 +84,9 @@ void MemStats::AllocatedMemory(uint64_t size) {
 }
 
 void MemStats::FreedMemory(uint64_t size) {
+#ifdef MEMMANAGE_DEBUG
+	std::cout << "[MemStats::FreedMemory] Freeing Memory of size - " << size << std::endl;
+#endif
 	_freedCount += 1;
 	if (_current > size) 
 		_current -= size;
@@ -94,9 +111,19 @@ bool FindFreeMemory(std::map<uint64_t, std::vector<void *> >  & memRegions, void
 }
 
 cudaError_t MemManage::GPUAllocate (void** mem, uint64_t size) {
-	if (FindFreeMemory(_gpuMemSize, mem, size))
+	#ifdef MEMMANAGE_DEBUG
+		std::cout << "[MemManage::GPUAllocate] Entering GPU allocator to get size of " << size << std::endl;
+	#endif
+	if (FindFreeMemory(_gpuMemSize, mem, size)) {
+		#ifdef MEMMANAGE_DEBUG
+			std::cout << "[MemManage::GPUAllocate] Using a cached address " << std::endl;
+		#endif
+		_gpuStats->UsedCache(size);
 		return cudaSuccess;
-
+	}
+	#ifdef MEMMANAGE_DEBUG
+		std::cout << "[MemManage::GPUAllocate] Allocating a new GPU memory address " << std::endl;
+	#endif	
 	// Allocate if we must...
 	cudaError_t tmp = cudaMalloc(mem, size);
 	if (tmp == cudaSuccess){

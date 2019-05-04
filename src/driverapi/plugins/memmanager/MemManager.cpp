@@ -9,7 +9,7 @@
 // CUDA include
 #include <cuda_runtime_api.h>
 #include <cuda.h>
-#define MEMMANAGE_DEBUG 1
+//#define MEMMANAGE_DEBUG 1
 class MemStats {
 public:
 	MemStats(std::string name);

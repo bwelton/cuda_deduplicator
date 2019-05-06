@@ -68,6 +68,7 @@ public:
 	void ReturnPreCudaCalls(std::vector<StackPoint> & ret);
 	std::vector<TF_Record> _timing;
 	bool ReplaceLibDynRT(StackPoint p);
+
 private:
 	uint64_t _id;
 	std::vector<StackPoint> _points;
@@ -75,8 +76,6 @@ private:
 	std::vector<uint64_t> _occurances;
 	//std::vector<TimingData> _timingData;
 };
-
-
 
 class CudaCallMap {
 public: 

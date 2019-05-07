@@ -34,6 +34,7 @@ public:
 	cudaError_t GPUAllocate(void ** mem, uint64_t size);
 	cudaError_t GPUFree(void * mem);
 	void * CPUAllocate(uint64_t size);
+	void CheckDestTransMem(void * mem);
 	void CPUFree(void * mem);
 private:
 	std::map<uint64_t, uint64_t> _gpuMem;
@@ -154,10 +155,16 @@ void * MemManage::CPUAllocate(uint64_t size) {
 void MemManage::CPUFree(void * mem) {
 	if (_cpuMem.find((uint64_t) mem) != _cpuMem.end()) {
 		_cpuStats->FreedMemory(_cpuMem[(uint64_t)mem]);
+		_cpuMem.erase((uint64_t)mem);
 	} else {
 		std::cerr << "[MemManage::CPUFree] We have no idea what this memory address is... " << std::hex << mem << std::endl;
 	}
 	free(mem);
+}
+
+void MemManage::CheckDestTransMem(void * mem) {
+	if (_cpuMem.find((uint64_t) mem) == _cpuMem.end()) 
+		std::cerr << "[MemManage::CheckDestTransMem] We do not know about this CPU address in memory transfer - " << std::hex << (uint64_t) mem << std::endl;
 }
 
 std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
@@ -191,15 +198,18 @@ cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
 
 cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
 	PLUG_BUILD_FACTORY()
+	if (kind == cudaMemcpyDeviceToHost)
+		PLUG_FACTORY_PTR->CheckDestTransMem(dst);
 	//std::cerr << "Initiating a transfer between  " << std::hex << dst <<  " and " << std::hex << src << " of size " << size << std::endl;
 	return cudaMemcpyAsync(dst, src, size, kind, stream);
 }
 
 void * DIOGENES_MALLOCWrapper(size_t size) {
 	PLUG_BUILD_FACTORY()
-	void * tmp = malloc(size);
+	return PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
+	//void * tmp = malloc(size);
 	//std::cerr << "Malloced data at  " << std::hex << tmp << " of size " << size << std::endl;
-	return tmp;
+	//return tmp;
 }
 }
 

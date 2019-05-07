@@ -96,7 +96,7 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
-				std::cerr << "[DB]CS Function Name - " << *(x->GetCalledFunction()) << std::endl;
+				std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
 					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 						continue;

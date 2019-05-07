@@ -102,7 +102,7 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 						continue;
 					//if (x.GetPointAddress() == (uint64_t) 0x10006cc4) {
 					std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
-					x.ReplaceFunctionCall(cudaFreeWrapper[0]);
+					//x.ReplaceFunctionCall(cudaFreeWrapper[0]);
 					//return;
 					
 					//}
@@ -111,20 +111,20 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 						continue;
 					std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
-					x.ReplaceFunctionCall(cudaMallocWrapper[0]);
+					//x.ReplaceFunctionCall(cudaMallocWrapper[0]);
 					//return;
 				}
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc")){
 					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 						continue;
-					//x.ReplaceFunctionCall(mallocWrapper[0]);
+					x.ReplaceFunctionCall(mallocWrapper[0]);
 					std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMemcpyAsync")){
 					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 						continue;
 					std::cerr << "Found function call to cudaMemcpyAsync in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
-					x.ReplaceFunctionCall(cudaMemcpyWrapper[0]);
+					//x.ReplaceFunctionCall(cudaMemcpyWrapper[0]);
 				}
 			}
 		//}

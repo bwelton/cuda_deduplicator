@@ -205,11 +205,11 @@ cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t
 }
 
 void * DIOGENES_MALLOCWrapper(size_t size) {
-	PLUG_BUILD_FACTORY()
-	return PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
-	//void * tmp = malloc(size);
+	// PLUG_BUILD_FACTORY()
+	// return PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
+	void * tmp = malloc(size);
 	//std::cerr << "Malloced data at  " << std::hex << tmp << " of size " << size << std::endl;
-	//return tmp;
+	return tmp;
 }
 }
 

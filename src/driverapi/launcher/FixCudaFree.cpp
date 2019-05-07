@@ -91,11 +91,12 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 			continue;
 		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos || tmpLibname.find("libcudart") != std::string::npos)
 			continue;
-		std::cerr << "[DB]Function Name - " << tmpFuncName << std::endl;
+		
 		//if (tmpLibname.find(binary_name) != std::string::npos) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
+				std::cerr << "[DB]CS Function Name - " << *(x->GetCalledFunction()) << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
 					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 						continue;

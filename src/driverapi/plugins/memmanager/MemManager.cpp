@@ -223,5 +223,16 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 	//std::cerr << "Malloced data at  " << std::hex << tmp << " of size " << size << std::endl;
 	return tmp;
 }
+
+void DIOGENES_FREEWrapper(void * mem) {
+	bool setVal = false;
+	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
+		PLUG_BUILD_FACTORY()
+		PLUG_FACTORY_PTR->CPUFree(mem);
+		DIOGENES_Atomic_Malloc.exchange(false);
+	} else {
+		free(mem);
+	}
+}
 }
 

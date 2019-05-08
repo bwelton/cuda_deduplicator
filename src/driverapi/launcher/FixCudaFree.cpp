@@ -65,11 +65,14 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 	std::vector<BPatch_function *> cudaMallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMallocWrapper"), wrapper);
 	std::vector<BPatch_function *> cudaMemcpyWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMemcpyAsyncWrapper"), wrapper);
 	std::vector<BPatch_function *> mallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_MALLOCWrapper"), wrapper);
+	std::vector<BPatch_function *> freeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_FREEWrapper"), wrapper);
 
 	assert(cudaFreeWrapper.size() > 0);
 	assert(cudaMallocWrapper.size() > 0);
 	assert(cudaMemcpyWrapper.size() > 0);
 	assert(mallocWrapper.size() > 0);
+	assert(freeWrapper.size() > 0);
+
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 	std::vector<BPatch_function *> all_functions;
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();
@@ -119,6 +122,12 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 						continue;
 					x.ReplaceFunctionCall(mallocWrapper[0]);
 					std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
+				}
+				if (*(x.GetCalledFunction()) == std::string("__libc_free")){
+					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+						continue;
+					x.ReplaceFunctionCall(freeWrapper[0]);
+					std::cerr << "Found function call to free in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMemcpyAsync")){
 					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))

@@ -9,6 +9,10 @@
 // CUDA include
 #include <cuda_runtime_api.h>
 #include <cuda.h>
+#include <atomic> 
+
+std::atomic<bool> DIOGENES_Atomic_Malloc(false);
+
 //#define MEMMANAGE_DEBUG 1
 class MemStats {
 public:
@@ -171,7 +175,9 @@ std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
 
 #define PLUG_BUILD_FACTORY(param) \
 	if (DIOGENES_MEMORY_MANAGER.get() == NULL) { \
+		bool original = DIOGENES_Atomic_Malloc.exchange(true); \
 		DIOGENES_MEMORY_MANAGER.reset(new MemManage(param)); \
+		DIOGENES_Atomic_Malloc.exchange(original); \
 	} 
 
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_MANAGER.get()
@@ -205,9 +211,15 @@ cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t
 }
 
 void * DIOGENES_MALLOCWrapper(size_t size) {
-	// PLUG_BUILD_FACTORY()
-	// return PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
-	void * tmp = malloc(size);
+	void * tmp = NULL;
+	bool setVal = false;
+	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
+		PLUG_BUILD_FACTORY()	
+		tmp = PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
+		DIOGENES_Atomic_Malloc.exchange(false);
+	} else {
+		tmp = malloc(size);
+	} 
 	//std::cerr << "Malloced data at  " << std::hex << tmp << " of size " << size << std::endl;
 	return tmp;
 }

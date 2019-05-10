@@ -10,7 +10,7 @@
 #include <cuda_runtime_api.h>
 #include <cuda.h>
 #include <atomic> 
-
+#include <cstring>
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
 
 //#define MEMMANAGE_DEBUG 1

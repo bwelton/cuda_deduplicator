@@ -66,13 +66,14 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 	std::vector<BPatch_function *> cudaMemcpyWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMemcpyAsyncWrapper"), wrapper);
 	std::vector<BPatch_function *> mallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_MALLOCWrapper"), wrapper);
 	std::vector<BPatch_function *> freeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_FREEWrapper"), wrapper);
+	std::vector<BPatch_function *> syncExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SyncExit"), wrapper);
 
 	assert(cudaFreeWrapper.size() > 0);
 	assert(cudaMallocWrapper.size() > 0);
 	assert(cudaMemcpyWrapper.size() > 0);
 	assert(mallocWrapper.size() > 0);
 	assert(freeWrapper.size() > 0);
-
+	assert(syncExit.size() > 0);
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 	std::vector<BPatch_function *> all_functions;
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();
@@ -138,5 +139,12 @@ void FixCudaFree::InsertAnalysis(StackRecMap & recs) {
 			}
 		//}
 	}
+	std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
+	assert(cudaSyncFunctions.size() > 0);
 
+	std::vector<BPatch_point*> * entryPoints = cudaSyncFunctions[0]->findPoint(BPatch_locExit);
+	std::vector<BPatch_snippet*> recordArgs;
+	BPatch_funcCallExpr entryExpr(*(syncExit[0]), recordArgs);	
+	assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
+	// 
 }

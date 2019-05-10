@@ -45,12 +45,18 @@ public:
 	void * CPUAllocate(uint64_t size);
 	void CheckDestTransMem(void * mem);
 	void CPUFree(void * mem);
+
+	void * MallocPinMim(uint64_t size, void * origLoc);
+	void ReturnPinMem();
 private:
 	std::map<uint64_t, uint64_t> _gpuMem;
 	std::map<uint64_t, std::vector<void *> > _gpuMemSize;
 	std::map<uint64_t, uint64_t> _cpuMem;
 	std::shared_ptr<MemStats> _cpuStats;
 	std::shared_ptr<MemStats> _gpuStats;
+
+	std::map<uint64_t, std::vector<void *> > _cpuPinnedPages;
+	std::map<uint64_t, std::pair<uint64_t, void *> > _cpuPinMem;
 	//
 };
 
@@ -136,6 +142,33 @@ bool FindFreeMemory(std::map<uint64_t, std::vector<void *> >  & memRegions, void
 		}
 
 	return false;
+}
+
+void MemManage::ReturnPinMem() {
+	for (auto i : _cpuPinMem) {
+		if(_cpuPinnedPages.find(i.second.first) == _cpuPinnedPages.end())
+			_cpuPinnedPages[i.second.first] = std::vector<void *>();
+		memcpy(i.second.second, (void*)i.first, i.second.first);
+		_cpuPinnedPages[i.second.first].push_back((void*)i.first);
+	}
+	_cpuPinMem.clear();
+}
+
+void * MemManage::MallocPinMim(uint64_t size, void * orig) {
+	void * tmp = NULL;
+
+	if (FindFreeMemory(_cpuPinnedPages, tmp, size)) {
+		_cpuPinMem[(uint64_t)tmp] = std::make_pair(size, orig);
+		return tmp;
+	} else {
+		if (cudaMallocHost(&tmp, size_t(size)) == cudaSuccess){
+			_cpuPinMem[(uint64_t)tmp] = std::make_pair(size, orig);
+			return tmp;
+		}
+	}
+
+	std::cerr << "We cannot allocate via cudaMallocHost, using original address" << std::endl;
+	return orig;
 }
 
 cudaError_t MemManage::GPUAllocate (void** mem, uint64_t size) {
@@ -247,8 +280,11 @@ cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
 
 cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
 	PLUG_BUILD_FACTORY()
-	if (kind == cudaMemcpyDeviceToHost)
-		PLUG_FACTORY_PTR->CheckDestTransMem(dst);
+	if (kind == cudaMemcpyDeviceToHost) {
+		void * mem = PLUG_FACTORY_PTR->MallocPinMim(size, dst);
+		dst = mem;
+		//PLUG_FACTORY_PTR->CheckDestTransMem(dst);
+	}
 	//std::cerr << "Initiating a transfer between  " << std::hex << dst <<  " and " << std::hex << src << " of size " << size << std::endl;
 	return cudaMemcpyAsync(dst, src, size, kind, stream);
 }
@@ -258,7 +294,8 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 	bool setVal = false;
 	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
 		PLUG_BUILD_FACTORY()	
-		tmp = PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
+		tmp = malloc(size);
+		//tmp = PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
 		DIOGENES_Atomic_Malloc.exchange(false);
 	} else {
 		tmp = malloc(size);
@@ -271,11 +308,17 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 // 	DIOGENES_Atomic_Malloc.exchange(true);
 // }
 
+void DIOGENES_SyncExit() {
+	PLUG_BUILD_FACTORY()
+	PLUG_FACTORY_PTR->ReturnPinMem();
+}
+
 void DIOGENES_FREEWrapper(void * mem) {
 	bool setVal = false;
 	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
 		PLUG_BUILD_FACTORY()
-		PLUG_FACTORY_PTR->CPUFree(mem);
+		free(mem);
+		//PLUG_FACTORY_PTR->CPUFree(mem);
 		DIOGENES_Atomic_Malloc.exchange(false);
 	} else {
 		free(mem);

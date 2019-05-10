@@ -39,6 +39,7 @@ private:
 class MemManage {
 public:
 	MemManage();
+	~MemManage();
 	cudaError_t GPUAllocate(void ** mem, uint64_t size);
 	cudaError_t GPUFree(void * mem);
 	void * CPUAllocate(uint64_t size);
@@ -207,7 +208,13 @@ void MemManage::CheckDestTransMem(void * mem) {
 		//std::cerr << "[MemManage::CheckDestTransMem] We do not know about this CPU address in memory transfer - " << std::hex << (uint64_t) mem << std::endl;
 }
 
+
+MemManage::~MemManage() {
+	DIOGENES_Atomic_Malloc.exchange(true);
+}
 std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
+
+
 
 #define PLUG_BUILD_FACTORY(param) \
 	if (DIOGENES_MEMORY_MANAGER.get() == NULL) { \
@@ -259,6 +266,10 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 	//std::cerr << "Malloced data at  " << std::hex << tmp << " of size " << size << std::endl;
 	return tmp;
 }
+
+// void DIOGENES_EXITWrapper() {
+// 	DIOGENES_Atomic_Malloc.exchange(true);
+// }
 
 void DIOGENES_FREEWrapper(void * mem) {
 	bool setVal = false;

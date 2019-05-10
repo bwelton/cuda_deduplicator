@@ -74,7 +74,7 @@ MemStats::~MemStats() {
 
 	ss << "Transfer Addresses.... " << std::endl;
 	for (auto i : _transAddresses)
-		ss << std::hex << i.first << " " << i.second << std::endl;
+		ss << std::hex << i.first << " " << std::dec << i.second << std::endl;
 	std::cerr << ss.str();
 }
 

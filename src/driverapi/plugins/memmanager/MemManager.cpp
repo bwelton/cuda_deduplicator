@@ -148,7 +148,7 @@ void MemManage::ReturnPinMem() {
 	for (auto i : _cpuPinMem) {
 		if(_cpuPinnedPages.find(i.second.first) == _cpuPinnedPages.end())
 			_cpuPinnedPages[i.second.first] = std::vector<void *>();
-		memcpy(i.second.second, (void*)i.first, i.second.first);
+		std::memcpy(i.second.second, (void*)i.first, i.second.first);
 		_cpuPinnedPages[i.second.first].push_back((void*)i.first);
 	}
 	_cpuPinMem.clear();
@@ -157,7 +157,7 @@ void MemManage::ReturnPinMem() {
 void * MemManage::MallocPinMim(uint64_t size, void * orig) {
 	void * tmp = NULL;
 
-	if (FindFreeMemory(_cpuPinnedPages, tmp, size)) {
+	if (FindFreeMemory(_cpuPinnedPages, &tmp, size)) {
 		_cpuPinMem[(uint64_t)tmp] = std::make_pair(size, orig);
 		return tmp;
 	} else {

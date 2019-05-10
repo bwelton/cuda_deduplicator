@@ -21,12 +21,15 @@ public:
 	void AllocatedMemory(uint64_t size);
 	void FreedMemory(uint64_t size);
 	void UsedCache(size_t size);
+	void TransferAddrKnown(bool known);
 private:
 	std::map<uint64_t, uint64_t> _sizes;
 	uint64_t _current;
 	uint64_t _max;
 	uint64_t _allocatedCount;
 	uint64_t _freedCount;
+	uint64_t _knownTransferAddrs;
+	uint64_t _unknownTransferAddrs;
 	std::string _type;
 	uint64_t _cacheHits;
 };
@@ -49,7 +52,9 @@ private:
 	//
 };
 
-MemStats::MemStats(std::string name) :  _current(0), _max(0), _allocatedCount(0), _freedCount(0), _type(name), _cacheHits(0) {}
+MemStats::MemStats(std::string name) :  _current(0), _max(0), _allocatedCount(0), _freedCount(0), 
+										_type(name), _cacheHits(0), _knownTransferAddrs(0),
+										_unknownTransferAddrs(0) {}
 
 MemStats::~MemStats() {
 	std::stringstream ss;
@@ -57,6 +62,7 @@ MemStats::~MemStats() {
 	ss << "Allocator Type: " << _type << std::endl;
 	ss << "Alloc Count: " << _allocatedCount << " Free Count: " << _freedCount << std::endl;
 	ss << "Max Allocated: " << _max << std::endl;
+	ss << "Known Transfer Addr: " << _knownTransferAddrs << " Unknown Trans Addr: " << _unknownTransferAddrs << std::endl;
 	ss << "Cache Hits: " << _cacheHits << std::endl;
 	ss << "Sizes Allocated... " << std::endl;
 
@@ -73,6 +79,14 @@ void MemStats::UsedCache(size_t size) {
 	_cacheHits++;
 }
 
+
+void MemStats::TransferAddrKnown(bool known) {
+	if (known)
+		_knownTransferAddrs++;
+	else
+		_unknownTransferAddrs++;
+
+}
 void MemStats::AllocatedMemory(uint64_t size) {
 #ifdef MEMMANAGE_DEBUG
 	std::cout << "[MemStats::AllocatedMemory] Allocating Memory of size - " << size << std::endl;
@@ -166,9 +180,22 @@ void MemManage::CPUFree(void * mem) {
 	free(mem);
 }
 
+uint64_t Diogenes_FindMemKey(std::map<uint64_t,uint64_t> & m, uint64_t addr) {
+	std::map<uint64_t, uint64_t>::iterator lb = m.lower_bound(addr);
+	if (lb == m.end())
+		return 0;
+	if (lb->first + lb->second >= addr)
+		return lb->first;
+	return 0;
+}
+
 void MemManage::CheckDestTransMem(void * mem) {
-	if (_cpuMem.find((uint64_t) mem) == _cpuMem.end()) 
-		std::cerr << "[MemManage::CheckDestTransMem] We do not know about this CPU address in memory transfer - " << std::hex << (uint64_t) mem << std::endl;
+	uint64_t key = Diogenes_FindMemKey(_cpuMem, (uint64_t) mem);
+	if (key == 0)
+		_cpuStats->TransferAddrKnown(false);
+	else 
+		_cpuStats->TransferAddrKnown(true);
+		//std::cerr << "[MemManage::CheckDestTransMem] We do not know about this CPU address in memory transfer - " << std::hex << (uint64_t) mem << std::endl;
 }
 
 std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;

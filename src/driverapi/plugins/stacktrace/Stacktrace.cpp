@@ -9,9 +9,12 @@
 #include <sstream>
 #include <cstring>
 #include <memory>
+#include <vector>
 #include <execinfo.h>
 #include "StackPoint.h"
 #include "StackwalkingCommon.h"
+std::shared_ptr<std::vector<bool>> DIOGENES_seenCalls(1024, false);
+int DIOGENES_CURRENT_CALL_ID = -1;
 
 struct OutputFile {
 	FILE * outFile;
@@ -25,13 +28,40 @@ struct OutputFile {
 	}
 };
 
+class WriteIDKeys {
+	WriteIDKeys(std::string filename) : _outFile(filename) {
+
+	}
+
+	void RecordKey(int id) {
+		if (id >= 0 && id < 1024)
+			_seenCalls[id] = true;
+	}
+
+	~WriteIDKeys() {
+		for (int i = 0; i < _seenCalls.size(); i++) {
+			if (_seenCalls[i] == true)
+				fwrite(&i, 1, sizeof(int),_outFile.outFile);
+		}
+	}
+	std::vector<bool> _seenCalls(1024, false);
+	OutputFile _outFile;
+};
+
 thread_local uint64_t skippedStacks;
 thread_local pid_t my_thread_id = -1;
 thread_local std::shared_ptr<OutputFile> outputFile;
 thread_local std::shared_ptr<StackKeyWriter> keyFile;
+thread_local std::shared_ptr<WriteIDKeys> DIOGENES_WRITEKEYID;
 
 
 extern "C" {
+
+	void SETUP_NEWINTERCEPTOR() {
+		if (DIOGENES_WRITEKEYID.get() != NULL)
+			return;
+		DIOGENES_WRITEKEYID.reset(new WriteIDKeys(std::string("DIOGENES_SyncCallKeys.bin")));
+	}
 
 	void SETUP_INTERCEPTOR() {
 		if (outputFile.get() != NULL)
@@ -108,6 +138,15 @@ extern "C" {
 		// for (auto i : points) {
 		// 	std::cerr << i.libname <<  "," << i.libOffset << std::endl;
 		// }
+	}
+
+	void SYNC_RECORD_SYNC_CALL_IDTYPE() {
+		SETUP_NEWINTERCEPTOR();
+		DIOGENES_WRITEKEYID->RecordKey(DIOGENES_CURRENT_CALL_ID);
+	}
+
+	void ENTER_CUDA_FUNCT(int id) {
+		DIOGENES_CURRENT_CALL_ID = id;
 	}
 
 }

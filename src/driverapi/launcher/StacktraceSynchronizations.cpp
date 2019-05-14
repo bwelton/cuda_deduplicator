@@ -104,10 +104,11 @@ void StacktraceSynchronizations::Setup() {
 
 void StacktraceSynchronizations::InsertEntryInst() {
 	std::vector<BPatch_function *> stackTracer;
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	stackTracer = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("ENTER_CUDA_FUNCT"), NULL);
 	assert(stackTracer.size() == 1);
 	std::set<std::string> alreadyInst;
-	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+
 	std::vector<BPatch_function *> funcList;
 	int idCount = 1;
 	for (auto i : CudaCallList) {

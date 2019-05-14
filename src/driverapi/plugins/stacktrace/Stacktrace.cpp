@@ -30,23 +30,23 @@ struct OutputFile {
 
 class WriteIDKeys {
 public:
-	WriteIDKeys(std::string filename) : _outFile(filename) {
+	WriteIDKeys(std::string filename) : _seenCalls(1024, false), _outFile(filename) {
 
 	}
 
 	void RecordKey(int id) {
 		if (id >= 0 && id < 1024)
 			_seenCalls[id] = true;
-	}
+	};
 
 	~WriteIDKeys() {
 		for (int i = 0; i < _seenCalls.size(); i++) {
 			if (_seenCalls[i] == true)
 				fwrite(&i, 1, sizeof(int),_outFile.outFile);
 		}
-	}
+	};
 private:
-	std::vector<bool> _seenCalls(1024, false);
+	std::vector<bool> _seenCalls;
 	OutputFile _outFile;
 };
 

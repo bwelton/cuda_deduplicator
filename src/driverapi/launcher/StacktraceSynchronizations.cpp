@@ -1,5 +1,9 @@
 #include "StacktraceSynchronizations.h"
 #define USE_BPATCHINSERT 1
+std::vector<char *> CudaCallList = CUDACALLLIST;
+
+
+
 StacktraceSynchronizations::StacktraceSynchronizations(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {
 }
 
@@ -16,7 +20,7 @@ void StacktraceSynchronizations::Setup() {
 	 **/
 
 	// Insert libraries needed into process	
-	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
+	_libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
 	BPatch_object * libstrace = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStacktrace.so"));
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> stackTracer;
@@ -31,7 +35,7 @@ void StacktraceSynchronizations::Setup() {
 
 	std::vector<BPatch_function *> wrapperFunc;
 	#ifdef USE_BPATCHINSERT
-	wrapperFunc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RecordStack"), NULL); 
+	wrapperFunc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SYNC_RECORD_SYNC_CALL_IDTYPE"), NULL); 
 	#else
 	wrapperFunc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("STACK_SyncWrapper"), NULL); 
 	#endif
@@ -40,7 +44,7 @@ void StacktraceSynchronizations::Setup() {
 
 	BPatch_function * cudaSync = NULL;
 
-	std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
+	std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), _libcuda, ops->GetSyncFunctionLocation());
 
 	assert(cudaSyncFunctions.size() == 1);
 
@@ -51,6 +55,78 @@ void StacktraceSynchronizations::Setup() {
 	_wrapSym = wrapperFunc[0];
 }
 
+// void StacktraceSynchronizations::SetupOrig() {
+// 	/***
+// 	 * Setup finds the key functions we need for finding synchronizations:
+// 	 *
+// 	 * 1. Nvidia's internal synchronization function. This function is located at a specific, driver version
+// 	 *    dependent offset into libcuda.so. Right now, we have a directory of md5sum,offset infromation where
+// 	 *    we look up the md5sum of the systems libcuda to identify the location of this function. How these
+// 	 *    locations are determined is via manual testing currently. 
+// 	 * 2. The wrapper that performs the backtrace (using dyninst), inserted at the beginning of the synchronization function above
+// 	 **/
+
+// 	// Insert libraries needed into process	
+// 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
+// 	BPatch_object * libstrace = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libStacktrace.so"));
+// 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+// 	std::vector<BPatch_function *> stackTracer;
+
+// 	#ifdef USE_BPATCHINSERT
+// 	stackTracer = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RecordStack"), libstrace);
+// 	#else
+// 	stackTracer = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("STACK_SyncWrapper"), libstrace);
+// 	#endif
+
+// 	std::cerr << "[StacktraceSynchronizations::Setup] Starting Setup.... " << std::endl;
+
+// 	std::vector<BPatch_function *> wrapperFunc;
+// 	#ifdef USE_BPATCHINSERT
+// 	wrapperFunc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RecordStack"), NULL); 
+// 	#else
+// 	wrapperFunc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("STACK_SyncWrapper"), NULL); 
+// 	#endif
+// 	assert(wrapperFunc.size() > 0);
+// 	_wrapperFunc = wrapperFunc[0];
+
+// 	BPatch_function * cudaSync = NULL;
+
+// 	std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
+
+// 	assert(cudaSyncFunctions.size() == 1);
+
+// 	_cudaSync = cudaSyncFunctions[0];
+
+// 	wrapperFunc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("SynchronizationWrapper"), NULL); 
+// 	assert(wrapperFunc.size() == 1);
+// 	_wrapSym = wrapperFunc[0];
+// }
+
+void StacktraceSynchronizations::InsertEntryInst() {
+	std::vector<BPatch_function *> stackTracer;
+	stackTracer = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("ENTER_CUDA_FUNCT"), NULL);
+	assert(stackTracer.size() == 1);
+	std::set<std::string> alreadyInst;
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+	std::vector<BPatch_function *> funcList;
+	int idCount = 1;
+	for (auto i : CudaCallList) {
+		std::string tmpName = std::string(i);
+		std::cerr << "[StacktraceSynchronizations::InsertEntryInst] Searching for function " << i << std::endl;
+		funcList = ops->FindFuncsByName(_proc->GetAddressSpace(), tmpName, _libcuda); 
+		for (auto z : funcList) {
+			std::cerr << "[StacktraceSynchronizations::InsertEntryInst] Found function with label - " << z->getName() << std::endl;
+			if (alreadyInst.find(z->getName()) == alreadyInst.end() && alreadyInst.find(z->getName() + std::string("_v2")) == alreadyInst.end()) {
+				std::vector<BPatch_point*> * entryLocations = z->findPoint(BPatch_locEntry);
+				std::vector<BPatch_snippet*> testArgs;
+				testArgs.push_back(new BPatch_constExpr(idCount));
+				BPatch_funcCallExpr recordFuncEntry(*(stackTracer[0]), testArgs);
+				assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*entryLocations) != false);	
+				idCount++;			
+			}
+		}
+	}
+}
 
 void StacktraceSynchronizations::InsertStacktracing() {
 	/** 
@@ -71,6 +147,8 @@ void StacktraceSynchronizations::InsertStacktracing() {
 	std::vector<BPatch_snippet*> testArgs;
 	BPatch_funcCallExpr recordFuncEntry(*_wrapperFunc, testArgs);
 	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*entryLocations) != false);
+
+	InsertEntryInst();
 #else
 	assert(_proc->GetAddressSpace()->wrapFunction(_cudaSync, _wrapperFunc, _wrapSym) != false);
 #endif
@@ -82,4 +160,10 @@ void StacktraceSynchronizations::InsertStacktracing() {
 void StacktraceSynchronizations::ReadResults(StackRecMap & recs) {
 	ReadStackKeys reader(std::string("DIOGENES_SyncCalls.key"), std::string("DIOGENES_SyncCalls.bin"));
 	reader.GetStackRecords(recs, std::bind(&ReadStackKeys::ProcessStacktraceSynch, &reader, std::placeholders::_1));
+	std::cout << "[StacktraceSynchronizations::ReadResults] BEGIN" << std::endl;
+	for (auto i : recs) {
+		i.second.PrintStack();
+	}
+	std::cout << "[StacktraceSynchronizations::ReadResults] END" << std::endl;
+
 }

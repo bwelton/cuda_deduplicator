@@ -221,12 +221,12 @@ void SyncTesting::Run() {
 	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	// }
 	//CaptureDriverCalls();
-	StackRecMap empty_map;
-	FixProblems(empty_map);
+	// StackRecMap empty_map;
+	// FixProblems(empty_map);
 	// TimeTransfers();
 	// CaptureDuplicateTransfers();
 	// RunWithoutInstrimentation();
-	// RunWithSyncStacktracing(syncTiming);
+	RunWithSyncStacktracing(syncTiming);
 	// TimeSynchronizations(syncTiming);
 	// std::vector<StackPoint> uses;
 	// RunLoadStoreAnalysis(syncTiming, uses);

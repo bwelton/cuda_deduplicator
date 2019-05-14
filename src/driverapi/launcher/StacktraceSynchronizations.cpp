@@ -183,7 +183,7 @@ void StacktraceSynchronizations::ReadResults(StackRecMap & recs) {
 	// new test
 	FILE * inFile = fopen("DIOGENES_SyncCallKeys.bin","rb");
 	int valTmp = 0;
-	while (fread(&valTmp, 1, sizeof(uint64_t), inFile) > 0){
+	while (fread(&valTmp, 1, sizeof(int), inFile) > 0){
 		if (_idToPoint.find(valTmp) == _idToPoint.end()) 
 			std::cerr << "[StacktraceSynchronizations::ReadResults] Could not find stack point for id - " << valTmp << std::endl;
 		else 

@@ -29,6 +29,7 @@ struct OutputFile {
 };
 
 class WriteIDKeys {
+public:
 	WriteIDKeys(std::string filename) : _outFile(filename) {
 
 	}
@@ -44,6 +45,7 @@ class WriteIDKeys {
 				fwrite(&i, 1, sizeof(int),_outFile.outFile);
 		}
 	}
+private:
 	std::vector<bool> _seenCalls(1024, false);
 	OutputFile _outFile;
 };

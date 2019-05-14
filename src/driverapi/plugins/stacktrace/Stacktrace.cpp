@@ -13,7 +13,7 @@
 #include <execinfo.h>
 #include "StackPoint.h"
 #include "StackwalkingCommon.h"
-std::shared_ptr<std::vector<bool>> DIOGENES_seenCalls(1024, false);
+//std::shared_ptr<std::vector<bool>> DIOGENES_seenCalls(1024, false);
 int DIOGENES_CURRENT_CALL_ID = -1;
 
 struct OutputFile {

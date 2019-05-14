@@ -123,7 +123,16 @@ void StacktraceSynchronizations::InsertEntryInst() {
 				testArgs.push_back(new BPatch_constExpr(idCount));
 				BPatch_funcCallExpr recordFuncEntry(*(stackTracer[0]), testArgs);
 				assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*entryLocations) != false);	
-				idCount++;			
+				uint64_t libOffsetAddr = 0;
+				if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*entryLocations)[0], libOffsetAddr, true))
+					libOffsetAddr = (uint64_t) i->getAddress();		
+				StackPoint n;
+				n.libOffset = libOffsetAddr;
+				n.libname = _libcuda->pathName();
+				n.funcName = z->getName();
+				_idToPoint[idCount] = n;
+				idCount++;	
+				//(_libcuda->pathName(),z->getName(), libOffsetAddr)
 			}
 		}
 	}
@@ -161,10 +170,21 @@ void StacktraceSynchronizations::InsertStacktracing() {
 void StacktraceSynchronizations::ReadResults(StackRecMap & recs) {
 	ReadStackKeys reader(std::string("DIOGENES_SyncCalls.key"), std::string("DIOGENES_SyncCalls.bin"));
 	reader.GetStackRecords(recs, std::bind(&ReadStackKeys::ProcessStacktraceSynch, &reader, std::placeholders::_1));
-	std::cout << "[StacktraceSynchronizations::ReadResults] BEGIN" << std::endl;
+	std::set<std::string> cudaCalls;
+	std::cout << "[StacktraceSynchronizations::ReadResults] ORIG BEGIN" << std::endl;
 	for (auto i : recs) {
 		i.second.PrintStack();
+		cudaCalls.insert(i.second.GetFirstCudaCall().funcName);
 	}
-	std::cout << "[StacktraceSynchronizations::ReadResults] END" << std::endl;
+	std::cout << "[StacktraceSynchronizations::ReadResults] ORIG END" << std::endl;
+	for (auto i : cudaCalls)
+		std::cout << "[StacktraceSynchronizations::ReadResults] Cuda call at - " << i << std::endl;
+
+	// new test
+	FILE * inFile = fopen("DIOGENES_SyncCallKeys.bin","rb");
+	int valTmp = 0;
+	while (fread(&valTmp, 1, sizeof(uint64_t), inFile) > 0){
+
+	}
 
 }

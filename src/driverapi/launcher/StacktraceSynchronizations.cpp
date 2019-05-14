@@ -1,6 +1,6 @@
 #include "StacktraceSynchronizations.h"
 #define USE_BPATCHINSERT 1
-std::vector<char *> CudaCallList = CUDACALLLIST;
+std::vector<std::string> CudaCallList = CUDACALLLIST;
 
 
 

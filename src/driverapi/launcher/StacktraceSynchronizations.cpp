@@ -125,7 +125,7 @@ void StacktraceSynchronizations::InsertEntryInst() {
 				assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*entryLocations) != false);	
 				uint64_t libOffsetAddr = 0;
 				if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*entryLocations)[0], libOffsetAddr, true))
-					libOffsetAddr = (uint64_t) i->getAddress();		
+					libOffsetAddr = (uint64_t) (*entryLocations)[0]->getAddress();		
 				StackPoint n;
 				n.libOffset = libOffsetAddr;
 				n.libname = _libcuda->pathName();
@@ -184,7 +184,10 @@ void StacktraceSynchronizations::ReadResults(StackRecMap & recs) {
 	FILE * inFile = fopen("DIOGENES_SyncCallKeys.bin","rb");
 	int valTmp = 0;
 	while (fread(&valTmp, 1, sizeof(uint64_t), inFile) > 0){
-
+		if (_idToPoint.find(valTmp) == _idToPoint.end()) 
+			std::cerr << "[StacktraceSynchronizations::ReadResults] Could not find stack point for id - " << valTmp << std::endl;
+		else 
+			std::cerr << "[StacktraceSynchronizations::ReadResults] Synchronization at: " << _idToPoint[valTmp].funcName << std::endl;
 	}
 
 }

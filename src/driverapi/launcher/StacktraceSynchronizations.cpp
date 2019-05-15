@@ -179,15 +179,21 @@ void StacktraceSynchronizations::ReadResults(StackRecMap & recs) {
 	std::cout << "[StacktraceSynchronizations::ReadResults] ORIG END" << std::endl;
 	for (auto i : cudaCalls)
 		std::cout << "[StacktraceSynchronizations::ReadResults] Cuda call at - " << i << std::endl;
-
+	recs.clear();
 	// new test
 	FILE * inFile = fopen("DIOGENES_SyncCallKeys.bin","rb");
 	int valTmp = 0;
+	uint64_t pos = 1;
 	while (fread(&valTmp, 1, sizeof(int), inFile) > 0){
 		if (_idToPoint.find(valTmp) == _idToPoint.end()) 
 			std::cerr << "[StacktraceSynchronizations::ReadResults] Could not find stack point for id - " << valTmp << std::endl;
-		else 
+		else {
+			std::vector<StackPoint> tmpPoints;
+			tmpPoints.push_back(_idToPoint[valTmp]);
+			StackRecord rec(pos, tmpPoints);
+			recs[pos] = rec;
 			std::cerr << "[StacktraceSynchronizations::ReadResults] Synchronization at: " << _idToPoint[valTmp].funcName << std::endl;
+		}
 	}
 
 }

@@ -104,8 +104,10 @@ void StacktraceSynchronizations::Setup() {
 
 void StacktraceSynchronizations::InsertEntryInst() {
 	std::vector<BPatch_function *> stackTracer;
+	std::vector<BPatch_function *> stackTracerExit;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	stackTracer = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("ENTER_CUDA_FUNCT"), NULL);
+	stackTracerExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("EXIT_CUDA_FUNCT"), NULL);
 	assert(stackTracer.size() == 1);
 	std::set<std::string> alreadyInst;
 
@@ -119,10 +121,13 @@ void StacktraceSynchronizations::InsertEntryInst() {
 			std::cerr << "[StacktraceSynchronizations::InsertEntryInst] Found function with label - " << z->getName() << std::endl;
 			if (alreadyInst.find(z->getName()) == alreadyInst.end() && alreadyInst.find(z->getName() + std::string("_v2")) == alreadyInst.end()) {
 				std::vector<BPatch_point*> * entryLocations = z->findPoint(BPatch_locEntry);
+				std::vector<BPatch_point*> * exitLocations = z->findPoint(BPatch_locExit);
 				std::vector<BPatch_snippet*> testArgs;
 				testArgs.push_back(new BPatch_constExpr(idCount));
 				BPatch_funcCallExpr recordFuncEntry(*(stackTracer[0]), testArgs);
+				BPatch_funcCallExpr recordFuncExit(*(stackTracerExit[0]), testArgs);
 				assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*entryLocations) != false);	
+				assert(_proc->GetAddressSpace()->insertSnippet(recordFuncExit,*exitLocations) != false);	
 				uint64_t libOffsetAddr = 0;
 				if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*entryLocations)[0], libOffsetAddr, true))
 					libOffsetAddr = (uint64_t) (*entryLocations)[0]->getAddress();		

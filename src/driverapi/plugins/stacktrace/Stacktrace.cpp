@@ -11,6 +11,7 @@
 #include <memory>
 #include <vector>
 #include <execinfo.h>
+#include <chrono>
 #include <dlfcn.h>
 #include "StackPoint.h"
 #include "StackwalkingCommon.h"
@@ -176,5 +177,23 @@ extern "C" {
 		// 	exit(0);
 	}
 
+	std::chrono::high_resolution_clock::time_point DIOGENES_TOTAL_TIME_START;
+	bool DIOGENES_TIMER_SET = false;
+	void DIOGENES_START_TIMER() {
+		SETUP_NEWINTERCEPTOR();
+		DIOGENES_TIMER_SET = true;
+		DIOGENES_TOTAL_TIME_START = std::chrono::high_resolution_clock::now();
+	}
 
+	void DIOGENES_END_TIMER() {
+		auto end = std::chrono::high_resolution_clock::now();
+		if (DIOGENES_END_TIMER == false){
+			fprintf(stderr, "%s\n", "Diogenes timer not set, exiting");
+			return;
+		}
+		std::chrono::duration<double> diff = end - DIOGENES_TOTAL_TIME_START;
+		std::cerr << "[DIOGENES_RTIME] " << diff.count() << std::endl;
+
+
+	}
 }

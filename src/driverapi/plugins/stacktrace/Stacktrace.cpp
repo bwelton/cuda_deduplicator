@@ -11,10 +11,12 @@
 #include <memory>
 #include <vector>
 #include <execinfo.h>
+#include <dlfcn.h>
 #include "StackPoint.h"
 #include "StackwalkingCommon.h"
 //std::shared_ptr<std::vector<bool>> DIOGENES_seenCalls(1024, false);
 int DIOGENES_CURRENT_CALL_ID = -1;
+bool DIOGENES_CHECK_KERN_START =false;
 
 struct OutputFile {
 	FILE * outFile;
@@ -33,8 +35,17 @@ public:
 	WriteIDKeys(std::string filename) : _seenCalls(1024, false), _outFile(filename) {
 
 	}
-
 	void RecordKey(int id) {
+		if (id == 291) {
+			void (*tf)(uint64_t);
+			fprintf(stderr, "%s\n", "In cudaMemcpyAsyncHtoD_v2");
+			void * handle = dlopen("/g/g17/welton2/scratch/nfs/apps/cuIBM/examples/lidDrivenCavity/Re100/logs/mylib.so", RTLD_LAZY);
+
+			tf = (void (*)(uint64_t)) dlsym(handle, "StartKernel")
+			tf(1);
+			fprintf(stderr, "%s\n", "Started Kernel");
+			DIOGENES_CHECK_KERN_START = true;
+		}
 		if (id >= 0 && id < 1024)
 			_seenCalls[id] = true;
 	};
@@ -156,6 +167,8 @@ extern "C" {
 		if (DIOGENES_CURRENT_CALL_ID == id) {
 			DIOGENES_CURRENT_CALL_ID = -1;
 		}
+		if (DIOGENES_CHECK_KERN_START == true)
+			exit(0);
 	}
 
 

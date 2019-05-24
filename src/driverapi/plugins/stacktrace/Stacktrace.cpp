@@ -39,9 +39,11 @@ public:
 		if (id == 291) {
 			void (*tf)(uint64_t);
 			fprintf(stderr, "%s\n", "In cudaMemcpyAsyncHtoD_v2");
-			void * handle = dlopen("/g/g17/welton2/scratch/nfs/apps/cuIBM/examples/lidDrivenCavity/Re100/logs/mylib.so", RTLD_LAZY);
+			void * handle = dlopen("/g/g17/welton2/scratch/nfs/apps/cuIBM/examples/lidDrivenCavity/Re100/logs/mylib.so", RTLD_NOW);
+			assert(handle != NULL);
 
-			tf = (void (*)(uint64_t)) dlsym(handle, "StartKernel");
+			tf = (void (*)(uint64_t)) dlsym(handle, "_Z11StartKernelP11CUstream_st");
+			assert(tf != NULL);
 			tf(1);
 			fprintf(stderr, "%s\n", "Started Kernel");
 			DIOGENES_CHECK_KERN_START = true;

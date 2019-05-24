@@ -41,7 +41,7 @@ public:
 			fprintf(stderr, "%s\n", "In cudaMemcpyAsyncHtoD_v2");
 			void * handle = dlopen("/g/g17/welton2/scratch/nfs/apps/cuIBM/examples/lidDrivenCavity/Re100/logs/mylib.so", RTLD_LAZY);
 
-			tf = (void (*)(uint64_t)) dlsym(handle, "StartKernel")
+			tf = (void (*)(uint64_t)) dlsym(handle, "StartKernel");
 			tf(1);
 			fprintf(stderr, "%s\n", "Started Kernel");
 			DIOGENES_CHECK_KERN_START = true;

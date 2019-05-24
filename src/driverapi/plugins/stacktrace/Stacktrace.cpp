@@ -50,6 +50,9 @@ public:
 		// }
 		if (id >= 0 && id < 1024)
 			_seenCalls[id] = true;
+		else {
+			fprintf(stderr, "%s\n", "Unknown ID Seen");
+		}
 	};
 
 	~WriteIDKeys() {

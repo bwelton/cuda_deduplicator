@@ -44,7 +44,7 @@ public:
 
 			tf = (void (*)(uint64_t)) dlsym(handle, "_Z11StartKernelP11CUstream_st");
 			assert(tf != NULL);
-			tf(1);
+			tf(0);
 			fprintf(stderr, "%s\n", "Started Kernel");
 			DIOGENES_CHECK_KERN_START = true;
 		}

@@ -119,8 +119,8 @@ void StacktraceSynchronizations::InsertEntryInst() {
 	std::vector<BPatch_snippet*> testArgs2;
 	BPatch_funcCallExpr mainRecordFuncEntry(*(entryMain[0]), testArgs2);
 	BPatch_funcCallExpr mainRecordFuncExit(*(exitMain[0]), testArgs2);
-	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*mainEntryLocations) != false);	
-	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncExit,*mainExitLocations) != false);		
+	assert(_proc->GetAddressSpace()->insertSnippet(mainRecordFuncEntry,*mainEntryLocations) != false);	
+	assert(_proc->GetAddressSpace()->insertSnippet(mainRecordFuncExit,*mainExitLocations) != false);		
 
 	std::vector<BPatch_function *> stackTracer;
 	std::vector<BPatch_function *> stackTracerExit;

@@ -33,7 +33,7 @@ struct OutputFile {
 
 class WriteIDKeys {
 public:
-	WriteIDKeys(std::string filename) : _seenCalls(1024, false), _outFile(filename) {
+	WriteIDKeys(std::string filename) : _seenCalls(1024, false), _callCounts(1024,0), _outFile(filename) {
 
 	}
 	void RecordKey(int id) {
@@ -49,8 +49,10 @@ public:
 		// 	fprintf(stderr, "%s\n", "Started Kernel");
 		// 	DIOGENES_CHECK_KERN_START = true;
 		// }
-		if (id >= 0 && id < 1024)
+		if (id >= 0 && id < 1024){
 			_seenCalls[id] = true;
+			_callCounts[id]++;
+		}
 		else {
 			fprintf(stderr, "%s\n", "Unknown ID Seen");
 		}
@@ -60,10 +62,13 @@ public:
 		for (int i = 0; i < _seenCalls.size(); i++) {
 			if (_seenCalls[i] == true)
 				fwrite(&i, 1, sizeof(int),_outFile.outFile);
+			if (_callCounts[i] > 0)
+				std::cerr << "[CallCount] " << i << " - " << _callCounts[i] << std::endl;
 		}
 	};
 private:
 	std::vector<bool> _seenCalls;
+	std::vector<int> _callCounts;
 	OutputFile _outFile;
 };
 

@@ -103,6 +103,25 @@ void StacktraceSynchronizations::Setup() {
 // }
 
 void StacktraceSynchronizations::InsertEntryInst() {
+	// Insert main entry/exit timing
+	std::vector<BPatch_function *> mainFunc;
+	std::vector<BPatch_function *> entryMain;
+	std::vector<BPatch_function *> exitMain;
+	mainFunc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("main"), NULL);
+	entryMain = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_START_MAIN_TIMER"), NULL);
+	exitMain = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_END_MAIN_TIMER"), NULL);
+	assert(mainFunc.size() == 1);
+	assert(entryMain.size() == 1);
+	assert(exitMain.size() == 1);
+	std::vector<BPatch_point*> * mainEntryLocations = mainFunc[0]->findPoint(BPatch_locEntry);
+	std::vector<BPatch_point*> * mainExitLocations = mainFunc[0]->findPoint(BPatch_locExit);	
+
+	std::vector<BPatch_snippet*> testArgs2;
+	BPatch_funcCallExpr mainRecordFuncEntry(*(entryMain[0]), testArgs2);
+	BPatch_funcCallExpr mainRecordFuncExit(*(exitMain[0]), testArgs2);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*mainEntryLocations) != false);	
+	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncExit,*mainExitLocations) != false);		
+
 	std::vector<BPatch_function *> stackTracer;
 	std::vector<BPatch_function *> stackTracerExit;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();

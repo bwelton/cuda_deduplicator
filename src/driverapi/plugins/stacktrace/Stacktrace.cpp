@@ -36,11 +36,11 @@ public:
 	WriteIDKeys(std::string filename) : _seenCalls(1024, false), _callCounts(1024,0), _outFile(filename) {
 
 	}
-	void CheckKey(int id) {
-		if (id >= 0 && id < 1024){
-			_callCounts[id]++;
-		}
-	}
+	// void CheckKey(int id) {
+	// 	if (id >= 0 && id < 1024){
+	// 		_callCounts[id]++;
+	// 	}
+	// }
 
 	void RecordKey(int id) {
 		// if (id == 291) {
@@ -57,7 +57,7 @@ public:
 		// }
 		if (id >= 0 && id < 1024){
 			_seenCalls[id] = true;
-			//_callCounts[id]++;
+			_callCounts[id]++;
 		}
 		else {
 			fprintf(stderr, "%s\n", "Unknown ID Seen");
@@ -177,7 +177,7 @@ extern "C" {
 
 	void ENTER_CUDA_FUNCT(int id) {
 		SETUP_NEWINTERCEPTOR();
-		DIOGENES_WRITEKEYID->CheckKey(id);
+		// DIOGENES_WRITEKEYID->CheckKey(id);
 		if (DIOGENES_CURRENT_CALL_ID == -1)
 			DIOGENES_CURRENT_CALL_ID = id;
 	}

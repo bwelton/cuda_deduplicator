@@ -133,6 +133,7 @@ void StacktraceSynchronizations::InsertEntryInst() {
 
 	std::vector<BPatch_function *> funcList;
 	int idCount = 1;
+
 	for (auto i : CudaCallList) {
 		std::string tmpName = std::string(i);
 		std::cerr << "[StacktraceSynchronizations::InsertEntryInst] Searching for function " << i << std::endl;
@@ -158,7 +159,8 @@ void StacktraceSynchronizations::InsertEntryInst() {
 				_idToPoint[idCount] = n;
 				std::cout << "[CUDAID] " << n.funcName <<  " = " << idCount << std::endl;
 				idCount++;	
-				
+				alreadyInst.insert(z->getName());
+
 				//(_libcuda->pathName(),z->getName(), libOffsetAddr)
 			}
 		}

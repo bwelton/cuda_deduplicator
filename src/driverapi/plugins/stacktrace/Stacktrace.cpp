@@ -187,7 +187,7 @@ extern "C" {
 
 	void DIOGENES_END_MAIN_TIMER() {
 		auto end = std::chrono::high_resolution_clock::now();
-		if (DIOGENES_END_TIMER == false){
+		if (DIOGENES_TIMER_SET == false){
 			fprintf(stderr, "%s\n", "Diogenes timer not set, exiting");
 			return;
 		}

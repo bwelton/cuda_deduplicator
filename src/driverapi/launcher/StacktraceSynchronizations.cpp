@@ -104,6 +104,7 @@ void StacktraceSynchronizations::Setup() {
 
 void StacktraceSynchronizations::InsertEntryInst() {
 	// Insert main entry/exit timing
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> mainFunc;
 	std::vector<BPatch_function *> entryMain;
 	std::vector<BPatch_function *> exitMain;
@@ -124,7 +125,7 @@ void StacktraceSynchronizations::InsertEntryInst() {
 
 	std::vector<BPatch_function *> stackTracer;
 	std::vector<BPatch_function *> stackTracerExit;
-	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+
 	stackTracer = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("ENTER_CUDA_FUNCT"), NULL);
 	stackTracerExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("EXIT_CUDA_FUNCT"), NULL);
 	assert(stackTracer.size() == 1);

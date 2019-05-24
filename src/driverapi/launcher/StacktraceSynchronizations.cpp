@@ -136,7 +136,9 @@ void StacktraceSynchronizations::InsertEntryInst() {
 				n.libname = _libcuda->pathName();
 				n.funcName = z->getName();
 				_idToPoint[idCount] = n;
+				std::cout << "[CUDAID] " << n.funcName <<  " = " << idCount << std::endl;
 				idCount++;	
+				
 				//(_libcuda->pathName(),z->getName(), libOffsetAddr)
 			}
 		}

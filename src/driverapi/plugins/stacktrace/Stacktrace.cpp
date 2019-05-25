@@ -13,6 +13,7 @@
 #include <execinfo.h>
 #include <chrono>
 #include <dlfcn.h>
+#include <sstream>
 #include "StackPoint.h"
 #include "StackwalkingCommon.h"
 //std::shared_ptr<std::vector<bool>> DIOGENES_seenCalls(1024, false);
@@ -57,7 +58,7 @@ public:
 		// }
 		if (id >= 0 && id < 1024){
 			_seenCalls[id] = true;
-			_callCounts[id]++;
+			//_callCounts[id]++;
 		}
 		else {
 			fprintf(stderr, "%s\n", "Unknown ID Seen");
@@ -68,8 +69,8 @@ public:
 		for (int i = 0; i < _seenCalls.size(); i++) {
 			if (_seenCalls[i] == true)
 				fwrite(&i, 1, sizeof(int),_outFile.outFile);
-			if (_callCounts[i] > 0)
-				std::cerr << "[CallCount] " << i << " - " << _callCounts[i] << std::endl;
+			// if (_callCounts[i] > 0)
+			// 	std::cerr << "[CallCount] " << i << " - " << _callCounts[i] << std::endl;
 		}
 	};
 private:
@@ -204,9 +205,14 @@ extern "C" {
 			fprintf(stderr, "%s\n", "Diogenes timer not set, exiting");
 			return;
 		}
+		std::stringstream ss;
+
 		std::chrono::duration<double> diff = end - DIOGENES_TOTAL_TIME_START;
 		std::cerr << "[DIOGENES_RTIME] " << diff.count() << std::endl;
-
+		ss << diff.count() << std::endl;
+		std::ofstream ofs("ttime_new.txt", std::ofstream::out);
+		ofs << ss.str();
+		ofs.close();
 
 	}
 }

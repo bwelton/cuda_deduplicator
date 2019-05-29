@@ -197,17 +197,17 @@ void StacktraceSynchronizations::InsertStacktracing() {
 
 
 void StacktraceSynchronizations::ReadResults(StackRecMap & recs) {
-	ReadStackKeys reader(std::string("DIOGENES_SyncCalls.key"), std::string("DIOGENES_SyncCalls.bin"));
-	reader.GetStackRecords(recs, std::bind(&ReadStackKeys::ProcessStacktraceSynch, &reader, std::placeholders::_1));
-	std::set<std::string> cudaCalls;
-	std::cout << "[StacktraceSynchronizations::ReadResults] ORIG BEGIN" << std::endl;
-	for (auto i : recs) {
-		i.second.PrintStack();
-		cudaCalls.insert(i.second.GetFirstCudaCall().funcName);
-	}
-	std::cout << "[StacktraceSynchronizations::ReadResults] ORIG END" << std::endl;
-	for (auto i : cudaCalls)
-		std::cout << "[StacktraceSynchronizations::ReadResults] Cuda call at - " << i << std::endl;
+	// ReadStackKeys reader(std::string("DIOGENES_SyncCalls.key"), std::string("DIOGENES_SyncCalls.bin"));
+	// reader.GetStackRecords(recs, std::bind(&ReadStackKeys::ProcessStacktraceSynch, &reader, std::placeholders::_1));
+	// std::set<std::string> cudaCalls;
+	// std::cout << "[StacktraceSynchronizations::ReadResults] ORIG BEGIN" << std::endl;
+	// for (auto i : recs) {
+	// 	i.second.PrintStack();
+	// 	cudaCalls.insert(i.second.GetFirstCudaCall().funcName);
+	// }
+	// std::cout << "[StacktraceSynchronizations::ReadResults] ORIG END" << std::endl;
+	// for (auto i : cudaCalls)
+	// 	std::cout << "[StacktraceSynchronizations::ReadResults] Cuda call at - " << i << std::endl;
 	recs.clear();
 	// new test
 	FILE * inFile = fopen("DIOGENES_SyncCallKeys.bin","rb");

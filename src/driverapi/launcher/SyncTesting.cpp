@@ -225,7 +225,7 @@ void SyncTesting::Run() {
 	// FixProblems(empty_map);
 	RunWithSyncStacktracing(syncTiming);
 	TimeTransfers();
-	//CaptureDuplicateTransfers();
+	CaptureDuplicateTransfers();
     //RunWithoutInstrimentation();
 	TimeSynchronizations(syncTiming);
 	std::vector<StackPoint> uses;

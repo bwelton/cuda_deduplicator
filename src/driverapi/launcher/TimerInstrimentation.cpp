@@ -131,6 +131,7 @@ void TimerInstrimentation::FindUniqueCudaFuncs(StackRecMap & recs, std::vector<B
 	for (auto i : recs) {
 		func = NULL;
 		StackPoint p = i.second.GetFirstCudaCall();
+		p.Print();
 		if (p.empty == true){
 			continue;
 		}

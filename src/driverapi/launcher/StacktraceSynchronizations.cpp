@@ -222,6 +222,7 @@ void StacktraceSynchronizations::ReadResults(StackRecMap & recs) {
 			StackRecord rec(pos, tmpPoints);
 			recs[pos] = rec;
 			std::cerr << "[StacktraceSynchronizations::ReadResults] Synchronization at: " << _idToPoint[valTmp].funcName << std::endl;
+			pos++;
 		}
 	}
 

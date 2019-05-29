@@ -227,7 +227,7 @@ void SyncTesting::Run() {
 	//CaptureDuplicateTransfers();
     //RunWithoutInstrimentation();
 	RunWithSyncStacktracing(syncTiming);
-//	TimeSynchronizations(syncTiming);
+	TimeSynchronizations(syncTiming);
 	//std::vector<StackPoint> uses;
 	//RunLoadStoreAnalysis(syncTiming, uses);
 	//RunTimeUse(syncTiming, uses);

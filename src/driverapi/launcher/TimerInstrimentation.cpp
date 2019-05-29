@@ -137,6 +137,7 @@ void TimerInstrimentation::FindUniqueCudaFuncs(StackRecMap & recs, std::vector<B
 			alreadyPresent.insert(p.libOffset);
 			ops->FindFuncByStackPoint(_proc->GetAddressSpace(), func, p);
 			ret.push_back(func);
+			std::cerr << "[TimerInstrimentation::FindUniqueCudaFuncs] Inserting timing into - " << func->getName() << std::endl; 
 		}
 	}
 }

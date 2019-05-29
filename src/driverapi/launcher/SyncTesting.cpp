@@ -223,7 +223,7 @@ void SyncTesting::Run() {
 	//CaptureDriverCalls();
 	// StackRecMap empty_map;
 	// FixProblems(empty_map);
-	//TimeTransfers();
+	TimeTransfers();
 	//CaptureDuplicateTransfers();
     //RunWithoutInstrimentation();
 	RunWithSyncStacktracing(syncTiming);

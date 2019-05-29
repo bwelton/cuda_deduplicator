@@ -125,6 +125,7 @@ void TimerInstrimentation::InsertTimer(BPatch_function * func, uint64_t ident) {
 
 void TimerInstrimentation::FindUniqueCudaFuncs(StackRecMap & recs, std::vector<BPatch_function *> & ret) {
 	std::cerr << "[TimerInstrimentation::FindUniqueCudaFuncs] Starting search for cuda functions... " << std::endl;
+	std::cerr << "[TimerInstrimentation::FindUniqueCudaFuncs] Stack count = " << recs.size() << std::endl;
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::set<uint64_t> alreadyPresent;
 	BPatch_function * func;

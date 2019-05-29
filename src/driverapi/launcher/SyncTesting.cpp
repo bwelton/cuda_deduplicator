@@ -223,14 +223,14 @@ void SyncTesting::Run() {
 	//CaptureDriverCalls();
 	// StackRecMap empty_map;
 	// FixProblems(empty_map);
-	//TimeTransfers();
-	//CaptureDuplicateTransfers();
-    //RunWithoutInstrimentation();
+	TimeTransfers();
+	CaptureDuplicateTransfers();
+    RunWithoutInstrimentation();
 	RunWithSyncStacktracing(syncTiming);
 	TimeSynchronizations(syncTiming);
 	std::vector<StackPoint> uses;
 	RunLoadStoreAnalysis(syncTiming, uses);
-	//RunTimeUse(syncTiming, uses);
+	RunTimeUse(syncTiming, uses);
 	//RunTimeUse(sy)
 	return;
 	//RunWithCUPTI();

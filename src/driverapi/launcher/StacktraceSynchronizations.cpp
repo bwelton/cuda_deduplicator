@@ -226,5 +226,6 @@ void StacktraceSynchronizations::ReadResults(StackRecMap & recs) {
 		}
 	}
 	std::cerr << "[StacktraceSynchronizations::ReadResults] Size of output map = " << recs.size() << std::endl;
-
+	assert(recs.size() == 0);
+	
 }

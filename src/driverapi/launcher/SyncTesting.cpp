@@ -228,8 +228,8 @@ void SyncTesting::Run() {
     //RunWithoutInstrimentation();
 	RunWithSyncStacktracing(syncTiming);
 	TimeSynchronizations(syncTiming);
-	//std::vector<StackPoint> uses;
-	//RunLoadStoreAnalysis(syncTiming, uses);
+	std::vector<StackPoint> uses;
+	RunLoadStoreAnalysis(syncTiming, uses);
 	//RunTimeUse(syncTiming, uses);
 	//RunTimeUse(sy)
 	return;

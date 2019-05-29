@@ -179,14 +179,14 @@ extern "C" {
 	void ENTER_CUDA_FUNCT(int id) {
 		//SETUP_NEWINTERCEPTOR();
 		// DIOGENES_WRITEKEYID->CheckKey(id);
-		if (DIOGENES_CURRENT_CALL_ID == -1)
-			DIOGENES_CURRENT_CALL_ID = id;
+		//if (DIOGENES_CURRENT_CALL_ID == -1)
+		DIOGENES_CURRENT_CALL_ID = id;
 	}
 
 	void EXIT_CUDA_FUNCT(int id) {
-		if (DIOGENES_CURRENT_CALL_ID == id) {
-			DIOGENES_CURRENT_CALL_ID = -1;
-		}
+		//if (DIOGENES_CURRENT_CALL_ID == id) {
+		DIOGENES_CURRENT_CALL_ID = -1;
+		//}
 		// if (DIOGENES_CHECK_KERN_START == true)
 		// 	exit(0);
 	}

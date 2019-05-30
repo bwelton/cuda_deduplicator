@@ -112,7 +112,7 @@ public:
 
 	void RecordCPUMallocPair(MemAddress * addr, int64_t freeLoc) {
 		if (_CPUTransRecords.find(addr->loc) == _CPUTransRecords.end())
-			_CPUTransRecords[addr->loc] = std::map<int64_t,CUMallocTracker*>();
+			_CPUTransRecords[addr->loc] = std::map<int64_t,GLIBMallocTracker*>();
 		if (_CPUTransRecords[addr->loc].find(freeLoc) != _CPUTransRecords[addr->loc].end())
 			_CPUTransRecords[addr->loc][freeLoc]->count++;
 		else {
@@ -126,7 +126,7 @@ public:
 
 	void RecordCopyRecord(MemAddress * addr, int64_t copyLoc) {
 		if (_CopyRecords.find(addr->loc) == _CopyRecords.end())
-			_CopyRecords[addr->loc] = std::map<int64_t,CUMallocTracker*>();
+			_CopyRecords[addr->loc] = std::map<int64_t,CUMemTransferTracker*>();
 		if (_CopyRecords[addr->loc].find(copyLoc) != _CopyRecords[addr->loc].end())
 			_CopyRecords[addr->loc][copyLoc]->count++;
 		else {

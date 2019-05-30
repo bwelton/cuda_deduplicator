@@ -143,7 +143,7 @@ public:
 	std::map<int64_t, std::map<int64_t,CUMallocTracker*>> _GPUMallocRecords;
 };
 
-
+volatile bool DIOGENES_TEAR_DOWN = false;
 class MemTracker {
 public:
 	MemTracker() {
@@ -155,6 +155,9 @@ public:
 		_gpuLocalMem.reset(new MemKeeper());
 	};
 
+	~MemTracker() {
+		DIOGENES_TEAR_DOWN = true;
+	}
 	void CPUMallocData(uint64_t addr, size_t size, int64_t loc) {
 		_cpuLocalMem->Set(addr,size, loc);
 	};
@@ -206,8 +209,41 @@ inline bool DIOGENES_ReleaseGlobalLock() {
 	return true;
 }
 
+std::shared_ptr<MemTracker> DIOGENES_MEMORY_RECORDER;
+
+
+
+#define PLUG_BUILD_FACTORY() \
+	if (DIOGENES_MEMORY_RECORDER.get() == NULL) { \
+		DIOGENES_MEMORY_RECORDER.reset(new MemTracker()); \
+	} 
+
+#define PLUG_FACTORY_PTR DIOGENES_MEMORY_RECORDER.get()
+
+
 
 extern "C" {
+	void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
+		int64_t cache = DIOGENES_CTX_ID;
+		if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			void * ret = malloc(size);
+			PLUG_FACTORY_PTR->CPUMallocData((uint64_t)ret, size, cache);
+			DIOGENES_ReleaseGlobalLock();
+			return ret;
+		} else {
+			return malloc(size);
+		}
+	}
+	void DIOGENES_REC_FREEWrapper(void * mem) {
+		int64_t cache = DIOGENES_CTX_ID;
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			PLUG_FACTORY_PTR->CPUFreeData((uint64_t)mem);
+			DIOGENES_ReleaseGlobalLock();
+		}
+		free(mem);
+	}
 	// void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
 	// 	int64_t cache = DIOGENES_CTX_ID;
 	// 	if(DIOGENES_GetGlobalLock()) {

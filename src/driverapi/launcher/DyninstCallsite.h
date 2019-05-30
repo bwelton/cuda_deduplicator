@@ -60,6 +60,7 @@ public:
 	std::string * GetCalledFunction();
 	uint64_t GetPointAddress();
 	uint64_t GetPointFileAddress();
+	uint64_t ReplaceFunctionCallWithID(int64_t id);
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	BPatch_function * _func;

@@ -31,3 +31,24 @@ void DyninstCallsite::ReplaceFunctionCall(BPatch_function * _newCall) {
 
 	aspace->replaceFunctionCall(_point, *_newCall);
 }
+
+uint64_t DyninstCallsite::ReplaceFunctionCallWithID(int64_t id) {
+	if (_replaced)
+		return;
+
+	//_replaced = true;
+
+	BPatch_addressSpace * aspace = _proc->GetAddressSpace();
+
+	BPatch_image * img = aspace->getImage();
+	BPatch_variableExpr * var = img->findVariable("DIOGENES_CTX_ID");
+
+	assert(var != NULL);
+
+	BPatch_arithExpr setVal(BPatch_assign, *var, BPatch_constExpr(id));
+	std::vector<BPatch_point*> singlePoint;
+	singlePoint.push_back(_point);
+	assert(_proc->GetAddressSpace()->insertSnippet(setVal,singlePoint,BPatch_callBefore) != NULL);
+	ReplaceFunctionCall();
+	return GetPointAddress();
+}

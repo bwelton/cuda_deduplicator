@@ -244,6 +244,20 @@ extern "C" {
 		}
 		free(mem);
 	}
+
+	cudaError_t DIOGENES_REC_CudaMalloc(void ** data, size_t size) {
+		assert(1==0);
+		return -1;
+	}
+
+	cudaError_t DIOGENES_REC_CudaFree(void * data) {
+		assert(1==0);
+		return -1;
+	}
+	cudaError_t DIOGENES_REC_CudaMemcpy(void * dst, const void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
+		assert(1==0);
+		return -1;
+	}
 	// void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
 	// 	int64_t cache = DIOGENES_CTX_ID;
 	// 	if(DIOGENES_GetGlobalLock()) {

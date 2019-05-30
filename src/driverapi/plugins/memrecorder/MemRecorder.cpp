@@ -147,6 +147,9 @@ public:
 class MemTracker {
 public:
 	MemTracker() {
+		_NullAddr = new MemAddress();
+		_NullAddr->loc = -1;
+		_NullAddr->size = 0;
 		_outWriter.reset(new OutputWriter());
 		_cpuLocalMem.reset(new MemKeeper());
 		_gpuLocalMem.reset(new MemKeeper());
@@ -168,13 +171,23 @@ public:
 		_gpuLocalMem->Set(addr,size, loc);
 	};
 	void GPUFreeData(uint64_t addr, int64_t loc) {
+		MemAddress * gpuAddr = _gpuLocalMem->Get(addr);
+		if (gpuAddr != NULL) {
+			_outWriter->RecordGPUMallocPair(gpuAddr, loc);
+		}		
 		_gpuLocalMem->Delete(addr);	
 	};
  	
+	void RecordMemTransfer(uint64_t addr, int64_t loc) {
+		MemAddress * cpuAddr = _cpuLocalMem->GetLowerBound(addr);
+		if (cpuAddr == NULL) {
+			cpuAddr = _NullAddr;
+		}
+		_outWriter->RecordCopyRecord(cpuAddr, loc);
+	}
 
-
+	MemAddress * _NullAddr;
 	std::shared_ptr<OutputWriter> _outWriter;
-
 	std::shared_ptr<MemKeeper> _cpuLocalMem;
 	std::shared_ptr<MemKeeper> _gpuLocalMem;
 };
@@ -195,26 +208,26 @@ inline bool DIOGENES_ReleaseGlobalLock() {
 
 
 extern "C" {
-	void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
-		int64_t cache = DIOGENES_CTX_ID;
-		if(DIOGENES_GetGlobalLock()) {
-			if ()
-		}
+	// void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
+	// 	int64_t cache = DIOGENES_CTX_ID;
+	// 	if(DIOGENES_GetGlobalLock()) {
+	// 		if ()
+	// 	}
 
-	}
+	// }
 
 }
 
 
 
-class MemCollector {
-public:
-	MemCollector::MemCollector() {}
+// class MemCollector {
+// public:
+// 	MemCollector::MemCollector() {}
 
-	void MemCollector::CaptureMalloc(void * mem, size_t size, uint64_t loc) {
-		if (mem )
-	};
-};
+// 	void MemCollector::CaptureMalloc(void * mem, size_t size, uint64_t loc) {
+// 		if (mem )
+// 	};
+// };
 
 
 

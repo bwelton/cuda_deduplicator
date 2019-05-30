@@ -239,7 +239,7 @@ extern "C" {
 		int64_t cache = DIOGENES_CTX_ID;
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
-			PLUG_FACTORY_PTR->CPUFreeData((uint64_t)mem);
+			PLUG_FACTORY_PTR->CPUFreeData((uint64_t)mem, cache);
 			DIOGENES_ReleaseGlobalLock();
 		}
 		free(mem);

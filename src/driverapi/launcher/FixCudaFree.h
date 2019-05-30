@@ -49,7 +49,7 @@
 #include "DyninstFunctionWraps.h"
 #include "DyninstFunction.h"
 #include "DyninstCallsite.h"
-
+#include "DebugInstrimentationTemp.h"
 class FixCudaFree {
 public:
 	FixCudaFree(std::shared_ptr<DyninstProcess> proc);

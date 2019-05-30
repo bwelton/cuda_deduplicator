@@ -18,7 +18,7 @@ extern "C" {
 }
 
 struct MemAddress {
-	void * addr;
+	uint64_t addr;
 	int64_t loc;
 	uint64_t size;
 };
@@ -43,7 +43,7 @@ public:
 	MemAddress * ReturnEmpty() {
 		MemAddress * ret = NULL;
 		if (_allocedAddresses.size() > 0) {
-			ret = _allocedAddresses.front()
+			ret = _allocedAddresses.front();
 			_allocedAddresses.pop_front();
 		} else {
 			allocCount++;
@@ -136,12 +136,12 @@ public:
 			tmp->count = 1;
 			_CopyRecords[addr->loc][copyLoc] = tmp;
 		}		
-	}
+	};
 
 	std::map<int64_t, std::map<int64_t,CUMemTransferTracker*>> _CopyRecords;
 	std::map<int64_t, std::map<int64_t,GLIBMallocTracker*>> _CPUTransRecords;
-	std::map<int64_t, std::map<int64_t,CUMallocTracker*>> _CPUTransRecords;
-}
+	std::map<int64_t, std::map<int64_t,CUMallocTracker*>> _GPUMallocRecords;
+};
 
 
 class MemTracker {

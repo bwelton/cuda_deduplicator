@@ -16,7 +16,7 @@ struct CUMallocTracker {
 	int64_t allocSite;
 	int64_t freeSite;
 	int64_t count;	
-	CUMallocTracker () {
+	CUMallocTracker() {
 		type = 43;
 	};
 	inline size_t GetSize() {
@@ -48,16 +48,16 @@ struct GLIBMallocTracker {
 	int64_t allocSite;
 	int64_t freeSite;
 	int64_t count;	
-	CUMallocTracker () {
+	GLIBMallocTracker() {
 		type = 48;
 	};
 	inline size_t GetSize() {
 		return sizeof(uint8_t)+sizeof(int64_t)+sizeof(int64_t)+sizeof(int64_t);
 	};
-	static CUMallocTracker * Deserialize(char * in) {
+	static GLIBMallocTracker * Deserialize(char * in) {
 		if (in[0] != 48)
 			return NULL;
-		CUMallocTracker * ret = new CUMallocTracker();
+		GLIBMallocTracker * ret = new GLIBMallocTracker();
 		int64_t * ptr = (int64_t*)&(in[1]);
 		ret->allocSite = ptr[0];
 		ret->freeSite = ptr[1];
@@ -79,7 +79,7 @@ struct CUMemTransferTracker {
 	int64_t allocSite;
 	int64_t copyID;
 	int64_t count;	
-	CUMemTransferTracker () {
+	CUMemTransferTracker() {
 		type = 79;
 	};
 	inline size_t GetSize() {

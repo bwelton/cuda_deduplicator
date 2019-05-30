@@ -1,6 +1,7 @@
 #include "DyninstCallsite.h"
 DyninstCallsite::DyninstCallsite(std::shared_ptr<DyninstProcess> proc, BPatch_function * func, BPatch_point & point) : _proc(proc), _func(func), _point(point), _calledFunc(std::string("UNKNOWN")), _replaced(false) {
 	BPatch_function * tmp = point.getCalledFunction();
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	if (tmp == NULL)
 		return;
 
@@ -50,7 +51,7 @@ void DyninstCallsite::ReplaceFunctionCall(BPatch_function * _newCall) {
 
 uint64_t DyninstCallsite::ReplaceFunctionCallWithID(BPatch_function * _newCall,int64_t id) {
 	if (_replaced)
-		return;
+		return 0;
 
 	//_replaced = true;
 
@@ -63,7 +64,7 @@ uint64_t DyninstCallsite::ReplaceFunctionCallWithID(BPatch_function * _newCall,i
 
 	BPatch_arithExpr setVal(BPatch_assign, *var, BPatch_constExpr(id));
 	std::vector<BPatch_point*> singlePoint;
-	singlePoint.push_back(_point);
+	singlePoint.push_back(new BPatch_point(_point));
 	assert(_proc->GetAddressSpace()->insertSnippet(setVal,singlePoint,BPatch_callBefore) != NULL);
 	ReplaceFunctionCall(_newCall);
 	return GetPointAddress();

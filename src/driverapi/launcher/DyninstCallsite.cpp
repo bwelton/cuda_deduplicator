@@ -5,8 +5,24 @@ DyninstCallsite::DyninstCallsite(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 		return;
 
 	_calledFunc = tmp->getName();
+
+	// Store library offset and library of this point
+	_libOffsetAddr = 0;
+	if (!ops->GetFileOffset(_proc->GetAddressSpace(), &point, _libOffsetAddr, true))
+		_libOffsetAddr = (uint64_t) point.getAddress();	
+	_libName = _func->getModule()->getObject()->pathName();
+	_funcName = _func->getName();
 }
 
+
+StackPoint DyninstCallsite::GetStackPoint() {
+	StackPoint p;
+	p.libname = _libName;
+	p.funcName = _funcName;
+	p.libOffset = _libOffsetAddr;
+	p.empty = false;
+	return p;
+}
 uint64_t DyninstCallsite::GetPointAddress() {
 	return (uint64_t)_point.getAddress();
 }
@@ -32,7 +48,7 @@ void DyninstCallsite::ReplaceFunctionCall(BPatch_function * _newCall) {
 	aspace->replaceFunctionCall(_point, *_newCall);
 }
 
-uint64_t DyninstCallsite::ReplaceFunctionCallWithID(int64_t id) {
+uint64_t DyninstCallsite::ReplaceFunctionCallWithID(BPatch_function * _newCall,int64_t id) {
 	if (_replaced)
 		return;
 
@@ -49,6 +65,6 @@ uint64_t DyninstCallsite::ReplaceFunctionCallWithID(int64_t id) {
 	std::vector<BPatch_point*> singlePoint;
 	singlePoint.push_back(_point);
 	assert(_proc->GetAddressSpace()->insertSnippet(setVal,singlePoint,BPatch_callBefore) != NULL);
-	ReplaceFunctionCall();
+	ReplaceFunctionCall(_newCall);
 	return GetPointAddress();
 }

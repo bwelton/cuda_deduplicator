@@ -100,7 +100,7 @@ struct MallocSite {
 template<typename T> 
 void PrintSet(T & a, std::stringstream & out) {
 	for (auto i : a)
-		out << a->id << ",";
+		out << i->id << ",";
 };
 
 struct MemGraph {
@@ -131,19 +131,13 @@ void BuildMemoryGraph(std::vector<T> & memSites, std::map<int64_t, StackPoint> &
 	FreeSitePtr tmpFreePtr;
 	for (auto i : memSites) {
 		if (ret.mallocPoints.find(i->allocSite) == ret.mallocPoints.end()) {
-			tmpMalloc.reset(new MallocSite());
-			tmpMalloc->id = i->allocSite;
-			tmpMalloc->p = _idPoints[i->allocSite];
-			tmpMalloc->count = 0;
+			tmpMalloc.reset(new MallocSite(i->allocSite, _idPoints[i->allocSite]));
 			ret.mallocPoints[i->allocSite] = tmpMalloc;
 		} else {
 			tmpMalloc = ret.mallocPoints[i->allocSite];
 		}
 		if (ret.freePoints.find(i->freeSite) == ret.freePoints.end()) {
-			tmpFreePtr.reset(new FreeSite());
-			tmpFreePtr->id = i->freeSite;
-			tmpFreePtr->p = _idPoints[i->freeSite];
-			tmpFreePtr->count = 0;			
+			tmpFreePtr.reset(new FreeSite(i->freeSite, _idPoints[i->freeSite]));
 			ret.freePoints[i->freeSite] = tmpFreePtr;
 		} else {
 			tmpFreePtr = ret.freePoints[i->freeSite];

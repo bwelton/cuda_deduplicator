@@ -76,8 +76,8 @@ struct FreeSite{
 	uint64_t count;
 	FreeSite(int64_t _id, StackPoint _p) : id(_id), p(_p), count(0) {};
 
-	void AddFree() {
-		count++;
+	void AddFree(int64_t inCount) {
+		count += inCount;
 	};
 	MallocSiteSet parents;
 };
@@ -90,11 +90,12 @@ struct MallocSite {
 
 	MallocSite(int64_t _id, StackPoint _p) : id(_id), p(_p), count(0) {};
 
-	void AddAlloc(FreeSitePtr destroyer, MallocPtr myself) {
-		count++;
+	void AddAlloc(FreeSitePtr destroyer, MallocPtr myself, int64_t inCount) {
+		count += inCount;
 		children.insert(destroyer);
-		destroyer->AddFree();
+		destroyer->AddFree(inCount);
 		destroyer->parents.insert(myself);
+
 	};
 
 	void Destroy() {
@@ -208,7 +209,7 @@ void BuildMemoryGraph(std::vector<T> & memSites, std::map<int64_t, StackPoint> &
 		} else {
 			tmpFreePtr = ret.freePoints[i->freeSite];
 		}
-		tmpMalloc->AddAlloc(tmpFreePtr, tmpMalloc);
+		tmpMalloc->AddAlloc(tmpFreePtr, tmpMalloc, i->count);
 	}
 }
 

@@ -6,8 +6,6 @@ CallTransformation::CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuV
 	BuildGraph();
 
 }
-
-
 void CallTransformation::BuildGraph() {
 	BuildMemoryGraph(_cpuVec,_idPoints, _cpuGraph);
 	BuildMemoryGraph(_gpuVec,_idPoints, _gpuGraph);

@@ -127,7 +127,10 @@ struct MemGraph {
 	std::map<int64_t, MallocPtr> mallocPoints;
 	std::map<int64_t, FreeSitePtr> freePoints;
 
-
+	~MemGraph() {
+		for (auto i : mallocPoints)
+			i.second->Destroy();
+	};
 	MallocPtr GetMallocSite(int64_t id) {
 		if (mallocPoints.find(id) == mallocPoints.end())
 			return NULL;

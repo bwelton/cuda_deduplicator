@@ -156,7 +156,7 @@ struct TransferGraph {
 
 	TransferGraph() {
 		StackPoint p;
-		emptyMalloc.reset(new emptyMalloc(-1,p));
+		emptyMalloc.reset(new MallocSite(-1,p));
 	}
 
 	void AddTransfer(int64_t id, int64_t mallocID, MemGraph & cpuGraph, std::map<int64_t, StackPoint> & idPoints) {

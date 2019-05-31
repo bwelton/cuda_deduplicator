@@ -50,10 +50,12 @@
 #include "DyninstFunction.h"
 #include "DyninstCallsite.h"
 #include "DebugInstrimentationTemp.h"
+#include "CallTransformation.h"
 class MemRecorder {
 public:
 	MemRecorder(std::shared_ptr<DyninstProcess> proc);
 	void InsertAnalysis(StackRecMap & recs);
+	void PostProcessing();
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	//std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;

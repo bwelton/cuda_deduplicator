@@ -51,9 +51,10 @@
 #include "DyninstCallsite.h"
 #include "MemRecDataFile.h"
 
-typedef std::vector<CUMallocTracker *> GPUMallocVec;
+/*typedef std::vector<CUMallocTracker *> GPUMallocVec;
 typedef std::vector<GLIBMallocTracker *> CPUMallocVec;
 typedef std::vector<CUMemTransferTracker *> MemTransVec;
+*/
 
 typedef	std::vector<int64_t> Int64Vec;
 
@@ -161,6 +162,8 @@ private:
 	MemTransVec _memVec;
 	std::map<int64_t, StackPoint> _idPoints;
 };
+
+typedef std::shared_ptr<CallTransformation> CallTransPtr;
 
 
 // TransMap

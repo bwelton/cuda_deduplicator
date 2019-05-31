@@ -133,7 +133,7 @@ struct MemRecDataFile {
 		free(outMem);
 	};
 
-	void Read(std::vector<CUMemTransferTracker*> & MemTrans, std::vector<CUMallocTracker*> & MallocTrac, std::vector<GLIBMallocTracker*> & GLIBMalloc) {
+	void Read(MemTransVec & MemTrans, GPUMallocVec & MallocTrac, CPUMallocVec & GLIBMalloc) {
 		fseek(_fid, 0, SEEK_END);
 		size_t size = ftell(_fid);
 		fseek(_fid, 0, SEEK_SET);

@@ -103,3 +103,13 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	// assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 	// 
 }
+
+void MemRecorder::PostProessing() {
+	MemTransVec memVec;
+	GPUMallocVec gMallocVec;
+	CPUMallocVec cMallocVec;
+	MemRecDataFile readRecs(fopen("DIOGENES_MemRecords.bin", "rb"));
+	readRecs.Read(memVec, gMallocVec, cMallocVec);
+	CallTransPtr transformer;
+	transformer.reset(new CallTransformation(gMallocVec, cMallocVec, memVec, _idToStackPoint));
+}

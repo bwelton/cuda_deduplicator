@@ -187,7 +187,7 @@ void SyncTesting::MemRecorderLaunch(StackRecMap & recs) {
 	t.InsertAnalysis(recs);
 //	proc->DetachForDebug();
 	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of synchronizations = ")
-
+	t.PostProessing();
 	//t.PostProcessing(recs);
 }
 

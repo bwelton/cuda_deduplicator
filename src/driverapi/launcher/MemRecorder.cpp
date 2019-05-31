@@ -94,6 +94,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 			}
 		//}
 	}
+	std::remove("DIOGENES_MemRecords.bin");
 	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
 	// assert(cudaSyncFunctions.size() > 0);
 

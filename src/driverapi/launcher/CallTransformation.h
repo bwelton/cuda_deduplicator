@@ -160,7 +160,7 @@ struct TransferGraph {
 	}
 
 	void AddTransfer(int64_t id, int64_t mallocID, MemGraph & cpuGraph, std::map<int64_t, StackPoint> & idPoints) {
-		MallocPtr tmp = cpuGraph.find(mallocID);
+		MallocPtr tmp = cpuGraph.GetMallocSite(mallocID);
 		TransferPointPtr tpoint;
 		if (tmp == NULL) {
 			tmp = emptyMalloc;

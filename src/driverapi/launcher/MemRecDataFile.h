@@ -124,11 +124,12 @@ struct MemRecDataFile {
 	void Write(std::vector<T> & data) {
 		if (data.size() == 0)
 			return;
+		std::cerr << "[MemRecDataFile::Write] Writing array of length " << data.size() << " elements [ByteSize=" << data.size() * data[0]->GetSize() <<"]" << std::endl;
 		char * outMem = (char*) malloc((data.size())*data[0]->GetSize());
 		for (int i = 0; i < data.size(); i++){ 
 			data[i]->Serialize(&(outMem[i * data[i]->GetSize()]));
 		}
-		fwrite(outMem, sizeof(char), (data.size())*data[0]->GetSize(), _fid);
+		fwrite(outMem, 1, (data.size())*data[0]->GetSize(), _fid);
 		free(outMem);
 	};
 

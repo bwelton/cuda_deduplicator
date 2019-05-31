@@ -233,8 +233,10 @@ void SyncTesting::Run() {
 	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	// }
 	//CaptureDriverCalls();
-	// StackRecMap empty_map;
-	// FixProblems(empty_map);
+	 StackRecMap empty_map;
+	 MemRecorder(empty_map);
+
+	return;
 	RunWithSyncStacktracing(syncTiming);
 	TimeTransfers();
 	CaptureDuplicateTransfers();

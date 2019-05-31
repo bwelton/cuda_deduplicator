@@ -5,7 +5,7 @@ CallTransformation::CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuV
 
 
 void CallTransformation::BuildGraph() {
-	BuildMemoryGraph(cpuVec,_idPoints, _cpuGraph);
+	BuildMemoryGraph(_cpuVec,_idPoints, _cpuGraph);
 
 	std::cerr << _cpuGraph.PrintMemoryGraph() << std::endl;
 }

@@ -8,6 +8,7 @@ MemRecorder::MemRecorder(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	DebugInstrimentationTemp debugOutput(std::string("DIOGENES_limitFunctions.txt"), std::string("DIOGENES_funcsInstrimented.txt"));
 
+	std::remove("DIOGENES_MemRecords.bin");
 	_bmap.reset(new BinaryLocationIDMap());
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
@@ -94,7 +95,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 			}
 		//}
 	}
-	std::remove("DIOGENES_MemRecords.bin");
+
 	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
 	// assert(cudaSyncFunctions.size() > 0);
 

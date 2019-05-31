@@ -179,7 +179,7 @@ void SyncTesting::FixProblems(StackRecMap & recs) {
 	//t.PostProcessing(recs);
 }
 
-void SyncTesting::MemRecorder(StackRecMap & recs) {
+void SyncTesting::MemRecorderLaunch(StackRecMap & recs) {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	proc->RunCudaInit();
@@ -234,7 +234,7 @@ void SyncTesting::Run() {
 	// }
 	//CaptureDriverCalls();
 	 StackRecMap empty_map;
-	 MemRecorder(empty_map);
+	 MemRecorderLaunch(empty_map);
 
 	return;
 	RunWithSyncStacktracing(syncTiming);

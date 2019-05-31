@@ -60,10 +60,13 @@ typedef	std::vector<int64_t> Int64Vec;
 
 struct MallocSite;
 struct FreeSite;
+struct TransferPoint;
 
 typedef std::shared_ptr<MallocSite> MallocPtr;
 typedef std::shared_ptr<FreeSite> FreeSitePtr;
+typedef std::shared_ptr<TransferPoint> TransferPointPtr;
 
+typedef std::map<int64_t, TransferPointPtr> TransferPointMap;
 typedef std::set<MallocPtr> MallocSiteSet;
 typedef std::set<FreeSitePtr> FreeSiteSet;
 
@@ -98,6 +101,22 @@ struct MallocSite {
 		children.clear();
 	};
 };
+
+struct TransferPoint {
+	int64_t id;
+	StackPoint p;
+	uint64_t count;
+
+	TransferPoint(int64_t _id, StackPoint _p) : id(_id), p(_p), count(0) {};
+
+	void AddTransfer(MallocPtr m) {
+		count++;
+		memAllocLocations.insert(m);
+	}
+
+	MallocSiteSet memAllocLocations;
+};
+
 template<typename T> 
 void PrintSet(T & a, std::stringstream & out) {
 	for (auto i : a)
@@ -108,6 +127,12 @@ struct MemGraph {
 	std::map<int64_t, MallocPtr> mallocPoints;
 	std::map<int64_t, FreeSitePtr> freePoints;
 
+
+	MallocPtr GetMallocSite(int64_t id) {
+		if (mallocPoints.find(id) == mallocPoints.end())
+			return NULL;
+		return mallocPoints[id];
+	}
 	std::string PrintMemoryGraph() {
 		std::stringstream ss;
 		for (auto i : mallocPoints) {
@@ -119,6 +144,43 @@ struct MemGraph {
 		for (auto i : freePoints) {
 			ss << "[Free ID=" << i.first << "]" << " Call Count = " << i.second->count << " Associated MallocSites = ";
 			PrintSet<MallocSiteSet>(i.second->parents, ss);
+			ss << std::endl;
+		}
+		return ss.str();
+	};
+};
+
+struct TransferGraph {
+	TransferPointMap transfers;
+	MallocPtr emptyMalloc;
+
+	TransferGraph() {
+		StackPoint p;
+		emptyMalloc.reset(new emptyMalloc(-1,p));
+	}
+
+	void AddTransfer(int64_t id, int64_t mallocID, MemGraph & cpuGraph, std::map<int64_t, StackPoint> & idPoints) {
+		MallocPtr tmp = cpuGraph.find(mallocID);
+		TransferPointPtr tpoint;
+		if (tmp == NULL) {
+			tmp = emptyMalloc;
+		}
+		if (transfers.find(id) == transfers.end()) {
+			tpoint.reset(new TransferPoint(id, idPoints[id]));
+			transfers[id] = tpoint;
+		} else {
+			tpoint = transfers[id];
+		}
+		tpoint->AddTransfer(tmp);
+	};
+
+	std::string PrintTransferGraph() {
+		std::stringstream ss;
+		ss << "[TransferPoint::PrintTransferGraph] Transfer Graph" << std::endl;
+
+		for (auto i : transfers) {
+			ss << "[TransferGraph::PrintTransferGraph] Transfer ID " << i.first << " call count = " << i.second->count << " Associated MallocSites=";
+			PrintSet<MallocSiteSet>(i.second->memAllocLocations, ss);
 			ss << std::endl;
 		}
 		return ss.str();
@@ -157,6 +219,7 @@ private:
 	void BuildGraph();
 	MemGraph _cpuGraph;
 	MemGraph _gpuGraph;
+	TransferGraph _transGraph;
 	GPUMallocVec _gpuVec;
 	CPUMallocVec _cpuVec;
 	MemTransVec _memVec;

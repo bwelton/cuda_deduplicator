@@ -179,6 +179,18 @@ void SyncTesting::FixProblems(StackRecMap & recs) {
 	//t.PostProcessing(recs);
 }
 
+void SyncTesting::MemRecorder(StackRecMap & recs) {
+	system("exec rm -rf ./stackOut.*");
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	proc->RunCudaInit();
+	MemRecorder t(proc);
+	t.InsertAnalysis(recs);
+//	proc->DetachForDebug();
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of synchronizations = ")
+
+	//t.PostProcessing(recs);
+}
+
 void SyncTesting::RunLoadStoreAnalysis(StackRecMap & recs, std::vector<StackPoint> & uses) {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);

@@ -105,6 +105,10 @@ struct CUMemTransferTracker {
 
 };
 
+typedef std::vector<CUMallocTracker *> GPUMallocVec;
+typedef std::vector<GLIBMallocTracker *> CPUMallocVec;
+typedef std::vector<CUMemTransferTracker *> MemTransVec;
+
 // CudaMalloc <allocedSite,freedSite, count>
 // CudaMemCPU <allocedSite,freedSite, copyID, count> 
 struct MemRecDataFile {
@@ -120,11 +124,11 @@ struct MemRecDataFile {
 	void Write(std::vector<T> & data) {
 		if (data.size() == 0)
 			return;
-		char * outMem = (char*) malloc((data.size())*data[0].GetSize());
+		char * outMem = (char*) malloc((data.size())*data[0]->GetSize());
 		for (int i = 0; i < data.size(); i++){ 
-			data[i].Serialize(&(outMem[i * data[i].GetSize()]));
+			data[i]->Serialize(&(outMem[i * data[i]->GetSize()]));
 		}
-		fwrite(outMem, sizeof(char), (data.size())*data[0].GetSize(), _fid);
+		fwrite(outMem, sizeof(char), (data.size())*data[0]->GetSize(), _fid);
 		free(outMem);
 	};
 

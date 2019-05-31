@@ -139,6 +139,28 @@ public:
 			_CopyRecords[addr->loc][copyLoc] = tmp;
 		}		
 	};
+	~OutputWriter() {
+		MemRecDataFile wfile(fopen("DIOGENES_MemRecords.bin","wb"));
+		GPUMallocVec gvec;
+		for (auto i : _GPUMallocRecords)
+			for (auto x : i)
+				gvec.push_back(x);
+		wfile.Write<CUMallocTracker*>(gvec);
+
+		CPUMallocVec cvec;
+		for (auto i : _CPUTransRecords)
+			for (auto x : i)
+				cvec.push_back(x);
+		wfile.Write<GLIBMallocTracker*>(cvec);
+
+		MemTransVec mvec;
+		for (auto i : _CopyRecords)
+			for (auto x : i)
+				mvec.push_back(x);
+
+		wfile.Write<CUMemTransferTracker*>(mvec);
+	};
+
 
 	std::map<int64_t, std::map<int64_t,CUMemTransferTracker*>> _CopyRecords;
 	std::map<int64_t, std::map<int64_t,GLIBMallocTracker*>> _CPUTransRecords;

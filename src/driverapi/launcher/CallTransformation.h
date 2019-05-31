@@ -110,8 +110,8 @@ struct TransferPoint {
 
 	TransferPoint(int64_t _id, StackPoint _p) : id(_id), p(_p), count(0) {};
 
-	void AddTransfer(MallocPtr m) {
-		count++;
+	void AddTransfer(MallocPtr m, int64_t inCount) {
+		count += inCount;
 		memAllocLocations.insert(m);
 	}
 
@@ -163,7 +163,7 @@ struct TransferGraph {
 		emptyMalloc.reset(new MallocSite(-1,p));
 	}
 
-	void AddTransfer(int64_t id, int64_t mallocID, MemGraph & cpuGraph, std::map<int64_t, StackPoint> & idPoints) {
+	void AddTransfer(int64_t id, int64_t mallocID, int64_t count, MemGraph & cpuGraph, std::map<int64_t, StackPoint> & idPoints) {
 		MallocPtr tmp = cpuGraph.GetMallocSite(mallocID);
 		TransferPointPtr tpoint;
 		if (tmp == NULL) {
@@ -175,7 +175,7 @@ struct TransferGraph {
 		} else {
 			tpoint = transfers[id];
 		}
-		tpoint->AddTransfer(tmp);
+		tpoint->AddTransfer(tmp, count);
 	};
 
 	std::string PrintTransferGraph() {

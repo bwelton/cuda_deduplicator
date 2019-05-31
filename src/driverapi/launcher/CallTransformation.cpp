@@ -12,7 +12,7 @@ void CallTransformation::BuildGraph() {
 
 
 	for (auto i : _memVec) {
-		_transGraph.AddTransfer(i->copyID, i->allocSite, _cpuGraph, _idPoints);
+		_transGraph.AddTransfer(i->copyID, i->allocSite, i->count, _cpuGraph, _idPoints);
 	}
 
 	std::cerr << _cpuGraph.PrintMemoryGraph() << std::endl;

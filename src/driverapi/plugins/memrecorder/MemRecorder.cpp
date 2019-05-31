@@ -143,20 +143,20 @@ public:
 		MemRecDataFile wfile(fopen("DIOGENES_MemRecords.bin","wb"));
 		GPUMallocVec gvec;
 		for (auto i : _GPUMallocRecords)
-			for (auto x : i)
-				gvec.push_back(x);
+			for (auto x : i.second)
+				gvec.push_back(x.second);
 		wfile.Write<CUMallocTracker*>(gvec);
 
 		CPUMallocVec cvec;
 		for (auto i : _CPUTransRecords)
-			for (auto x : i)
-				cvec.push_back(x);
+			for (auto x : i.second)
+				cvec.push_back(x.second);
 		wfile.Write<GLIBMallocTracker*>(cvec);
 
 		MemTransVec mvec;
 		for (auto i : _CopyRecords)
-			for (auto x : i)
-				mvec.push_back(x);
+			for (auto x : i.second)
+				mvec.push_back(x.second);
 
 		wfile.Write<CUMemTransferTracker*>(mvec);
 	};

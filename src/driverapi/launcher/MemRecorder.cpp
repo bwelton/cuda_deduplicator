@@ -104,7 +104,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	// 
 }
 
-void MemRecorder::PostProessing() {
+void MemRecorder::PostProcessing() {
 	MemTransVec memVec;
 	GPUMallocVec gMallocVec;
 	CPUMallocVec cMallocVec;

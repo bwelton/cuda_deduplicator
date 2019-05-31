@@ -10,6 +10,8 @@
 #include <cstring>
 #include <list>
 #include <deque>
+#include <cuda_runtime_api.h>
+#include <cuda.h>
 
 #include "MemRecDataFile.h"
 

@@ -251,11 +251,11 @@ extern "C" {
 		int64_t cache = DIOGENES_CTX_ID;
 		if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
-			if (debugPrintCount % 10000 == 0)
-				std::cerr << "[CACHE] Malloc Cache address is - " << cache << std::endl;
-			debugPrintCount++;
+			// if (debugPrintCount % 10000 == 0)
+			// 	std::cerr << "[CACHE] Malloc Cache address is - " << cache << std::endl;
+			// debugPrintCount++;
 			void * ret = malloc(size);
-			//PLUG_FACTORY_PTR->CPUMallocData((uint64_t)ret, size, cache);
+			PLUG_FACTORY_PTR->CPUMallocData((uint64_t)ret, size, cache);
 			DIOGENES_ReleaseGlobalLock();
 			return ret;
 		} else {
@@ -266,10 +266,10 @@ extern "C" {
 		int64_t cache = DIOGENES_CTX_ID;
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
-			if (debugPrintCount % 10000 == 0)
-				std::cerr << "[CACHE] Free Cache address is - " << cache << std::endl;
-			debugPrintCount++;
-			//PLUG_FACTORY_PTR->CPUFreeData((uint64_t)mem, cache);
+			// if (debugPrintCount % 10000 == 0)
+			// 	std::cerr << "[CACHE] Free Cache address is - " << cache << std::endl;
+			// debugPrintCount++;
+			PLUG_FACTORY_PTR->CPUFreeData((uint64_t)mem, cache);
 			DIOGENES_ReleaseGlobalLock();
 		}
 		free(mem);

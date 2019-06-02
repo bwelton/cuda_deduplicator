@@ -281,7 +281,7 @@ extern "C" {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
 			ret = cudaMalloc(data, size);
-			PLUG_FACTORY_PTR->GPUMallocData((uint64_t)(*data), cache);
+			PLUG_FACTORY_PTR->GPUMallocData((uint64_t)(*data), size, cache);
 			DIOGENES_ReleaseGlobalLock();
 		} else {
 			ret = cudaMalloc(data, size);

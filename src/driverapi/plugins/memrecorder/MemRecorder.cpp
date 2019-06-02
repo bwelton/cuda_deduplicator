@@ -276,13 +276,28 @@ extern "C" {
 	}
 
 	cudaError_t DIOGENES_REC_CudaMalloc(void ** data, size_t size) {
-		assert(1==0);
-		return cudaErrorUnknown;
+		int64_t cache = DIOGENES_CTX_ID;
+		cudaError_t ret = cudaErrorUnknown;
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			ret = cudaMalloc(data, size);
+			PLUG_FACTORY_PTR->GPUMallocData((uint64_t)(*data), cache);
+			DIOGENES_ReleaseGlobalLock();
+		} else {
+			ret = cudaMalloc(data, size);
+		}
+		//assert(1==0);
+		return ret;
 	}
 
 	cudaError_t DIOGENES_REC_CudaFree(void * data) {
-		assert(1==0);
-		return cudaErrorUnknown;
+		int64_t cache = DIOGENES_CTX_ID;
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			PLUG_FACTORY_PTR->GPUFreeData((uint64_t)(data), cache);
+			DIOGENES_ReleaseGlobalLock();
+		}
+		return cudaFree(data);
 	}
 	cudaError_t DIOGENES_REC_CudaMemcpy(void * dst, const void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
 		assert(1==0);

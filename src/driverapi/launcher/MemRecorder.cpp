@@ -51,22 +51,23 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 			for (auto x : callsites) {
 				//std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
-/*					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 						continue;
-					//if (x.GetPointAddress() == (uint64_t) 0x10006cc4) {
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
-					x.ReplaceFunctionCall(cudaFreeWrapper[0]);
-*/
-					//return;
-					
-					//}
+					x.ReplaceFunctionCallWithID(cudaFreeWrapper[0], ident);
+					_idToStackPoint[ident] = x.GetStackPoint();
+					ident++;
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc")) {
-/*					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 						continue;
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
-					x.ReplaceFunctionCall(cudaMallocWrapper[0]);
-					*/
+					x.ReplaceFunctionCallWithID(cudaMallocWrapper[0], ident);
+					_idToStackPoint[ident] = x.GetStackPoint();
+					ident++;					
+
+					//x.ReplaceFunctionCall(cudaMallocWrapper[0]);
+					
 					//return;
 				}
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc")){

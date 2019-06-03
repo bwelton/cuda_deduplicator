@@ -83,7 +83,7 @@ public:
 		if (it != seenMap.end()) {
 			it->second -= count;
 			if (it->second <= 0)
-				seenMap.delete(it);
+				seenMap.erase(it);
 		}
 	};
 	MemAddress * Set(uint64_t addr, uint64_t size, int64_t loc) {

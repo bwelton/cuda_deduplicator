@@ -201,7 +201,7 @@ public:
 			outVec.push_back(tmp);
 		}
 		for (auto i : mkeep->_freeSee) {
-			T tmp = new T();
+			T * tmp = new T();
 			tmp->freeSite = i.first;
 			tmp->count = i.second;
 			tmp->allocSite = -1;

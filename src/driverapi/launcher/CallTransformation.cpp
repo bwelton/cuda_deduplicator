@@ -11,7 +11,7 @@ CallTransformation::CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuV
 void CallTransformation::BuildRequiredSet() {
 	StackKeyReader r(fopen("LS_stackkey.txt","rb"));
 	std::map<uint64_t, std::vector<StackPoint> > m = r.ReadStacks();
-	LSDependency lvec;
+	LSDependencyVec lvec;
 	ReadDependencyFile dep(fopen("LS_syncaccess.bin", "rb"));
 	dep.Read(lvec);
 	LSStackGraphVec sgraph;

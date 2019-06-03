@@ -151,7 +151,7 @@ struct MemGraph {
 			ss << "[Free ID=" << i.first << "]" << " Call Count = " << i.second->count << " required bits = " << i.second->required << std::endl;
 		}
 		return ss.str();
-		
+
 	}
 
 	std::string PrintMemoryGraph() {
@@ -166,6 +166,7 @@ struct MemGraph {
 			ss << "[Free ID=" << i.first << "]" << " Call Count = " << i.second->count << " Associated MallocSites = ";
 			PrintSet<MallocSiteSet>(i.second->parents, ss);
 			ss << std::endl;
+			ss << "[Free ID=" << i.first << "] " << i.second->p.libname << "@" << i.second->p.libOffset << std::endl;
 		}
 		return ss.str();
 	};

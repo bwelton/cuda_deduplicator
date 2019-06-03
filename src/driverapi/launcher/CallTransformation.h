@@ -192,6 +192,29 @@ struct TransferGraph {
 };
 
 
+struct LSStackGraph {
+	std::vector<StackPoint> _points;
+	StackPoint _beforeLibcuda;
+	uint64_t _oID;
+	int64_t  _idPointID;
+	bool _found;
+	LSStackGraph(std::vector<StackPoint> points, uint64_t oID) : _points(points), _oID(oID), _found(false) {
+		bool tmpFound = false;
+		for(int i = _points.size() - 1; i >= 0; i--) {
+			if (_points[i].libname.find("libcudart") != std::string::npos) {
+				tmpFound = true;
+			} else if (tmpFound == true) {
+				_beforeLibcuda = _points[i];
+				_found = true;
+				break;
+			}
+		}
+	};
+};
+
+typedef std::vector<LSStackGraph> LSStackGraphVec;
+
+
 template<typename T> 
 void BuildMemoryGraph(std::vector<T> & memSites, std::map<int64_t, StackPoint> & _idPoints, MemGraph & ret) {
 	MallocPtr tmpMalloc;
@@ -216,7 +239,7 @@ void BuildMemoryGraph(std::vector<T> & memSites, std::map<int64_t, StackPoint> &
 class CallTransformation {
 public:
 	CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuVec, MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints);
-
+	void BuildRequiredSet();
 	//void GetCudaFreeMallocPairs(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, CudaFreeCallsites & callsites);
 	//void GetMemTransReplacement(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, MemTransCallsites & callsites);
 private:

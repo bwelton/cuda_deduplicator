@@ -202,6 +202,50 @@ struct StackKeyWriter {
 	}
 };
 
+struct LSDependency;
+
+typedef std::shared_ptr<LSDependency> LSDependencyPtr;
+typedef std::vector<LSDependency> LSDependencyVec;
+
+struct LSDependency{
+	uint64_t id;
+	uint64_t newDependents;
+	uint64_t lastDependent;
+
+	inline static uint64_t GetSize() {
+		return sizeof(uint64_t) * 3;
+	};
+	static LSDependencyPtr Deserialize(char * data) {
+		LSDependencyPtr ret;
+		ret.reset(new LSDependency());
+		uint64_t * tmp = (uint64_t*)data;
+		ret->id = tmp[0];
+		ret->newDependents = tmp[1];
+		ret->lastDependent = tmp[2];
+		return ret;
+	};
+};
+
+struct ReadDependencyFile {
+	FILE * _fid;
+	ReadDependencyFile(FILE * fp) : _fid(fp){ };
+
+	~ReadDependencyFile() { fclose(_fid);}
+
+	void Read(LSDependencyVec & vec) {
+		fseek(_fid, 0, SEEK_END);
+		size_t size = ftell(_fid);
+		fseek(_fid, 0, SEEK_SET);
+		char * data = new char[size];
+		fread(data, 1, size, _fid);
+		int pos = 0;
+		while (size - pos >= LSDependency::GetSize()){
+			vec.push_back(LSDependency::Deserialize(data+pos));
+			pos += LSDependency::GetSize();
+		}
+	};
+};
+
 struct StackKeyReader {
 	FILE * in;
 	StackKeyReader(FILE * fp) {

@@ -224,7 +224,7 @@ struct StackPointTree {
 				_idMapper[i.second.libname] = std::map<uint64_t,int64_t>();
 				it = _idMapper.find(i.second.libname);
 			}
-			_idMapper[i.second.libOffset] = i.first;
+			it->second[i.second.libOffset] = i.first;
 		}
 	};
 	int64_t FindID(StackPoint & p) {

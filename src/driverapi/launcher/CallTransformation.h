@@ -243,7 +243,7 @@ struct StackPointTree {
 				_idMapper[i.second.libname] = std::map<uint64_t,int64_t>();
 				it = _idMapper.find(i.second.libname);
 			}
-			if (it->second.find(i.second.libOffset) != it->end())
+			if (it->second.find(i.second.libOffset) != it->second.end())
 				std::cerr << "[StackPointTree::StackPointTree] ERROR! Multiple id's at same offset! - " << i.second.libname << "@" << std::hex << i.second.libOffset << std::dec << std::endl;
 			it->second[i.second.libOffset] = i.first;
 		}

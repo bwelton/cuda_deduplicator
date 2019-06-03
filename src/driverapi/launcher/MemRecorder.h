@@ -51,6 +51,7 @@
 #include "DyninstCallsite.h"
 #include "DebugInstrimentationTemp.h"
 #include "CallTransformation.h"
+#include "DetectDuplicateStackpoints.h"
 class MemRecorder {
 public:
 	MemRecorder(std::shared_ptr<DyninstProcess> proc);

@@ -32,6 +32,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	for (auto i : all_functions) {
 		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	}
+	DetectDuplicateStackpoints dupCheck;
 
 	std::string tmpLibname = std::string("");
 	std::string tmpFuncName = std::string("");
@@ -51,16 +52,20 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 			for (auto x : callsites) {
 				//std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
-					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cudaFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
 					x.ReplaceFunctionCallWithID(cudaFreeWrapper[0], ident);
 					_idToStackPoint[ident] = x.GetStackPoint();
 					ident++;
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc")) {
-					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cudaMalloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 					x.ReplaceFunctionCallWithID(cudaMallocWrapper[0], ident);
 					_idToStackPoint[ident] = x.GetStackPoint();
@@ -71,24 +76,30 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 					//return;
 				}
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc")){
-					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
 					x.ReplaceFunctionCallWithID(mallocWrapper[0], ident);
 					_idToStackPoint[ident] = x.GetStackPoint();
 					ident++;
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				}
 				if (*(x.GetCalledFunction()) == std::string("__libc_free")){
-					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
 					x.ReplaceFunctionCallWithID(freeWrapper[0], ident);
 					_idToStackPoint[ident] = x.GetStackPoint();
 					ident++;
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to free in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMemcpyAsync")){
-					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cudaMemcpyAsync in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
 					x.ReplaceFunctionCallWithID(cudaMemcpyWrapper[0], ident);
 					_idToStackPoint[ident] = x.GetStackPoint();

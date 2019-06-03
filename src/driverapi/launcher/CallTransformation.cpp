@@ -58,7 +58,6 @@ void CallTransformation::BuildRequiredSet() {
 		}
 	}
 	std::cerr << _gpuGraph.PrintRequiredSetFree() << std::endl;
-	std::vector<FreeSitePtr> freeSites;
 	std::vector<MallocPtr> mallocSites;	
 	_gpuGraph.TraverseFromPoint<FreeSitePtr,MallocPtr>(freeSites, mallocSites);
 
@@ -72,9 +71,10 @@ void CallTransformation::BuildRequiredSet() {
 			std::cout << "[REMOVE]" << i->Print() << std::endl;
 		}
 	}
-	ret->cudaMallocReplacements = mallocSites;
+	
 	for (auto i : mallocSites) {
 		std::cout << "[WRAP]" << i->Print() << std::endl;
+		ret->cudaMallocReplacements.push_back(i->p);
 	}
 
 	

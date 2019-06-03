@@ -186,7 +186,7 @@ public:
 	template<typename T> 
 	void WriteMemData(MemRecDataFile & wfile, std::map<int64_t, std::map<int64_t,T*>> & mmap, std::shared_ptr<MemKeeper> mkeep) {
 		std::vector<T*> outVec;
-		for (auto i : _GPUMallocRecords){
+		for (auto i : mmap){
 			for (auto x : i.second) {
 				outVec.push_back(x.second);
 				mkeep->SubNumSeen(i.first,mkeep->_allocSee,x.second->count);

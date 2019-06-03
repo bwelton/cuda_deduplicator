@@ -189,18 +189,18 @@ public:
 		for (auto i : mmap){
 			for (auto x : i.second) {
 				outVec.push_back(x.second);
-				mkeep->SubNumSeen(i.first,mkeep->_allocSee,x.second->count);
-				mkeep->SubNumSeen(i.second,mkeep->_freeSee,x.second->count);
+				mkeep->SubNumSeen(i.first,mkeep->_allocSeen,x.second->count);
+				mkeep->SubNumSeen(i.second,mkeep->_freeSeen,x.second->count);
 			}
 		}
-		for (auto i : mkeep->_allocSee) {
+		for (auto i : mkeep->_allocSeen) {
 			T * tmp = new T();
 			tmp->allocSite = i.first;
 			tmp->count = i.second;
 			tmp->freeSite = -1;
 			outVec.push_back(tmp);
 		}
-		for (auto i : mkeep->_freeSee) {
+		for (auto i : mkeep->_freeSeen) {
 			T * tmp = new T();
 			tmp->freeSite = i.first;
 			tmp->count = i.second;

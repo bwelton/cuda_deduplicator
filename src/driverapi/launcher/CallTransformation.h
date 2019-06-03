@@ -215,6 +215,32 @@ struct LSStackGraph {
 typedef std::vector<LSStackGraph> LSStackGraphVec;
 
 
+struct StackPointTree {
+	std::map<std::string, std::map<uint64_t, int64_t>> _idMapper;
+	StackPointTree(std::map<int64_t, StackPoint> & mmap) {
+		for (auto i : mmap) {
+			auto it = _idMapper.find(i.second.libname);
+			if (it == _idMapper.end()){
+				_idMapper[i.second.libname] = std::map<uint64_t,int64_t>();
+				it = _idMapper.find(i.second.libname);
+			}
+			_idMapper[i.second.libOffset] = i.first;
+		}
+	};
+	int64_t FindID(StackPoint & p) {
+		auto it = _idMapper.find(p.libname);
+		if (it == _idMapper)
+			return -1;
+		auto it2 = it->second.find(p.libOffset);
+		if (its == it->second.end())
+			return -1;
+		return it2->second;
+	};
+
+
+};
+
+
 template<typename T> 
 void BuildMemoryGraph(std::vector<T> & memSites, std::map<int64_t, StackPoint> & _idPoints, MemGraph & ret) {
 	MallocPtr tmpMalloc;

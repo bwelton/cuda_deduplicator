@@ -18,6 +18,16 @@ void CallTransformation::BuildRequiredSet() {
 	for (auto i : m) {
 		sgraph.push_back(LSStackGraph(i.second, i.first));
 	}
+
+	StackPointTree tree(_idPoints);
+	for (auto i : sgraph) {
+		if(i._found == true){
+			int64_t id = tree.FindID( i._beforeLibcuda);
+			if (id >= 0) {
+				std::cerr << "[CallTransformation::BuildRequiredSet] Found ID Match for Call - " << i._beforeLibcuda.libname << "@" << i._beforeLibcuda.libOffset << " [ID = " << id << "]" << std::endl;
+			}
+		}
+	}
 }
 
 

@@ -189,8 +189,8 @@ public:
 		for (auto i : _GPUMallocRecords){
 			for (auto x : i.second) {
 				outVec.push_back(x.second);
-				mkeep->SubNumSeen(i.first,mkeep->_allocSee,x.second.count);
-				mkeep->SubNumSeen(i.second,mkeep->_freeSee,x.second.count);
+				mkeep->SubNumSeen(i.first,mkeep->_allocSee,x.second->count);
+				mkeep->SubNumSeen(i.second,mkeep->_freeSee,x.second->count);
 			}
 		}
 		for (auto i : mkeep->_allocSee) {

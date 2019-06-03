@@ -89,8 +89,8 @@ struct CUMemTransferTracker {
 		out[0] = type;
 		int64_t * ptr = (int64_t*)&(out[1]);
 		ptr[0] = allocSite;
-		ptr[2] = copyID;
-		ptr[3] = count;
+		ptr[1] = copyID;
+		ptr[2] = count;
 	};
 	static CUMemTransferTracker * Deserialize(char * in) {
 		if (in[0] != 79)
@@ -98,8 +98,8 @@ struct CUMemTransferTracker {
 		CUMemTransferTracker * ret = new CUMemTransferTracker();
 		int64_t * ptr = (int64_t*)&(in[1]);
 		ret->allocSite = ptr[0];
-		ret->copyID = ptr[2];
-		ret->count = ptr[3];
+		ret->copyID = ptr[1];
+		ret->count = ptr[2];
 		return ret;
 	};
 

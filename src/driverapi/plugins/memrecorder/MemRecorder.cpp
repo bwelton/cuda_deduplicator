@@ -73,7 +73,7 @@ public:
 		if (it == seenMap.end()) {
 			seenMap[id] = 1;
 		} else {
-			(*it)++;
+			(it->second)++;
 		}
 	};
 
@@ -81,8 +81,8 @@ public:
 	void SubNumSeen(int64_t id, std::map<int64_t, int64_t> & seenMap, int64_t count) {
 		auto it = seenMap.find(id);
 		if (it != seenMap.end()) {
-			(*it)-= count;
-			if (*it <= 0)
+			it->second -= count;
+			if (it->second <= 0)
 				seenMap.delete(it);
 		}
 	};

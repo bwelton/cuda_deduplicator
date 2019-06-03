@@ -73,6 +73,7 @@ typedef std::set<FreeSitePtr> FreeSiteSet;
 struct RemovePoints {
 	StackPointVec cudaMallocReplacements;
 	StackPointVec cudaFreeReplacements;
+	StackPointVec cudaFreeReqSync;
 	
 	StackPointVec cudaMemcpyAsyncRepl;
 
@@ -101,6 +102,12 @@ struct FreeSite{
 		return parents.end();
 	}
 
+
+	std::string Print() {
+		std::stringstream ss;
+		ss << "[Free ID=" << std::dec << id << "] " << p.libname << "@" << std::hex << p.libOffset << std::dec << " Count=" << count << " ";
+		return ss.str();
+	};
 	MallocSiteSet parents;
 };
 
@@ -109,8 +116,8 @@ struct MallocSite {
 	StackPoint p;
 	uint64_t count;
 	FreeSiteSet children;
-
-	MallocSite(int64_t _id, StackPoint _p) : id(_id), p(_p), count(0) {};
+	int unknownChild;
+	MallocSite(int64_t _id, StackPoint _p) : id(_id), p(_p), count(0), unknownChild(-1) {};
 
 	void AddAlloc(FreeSitePtr destroyer, MallocPtr myself, int64_t inCount) {
 		count += inCount;
@@ -127,6 +134,23 @@ struct MallocSite {
 		return children.end();
 	}
 
+	int HasUnknownChild() {
+		if (unknownChild != -1)
+			return unknownChild;
+		unknownChild = 0;
+		for (auto i : children)
+			if (i->id < 0) {
+				unknownChild = 1;
+				break;
+			}
+		return unknownChild;
+	};
+
+	std::string Print() {
+		std::stringstream ss;
+		ss << "[Malloc ID=" << std::dec << id << "] " << p.libname << "@" << std::hex << p.libOffset << std::dec << " Count=" << count << " ";
+		return ss.str();
+	};
 	void Destroy() {
 		children.clear();
 	};
@@ -169,8 +193,7 @@ struct MemGraph {
 		std::deque<T> cn;
 		std::set<T> tAlreadySeen;
 		std::set<D> dAlreadySeen;
-		auto it = cn.begin();
-		cn.insert(it, tlist.begin(), tlist.end());
+		cn.insert(cn.begin(), tlist.begin(), tlist.end());
 		tlist.clear();
 		while(cn.size() > 0) {
 			auto i = cn.front();
@@ -181,19 +204,21 @@ struct MemGraph {
 			tAlreadySeen.insert(i);
 			tlist.push_back(i);
 			std::deque<D> nn;
-			nn.insert(nn.begin(), i.GetStart(), i.GetEnd());
+			nn.insert(nn.begin(), i->GetStart(), i->GetEnd());
 			while (nn.size() > 0) {
 				auto n = nn.front();
 				nn.pop_front();
 				if (dAlreadySeen.find(n) != dAlreadySeen.end())
 					continue;
 				dAlreadySeen.insert(n);
+				if (n->HasUnknownChild() != 0)
+					continue;
 				dlist.push_back(n);
-				cn.insert(cn.end(), n.GetStart(), n.GetEnd());
+				cn.insert(cn.end(), n->GetStart(), n->GetEnd());
 			}
 		}
 	};
-	
+
 	FreeSitePtr GetFreeSite(int64_t id) {
 		auto it = freePoints.find(id);
 		if (it == freePoints.end())

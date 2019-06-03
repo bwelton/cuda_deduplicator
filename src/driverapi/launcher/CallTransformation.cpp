@@ -42,6 +42,8 @@ void CallTransformation::BuildRequiredSet() {
 			}
 		}
 	}
+	std::vector<FreeSitePtr> freeSites;
+
 	for (auto i : sgraph) {
 		if (i._idPointID > 0) {
 			FreeSitePtr tmp = _gpuGraph.GetFreeSite(i._idPointID);
@@ -50,11 +52,32 @@ void CallTransformation::BuildRequiredSet() {
 					tmp->required = 1;
 				} else {
 					tmp->required = 0;
+					freeSites.push_back(tmp);
 				}
 			}
 		}
 	}
 	std::cerr << _gpuGraph.PrintRequiredSetFree() << std::endl;
+	std::vector<FreeSitePtr> freeSites;
+	std::vector<MallocPtr> mallocSites;	
+	_gpuGraph.TraverseFromPoint<FreeSitePtr,MallocPtr>(freeSites, mallocSites);
+
+	RemovePointsPtr ret(new RemovePoints());
+	for (auto i : freeSites) {
+		if (i->required != 1) {
+			ret->cudaFreeReqSync.push_back(i->p);
+			std::cout << "[REQ]" << i->Print() << std::endl;
+		} else {
+			ret->cudaFreeReplacements.push_back(i->p);
+			std::cout << "[REMOVE]" << i->Print() << std::endl;
+		}
+	}
+	ret->cudaMallocReplacements = mallocSites;
+	for (auto i : mallocSites) {
+		std::cout << "[WRAP]" << i->Print() << std::endl;
+	}
+
+	
 }
 
 

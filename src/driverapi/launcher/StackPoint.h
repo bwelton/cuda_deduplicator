@@ -205,7 +205,7 @@ struct StackKeyWriter {
 struct LSDependency;
 
 typedef std::shared_ptr<LSDependency> LSDependencyPtr;
-typedef std::vector<LSDependency> LSDependencyVec;
+typedef std::vector<LSDependencyPtr> LSDependencyVec;
 
 struct LSDependency{
 	uint64_t id;

@@ -163,10 +163,10 @@ struct MemGraph {
 		}
 
 		for (auto i : freePoints) {
-			ss << "[Free ID=" << i.first << "]" << " Call Count = " << i.second->count << " Associated MallocSites = ";
+			ss << std::dec << "[Free ID=" << i.first << "]" << " Call Count = " << i.second->count << " Associated MallocSites = ";
 			PrintSet<MallocSiteSet>(i.second->parents, ss);
 			ss << std::endl;
-			ss << "[Free ID=" << i.first << "] " << i.second->p.libname << "@" << std::hex << i.second->p.libOffset << std::endl;
+			ss << "[Free ID=" << i.first << "] " << i.second->p.libname << "@" << std::hex << i.second->p.libOffset << std::dec << std::endl;
 		}
 		return ss.str();
 	};

@@ -198,16 +198,16 @@ public:
 			tmp->allocSite = i.first;
 			tmp->count = i.second;
 			tmp->freeSite = -1;
-			gvec.push_back(tmp);
+			outVec.push_back(tmp);
 		}
 		for (auto i : mkeep->_freeSee) {
 			T tmp = new T();
 			tmp->freeSite = i.first;
 			tmp->count = i.second;
 			tmp->allocSite = -1;
-			gvec.push_back(tmp);
+			outVec.push_back(tmp);
 		}
-		wfile.Write<T *>(gvec);
+		wfile.Write<T *>(outVec);
 	};
 
 	// };

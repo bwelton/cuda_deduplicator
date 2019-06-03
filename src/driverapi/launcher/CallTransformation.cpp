@@ -63,7 +63,7 @@ void CallTransformation::BuildRequiredSet() {
 
 	RemovePointsPtr ret(new RemovePoints());
 	for (auto i : freeSites) {
-		if (i->required != 1) {
+		if (i->required != 0) {
 			ret->cudaFreeReqSync.push_back(i->p);
 			std::cout << "[REQ]" << i->Print() << std::endl;
 		} else {

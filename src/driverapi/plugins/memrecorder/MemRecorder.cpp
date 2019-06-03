@@ -190,7 +190,7 @@ public:
 			for (auto x : i.second) {
 				outVec.push_back(x.second);
 				mkeep->SubNumSeen(i.first,mkeep->_allocSeen,x.second->count);
-				mkeep->SubNumSeen(i.second,mkeep->_freeSeen,x.second->count);
+				mkeep->SubNumSeen(x.first,mkeep->_freeSeen,x.second->count);
 			}
 		}
 		for (auto i : mkeep->_allocSeen) {

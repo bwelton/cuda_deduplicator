@@ -15,18 +15,46 @@ void CallTransformation::BuildRequiredSet() {
 	ReadDependencyFile dep(fopen("LS_syncaccess.bin", "rb"));
 	dep.Read(lvec);
 	LSStackGraphVec sgraph;
+	std::map<uint64_t, int> _mapToSgraph;
+	int pos = 0;
 	for (auto i : m) {
 		sgraph.push_back(LSStackGraph(i.second, i.first));
+		_mapToSgraph[i.first] = pos;
+		pos++;
 	}
 	StackPointTree tree(_idPoints);
-	for (auto i : sgraph) {
+	for (auto & i : sgraph) {
 		if(i._found == true){
 			int64_t id = tree.FindID( i._beforeLibcuda);
+			i._idPointID = id;
 			if (id >= 0) {
 				std::cerr << "[CallTransformation::BuildRequiredSet] Found ID Match for Call - " << i._beforeLibcuda.libname << "@" << i._beforeLibcuda.libOffset << " [ID = " << id << "]" << std::endl;
 			}
 		}
 	}
+
+	for (auto i : lvec) {
+		if(i->newDependents) {
+			auto it = _mapToSgraph.find(i->id);
+			if (it != _mapToSgraph.end()) {
+				sgraph[it->second]._required = true;
+				//std::cerr << "[CallTransformation::BuildRequiredSet] " 
+			}
+		}
+	}
+	for (auto i : sgraph) {
+		if (i._idPointID > 0) {
+			FreeSitePtr tmp = _gpuGraph.GetFreeSite(i._idPointID);
+			if (tmp != NULL) {
+				if (i._required == true) {
+					tmp->required = 1;
+				} else {
+					tmp->required = 0;
+				}
+			}
+		}
+	}
+	std::cerr << _gpuGraph.PrintRequiredSetFree() << std::endl;
 }
 
 

@@ -74,7 +74,8 @@ struct FreeSite{
 	int64_t id;
 	StackPoint p;
 	uint64_t count;
-	FreeSite(int64_t _id, StackPoint _p) : id(_id), p(_p), count(0) {};
+	int required;
+	FreeSite(int64_t _id, StackPoint _p) : id(_id), p(_p), count(0), required(-1) {};
 
 	void AddFree(int64_t inCount) {
 		count += inCount;
@@ -132,11 +133,27 @@ struct MemGraph {
 		for (auto i : mallocPoints)
 			i.second->Destroy();
 	};
+
+	FreeSitePtr GetFreeSite(int64_t id) {
+		auto it = freePoints.find(id);
+		if (it == freePoints.end())
+			return NULL;
+		return it->second;
+	};
 	MallocPtr GetMallocSite(int64_t id) {
 		if (mallocPoints.find(id) == mallocPoints.end())
 			return NULL;
 		return mallocPoints[id];
+	};
+	std::string PrintRequiredSetFree() {
+		std::stringstream ss;
+		for(auto i : freePoints) {
+			ss << "[Free ID=" << i.first << "]" << " Call Count = " << i.second->count << " required bits = " << i.second->required << std::endl;
+		}
+		return ss.str();
+		
 	}
+
 	std::string PrintMemoryGraph() {
 		std::stringstream ss;
 		for (auto i : mallocPoints) {
@@ -198,7 +215,8 @@ struct LSStackGraph {
 	uint64_t _oID;
 	int64_t  _idPointID;
 	bool _found;
-	LSStackGraph(std::vector<StackPoint> points, uint64_t oID) : _points(points), _oID(oID), _found(false) {
+	bool _required;
+	LSStackGraph(std::vector<StackPoint> points, uint64_t oID) : _points(points), _oID(oID), _idPointID(-1),_found(false), _required(false) {
 		bool tmpFound = false;
 		for(int i = _points.size() - 1; i >= 0; i--) {
 			if (_points[i].libname.find("libcudart") != std::string::npos) {

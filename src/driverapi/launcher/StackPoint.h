@@ -126,6 +126,8 @@ struct StackPoint {
 
 };
 
+typedef std::vector<StackPoint> StackPointVec;
+
 struct StackHasher{
 	std::stringstream ss;
 	uint64_t HashStack(std::vector<StackPoint> & points) {

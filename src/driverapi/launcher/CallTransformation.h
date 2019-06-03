@@ -70,6 +70,18 @@ typedef std::map<int64_t, TransferPointPtr> TransferPointMap;
 typedef std::set<MallocPtr> MallocSiteSet;
 typedef std::set<FreeSitePtr> FreeSiteSet;
 
+struct RemovePoints {
+	StackPointVec cudaMallocReplacements;
+	StackPointVec cudaFreeReplacements;
+	
+	StackPointVec cudaMemcpyAsyncRepl;
+
+	StackPointVec mallocReplacements;
+	StackPointVec freeReplacements;
+};
+
+typedef std::shared_ptr<RemovePoints> RemovePointsPtr;
+
 struct FreeSite{	
 	int64_t id;
 	StackPoint p;
@@ -80,6 +92,15 @@ struct FreeSite{
 	void AddFree(int64_t inCount) {
 		count += inCount;
 	};
+
+	MallocSiteSet::iterator GetStart() {
+		return parents.begin();
+	};
+
+	MallocSiteSet::iterator GetEnd() {
+		return parents.end();
+	}
+
 	MallocSiteSet parents;
 };
 
@@ -98,6 +119,13 @@ struct MallocSite {
 		destroyer->parents.insert(myself);
 
 	};
+	FreeSiteSet::iterator GetStart() {
+		return children.begin();
+	};
+
+	FreeSiteSet::iterator GetEnd() {
+		return children.end();
+	}
 
 	void Destroy() {
 		children.clear();
@@ -134,6 +162,38 @@ struct MemGraph {
 			i.second->Destroy();
 	};
 
+	template <typename T, typename D>
+	void TraverseFromPoint(std::vector<T> & tlist, std::vector<D> & dlist) {
+		if (tlist.size() == 0)
+			return;
+		std::deque<T> cn;
+		std::set<T> tAlreadySeen;
+		std::set<D> dAlreadySeen;
+		auto it = cn.begin();
+		cn.insert(it, tlist.begin(), tlist.end());
+		tlist.clear();
+		while(cn.size() > 0) {
+			auto i = cn.front();
+			cn.pop_front();
+			if (tAlreadySeen.find(i) != tAlreadySeen.end()) {
+				continue;
+			}
+			tAlreadySeen.insert(i);
+			tlist.push_back(i);
+			std::deque<D> nn;
+			nn.insert(nn.begin(), i.GetStart(), i.GetEnd());
+			while (nn.size() > 0) {
+				auto n = nn.front();
+				nn.pop_front();
+				if (dAlreadySeen.find(n) != dAlreadySeen.end())
+					continue;
+				dAlreadySeen.insert(n);
+				dlist.push_back(n);
+				cn.insert(cn.end(), n.GetStart(), n.GetEnd());
+			}
+		}
+	};
+	
 	FreeSitePtr GetFreeSite(int64_t id) {
 		auto it = freePoints.find(id);
 		if (it == freePoints.end())

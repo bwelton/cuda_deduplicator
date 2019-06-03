@@ -300,8 +300,16 @@ extern "C" {
 		return cudaFree(data);
 	}
 	cudaError_t DIOGENES_REC_CudaMemcpy(void * dst, const void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
-		assert(1==0);
-		return cudaErrorUnknown;
+		int64_t cache = DIOGENES_CTX_ID;
+		if (kind == cudaMemcpyDeviceToHost) {
+			if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+				PLUG_BUILD_FACTORY();
+				PLUG_FACTORY_PTR->RecordMemTransfer((uint64_t)dst, cache);
+				DIOGENES_ReleaseGlobalLock();
+			}
+		}
+		//assert(1==0);
+		return cudaMemcpyAsync(dst,src,size,kind,stream);
 	}
 	// void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
 	// 	int64_t cache = DIOGENES_CTX_ID;

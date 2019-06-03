@@ -87,11 +87,12 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to free in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMemcpyAsync")){
-/*					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 						continue;
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cudaMemcpyAsync in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
-					x.ReplaceFunctionCall(cudaMemcpyWrapper[0]);
-					*/
+					x.ReplaceFunctionCallWithID(cudaMemcpyWrapper[0], ident);
+					_idToStackPoint[ident] = x.GetStackPoint();
+					ident++;					
 				}
 			}
 		//}

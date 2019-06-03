@@ -229,10 +229,10 @@ struct StackPointTree {
 	};
 	int64_t FindID(StackPoint & p) {
 		auto it = _idMapper.find(p.libname);
-		if (it == _idMapper)
+		if (it == _idMapper.end())
 			return -1;
 		auto it2 = it->second.find(p.libOffset);
-		if (its == it->second.end())
+		if (it2 == it->second.end())
 			return -1;
 		return it2->second;
 	};

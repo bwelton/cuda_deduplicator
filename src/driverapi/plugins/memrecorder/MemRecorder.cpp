@@ -68,7 +68,24 @@ public:
 			return NULL;
 		return lb->second;
 	}
+	void AddOneSeen(int64_t id, std::map<int64_t, int64_t> & seenMap) {
+		auto it = seenMap.find(id);
+		if (it == seenMap.end()) {
+			seenMap[id] = 1;
+		} else {
+			(*it)++;
+		}
+	};
 
+
+	void SubNumSeen(int64_t id, std::map<int64_t, int64_t> & seenMap, int64_t count) {
+		auto it = seenMap.find(id);
+		if (it != seenMap.end()) {
+			(*it)-= count;
+			if (*it <= 0)
+				seenMap.delete(it);
+		}
+	};
 	MemAddress * Set(uint64_t addr, uint64_t size, int64_t loc) {
 		MemAddress * n;
 		if (_addressMap.find(addr) != _addressMap.end()) {
@@ -80,17 +97,24 @@ public:
 		n->loc = loc;
 		n->size = size;
 		_addressMap[addr] = n;
+		AddOneSeen(loc, _allocSeen);
 		return n;
 	};
 
-	void Delete(uint64_t addr) {
+	std::map<uint64_t, MemAddress*> * GetAddressMapPtr() {
+		return &_addressMap;
+	}
+	void Delete(int64_t loc, uint64_t addr) {
 		if (_addressMap.find(addr) != _addressMap.end()) {
 			_allocedAddresses.push_back(_addressMap[addr]);
 			_addressMap.erase(addr);
 		}
+		AddOneSeen(loc, _freeSeen);
 	};
 
 	uint64_t allocCount;
+	std::map<int64_t, int64_t> _allocSeen;
+	std::map<int64_t, int64_t> _freeSeen;
 	std::map<uint64_t, MemAddress*> _addressMap;
 	std::deque<MemAddress *> _allocedAddresses;
 };
@@ -98,6 +122,7 @@ public:
 
 class OutputWriter{
 public:
+	OutputWriter(std::shared_ptr<MemKeeper> cmem, std::shared_ptr<MemKeeper> gmem) : _cpuLocalMem(cmem), _gpuLocalMem(gmem) {};
 	void RecordGPUMallocPair(MemAddress * addr, int64_t freeLoc) {
 		if (_GPUMallocRecords.find(addr->loc) == _GPUMallocRecords.end())
 			_GPUMallocRecords[addr->loc] = std::map<int64_t,CUMallocTracker*>();
@@ -139,19 +164,68 @@ public:
 			_CopyRecords[addr->loc][copyLoc] = tmp;
 		}		
 	};
+	template <typename T> 
+	std::set<int64_t> CheckForUnwrittenEntries(std::shared_ptr<MemKeeper> mem, std::map<int64_t, std::map<int64_t,T>> & m) {
+		std::set<int64_t> ret;
+		std::map<uint64_t, MemAddress*> * a = mem->GetAddressMapPtr();
+		for(auto i : *a) {
+			if (m.find(i.second.loc) == m.end()) {
+				ret.insert(i.second.loc);
+			}
+		}
+		return ret;
+	};
+
+	// template<typename T>
+	// void WriteUnknownMallocs(std::set<int64_t>)
+
+
+	// void WriteUnknownCPUMallocs(std::shared_ptr<MemKeeper> cpuMem) {
+	// 	std::set<int64_t> tmp = CheckForUnwrittenEntries<GLIBMallocTracker*>(cpuMem, _CPUTransRecords);
+
+	template<typename T> 
+	void WriteMemData(MemRecDataFile & wfile, std::map<int64_t, std::map<int64_t,T>> & mmap, std::shared_ptr<MemKeeper> mkeep) {
+		std::vector<T> outVec;
+		for (auto i : _GPUMallocRecords){
+			for (auto x : i.second) {
+				outVec.push_back(x.second);
+				mkeep->SubNumSeen(i.first,mkeep->_allocSee,x.second.count);
+				mkeep->SubNumSeen(i.second,mkeep->_freeSee,x.second.count);
+			}
+		}
+		for (auto i : mkeep->_allocSee) {
+			T tmp = new T();
+			tmp->allocSite = i.first;
+			tmp->count = i.second;
+			tmp->freeSite = -1;
+			gvec.push_back(tmp);
+		}
+		for (auto i : mkeep->_freeSee) {
+			T tmp = new T();
+			tmp->freeSite = i.first;
+			tmp->count = i.second;
+			tmp->allocSite = -1;
+			gvec.push_back(tmp);
+		}
+		wfile.Write<T>(gvec);
+	};
+
+	// };
 	~OutputWriter() {
 		MemRecDataFile wfile(fopen("DIOGENES_MemRecords.bin","wb"));
-		GPUMallocVec gvec;
-		for (auto i : _GPUMallocRecords)
-			for (auto x : i.second)
-				gvec.push_back(x.second);
-		wfile.Write<CUMallocTracker*>(gvec);
+		WriteMemData<CUMallocTracker *>(wfile, _GPUMallocRecords, _gpuLocalMem);
+		WriteMemData<GLIBMallocTracker *>(wfile, _CPUTransRecords, _cpuLocalMem);	
+		// GPUMallocVec gvec;
+		// for (auto i : _GPUMallocRecords)
+		// 	for (auto x : i.second)
+		// 		gvec.push_back(x.second);
+		// wfile.Write<CUMallocTracker*>(gvec);
 
-		CPUMallocVec cvec;
-		for (auto i : _CPUTransRecords)
-			for (auto x : i.second)
-				cvec.push_back(x.second);
-		wfile.Write<GLIBMallocTracker*>(cvec);
+		// CPUMallocVec cvec;
+		// for (auto i : _CPUTransRecords)
+		// 	for (auto x : i.second)
+		// 		cvec.push_back(x.second);
+		// wfile.Write<GLIBMallocTracker*>(cvec);
 
 		MemTransVec mvec;
 		for (auto i : _CopyRecords)
@@ -160,8 +234,8 @@ public:
 
 		wfile.Write<CUMemTransferTracker*>(mvec);
 	};
-
-
+	std::shared_ptr<MemKeeper> _cpuLocalMem;
+	std::shared_ptr<MemKeeper> _gpuLocalMem;
 	std::map<int64_t, std::map<int64_t,CUMemTransferTracker*>> _CopyRecords;
 	std::map<int64_t, std::map<int64_t,GLIBMallocTracker*>> _CPUTransRecords;
 	std::map<int64_t, std::map<int64_t,CUMallocTracker*>> _GPUMallocRecords;
@@ -174,9 +248,9 @@ public:
 		_NullAddr = new MemAddress();
 		_NullAddr->loc = -1;
 		_NullAddr->size = 0;
-		_outWriter.reset(new OutputWriter());
 		_cpuLocalMem.reset(new MemKeeper());
 		_gpuLocalMem.reset(new MemKeeper());
+		_outWriter.reset(new OutputWriter(_cpuLocalMem, _gpuLocalMem));
 	};
 
 	~MemTracker() {
@@ -191,7 +265,7 @@ public:
 		if (cpuAddr != NULL) {
 			_outWriter->RecordCPUMallocPair(cpuAddr, loc);
 		}
-		_cpuLocalMem->Delete(addr);
+		_cpuLocalMem->Delete(loc,addr);
 	};
 
 	void GPUMallocData(uint64_t addr, size_t size, int64_t loc)  {
@@ -202,7 +276,7 @@ public:
 		if (gpuAddr != NULL) {
 			_outWriter->RecordGPUMallocPair(gpuAddr, loc);
 		}		
-		_gpuLocalMem->Delete(addr);	
+		_gpuLocalMem->Delete(loc,addr);	
 	};
  	
 	void RecordMemTransfer(uint64_t addr, int64_t loc) {

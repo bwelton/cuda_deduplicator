@@ -18,7 +18,6 @@ void CallTransformation::BuildRequiredSet() {
 	for (auto i : m) {
 		sgraph.push_back(LSStackGraph(i.second, i.first));
 	}
-
 	StackPointTree tree(_idPoints);
 	for (auto i : sgraph) {
 		if(i._found == true){

@@ -184,8 +184,8 @@ public:
 	// 	std::set<int64_t> tmp = CheckForUnwrittenEntries<GLIBMallocTracker*>(cpuMem, _CPUTransRecords);
 
 	template<typename T> 
-	void WriteMemData(MemRecDataFile & wfile, std::map<int64_t, std::map<int64_t,T>> & mmap, std::shared_ptr<MemKeeper> mkeep) {
-		std::vector<T> outVec;
+	void WriteMemData(MemRecDataFile & wfile, std::map<int64_t, std::map<int64_t,T*>> & mmap, std::shared_ptr<MemKeeper> mkeep) {
+		std::vector<T*> outVec;
 		for (auto i : _GPUMallocRecords){
 			for (auto x : i.second) {
 				outVec.push_back(x.second);
@@ -194,7 +194,7 @@ public:
 			}
 		}
 		for (auto i : mkeep->_allocSee) {
-			T tmp = new T();
+			T * tmp = new T();
 			tmp->allocSite = i.first;
 			tmp->count = i.second;
 			tmp->freeSite = -1;
@@ -207,14 +207,14 @@ public:
 			tmp->allocSite = -1;
 			gvec.push_back(tmp);
 		}
-		wfile.Write<T>(gvec);
+		wfile.Write<T *>(gvec);
 	};
 
 	// };
 	~OutputWriter() {
 		MemRecDataFile wfile(fopen("DIOGENES_MemRecords.bin","wb"));
-		WriteMemData<CUMallocTracker *>(wfile, _GPUMallocRecords, _gpuLocalMem);
-		WriteMemData<GLIBMallocTracker *>(wfile, _CPUTransRecords, _cpuLocalMem);	
+		WriteMemData<CUMallocTracker>(wfile, _GPUMallocRecords, _gpuLocalMem);
+		WriteMemData<GLIBMallocTracker>(wfile, _CPUTransRecords, _cpuLocalMem);	
 		// GPUMallocVec gvec;
 		// for (auto i : _GPUMallocRecords)
 		// 	for (auto x : i.second)

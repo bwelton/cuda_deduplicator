@@ -164,17 +164,17 @@ public:
 			_CopyRecords[addr->loc][copyLoc] = tmp;
 		}		
 	};
-	template <typename T> 
-	std::set<int64_t> CheckForUnwrittenEntries(std::shared_ptr<MemKeeper> mem, std::map<int64_t, std::map<int64_t,T>> & m) {
-		std::set<int64_t> ret;
-		std::map<uint64_t, MemAddress*> * a = mem->GetAddressMapPtr();
-		for(auto i : *a) {
-			if (m.find(i.second.loc) == m.end()) {
-				ret.insert(i.second.loc);
-			}
-		}
-		return ret;
-	};
+	// template <typename T> 
+	// std::set<int64_t> CheckForUnwrittenEntries(std::shared_ptr<MemKeeper> mem, std::map<int64_t, std::map<int64_t,T>> & m) {
+	// 	std::set<int64_t> ret;
+	// 	std::map<uint64_t, MemAddress*> * a = mem->GetAddressMapPtr();
+	// 	for(auto i : *a) {
+	// 		if (m.find(i.second.loc) == m.end()) {
+	// 			ret.insert(i.second.loc);
+	// 		}
+	// 	}
+	// 	return ret;
+	// };
 
 	// template<typename T>
 	// void WriteUnknownMallocs(std::set<int64_t>)

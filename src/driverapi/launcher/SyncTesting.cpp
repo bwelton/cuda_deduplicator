@@ -187,8 +187,21 @@ CallTransPtr SyncTesting::MemRecorderLaunch(StackRecMap & recs) {
 	t.InsertAnalysis(recs);
 //	proc->DetachForDebug();
 	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of synchronizations = ")
-	CallTransPtr rec = t.PostProcessing();
+	CallTransPtr ret = t.PostProcessing();
 	return ret;
+	//t.PostProcessing(recs);
+}
+
+void SyncTesting::FixKnownProblems(StackRecMap & recs, CallTransPtr & trans) {
+	system("exec rm -rf ./stackOut.*");
+	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
+	proc->RunCudaInit();
+	FixCudaProblems t(proc);
+	t.InsertAnalysis(recs, trans);
+//	proc->DetachForDebug();
+	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of synchronizations = ")
+	t.PostProcessing();
+	//return ret;
 	//t.PostProcessing(recs);
 }
 

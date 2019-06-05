@@ -50,6 +50,7 @@ void CallTransformation::BuildRequiredSet() {
 			if (tmp != NULL) {
 				if (i._required == true) {
 					tmp->required = 1;
+					freeSites.push_back(tmp);
 				} else {
 					tmp->required = 0;
 					freeSites.push_back(tmp);

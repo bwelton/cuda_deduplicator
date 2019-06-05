@@ -41,7 +41,7 @@ public:
 	MemManage();
 	~MemManage();
 	cudaError_t GPUAllocate(void ** mem, uint64_t size);
-	cudaError_t GPUFree(void * mem);
+	cudaError_t GPUFree(void * mem, bool & sync);
 	void * CPUAllocate(uint64_t size);
 	void CheckDestTransMem(void * mem);
 	void CPUFree(void * mem);

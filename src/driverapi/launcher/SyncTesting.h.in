@@ -68,7 +68,7 @@ public:
 	void RunLoadStoreAnalysis(StackRecMap & recs, std::vector<StackPoint> & uses);
 	void RunTimeUse(StackRecMap & recs, std::vector<StackPoint> & uses);
 	void FixProblems(StackRecMap & recs);
-	void MemRecorderLaunch(StackRecMap & recs);
+	CallTransPtr MemRecorderLaunch(StackRecMap & recs);
 	void FixKnownProblems(StackRecMap & recs, CallTransPtr & trans);
 private:
 	std::set<std::string> _syncCalls; 

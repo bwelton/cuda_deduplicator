@@ -372,6 +372,7 @@ class CallTransformation {
 public:
 	CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuVec, MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints);
 	void BuildRequiredSet();
+	RemovePointsPtr GetRemoveCalls();
 	//void GetCudaFreeMallocPairs(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, CudaFreeCallsites & callsites);
 	//void GetMemTransReplacement(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, MemTransCallsites & callsites);
 private:
@@ -383,6 +384,7 @@ private:
 	CPUMallocVec _cpuVec;
 	MemTransVec _memVec;
 	std::map<int64_t, StackPoint> _idPoints;
+	RemovePointsPtr _removeCalls;
 };
 
 typedef std::shared_ptr<CallTransformation> CallTransPtr;

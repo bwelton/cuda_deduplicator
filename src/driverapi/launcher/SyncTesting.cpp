@@ -250,7 +250,7 @@ void SyncTesting::Run() {
 	StackRecMap empty_map;
 	CallTransPtr transRec = MemRecorderLaunch(empty_map);
 
-
+	FixKnownProblems(empty_map, transRec);
 	return;
 	RunWithSyncStacktracing(syncTiming);
 	TimeTransfers();

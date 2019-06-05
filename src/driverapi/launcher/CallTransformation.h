@@ -71,6 +71,7 @@ typedef std::set<MallocPtr> MallocSiteSet;
 typedef std::set<FreeSitePtr> FreeSiteSet;
 
 struct RemovePoints {
+
 	StackPointVec cudaMallocReplacements;
 	StackPointVec cudaFreeReplacements;
 	StackPointVec cudaFreeReqSync;
@@ -79,6 +80,16 @@ struct RemovePoints {
 
 	StackPointVec mallocReplacements;
 	StackPointVec freeReplacements;
+
+	std::map<std::string, std::set<uint64_t> > _spMap;
+
+	bool CheckArray(StackPointVec & vec, StackPoint p) {
+		for (auto i : vec) {
+			if (i.libname == p.libname && i.libOffset == p.libOffset)
+				return true;
+		}
+		return false;
+	};
 };
 
 typedef std::shared_ptr<RemovePoints> RemovePointsPtr;

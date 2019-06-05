@@ -35,6 +35,8 @@
 #include "TimeUse.h"
 #include "FixCudaFree.h"
 #include "MemRecorder.h"
+#include "FixCudaProblems.h"
+#include "CallTransformation.h"
 
 #define DRIVER_LIBRARY "@CMAKE_INSTALL_PREFIX@/lib/libDriverAPIWrapper.so"
 #define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeCall.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libSynchTool.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libDriverAPITrace.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeFirstUse.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libDataTransfer.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libDataSyncTimer.so"};
@@ -67,6 +69,7 @@ public:
 	void RunTimeUse(StackRecMap & recs, std::vector<StackPoint> & uses);
 	void FixProblems(StackRecMap & recs);
 	void MemRecorderLaunch(StackRecMap & recs);
+	void FixKnownProblems(StackRecMap & recs, CallTransPtr & trans);
 private:
 	std::set<std::string> _syncCalls; 
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapperDefFunctions;

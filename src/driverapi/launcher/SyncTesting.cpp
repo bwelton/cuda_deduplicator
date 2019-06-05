@@ -179,7 +179,7 @@ void SyncTesting::FixProblems(StackRecMap & recs) {
 	//t.PostProcessing(recs);
 }
 
-void SyncTesting::MemRecorderLaunch(StackRecMap & recs) {
+CallTransPtr SyncTesting::MemRecorderLaunch(StackRecMap & recs) {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	proc->RunCudaInit();
@@ -187,7 +187,8 @@ void SyncTesting::MemRecorderLaunch(StackRecMap & recs) {
 	t.InsertAnalysis(recs);
 //	proc->DetachForDebug();
 	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of synchronizations = ")
-	t.PostProcessing();
+	CallTransPtr rec = t.PostProcessing();
+	return ret;
 	//t.PostProcessing(recs);
 }
 
@@ -233,8 +234,9 @@ void SyncTesting::Run() {
 	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	// }
 	//CaptureDriverCalls();
-	 StackRecMap empty_map;
-	 MemRecorderLaunch(empty_map);
+	StackRecMap empty_map;
+	CallTransPtr transRec = MemRecorderLaunch(empty_map);
+
 
 	return;
 	RunWithSyncStacktracing(syncTiming);

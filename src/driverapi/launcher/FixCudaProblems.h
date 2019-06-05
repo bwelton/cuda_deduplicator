@@ -51,16 +51,14 @@
 #include "DyninstCallsite.h"
 #include "DebugInstrimentationTemp.h"
 #include "CallTransformation.h"
-#include "DetectDuplicateStackpoints.h"
-class MemRecorder {
+class FixCudaProblems {
 public:
-	MemRecorder(std::shared_ptr<DyninstProcess> proc);
-	void InsertAnalysis(StackRecMap & recs);
-	CallTransPtr PostProcessing();
+	FixCudaProblems(std::shared_ptr<DyninstProcess> proc);
+	void InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans);
+	void PostProcessing();
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	//std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;
 	std::map<uint64_t, std::shared_ptr<DyninstFunction>> _dyninstFunctions;
 	std::shared_ptr<BinaryLocationIDMap> _bmap;
-	std::map<int64_t, StackPoint> _idToStackPoint;
 };

@@ -196,13 +196,15 @@ cudaError_t MemManage::GPUAllocate (void** mem, uint64_t size) {
 	return tmp;
 }
 
-cudaError_t MemManage::GPUFree(void * mem){
+cudaError_t MemManage::GPUFree(void * mem, bool & sync){
 	if (_gpuMem.find((uint64_t)mem) != _gpuMem.end()) {
 		_gpuMemSize[_gpuMem[(uint64_t)mem]].push_back(mem);
+		sync = false;
 		return cudaSuccess;
 	} 
+	sync = true;
 	// Free the memory, we have no idea what this is.
-	
+	//std::cerr << "Freeing Memory we don't know where it was allocated" << std::endl;
 	return cudaFree(mem);
 }
 
@@ -262,10 +264,23 @@ std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
 extern "C" {
 cudaError_t  DIOGENES_cudaFreeWrapper(void * mem) {
 	PLUG_BUILD_FACTORY()
-	return PLUG_FACTORY_PTR->GPUFree(mem);
+	bool sync;
+	return PLUG_FACTORY_PTR->GPUFree(mem, sync);
 	// //fprintf(stderr,"I am freeing an address of %p \n", mem);
 	// return cudaFree(mem);
 }
+
+cudaError_t  DIOGENES_synchronousCudaFree(void * mem) {
+	PLUG_BUILD_FACTORY()
+	bool sync;
+	cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
+	if (sync == false)
+		cudaDeviceSynchronize();
+	return ret;
+	// //fprintf(stderr,"I am freeing an address of %p \n", mem);
+	// return cudaFree(mem);
+}
+
 
 cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
 	PLUG_BUILD_FACTORY()

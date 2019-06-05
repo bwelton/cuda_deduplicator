@@ -357,7 +357,7 @@ struct RemovePoints {
 			_TreeMapper[(uint64_t)(&vec[0])] = ptr;
 			it = _TreeMapper.find((uint64_t)(&vec[0]));
 		}
-		if ((*it)->FindID(p) >= 0)
+		if (it->second->FindID(p) >= 0)
 			return true;
 		return false;
 	};

@@ -347,23 +347,18 @@ struct RemovePoints {
 
 	std::map<uint64_t, std::shared_ptr<StackPointTree>> _TreeMapper;
 	bool CheckArray(StackPointVec & vec, StackPoint p) {
-		auto it = _TreeMapper.find((uint64_t)vec.begin());
+		auto it = _TreeMapper.find((uint64_t)(&vec[0]));
 		if (it == _TreeMapper.end()) {
 			std::map<int64_t, StackPoint> tmp;
 			for (int i = 0; i < vec.size(); i++) {
 				tmp[i] = vec[i];
 			}
 			std::shared_ptr<StackPointTree> ptr(new StackPointTree(tmp));
-			_TreeMapper[(uint64_t)vec.begin()] = ptr;
-			it = _TreeMapper.find((uint64_t)vec.begin());
+			_TreeMapper[(uint64_t)(&vec[0])] = ptr;
+			it = _TreeMapper.find((uint64_t)(&vec[0]));
 		}
 		if ((*it)->FindID(p) >= 0)
 			return true;
-
-		// for (auto i : vec) {
-		// 	if (i.libname == p.libname && i.libOffset == p.libOffset)
-		// 		return true;
-		// }
 		return false;
 	};
 };

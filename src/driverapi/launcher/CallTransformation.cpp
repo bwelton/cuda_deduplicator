@@ -77,9 +77,13 @@ void CallTransformation::BuildRequiredSet() {
 		ret->cudaMallocReplacements.push_back(i->p);
 	}
 
-	
+	_removeCalls = ret;	
 }
 
+
+RemovePointsPtr CallTransformation::GetRemoveCalls() {
+	return _removeCalls;
+}
 
 void CallTransformation::BuildGraph() {
 	BuildMemoryGraph(_cpuVec,_idPoints, _cpuGraph);

@@ -70,29 +70,7 @@ typedef std::map<int64_t, TransferPointPtr> TransferPointMap;
 typedef std::set<MallocPtr> MallocSiteSet;
 typedef std::set<FreeSitePtr> FreeSiteSet;
 
-struct RemovePoints {
 
-	StackPointVec cudaMallocReplacements;
-	StackPointVec cudaFreeReplacements;
-	StackPointVec cudaFreeReqSync;
-	
-	StackPointVec cudaMemcpyAsyncRepl;
-
-	StackPointVec mallocReplacements;
-	StackPointVec freeReplacements;
-
-	std::map<std::string, std::set<uint64_t> > _spMap;
-
-	bool CheckArray(StackPointVec & vec, StackPoint p) {
-		for (auto i : vec) {
-			if (i.libname == p.libname && i.libOffset == p.libOffset)
-				return true;
-		}
-		return false;
-	};
-};
-
-typedef std::shared_ptr<RemovePoints> RemovePointsPtr;
 
 struct FreeSite{	
 	int64_t id;
@@ -356,6 +334,41 @@ struct StackPointTree {
 
 
 };
+
+struct RemovePoints {
+	StackPointVec cudaMallocReplacements;
+	StackPointVec cudaFreeReplacements;
+	StackPointVec cudaFreeReqSync;
+	
+	StackPointVec cudaMemcpyAsyncRepl;
+
+	StackPointVec mallocReplacements;
+	StackPointVec freeReplacements;
+
+	std::map<uint64_t, std::shared_ptr<StackPointTree>> _TreeMapper;
+	bool CheckArray(StackPointVec & vec, StackPoint p) {
+		auto it = _TreeMapper.find((uint64_t)vec.begin());
+		if (it == _TreeMapper.end()) {
+			std::map<int64_t, StackPoint> tmp;
+			for (int i = 0; i < vec.size(); i++) {
+				tmp[i] = vec[i];
+			}
+			std::shared_ptr<StackPointTree> ptr(new StackPointTree(tmp));
+			_TreeMapper[(uint64_t)vec.begin()] = ptr;
+			it = _TreeMapper.find((uint64_t)vec.begin());
+		}
+		if ((*it)->FindID(p) >= 0)
+			return true;
+
+		// for (auto i : vec) {
+		// 	if (i.libname == p.libname && i.libOffset == p.libOffset)
+		// 		return true;
+		// }
+		return false;
+	};
+};
+
+typedef std::shared_ptr<RemovePoints> RemovePointsPtr;
 
 
 template<typename T> 

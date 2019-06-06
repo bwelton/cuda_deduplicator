@@ -357,12 +357,12 @@ struct RemovePoints {
 	
 	
 	void BuildTreeMap() {
-	   std::map<RemovePointsVecTypes, StackPointVec *> vectorMapper = {CUMALLOC_REP : &cudaMallocReplacements, 
-	                                                                   CUFREE_REP : &cudaFreeReplacements,
-	                                                                   CUFREE_REQUIRED : &cudaFreeReqSync,
-	                                                                   CUMEMCPY_REP : &cudaMemcpyAsyncRepl,
-	                                                                   MALLOC_REP : &mallocReplacements,
-	                                                                   FREE_REP : &freeReplacements};
+	   std::map<RemovePointsVecTypes, StackPointVec *> vectorMapper = {{CUMALLOC_REP ,&cudaMallocReplacements}, 
+	                                                                   {CUFREE_REP , &cudaFreeReplacements},
+	                                                                   {CUFREE_REQUIRED , &cudaFreeReqSync},
+	                                                                   {CUMEMCPY_REP , &cudaMemcpyAsyncRepl},
+	                                                                   {MALLOC_REP , &mallocReplacements},
+	                                                                   {FREE_REP , &freeReplacements}};
 	   for (auto i : vectorMapper) {
 	       int64_t count = 1;
     	   std::map<int64_t, StackPoint> tmpMap; 

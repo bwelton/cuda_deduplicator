@@ -366,12 +366,12 @@ struct RemovePoints {
 	   for (auto i : vectorMapper) {
 	       int64_t count = 1;
     	   std::map<int64_t, StackPoint> tmpMap; 
-	       for (auto n : *(i->second)) {
+	       for (auto n : *(i.second)) {
 	            tmpMap[count] = n;
 	            count++;
 	       }
 	       std::shared_ptr<StackPointTree> newTree(new StackPointTree(tmpMap));
-	       _TreeMapper[i->first] = newTree;
+	       _TreeMapper[i.first] = newTree;
        }
 	};
 	

@@ -335,6 +335,14 @@ struct StackPointTree {
 
 };
 
+enum RemovePointsVecTypes {
+    CUMALLOC_REP,
+    CUFREE_REP,
+    CUFREE_REQUIRED,
+    CUMEMCPY_REP,
+    MALLOC_REP,
+    FREE_REP
+};
 struct RemovePoints {
 	StackPointVec cudaMallocReplacements;
 	StackPointVec cudaFreeReplacements;
@@ -344,9 +352,28 @@ struct RemovePoints {
 
 	StackPointVec mallocReplacements;
 	StackPointVec freeReplacements;
-
-	std::map<uint64_t, std::shared_ptr<StackPointTree>> _TreeMapper;
+//    std::shared_ptr<StackPointTree> _TreeMapper;
+    std::map<RemovePointsVecTypes, std::shared_ptr<StackPointTree>> _TreeMapper;
 	
+	
+	void BuildTreeMap() {
+	   std::map<RemovePointsVecTypes, StackPointVec *> vectorMapper = {CUMALLOC_REP : &cudaMallocReplacements, 
+	                                                                   CUFREE_REP : &cudaFreeReplacements,
+	                                                                   CUFREE_REQUIRED : &cudaFreeReqSync,
+	                                                                   CUMEMCPY_REP : &cudaMemcpyAsyncRepl,
+	                                                                   MALLOC_REP : &mallocReplacements,
+	                                                                   FREE_REP : &freeReplacements};
+	   for (auto i : vectorMapper) {
+	       int64_t count = 1;
+    	   std::map<int64_t, StackPoint> tmpMap; 
+	       for (auto n : *(i->second)) {
+	            tmpMap[count] = n;
+	            count++;
+	       }
+	       std::shared_ptr<StackPointTree> newTree(new StackPointTree(tmpMap));
+	       _TreeMapper[i->first] = newTree;
+       }
+	};
 	
     StackPointVec GetAllStackPoints() {
         StackPointVec ret;
@@ -374,21 +401,12 @@ struct RemovePoints {
 	    return ret;
 	};
 	
-	bool CheckArray(StackPointVec & vec, StackPoint p) {
-		if (vec.size() == 0)
-			return false;
-		auto it = _TreeMapper.find((uint64_t)(&vec[0]));
-		if (it == _TreeMapper.end()) {
-			std::map<int64_t, StackPoint> tmp;
-			for (int i = 0; i < vec.size(); i++) {
-				tmp[i] = vec[i];
-			}
-			std::shared_ptr<StackPointTree> ptr(new StackPointTree(tmp));
-			_TreeMapper[(uint64_t)(&vec[0])] = ptr;
-			it = _TreeMapper.find((uint64_t)(&vec[0]));
-		}
+	bool CheckArray(RemovePointsVecTypes type, StackPoint p) {
+	    auto it = _TreeMapper.find(type);
+	    if (it == _TreeMapper.end())
+	        return false;
 		if (it->second->FindID(p) >= 0)
-			return true;
+			return true;	    
 		return false;
 	};
 };

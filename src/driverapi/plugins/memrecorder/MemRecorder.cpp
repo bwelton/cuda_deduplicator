@@ -89,6 +89,7 @@ public:
 	MemAddress * Set(uint64_t addr, uint64_t size, int64_t loc) {
 		MemAddress * n;
 		if (_addressMap.find(addr) != _addressMap.end()) {
+		   std::cerr << "We have already seen this address! Potential Memory Leak/Weirdness! " << std::dec << loc << std::endl;
 			n = _addressMap[addr];
 		} else {
 			n = ReturnEmpty();

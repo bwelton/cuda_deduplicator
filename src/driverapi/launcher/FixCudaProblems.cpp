@@ -95,16 +95,18 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
-				//std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) << std::endl;
+				std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) <<  " @ address= " << std::hex << x.GetPointAddress() << std::dec std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
-    				if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
-    					continue;
-					if (remPoints->CheckArray(CUFREE_REP, x.GetStackPoint())) {					
+					if (remPoints->CheckArray(CUFREE_REP, x.GetStackPoint())) {		
+					    if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+    					    continue;			
 						freesReplaced++;
 						std::cerr << "Found function call to cudaFree in " << tmpFuncName 
 						          << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
 						x.ReplaceFunctionCall(cudaFreeWrapper[0]);
-					} else if (remPoints->CheckArray(CUFREE_REQUIRED, x.GetStackPoint())) {					
+					} else if (remPoints->CheckArray(CUFREE_REQUIRED, x.GetStackPoint())) {		
+					    if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+    					    continue;			
 						freesReplaced++;
 						std::cerr << "Found function call to cudaFree in " << tmpFuncName << " within library " 
 						          << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
@@ -114,9 +116,9 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 					}
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc")) {
-    				if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
-    					continue;    
-					if (remPoints->CheckArray(CUMALLOC_REP, x.GetStackPoint())) {					
+					if (remPoints->CheckArray(CUMALLOC_REP, x.GetStackPoint())) {
+        				if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+        					continue;    					
 						mallocsReplaced++;
 						std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " 
 						          << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;

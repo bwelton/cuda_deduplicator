@@ -32,7 +32,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 	assert(cudaFreeSyncWrapper.size() > 0);
 
 	RemovePointsPtr remPoints = callTrans->GetRemoveCalls();
-
+    remPoints->BuildTreeMap();
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 	std::vector<BPatch_function *> all_functions;
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();

@@ -95,7 +95,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
-				std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) <<  " @ address= " << std::hex << x.GetPointAddress() << std::dec std::endl;
+				std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) <<  " @ address= " << std::hex << x.GetPointAddress() << std::dec << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
 					if (remPoints->CheckArray(CUFREE_REP, x.GetStackPoint())) {		
 					    if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)

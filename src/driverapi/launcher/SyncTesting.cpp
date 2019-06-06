@@ -263,7 +263,7 @@ void SyncTesting::Run() {
 	//RunTimeUse(sy)
 	return;
 	//RunWithCUPTI();
-
+/*
 	// Find out what user called functions actually contain a synchronization.
 	// This also captures secret entries into libcuda with synchronizations and relates them back
 	// to user level calls. 
@@ -346,6 +346,7 @@ void SyncTesting::Run() {
 		std::cerr << "[Base] We are setting up syncs checking with " << stackSyncs.size() << std::endl;
 		//_model.AddFirstUses(base._firstUses);
 	}
+	*/
 }
 
 void SyncTesting::ReadDefinition(std::string WrapperDef) {
@@ -394,7 +395,7 @@ void SyncTesting::ReadSynchronizationCalls() {
 }
 
 void SyncTesting::GatherSynchronizationCalls() {
-	std::vector<std::string> pluginNames = {"libSynchTool"};
+/*	std::vector<std::string> pluginNames = {"libSynchTool"};
 	CreatePluginFile(pluginNames);
 	std::string def(WRAPPER_DEF);
 	TimeApplications base(_vm);
@@ -402,10 +403,11 @@ void SyncTesting::GatherSynchronizationCalls() {
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 	double time = base.RunWithInstrimentation(def, extras);
 	ReadSynchronizationCalls();
+*/
 }
 
 void SyncTesting::RunWithLoadStoreAnalysis() {
-	std::vector<std::string> pluginNames = {"libSynchTool"};
+/*	std::vector<std::string> pluginNames = {"libSynchTool"};
 	std::vector<std::string> pluginLoads;
 	std::vector<std::string> PluginList = PLUGIN_LIST;
 	for (auto i : PluginList) {
@@ -421,14 +423,15 @@ void SyncTesting::RunWithLoadStoreAnalysis() {
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
 	double time = base.RunWithLoadStore(def, extras, pluginLoads);
 	//ReadSynchronizationCalls();
+*/
 }
 
 // void SyncTesting::HandleSynchronizationBreakpoint(ProcessController & p) {
 
 // }
 
-void SyncTesting::HandleBreakpoint(ProcessController * p) {
-	std::map<uint64_t, std::vector<StackPoint> > stacks = p->GetThreadStacks();
+//void SyncTesting::HandleBreakpoint(ProcessController * p) {
+//	std::map<uint64_t, std::vector<StackPoint> > stacks = p->GetThreadStacks();
 	// for (auto i : stacks) {
 	// 	bool containsLibcuda = false;
 	// 	for (auto z : i.second) 
@@ -449,11 +452,11 @@ void SyncTesting::HandleBreakpoint(ProcessController * p) {
 	// 			_storedStacks[ss.str()] += 1;
 	// 	}
 	// }
-}
+//}
 
 void SyncTesting::InstrumentProgram() {
 	// This is going to be off by one for the first synchronization call.....
-
+/*
 	std::vector<std::string> pluginNames = {"libSynchTool"};
 	std::vector<std::string> pluginLoads;
 	std::vector<std::string> PluginList = PLUGIN_LIST;
@@ -473,6 +476,7 @@ void SyncTesting::InstrumentProgram() {
 	double time = base.RunWithBreakpoints(def, extras, breakpointNames,pluginLoads, std::bind(&SyncTesting::HandleBreakpoint, this, std::placeholders::_1));
 	base.ReturnToTerminal();
 	//ReadSynchronizationCalls();
+*/
 }
 
 void SyncTesting::CreateFunctionTimers(std::vector<std::string> functions) {
@@ -485,7 +489,7 @@ void SyncTesting::CreateFunctionTimers(std::vector<std::string> functions) {
 }
 
 void SyncTesting::RunWithCUPTI() {
-	std::vector<std::string> cupti_plugin = {"libCUPTIEventHandler"};
+/*	std::vector<std::string> cupti_plugin = {"libCUPTIEventHandler"};
 	CreatePluginFile(cupti_plugin);
 	TimeApplications base(_vm);
 	std::string def(WRAPPER_DEF);
@@ -493,10 +497,11 @@ void SyncTesting::RunWithCUPTI() {
 	base.RedirectOutToFile(_programName + std::string(".cupti.out"));
 	double time = base.RunWithInstrimentation(def, extras);
 	base.ReturnToTerminal();
+*/
 }
 
 void SyncTesting::GatherSynchronizationDelay() {
-	std::vector<std::string> cupti_plugin = {"libTimeCall"};
+/*	std::vector<std::string> cupti_plugin = {"libTimeCall"};
     std::vector<std::string> funcsToTime = {"InternalSynchronization"};
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > extras;
 	ReadDefinition(std::string(WRAPPER_DEF));
@@ -531,5 +536,5 @@ void SyncTesting::GatherSynchronizationDelay() {
 	TimeApplications base(_vm);
 	std::string def("");
 	extras.push_back(std::make_tuple(std::string("wrap"), std::string(INTERNAL_SYNC), std::string("INTER_InternalSynchronization"), std::string(DRIVER_LIBRARY), std::string("ORIGINAL_InternalSynchronization")));
-	double time = base.RunWithInstrimentation(def, extras);
+	double time = base.RunWithInstrimentation(def, extras);	*/
 }

@@ -1,5 +1,5 @@
 #include "DyninstProcess.h"
-extern BPatch bpatch;
+//extern BPatch bpatch;
 DyninstProcess::DyninstProcess(boost::program_options::variables_map vm, bool debug) {
 	_vm = vm;
 	_ops.reset(new DynOpsClass());

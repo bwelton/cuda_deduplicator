@@ -66,4 +66,5 @@ private:
 	BPatch_addressSpace * _aspace;
 	boost::program_options::variables_map _vm;
 	bool _openInsertions;
+	BPatch bpatch;
 };

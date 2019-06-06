@@ -29,6 +29,8 @@ void CallTransformation::BuildRequiredSet() {
 			i._idPointID = id;
 			if (id >= 0) {
 				std::cerr << "[CallTransformation::BuildRequiredSet] Found ID Match for Call - " << i._beforeLibcuda.libname << "@" << i._beforeLibcuda.libOffset << " [ID = " << id << "]" << std::endl;
+			} else {
+				std::cerr << "[CallTransformation::BuildRequiredSet] NO MATCH Match for Call - " << i._beforeLibcuda.libname << "@" << i._beforeLibcuda.libOffset << " [ID = " << id << "]" << std::endl;			
 			}
 		}
 	}

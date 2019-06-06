@@ -346,6 +346,34 @@ struct RemovePoints {
 	StackPointVec freeReplacements;
 
 	std::map<uint64_t, std::shared_ptr<StackPointTree>> _TreeMapper;
+	
+	
+    StackPointVec GetAllStackPoints() {
+        StackPointVec ret;
+        ret.insert(ret.end(), cudaMallocReplacements.begin(), cudaMallocReplacements.end());
+        ret.insert(ret.end(), cudaFreeReplacements.begin(), cudaFreeReplacements.end());
+        ret.insert(ret.end(), cudaFreeReqSync.begin(), cudaFreeReqSync.end());
+        ret.insert(ret.end(), cudaMemcpyAsyncRepl.begin(), cudaMemcpyAsyncRepl.end());
+        ret.insert(ret.end(), mallocReplacements.begin(), mallocReplacements.end());
+        ret.insert(ret.end(), freeReplacements.begin(), freeReplacements.end());
+        return ret;
+    };
+	
+	void GetLibsInt(std::set<std::string> & ret, StackPointVec & points) {
+	    for (auto i : points)
+	        ret.insert(i.libname);
+	};
+	
+	std::set<std::string> GetLibs() {
+	    std::set<std::string> ret;
+	    GetLibsInt(ret, cudaMallocReplacements);
+	    GetLibsInt(ret, cudaFreeReplacements);
+	    GetLibsInt(ret, cudaMemcpyAsyncRepl);
+	    GetLibsInt(ret, mallocReplacements);
+	    GetLibsInt(ret, freeReplacements);
+	    return ret;
+	};
+	
 	bool CheckArray(StackPointVec & vec, StackPoint p) {
 		if (vec.size() == 0)
 			return false;

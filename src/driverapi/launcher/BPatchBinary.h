@@ -16,11 +16,3 @@ private:
 	BPatch bpatch;
 };
 
-// class BinaryRewriter{
-// public:
-// 	BinaryRewriter(std::string appName, bool readDepends = false);
-
-
-	
-
-// };

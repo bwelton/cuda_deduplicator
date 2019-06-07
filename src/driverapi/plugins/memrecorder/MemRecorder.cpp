@@ -311,7 +311,7 @@ struct WriteTotals {
 		fwrite(&freeCount, 1, sizeof(uint64_t), _fp);
 		fclose(_fp);
 		std::cout << "[DIOGENES::WriteTotals] Malloc Call Count = " << std::dec << mallocCount <<  " Free Call Count = " << freeCount << std::endl;
-		
+
 	};
 
 };
@@ -456,7 +456,8 @@ extern "C" {
 		if(DIOG_WriteTotals == NULL)
 			DIOG_WriteTotals.reset(new WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
 
-		DIOG_WriteTotals->freeCount++;
+		if (DIOGENES_TEAR_DOWN == false)
+			DIOG_WriteTotals->freeCount++;
 		//std::cerr << "We are here! (FREE)" << std::endl;
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;

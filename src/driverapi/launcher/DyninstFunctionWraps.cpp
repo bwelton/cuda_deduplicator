@@ -652,7 +652,6 @@ void OneTimeFillMap() {
 
 DyninstFunctionWraps::DyninstFunctionWraps(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 
-
 bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func, std::shared_ptr<BinaryLocationIDMap> bmap) {
 	OneTimeFillMap();
 	if (DFW_MAP.find(func->getName()) == DFW_MAP.end())

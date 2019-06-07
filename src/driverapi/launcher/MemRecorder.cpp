@@ -12,6 +12,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	_bmap.reset(new BinaryLocationIDMap());
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
+	// BPatch_object * libcudart = _proc->LoadLibrary(std::string("libcudart.so.1"));
 	BPatch_object * wrapper = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libDiogenesMemRecorder.so"));
 
 	std::vector<BPatch_function *> cudaFreeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFree"), wrapper);
@@ -109,6 +110,24 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 		//}
 	}
 
+
+	std::vector<BPatch_function*> cudaMalloc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cudaMalloc"), NULL);
+	std::vector<BPatch_function*> cudaFree = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cudaFree"), NULL);
+	std::vector<BPatch_function*> cudaMallocPreWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAMallocPreCheck"), wrapper);
+	std::vector<BPatch_function*> cudaMallocPostwrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAMallocCheck"), wrapper);
+	std::vector<BPatch_function*> cudaFreeWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAFreeCheck"), wrapper);
+
+	assert(cudaMalloc.size() == 1);
+	assert(cudaFree.size() == 1 );
+	assert(cudaMallocPreWrap.size() == 1);
+	assert(cudaMallocPostwrap.size() == 1);
+	assert(cudaFreeWrap.size() == 1);
+	InsertPrePostCall(cudaMalloc[0], cudaMallocPreWrap[0], false, 2);
+	InsertPrePostCall(cudaMalloc[0], cudaMallocPostwrap[0], true, 0);
+	InsertPrePostCall(cudaFree[0], cudaFreeWrap[0], false, 1);
+
+
+
 	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
 	// assert(cudaSyncFunctions.size() > 0);
 
@@ -117,6 +136,22 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	// BPatch_funcCallExpr entryExpr(*(syncExit[0]), recordArgs);	
 	// assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 	// 
+}
+
+
+void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, int numParams) {
+	std::vector<BPatch_point*> * locationEntry;
+	if (postCall == false)
+		locationEntry = origFunction->findPoint(BPatch_locEntry);
+	else
+		locationEntry = origFunction->findPoint(BPatch_locExit);
+	std::vector<BPatch_snippet*> recordArgs;
+	for (int i = 0; i < numParams; i++){
+		recordArgs.push_back(new BPatch_paramExpr(i));
+	}	
+	assert(locationEntry->size() > 0);
+	BPatch_funcCallExpr recordAddrCall(*instrimentation, recordArgs);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,*locationEntry) != NULL);
 }
 
 CallTransPtr MemRecorder::PostProcessing() {

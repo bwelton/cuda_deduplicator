@@ -395,9 +395,22 @@ extern "C" {
 		DIOGENES_UnsetInWrapper();
 		return ret;
 	}
+	void ** DIOGENES_CUDA_MALLOC_ARG = NULL;
+	size_t DIOGENES_CUDA_MALLOC_SIZE = 0;
 
-	void CUDAMallocCheck(void ** data, size_t size) {
+	void DIOG_CUDAMallocPreCheck(void ** data, size_t size) {
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
+			return;
+		DIOGENES_CUDA_MALLOC_ARG = data;
+		DIOGENES_CUDA_MALLOC_SIZE = size;	
+	}
+
+
+	void DIOG_CUDAMallocCheck() {
+		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
+			return;
+
+		if (DIOGENES_CUDA_MALLOC_ARG == NULL)
 			return;
 
 		if (DIOGENES_GetGlobalLock()) {
@@ -406,13 +419,15 @@ extern "C" {
 			std::vector<StackPoint> points;
 			bool ret = GET_FP_STACKWALK(points);
 			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(points));
-			PLUG_FACTORY_PTR->GPUMallocData((uint64_t)(*data), size, myID);
+			PLUG_FACTORY_PTR->GPUMallocData((uint64_t)(*DIOGENES_CUDA_MALLOC_ARG), DIOGENES_CUDA_MALLOC_SIZE, myID);
 			std::cerr << "[DIOGENES::CUDAMallocCheck] Unknown Malloc Entry for Identifier = " << myID << std::endl;
+			DIOGENES_CUDA_MALLOC_ARG = NULL;
+			DIOGENES_CUDA_MALLOC_SIZE = 0;
 			DIOGENES_ReleaseGlobalLock();
 		}
 	}
 
-	void CUDAFreeCheck(void * data) {
+	void DIOG_CUDAFreeCheck(void * data) {
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;
 

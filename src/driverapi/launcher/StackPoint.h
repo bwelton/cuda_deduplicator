@@ -152,6 +152,10 @@ struct StackKeyWriter {
 		out = fp;
 		curPos = 1;
 	}
+	StackKeyWriter(FILE * fp, uint64_t startPos) {
+		out = fp;
+		curPos = startPos;
+	}
 	~StackKeyWriter() {
 		fclose(out);
 	}

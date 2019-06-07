@@ -92,13 +92,6 @@ struct FreeSite{
 	}
 
 
-	void Remove(FreeSitePtr myself) {
-		for (auto i : parents) {
-			i->children.erase(myself);
-		}
-		parents.clear();
-	};
-
 	std::string Print() {
 		std::stringstream ss;
 		ss << "[Free ID=" << std::dec << id << "] " << p.libname << "@" << std::hex << p.libOffset << std::dec << " Count=" << count << " ";
@@ -238,9 +231,12 @@ struct MemGraph {
 		FreeSitesPtr fsite = GetFreeSite(-1);
 		assert(fsite.get() != NULL);
 		if (fsite->count == freeCount) {
-			fsite->Remove(fsite);
-		}
+			for (auto i : fsite->parents)
+				i->children.erase(fsite);
+			fsite->parents.clear();
 
+			//fsite->Remove(fsite);
+		}
 	};
 
 	FreeSitePtr GetFreeSite(int64_t id) {

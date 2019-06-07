@@ -92,6 +92,13 @@ struct FreeSite{
 	}
 
 
+	void Remove(FreeSitePtr myself) {
+		for (auto i : parents) {
+			i->children.erase(myself);
+		}
+		parents.clear();
+	};
+
 	std::string Print() {
 		std::stringstream ss;
 		ss << "[Free ID=" << std::dec << id << "] " << p.libname << "@" << std::hex << p.libOffset << std::dec << " Count=" << count << " ";
@@ -206,6 +213,34 @@ struct MemGraph {
 				cn.insert(cn.end(), n->GetStart(), n->GetEnd());
 			}
 		}
+	};
+
+	void CheckForExitFrees() {
+		// Checks for the presence of exit frees
+		// If the number of frees at exit == unknown frees, remove free[-1].
+		FILE * fp = fopen("DIOGENES_UnknownWriteCount.bin", "rb");
+		if (fp == NULL)
+			return;
+		fseek(fp, 0, SEEK_END);
+		size_t size = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+		if (size != sizeof(uint64_t) * 2) {
+			std::cerr << "[MemGraph::CheckForExitFrees] File size of UnknownWriteCount is not what it should be (reported = " << size <<", expected 16)" << std::endl;
+			fclose(fp);
+			return;
+		}
+		uint64_t mallocCount = 0;
+		uint64_t freeCount = 0;
+		fread(&mallocCount, 1, sizeof(uint64_t), fp);
+		fread(&freeCount, 1, sizeof(uint64_t), fp);
+		fclose(fp);
+
+		FreeSitesPtr fsite = GetFreeSite(-1);
+		assert(fsite.get() != NULL);
+		if (fsite->count == freeCount) {
+			fsite->Remove(fsite);
+		}
+
 	};
 
 	FreeSitePtr GetFreeSite(int64_t id) {

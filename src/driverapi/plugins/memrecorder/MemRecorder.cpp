@@ -409,7 +409,7 @@ extern "C" {
 	void DIOG_CUDAMallocCheck() {
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;
-
+		std::cerr << "We are here! (MALLOC)" << std::endl;
 		if (DIOGENES_CUDA_MALLOC_ARG == NULL)
 			return;
 
@@ -430,8 +430,9 @@ extern "C" {
 	void DIOG_CUDAFreeCheck(void * data) {
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;
-
+		std::cerr << "We are here! (FREE)" << std::endl;
 		if (DIOGENES_GetGlobalLock()) {
+
 			PLUG_BUILD_FACTORY();
 			// Fallback mode, do slow stack walk and save it to file.
 			std::vector<StackPoint> points;

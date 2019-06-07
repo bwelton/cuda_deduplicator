@@ -81,6 +81,8 @@ void DyninstFunction::EntryExitWrapping() {
 	assert(entryFuncs.size() == 1);
 	assert(exitFuncs.size() == 1);
 	std::vector<BPatch_point*> * funcCalls = _func->findPoint(BPatch_locSubroutine);
+	if (funcCalls == NULL)
+		return;
 	for (auto i : *funcCalls)  {
 		std::vector<BPatch_point*> singlePoint;
 		singlePoint.push_back(i);
@@ -292,13 +294,14 @@ bool DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 }
 
 void DyninstFunction::GetCallsites(std::vector<DyninstCallsite> & ret) {
-	BPatch_Vector<BPatch_point *> *points = _func->findPoint(BPatch_subroutine);
+	std::shared_ptr<BPatch_Vector<BPatch_point *>> points;
+	points.reset(_func->findPoint(BPatch_subroutine));
 	if (points == NULL)
 		return;
 	for (auto x : *points) {
 		ret.push_back(DyninstCallsite(_proc, _func, *x));
 	}
-	
+	delete points;
 }
 
 

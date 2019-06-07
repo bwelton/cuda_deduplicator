@@ -258,7 +258,7 @@ bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * poi
 	//auto inst = FindInstructionAtPoint(point);
 	size_t size = 0;
 	if (addInstSize){
-		size = inst.size();
+		size = 4;
 	}
 	if (point->getFunction()->getModule()->isSharedLib())
 		addr = (uint64_t)point->getAddress() - (uint64_t)point->getFunction()->getModule()->getBaseAddr() + size;

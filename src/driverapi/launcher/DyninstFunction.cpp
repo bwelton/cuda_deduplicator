@@ -12,10 +12,10 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;
 
 	for (auto i : _bblocks) {
-		while(1) {
+		//while(1) {
 		instructionVector.clear();
 		i->getInstructions(instructionVector);
-		}
+		//}
 		for (auto n : instructionVector) {
 			_instmap[(uint64_t) n.second]  = std::make_pair(n.first, i);
 		}

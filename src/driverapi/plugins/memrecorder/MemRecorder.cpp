@@ -399,6 +399,7 @@ extern "C" {
 	size_t DIOGENES_CUDA_MALLOC_SIZE = 0;
 
 	void DIOG_CUDAMallocPreCheck(void ** data, size_t size) {
+		std::cerr << "We are here! (MALLOCPRE)" << std::endl;
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;
 		DIOGENES_CUDA_MALLOC_ARG = data;
@@ -407,6 +408,7 @@ extern "C" {
 
 
 	void DIOG_CUDAMallocCheck() {
+		std::cerr << "We are here! (MALLOC)" << std::endl;
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;
 		//std::cerr << "We are here! (MALLOC)" << std::endl;
@@ -428,6 +430,7 @@ extern "C" {
 	}
 
 	void DIOG_CUDAFreeCheck(void * data) {
+		std::cerr << "We are here! (FREE)" << std::endl;
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;
 		//std::cerr << "We are here! (FREE)" << std::endl;

@@ -17,6 +17,7 @@
 
 extern "C" {
 	volatile int64_t DIOGENES_CTX_ID = -1;
+	volatile int64_t DIOGENES_UNKNOWN_CTX_ID = 100000000;
 }
 
 struct MemAddress {
@@ -297,7 +298,7 @@ public:
 
 // Lock Atomic
 std::atomic<bool> DIOGENES_MEM_Atomic_Malloc(false);
-
+std::atomic<bool> DIOGENES_MEM_IN_WRAPPER(false);
 inline bool DIOGENES_GetGlobalLock() {
 	bool setVal = false;
 	return DIOGENES_MEM_Atomic_Malloc.compare_exchange_weak(setVal, true);
@@ -308,13 +309,26 @@ inline bool DIOGENES_ReleaseGlobalLock() {
 	return true;
 }
 
-std::shared_ptr<MemTracker> DIOGENES_MEMORY_RECORDER;
+inline void DIOGENES_SetInWrapper() {
+	DIOGENES_MEM_IN_WRAPPER.exchange(true);
+}
 
+inline void DIOGENES_UnsetInWrapper() {
+	DIOGENES_MEM_IN_WRAPPER.exchange(false);
+}
+inline bool DIOGENES_GetWrapperStatus() {
+	return DIOGENES_MEM_IN_WRAPPER.load();
+};
+
+
+std::shared_ptr<MemTracker> DIOGENES_MEMORY_RECORDER;
+std::shared_ptr<StackKeyWriter> DIOGENES_MEM_KEYFILE;
 
 
 #define PLUG_BUILD_FACTORY() \
 	if (DIOGENES_MEMORY_RECORDER.get() == NULL) { \
 		DIOGENES_MEMORY_RECORDER.reset(new MemTracker()); \
+		DIOGENES_MEM_KEYFILE.reset(new StackKeyWriter(fopen("DIOENES_MemRecUnknowns.bin","w"), static_cast<uint64_t>(DIOGENES_UNKNOWN_CTX_ID))); \
 	} 
 
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_RECORDER.get()
@@ -353,6 +367,7 @@ extern "C" {
 	cudaError_t DIOGENES_REC_CudaMalloc(void ** data, size_t size) {
 		int64_t cache = DIOGENES_CTX_ID;
 		cudaError_t ret = cudaErrorUnknown;
+		DIOGENES_SetInWrapper();
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
 			ret = cudaMalloc(data, size);
@@ -361,18 +376,54 @@ extern "C" {
 		} else {
 			ret = cudaMalloc(data, size);
 		}
+		DIOGENES_UnsetInWrapper();
 		//assert(1==0);
 		return ret;
 	}
 
 	cudaError_t DIOGENES_REC_CudaFree(void * data) {
 		int64_t cache = DIOGENES_CTX_ID;
+		DIOGENES_SetInWrapper();
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
 			PLUG_FACTORY_PTR->GPUFreeData((uint64_t)(data), cache);
 			DIOGENES_ReleaseGlobalLock();
 		}
-		return cudaFree(data);
+		cudaError_t ret = cudaFree(data);
+		DIOGENES_UnsetInWrapper();
+		return ret;
+	}
+
+	void CUDAMallocCheck(void ** data, size_t size) {
+		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
+			return;
+
+		if (DIOGENES_GetGlobalLock()) {
+			PLUG_BUILD_FACTORY();
+			// Fallback mode, do slow stack walk and save it to file.
+			std::vector<StackPoint> points;
+			bool ret = GET_FP_STACKWALK(points);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(points));
+			PLUG_FACTORY_PTR->GPUMallocData((uint64_t)(*data), size, myID);
+			std::cerr << "[DIOGENES::CUDAMallocCheck] Unknown Malloc Entry for Identifier = " << myID << std::endl;
+			DIOGENES_ReleaseGlobalLock();
+		}
+	}
+
+	void CUDAFreeCheck(void * data) {
+		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
+			return;
+
+		if (DIOGENES_GetGlobalLock()) {
+			PLUG_BUILD_FACTORY();
+			// Fallback mode, do slow stack walk and save it to file.
+			std::vector<StackPoint> points;
+			bool ret = GET_FP_STACKWALK(points);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(points));
+			PLUG_FACTORY_PTR->GPUFreeData((uint64_t)(*data), myID);
+			std::cerr << "[DIOGENES::CUDAMallocCheck] Unknown Free Entry for Identifier = " << myID << std::endl;
+			DIOGENES_ReleaseGlobalLock();
+		}		
 	}
 	cudaError_t DIOGENES_REC_CudaMemcpy(void * dst, const void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
 		int64_t cache = DIOGENES_CTX_ID;

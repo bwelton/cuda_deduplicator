@@ -255,9 +255,9 @@ std::vector<BPatch_object *> DynOpsClass::GetObjects(BPatch_addressSpace * aspac
 bool DynOpsClass::GetFileOffset(BPatch_addressSpace * aspace, BPatch_point * point, uint64_t & addr, bool addInstSize) {
 	if (point->getFunction() == NULL)
 		return false;
-	auto inst = FindInstructionAtPoint(point);
+	//auto inst = FindInstructionAtPoint(point);
 	size_t size = 0;
-	if (inst.isValid() == true && addInstSize){
+	if (addInstSize){
 		size = inst.size();
 	}
 	if (point->getFunction()->getModule()->isSharedLib())

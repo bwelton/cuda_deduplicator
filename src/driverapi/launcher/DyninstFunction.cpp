@@ -7,6 +7,7 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 	_addedTRAC = false;
 	std::shared_ptr<DynOpsClass> ops = proc->ReturnDynOps();
 	ops->GetBasicBlocks(func, _bblocks);
+	std::cerr << "[DyninstFunction] Iterating through " << _bblocks.size() << " blocks" << std::endl;
 	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;
 	for (auto i : _bblocks) {
 		instructionVector.clear();

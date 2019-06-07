@@ -428,7 +428,7 @@ extern "C" {
 
 	void DIOG_CUDAMallocCheck() {
 		if(DIOG_WriteTotals == NULL)
-			DIOG_WriteTotals.reset(new DIOG_WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
+			DIOG_WriteTotals.reset(new WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
 
 		DIOG_WriteTotals->mallocCount++;
 		//std::cerr << "We are here! (MALLOC)" << std::endl;
@@ -454,7 +454,7 @@ extern "C" {
 
 	void DIOG_CUDAFreeCheck(void * data) {
 		if(DIOG_WriteTotals == NULL)
-			DIOG_WriteTotals.reset(new DIOG_WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
+			DIOG_WriteTotals.reset(new WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
 
 		DIOG_WriteTotals->freeCount++;
 		//std::cerr << "We are here! (FREE)" << std::endl;

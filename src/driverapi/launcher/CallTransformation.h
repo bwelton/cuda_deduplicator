@@ -230,8 +230,11 @@ struct MemGraph {
 
 	std::string PrintMemoryGraph() {
 		std::stringstream ss;
+		uint64_t freeCount =0;
+		uint64_t mallocCount = 0;
 		for (auto i : mallocPoints) {
 			ss << "[Malloc ID=" << i.first << "]" << " Call Count = " << i.second->count << " Associated FreeSites = ";
+			mallocCount+= i.second->count;
 			PrintSet<FreeSiteSet>(i.second->children, ss);
 			ss << std::endl;
 		}
@@ -239,9 +242,11 @@ struct MemGraph {
 		for (auto i : freePoints) {
 			ss << std::dec << "[Free ID=" << i.first << "]" << " Call Count = " << i.second->count << " Associated MallocSites = ";
 			PrintSet<MallocSiteSet>(i.second->parents, ss);
+			freeCount += i.second->count;
 			ss << std::endl;
 			ss << "[Free ID=" << i.first << "] " << i.second->p.libname << "@" << std::hex << i.second->p.libOffset << std::dec << std::endl;
 		}
+		ss << "[PrintMemoryGraph] Malloc Count = " << std::dec << mallocCount << " Free Count = " << freeCount << std::endl;
 		return ss.str();
 	};
 };

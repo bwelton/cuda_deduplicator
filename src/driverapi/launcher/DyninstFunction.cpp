@@ -10,13 +10,12 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 	_ops = ops;
 	std::cerr << "[DyninstFunction] Iterating through " << _bblocks.size() << " blocks" << std::endl;
 	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;
-	while (1) {
-		instructionVector.clear();
-		_bblocks[0]->getInstructions(instructionVector);
-	};
+
 	for (auto i : _bblocks) {
+		while(1) {
 		instructionVector.clear();
 		i->getInstructions(instructionVector);
+		}
 		for (auto n : instructionVector) {
 			_instmap[(uint64_t) n.second]  = std::make_pair(n.first, i);
 		}

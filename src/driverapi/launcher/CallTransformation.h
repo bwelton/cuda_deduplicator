@@ -228,7 +228,7 @@ struct MemGraph {
 		fread(&freeCount, 1, sizeof(uint64_t), fp);
 		fclose(fp);
 
-		FreeSitesPtr fsite = GetFreeSite(-1);
+		FreeSitePtr fsite = GetFreeSite(-1);
 		assert(fsite.get() != NULL);
 		if (fsite->count == freeCount) {
 			for (auto i : fsite->parents)

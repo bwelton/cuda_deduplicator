@@ -14,6 +14,8 @@
 #include <cuda.h>
 
 #include "MemRecDataFile.h"
+#include "StackPoint.h"
+#include "StackwalkingCommon.h"
 
 extern "C" {
 	volatile int64_t DIOGENES_CTX_ID = -1;

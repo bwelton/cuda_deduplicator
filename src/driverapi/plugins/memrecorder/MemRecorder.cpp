@@ -298,6 +298,24 @@ public:
 };
 
 
+struct WriteTotals {
+	FILE * _fp;
+	uint64_t freeCount;
+	uint64_t mallocCount;
+	WriteTotals(FILE * f) : _fp(f), freeCount(0), mallocCount(0) {
+
+		std::cerr << "[DIOGENES::WriteTotals] Opening new file" << std::endl;
+	};
+	~WriteTotals() { 
+		fwrite(&mallocCount, 1, sizeof(uint64_t), _fp);
+		fwrite(&freeCount, 1, sizeof(uint64_t), _fp);
+		fclose(_fp);
+		std::cout << "[DIOGENES::WriteTotals] Malloc Call Count = " << std::dec << mallocCount <<  " Free Call Count = " << freeCount << std::endl;
+		
+	};
+
+};
+
 // Lock Atomic
 std::atomic<bool> DIOGENES_MEM_Atomic_Malloc(false);
 std::atomic<bool> DIOGENES_MEM_IN_WRAPPER(false);
@@ -325,6 +343,7 @@ inline bool DIOGENES_GetWrapperStatus() {
 
 std::shared_ptr<MemTracker> DIOGENES_MEMORY_RECORDER;
 std::shared_ptr<StackKeyWriter> DIOGENES_MEM_KEYFILE;
+std::shared_ptr<WriteTotals> DIOG_WriteTotals;
 
 
 #define PLUG_BUILD_FACTORY() \
@@ -399,7 +418,7 @@ extern "C" {
 	size_t DIOGENES_CUDA_MALLOC_SIZE = 0;
 
 	void DIOG_CUDAMallocPreCheck(void ** data, size_t size) {
-		std::cerr << "We are here! (MALLOCPRE)" << std::endl;
+		//std::cerr << "We are here! (MALLOCPRE)" << std::endl;
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;
 		DIOGENES_CUDA_MALLOC_ARG = data;
@@ -408,7 +427,11 @@ extern "C" {
 
 
 	void DIOG_CUDAMallocCheck() {
-		std::cerr << "We are here! (MALLOC)" << std::endl;
+		if(DIOG_WriteTotals == NULL)
+			DIOG_WriteTotals.reset(new DIOG_WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
+
+		DIOG_WriteTotals->mallocCount++;
+		//std::cerr << "We are here! (MALLOC)" << std::endl;
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;
 		//std::cerr << "We are here! (MALLOC)" << std::endl;
@@ -430,7 +453,11 @@ extern "C" {
 	}
 
 	void DIOG_CUDAFreeCheck(void * data) {
-		std::cerr << "We are here! (FREE)" << std::endl;
+		if(DIOG_WriteTotals == NULL)
+			DIOG_WriteTotals.reset(new DIOG_WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
+
+		DIOG_WriteTotals->freeCount++;
+		//std::cerr << "We are here! (FREE)" << std::endl;
 		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
 			return;
 		//std::cerr << "We are here! (FREE)" << std::endl;

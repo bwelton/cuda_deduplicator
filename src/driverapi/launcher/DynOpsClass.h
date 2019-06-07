@@ -76,7 +76,7 @@ public:
 	uint64_t GetSyncFunctionLocation();
 	bool FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p);
 
-
+	bool IsNeverInstriment(BPatch_function * func);
 private:
 	std::map<uint64_t, BPatch_function *> _powerFuncmap;
 	bool init;

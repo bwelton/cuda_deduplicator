@@ -60,6 +60,17 @@ int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_funct
 	return tmp; 
 }
 
+bool DynOpsClass::IsNeverInstriment(BPatch_function * func) {
+	static std::vector<std::string> librariesToSkip = {"nfs/apps/dyninst_10/dyninst","cudadedup-develop"};
+    std::string tmpLibname = func->getModule()->getObject()->pathName();
+    for (auto i : librariesToSkip)
+    	if (tmpLibname.find(i) != std::string::npos)
+    		return true;
+    return false;
+	// std::string tmpFuncName = func->getName();
+
+
+}
 void DynOpsClass::PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function * & funcToCheck) {
 	BPatch_image * _img = addr->getImage();
 	std::vector<BPatch_function *> ret;

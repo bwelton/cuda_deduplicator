@@ -31,6 +31,8 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();
 	img->getProcedures(all_functions);
 	for (auto i : all_functions) {
+		if (ops->IsNeverInstriment(i))
+			continue;
 		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	}
 	DetectDuplicateStackpoints dupCheck;

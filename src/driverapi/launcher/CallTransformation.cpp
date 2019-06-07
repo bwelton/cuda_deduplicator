@@ -91,11 +91,11 @@ RemovePointsPtr CallTransformation::GetRemoveCalls() {
 void CallTransformation::BuildGraph() {
 	BuildMemoryGraph(_cpuVec,_idPoints, _cpuGraph);
 	BuildMemoryGraph(_gpuVec,_idPoints, _gpuGraph);
-	_gpuGraph.CheckForExitFrees();
 	for (auto i : _memVec) {
 		_transGraph.AddTransfer(i->copyID, i->allocSite, i->count, _cpuGraph, _idPoints);
 	}
 	std::cerr << _cpuGraph.PrintMemoryGraph() << std::endl;
 	std::cerr << _gpuGraph.PrintMemoryGraph() << std::endl;
+	_gpuGraph.CheckForExitFrees();
 	std::cerr << _transGraph.PrintTransferGraph() << std::endl;
 }

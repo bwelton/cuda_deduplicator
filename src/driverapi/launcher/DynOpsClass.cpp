@@ -71,6 +71,12 @@ bool DynOpsClass::IsNeverInstriment(BPatch_function * func) {
 
 
 }
+
+BPatchPointVecPtr DynOpsClass::GetPoints(BPatch_function * func, const BPatch_procedureLocation pos) {
+	BPatchPointVecPtr ret;
+	ret.reset(func->findPoint(pos));
+	return ret;
+}
 void DynOpsClass::PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function * & funcToCheck) {
 	BPatch_image * _img = addr->getImage();
 	std::vector<BPatch_function *> ret;

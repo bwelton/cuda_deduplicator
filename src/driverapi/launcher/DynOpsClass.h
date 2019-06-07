@@ -53,6 +53,7 @@ using namespace ParseAPI;
 using namespace PatchAPI;
 using namespace SymtabAPI;
 
+typedef std::shared_ptr<std::vector<BPatch_point *>> BPatchPointVecPtr;
 // Perform common operations on dyninst objects
 class DynOpsClass {
 public:
@@ -75,7 +76,7 @@ public:
 	std::vector<BPatch_function *> GetFunctionsByOffeset(BPatch_addressSpace * aspace, BPatch_object * obj, uint64_t offset);
 	uint64_t GetSyncFunctionLocation();
 	bool FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p);
-
+	BPatchPointVecPtr GetPoints(BPatch_function * func, const BPatch_procedureLocation pos);
 	bool IsNeverInstriment(BPatch_function * func);
 private:
 	std::map<uint64_t, BPatch_function *> _powerFuncmap;

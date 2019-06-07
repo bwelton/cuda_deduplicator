@@ -76,6 +76,7 @@ public:
 private: 
 	uint64_t GetSmallestEntryBlockSize();
 	DyninstFunctionWraps _wrapper;
+	std::shared_ptr<DynOpsClass> _ops;
 	std::shared_ptr<InstrimentationTracker> _track;
 	std::shared_ptr<DyninstProcess> _proc;
 	std::set<BPatch_basicBlock *> _bblocks;

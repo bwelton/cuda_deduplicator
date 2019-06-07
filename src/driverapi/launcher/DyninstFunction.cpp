@@ -7,6 +7,7 @@ DyninstFunction::DyninstFunction(std::shared_ptr<DyninstProcess> proc, BPatch_fu
 	_addedTRAC = false;
 	std::shared_ptr<DynOpsClass> ops = proc->ReturnDynOps();
 	ops->GetBasicBlocks(func, _bblocks);
+	_ops = ops;
 	std::cerr << "[DyninstFunction] Iterating through " << _bblocks.size() << " blocks" << std::endl;
 	std::vector<std::pair<Dyninst::InstructionAPI::Instruction, Dyninst::Address> > instructionVector;
 	for (auto i : _bblocks) {
@@ -294,14 +295,13 @@ bool DyninstFunction::GenExclusionSet(std::set<uint64_t> & excludedAddress) {
 }
 
 void DyninstFunction::GetCallsites(std::vector<DyninstCallsite> & ret) {
-	std::shared_ptr<BPatch_Vector<BPatch_point *>> points;
-	points.reset(_func->findPoint(BPatch_subroutine));
+	BPatchPointVecPtr points = _ops->GetPoints(_func, BPatch_subroutine);
+	// points.reset(_func->findPoint(BPatch_subroutine));
 	if (points == NULL)
 		return;
 	for (auto x : *points) {
 		ret.push_back(DyninstCallsite(_proc, _func, *x));
 	}
-	delete points;
 }
 
 

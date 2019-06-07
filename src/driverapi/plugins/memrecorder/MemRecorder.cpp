@@ -420,7 +420,7 @@ extern "C" {
 			bool ret = GET_FP_STACKWALK(points);
 			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(points));
 			PLUG_FACTORY_PTR->GPUMallocData((uint64_t)(*DIOGENES_CUDA_MALLOC_ARG), DIOGENES_CUDA_MALLOC_SIZE, myID);
-			std::cerr << "[DIOGENES::CUDAMallocCheck] Unknown Malloc Entry for Identifier = " << myID << std::endl;
+			std::cerr << "[DIOGENES::DIOG_CUDAMallocCheck] Unknown Malloc Entry for Identifier = " << myID << std::endl;
 			DIOGENES_CUDA_MALLOC_ARG = NULL;
 			DIOGENES_CUDA_MALLOC_SIZE = 0;
 			DIOGENES_ReleaseGlobalLock();
@@ -437,8 +437,8 @@ extern "C" {
 			std::vector<StackPoint> points;
 			bool ret = GET_FP_STACKWALK(points);
 			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(points));
-			PLUG_FACTORY_PTR->GPUFreeData((uint64_t)(*data), myID);
-			std::cerr << "[DIOGENES::CUDAMallocCheck] Unknown Free Entry for Identifier = " << myID << std::endl;
+			PLUG_FACTORY_PTR->GPUFreeData((uint64_t)(data), myID);
+			std::cerr << "[DIOGENES::DIOG_CUDAFreeCheck] Unknown Free Entry for Identifier = " << myID << std::endl;
 			DIOGENES_ReleaseGlobalLock();
 		}		
 	}

@@ -61,7 +61,7 @@ int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_funct
 }
 
 bool DynOpsClass::IsNeverInstriment(BPatch_function * func) {
-	static std::vector<std::string> librariesToSkip = {"dyninst/install","cudadedup-develop"};
+	static std::vector<std::string> librariesToSkip = {"dyninst/install","cudadedup-develop", "/usr/lib64/librt-"};
     std::string tmpLibname = func->getModule()->getObject()->pathName();
     for (auto i : librariesToSkip)
     	if (tmpLibname.find(i) != std::string::npos)

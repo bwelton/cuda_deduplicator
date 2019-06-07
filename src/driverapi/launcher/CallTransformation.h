@@ -169,11 +169,12 @@ void PrintSet(T & a, std::stringstream & out) {
 struct MemGraph {
 	std::map<int64_t, MallocPtr> mallocPoints;
 	std::map<int64_t, FreeSitePtr> freePoints;
-
+	uint64_t totalFrees;
 	~MemGraph() {
 		for (auto i : mallocPoints)
 			i.second->Destroy();
 	};
+	MemGraph() : totalFrees(0) {};
 
 	template <typename T, typename D>
 	void TraverseFromPoint(std::vector<T> & tlist, std::vector<D> & dlist) {
@@ -230,7 +231,7 @@ struct MemGraph {
 
 		FreeSitePtr fsite = GetFreeSite(-1);
 		assert(fsite.get() != NULL);
-		if (fsite->count == freeCount) {
+		if (fsite->count == abs(totalFrees - freeCount)) {
 			for (auto i : fsite->parents)
 				i->children.erase(fsite);
 			fsite->parents.clear();
@@ -261,7 +262,7 @@ struct MemGraph {
 
 	std::string PrintMemoryGraph() {
 		std::stringstream ss;
-		uint64_t freeCount =0;
+		totalFrees = 0;
 		uint64_t mallocCount = 0;
 		for (auto i : mallocPoints) {
 			ss << "[Malloc ID=" << i.first << "]" << " Call Count = " << i.second->count << " Associated FreeSites = ";
@@ -273,11 +274,11 @@ struct MemGraph {
 		for (auto i : freePoints) {
 			ss << std::dec << "[Free ID=" << i.first << "]" << " Call Count = " << i.second->count << " Associated MallocSites = ";
 			PrintSet<MallocSiteSet>(i.second->parents, ss);
-			freeCount += i.second->count;
+			totalFrees += i.second->count;
 			ss << std::endl;
 			ss << "[Free ID=" << i.first << "] " << i.second->p.libname << "@" << std::hex << i.second->p.libOffset << std::dec << std::endl;
 		}
-		ss << "[PrintMemoryGraph] Malloc Count = " << std::dec << mallocCount << " Free Count = " << freeCount << std::endl;
+		ss << "[PrintMemoryGraph] Malloc Count = " << std::dec << mallocCount << " Free Count = " << totalFrees << std::endl;
 		return ss.str();
 	};
 };

@@ -669,8 +669,8 @@ bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);
-	std::vector<BPatch_point*> * loadsAndStores = func->findPoint(axs);
-	std::vector<BPatch_point*> * locationEntry = func->findPoint(BPatch_locEntry);
+	BPatchPointVecPtr loadsAndStores(func->findPoint(axs));
+	BPatchPointVecPtr locationEntry(func->findPoint(BPatch_locEntry));
 	assert(recordMemAccess.size() == 1);
 	// assert(loadsAndStores->size() > 0);
 	assert(locationEntry->size() > 0);

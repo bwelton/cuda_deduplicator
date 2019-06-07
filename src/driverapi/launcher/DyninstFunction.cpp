@@ -81,7 +81,7 @@ void DyninstFunction::EntryExitWrapping() {
 	std::vector<BPatch_function *> exitFuncs = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("RECORD_FUNCTION_EXIT"), NULL);
 	assert(entryFuncs.size() == 1);
 	assert(exitFuncs.size() == 1);
-	std::vector<BPatch_point*> * funcCalls = _func->findPoint(BPatch_locSubroutine);
+	BPatchPointVecPtr funcCalls(_func->findPoint(BPatch_locSubroutine));
 	if (funcCalls == NULL)
 		return;
 	for (auto i : *funcCalls)  {
@@ -154,7 +154,9 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);
-	std::vector<BPatch_point*> * loadsAndStores = _func->findPoint(axs);
+	BPatchPointVecPtr loadsAndStores(_func->findPoint(axs));
+	if (loadsAndStores == NULL)
+		return;
 	std::set<uint64_t> exclude;
 	uint64_t setID = 0;
 	// Check for non-returning functions (not supported)
@@ -209,7 +211,7 @@ void DyninstFunction::InsertTimingAtPoint(StackPoint p) {
 	std::string libname = _obj->pathName();
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);
-	std::vector<BPatch_point*> * loadsAndStores = _func->findPoint(axs);
+	BPatchPointVecPtr loadsAndStores(_func->findPoint(axs));
 	bool found = false;
 	for (auto i : *loadsAndStores) {
 		uint64_t libOffsetAddr = 0;

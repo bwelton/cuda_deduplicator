@@ -142,11 +142,11 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 
 
 void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, int numParams) {
-	std::vector<BPatch_point*> * locationEntry;
+	BPatchPointVecPtr locationEntry;
 	if (postCall == false)
-		locationEntry = origFunction->findPoint(BPatch_locEntry);
+		locationEntry.reset(origFunction->findPoint(BPatch_locEntry));
 	else
-		locationEntry = origFunction->findPoint(BPatch_locExit);
+		locationEntry.reset(origFunction->findPoint(BPatch_locExit));
 	std::vector<BPatch_snippet*> recordArgs;
 	for (int i = 0; i < numParams; i++){
 		recordArgs.push_back(new BPatch_paramExpr(i));

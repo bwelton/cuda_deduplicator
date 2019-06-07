@@ -14,7 +14,7 @@ void TimeFirstUse::InsertGotchaEntries() {
 	BPatch_function * DefineBinders;
 	assert(1 == _dynOps.FindFuncByName(_addrSpace, main, std::string("main")));
 	assert(1 == _dynOps.FindFuncByName(_addrSpace, DefineBinders, std::string("DefineBinders")));
-	std::vector<BPatch_point*> * entryPoints = main->findPoint(BPatch_locEntry);
+	BPatchPointVecPtr entryPoints(main->findPoint(BPatch_locEntry));
 	main = _dynOps.GetPOWERFunction(main);
 	std::vector<BPatch_snippet*> recordArgs;
 	BPatch_funcCallExpr entryExpr(*DefineBinders, recordArgs);

@@ -89,7 +89,7 @@ void CallTransformation::BuildRequiredSet() {
 			ret->cudaMemcpyAsyncRepl.push_back(i.second->p);
 			MallocSiteSet tmp = i.second->GetMallocSites();
 			for (auto n : tmp) {
-				if(ret->CheckArrayAndAddToIndex(MALLOC_REP, n->p) == NEW_ENTRY && n->p.IsEmpty() == false) 
+				if(ret->CheckArrayAndAddToIndex(MALLOC_REP, n->p) == NEW_ENTRY && n->IsEmpty() == false) 
 					ret->mallocReplacements.push_back(n->p);
 			}
 		}

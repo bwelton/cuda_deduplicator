@@ -261,22 +261,136 @@ std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_MANAGER.get()
 
 
+
+class MemAllocatorManager {
+private:
+	std::map<size_t, std::vector<void*>> _memRanges;
+	std::map<uint64_t, size_t> _MemAddrToSize;
+	void * InternalAllocate(size_t size) {
+		void * mem;
+		if(cudaMallocHost(&mem,size) != cudaSuccess)
+			assert("Could not malloc anything with cudaMallocHost!" != 0);
+		_MemAddrToSize[(uint64_t)mem] = size;
+		auto it = _memRanges.find(size);
+		if(it == _memRanges.end())
+			_memRanges[size] = std::vector<void*>();
+	};
+
+public:
+	MemAllocatorManager() {};
+	void * AllocateMemory(size_t size) {
+		auto it = _memRanges.find();
+		if (it == _memRanges.end())
+			return InternalAllocate(size);
+		if (it->second.size() > 0) {
+			void * ret = it->second.back();
+			it->second.pop_back();
+			return ret;
+		}
+		return InternalAllocate(size);
+	};
+
+	bool IsOurAllocation(void * mem) {
+		auto it = _MemAddrToSize.find((uint64_t)mem);
+		if (it == _MemAddrToSize.end())
+			return false;
+		return true;
+	}
+	bool ReleaseMemory(void * mem) {
+		auto it = _MemAddrToSize.find((uint64_t)mem);
+		if (it == _MemAddrToSize.end())
+			return false;
+		_memRanges[it->second].push_back(mem);
+		return true;
+	};
+};
+
+volatile bool DIOGENES_MEMMANGE_TEAR_DOWN = false
+volatile bool IN_INSTRIMENTATION = false;
+
+struct  DelayedTransferCopy {
+	uint64_t size;
+	void * processAddress;
+	void * diogenesTemp;
+	cudaStream_t stream;
+	DelayedTransferCopy(void * _processAddress, void * _diogenesTemp, uint64_t _size) : processAddress(_processAddress), 
+						_diogenesTemp(diogenesTemp), _size(size) {};
+
+	inline void CopyTempToPro() {
+		memcpy(processAddress, diogenesTemp, size);
+	};
+
+	void * GetTempAddress() {
+		return diogenesTemp;
+	};
+}
+
+class TransferMemoryManager {
+private:
+	std::shared_ptr<MemAllocatorManager> _MemAlloc;
+	std::vector<DelayedTransferCopy> _delayedCopies;
+public:
+
+	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()) {};
+	~TransferMemoryManager() { 
+		DIOGENES_MEMMANGE_TEAR_DOWN = true;
+	}
+	void * MallocMemory(size_t size) {
+		return _MemAlloc->AllocateMemory(size);
+	};
+
+	void ReleaseMemory(void * mem) {
+		if (_MemAlloc->ReleaseMemory(mem) == false) 
+			free(mem);
+
+	};
+
+	void * InitiateTransfer(void * dst, size_t size, cudaStream_t stream) {
+		if (_MemAlloc->IsOurAllocation(dst) == false) {
+			_delayedCopies.push_back(DelayedTransferCopy(dst, _MemAlloc->AllocateMemory(size), size, stream));
+			return _delayedCopies.back().GetTempAddress();
+		}
+		return dst;
+	};
+
+
+	void PerformSynchronizationAction() {
+		for (auto i : _delayedCopies)
+	};
+};
+
+
 extern "C" {
 cudaError_t  DIOGENES_cudaFreeWrapper(void * mem) {
-	PLUG_BUILD_FACTORY()
-	bool sync;
-	return PLUG_FACTORY_PTR->GPUFree(mem, sync);
+	if (IN_INSTRIMENTATION == false) {
+		IN_INSTRIMENTATION = true;
+		PLUG_BUILD_FACTORY()
+		bool sync;
+		cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
+		IN_INSTRIMENTATION = false;
+		return ret;
+	} else {
+		assert("WE SHOULD NOT BE HERE!" == 0);
+	}
+	return cudaSuccess;
 	// //fprintf(stderr,"I am freeing an address of %p \n", mem);
 	// return cudaFree(mem);
 }
 
 cudaError_t  DIOGENES_synchronousCudaFree(void * mem) {
-	PLUG_BUILD_FACTORY()
-	bool sync;
-	cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
-	if (sync == false)
-		cudaDeviceSynchronize();
-	return ret;
+	if (IN_INSTRIMENTATION == false) {
+		IN_INSTRIMENTATION = true;
+		PLUG_BUILD_FACTORY()
+		bool sync;
+		cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
+		if (sync == false)
+			cudaDeviceSynchronize();
+		IN_INSTRIMENTATION = false;
+		return ret;
+	}else {
+		assert("WE SHOULD NOT BE HERE!" == 0);
+	}
+	return cudaSuccess;
 	// //fprintf(stderr,"I am freeing an address of %p \n", mem);
 	// return cudaFree(mem);
 }
@@ -292,6 +406,8 @@ cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
 	// 	std::cerr << "I alloced an address at " << std::hex << *((uint64_t**)mem)  <<  " of size " << size << std::endl;
 	// return tmp;
 }
+
+
 
 cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
 	PLUG_BUILD_FACTORY()

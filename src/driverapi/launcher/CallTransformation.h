@@ -157,6 +157,17 @@ struct TransferPoint {
 		memAllocLocations.insert(m);
 	}
 
+	// Returns malloc sites, removes any malloc site that takes place 
+	// Within libstdc++.so
+	MallocSiteSet GetMallocSites() {
+		MallocSiteSet ret;
+		for (auto i : memAllocLocations)
+			//if (i->p.libname.find("libstdc++") == std::string::npos) {
+				ret.insert(i);
+			//}
+		return ret;
+	}
+
 	MallocSiteSet memAllocLocations;
 };
 
@@ -359,6 +370,19 @@ struct StackPointTree {
 			it->second[i.second.libOffset] = i.first;
 		}
 	};
+
+	void AddEntry(StackPoint p, int64_t id) {
+		auto it = _idMapper.find(p.libname);
+		if (it == _idMapper.end()){
+			_idMapper[p.libname] = std::map<uint64_t,uint64_t>();
+			it = _idMapper.find(p.libname);
+		}
+			
+		auto it2 = it->second.find(p.libOffset);
+		if (it2 == it->second.end()) {
+			(it2->second)[p.libOffset] = id;
+		}
+	};
 	int64_t FindID(StackPoint & p) {
 		auto it = _idMapper.find(p.libname);
 		if (it == _idMapper.end())
@@ -380,6 +404,11 @@ enum RemovePointsVecTypes {
     MALLOC_REP,
     FREE_REP
 };
+
+enum RemovePointsReturns{
+	ENTRY_EXISTS,
+	NEW_ENTRY
+};
 struct RemovePoints {
 	StackPointVec cudaMallocReplacements;
 	StackPointVec cudaFreeReplacements;
@@ -391,8 +420,7 @@ struct RemovePoints {
 	StackPointVec freeReplacements;
 //    std::shared_ptr<StackPointTree> _TreeMapper;
     std::map<RemovePointsVecTypes, std::shared_ptr<StackPointTree>> _TreeMapper;
-	
-	
+	std::map<RemovePointsVecTypes, uint64_t> _curCounts;
 	void BuildTreeMap() {
 	   std::map<RemovePointsVecTypes, StackPointVec *> vectorMapper = {{CUMALLOC_REP ,&cudaMallocReplacements}, 
 	                                                                   {CUFREE_REP , &cudaFreeReplacements},
@@ -400,6 +428,7 @@ struct RemovePoints {
 	                                                                   {CUMEMCPY_REP , &cudaMemcpyAsyncRepl},
 	                                                                   {MALLOC_REP , &mallocReplacements},
 	                                                                   {FREE_REP , &freeReplacements}};
+	    _TreeMapper.clear();                                                            
 	   for (auto i : vectorMapper) {
 	       int64_t count = 1;
     	   std::map<int64_t, StackPoint> tmpMap; 
@@ -412,6 +441,27 @@ struct RemovePoints {
        }
 	};
 	
+	void PrintVector(StackPointVec * vec, std::string prePend, std::stringstream & ss) {
+		for (auto i : *vec) {
+			ss << "[" << prePend << "] "  << i.libname << "@" << i.libOffset << std::endl;
+		}
+	}
+
+	std::string Print() {
+	   std::map<std::string, StackPointVec *> vectorMapper = {{"CUDA_MAllOC_VEC" ,&cudaMallocReplacements}, 
+	                                                                   {"CUDA_FREE_UNNECESSARY" , &cudaFreeReplacements},
+	                                                                   {"CUDA_FREE_SYNC" , &cudaFreeReqSync},
+	                                                                   {"CUDAMEMCPY_REP" , &cudaMemcpyAsyncRepl},
+	                                                                   {"MALLOC_REP" , &mallocReplacements},
+	                                                                   {"FREE_REP(IGNORED)" , &freeReplacements}};
+        std::stringstream ss;
+        for (auto i : vectorMapper) {
+        	PrintVector(i.second, i.first, ss);
+        }
+        return ss.str();
+	};
+
+
     StackPointVec GetAllStackPoints() {
         StackPointVec ret;
         ret.insert(ret.end(), cudaMallocReplacements.begin(), cudaMallocReplacements.end());
@@ -438,6 +488,26 @@ struct RemovePoints {
 	    return ret;
 	};
 	
+	RemovePointsReturns CheckArrayAndAddToIndex(RemovePointsVecTypes type, StackPoint p) {
+		auto it = _TreeMapper.find(type);
+		if (it == _TreeMapper.end())  {
+			std::map<int64_t, StackPoint> tmpMap; 
+			tmpMap[1] = p;
+			_curCounts[type] = 2;
+			std::shared_ptr<StackPointTree> newTree(new StackPointTree(tmpMap));
+			_TreeMapper[type]  = newTree;
+		} else {
+			auto posId = it->second->FindID(p);
+			if (posId == -1) {
+				if (it->second->FindID(p) > -1)
+					return ENTRY_EXISTS;
+				it->second->AddEntry(p, _curCounts[type]);
+				_curCounts[type]++;
+			}
+		}
+		return NEW_ENTRY;
+	};
+
 	bool CheckArray(RemovePointsVecTypes type, StackPoint p) {
 	    auto it = _TreeMapper.find(type);
 	    if (it == _TreeMapper.end())

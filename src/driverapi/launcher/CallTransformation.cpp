@@ -80,6 +80,22 @@ void CallTransformation::BuildRequiredSet() {
 		ret->cudaMallocReplacements.push_back(i->p);
 	}
 
+
+	// cudaMemTransfer replacement
+	for (auto i : _transGraph.transfers) {
+		if (i.first == -1)
+			continue;
+		if(ret->CheckArrayAndAddToIndex(CUMEMCPY_REP, i.second->p) == NEW_ENTRY) {
+			ret->cudaMemcpyAsyncRepl.push_back(i.second->p);
+			MallocSiteSet tmp = i.second->GetMallocSites();
+			for (auto n : tmp) {
+				if(ret->CheckArrayAndAddToIndex(MALLOC_REP, n->p) == NEW_ENTRY) 
+					ret->mallocReplacements.push_back(n);
+			}
+		}
+	}
+
+	std::cout << ret->Print() << std::endl;
 	_removeCalls = ret;	
 }
 

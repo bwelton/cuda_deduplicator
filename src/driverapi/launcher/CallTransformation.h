@@ -380,7 +380,7 @@ struct StackPointTree {
 			
 		auto it2 = it->second.find(p.libOffset);
 		if (it2 == it->second.end()) {
-			(it2->second)[p.libOffset] = id;
+			it->second[p.libOffset] = id;
 		}
 	};
 	int64_t FindID(StackPoint & p) {

@@ -191,6 +191,18 @@ int DynOpsClass::FindFuncByLibnameOffset(BPatch_addressSpace * aspace, BPatch_fu
 	return 1;
 }
 
+
+bool CheckIfSharedLib(BPatch_object * obj) {
+	std::vector<BPatch_module *> mods;
+	obj->modules(mods);
+	for (auto i : mods) {
+		if (i->isSharedLib())
+			return true;
+	}
+	return false;
+}
+
+
 std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_addressSpace * aspace, std::string libname, uint64_t offset, bool exact) {
 	std::vector<BPatch_function *> ret;
 	if (aspace == NULL) 
@@ -205,7 +217,10 @@ std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_
 		return ret;
 	}
 	std::vector<BPatch_point *> points;
-	obj->findPoints(obj->fileOffsetToAddr(offset), points);
+	if (CheckIfSharedLib(obj))
+		obj->findPoints(obj->fileOffsetToAddr(offset), points);
+	else
+		obj->findPoints(offset, points);
 	//img->findFunction(obj->fileOffsetToAddr(offset), ret);
 	for (auto i : points)
 		ret.push_back(i->getFunction());

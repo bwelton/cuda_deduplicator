@@ -374,7 +374,7 @@ struct StackPointTree {
 	void AddEntry(StackPoint p, int64_t id) {
 		auto it = _idMapper.find(p.libname);
 		if (it == _idMapper.end()){
-			_idMapper[p.libname] = std::map<uint64_t,uint64_t>();
+			_idMapper[p.libname] = std::map<uint64_t,int64_t>();
 			it = _idMapper.find(p.libname);
 		}
 			

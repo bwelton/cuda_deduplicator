@@ -90,7 +90,7 @@ void CallTransformation::BuildRequiredSet() {
 			MallocSiteSet tmp = i.second->GetMallocSites();
 			for (auto n : tmp) {
 				if(ret->CheckArrayAndAddToIndex(MALLOC_REP, n->p) == NEW_ENTRY) 
-					ret->mallocReplacements.push_back(n);
+					ret->mallocReplacements.push_back(n->p);
 			}
 		}
 	}

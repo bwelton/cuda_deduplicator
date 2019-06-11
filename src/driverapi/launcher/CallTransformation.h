@@ -115,6 +115,12 @@ struct MallocSite {
 		destroyer->parents.insert(myself);
 
 	};
+
+	bool IsEmpty() {
+		if (p.libOffset == 0 || id == -1)
+			return true;
+		return false;
+	};
 	FreeSiteSet::iterator GetStart() {
 		return children.begin();
 	};

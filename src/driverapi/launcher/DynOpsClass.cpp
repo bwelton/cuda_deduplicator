@@ -200,8 +200,10 @@ std::vector<BPatch_function *> DynOpsClass::FindFunctionsByLibnameOffset(BPatch_
 	BPatch_image * img = aspace->getImage();
 	BPatch_object * obj = FindObjectByName(aspace, libname, exact);
 	
-	if (obj == NULL)
+	if (obj == NULL){
+		std::cerr << "Could not find object - " << libname << std::endl;
 		return ret;
+	}
 	std::vector<BPatch_point *> points;
 	obj->findPoints(offset, points);
 	//img->findFunction(obj->fileOffsetToAddr(offset), ret);

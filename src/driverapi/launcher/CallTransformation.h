@@ -467,9 +467,9 @@ struct RemovePoints {
         ret.insert(ret.end(), cudaMallocReplacements.begin(), cudaMallocReplacements.end());
         ret.insert(ret.end(), cudaFreeReplacements.begin(), cudaFreeReplacements.end());
         ret.insert(ret.end(), cudaFreeReqSync.begin(), cudaFreeReqSync.end());
-        //ret.insert(ret.end(), cudaMemcpyAsyncRepl.begin(), cudaMemcpyAsyncRepl.end());
-        //ret.insert(ret.end(), mallocReplacements.begin(), mallocReplacements.end());
-        //ret.insert(ret.end(), freeReplacements.begin(), freeReplacements.end());
+        ret.insert(ret.end(), cudaMemcpyAsyncRepl.begin(), cudaMemcpyAsyncRepl.end());
+        ret.insert(ret.end(), mallocReplacements.begin(), mallocReplacements.end());
+        ret.insert(ret.end(), freeReplacements.begin(), freeReplacements.end());
         return ret;
     };
 	

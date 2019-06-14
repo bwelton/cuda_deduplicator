@@ -469,7 +469,7 @@ public:
 
 
 	void PerformSynchronizationAction() {
-		void * local = DIOGENES_CURRENT_STREAM;
+		volatile void * local = DIOGENES_CURRENT_STREAM;
 		if (local == NULL) {
 			std::cerr << "DIOGENES_CURRENT_STREAM is NULL!!!! We don't know what, if anything to synchronize!!!" << std::endl;
 		} else {
@@ -608,7 +608,7 @@ void DIOGENES_FREEWrapper(void * mem) {
 	bool setVal = false;
 	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
 		PLUG_BUILD_FACTORY()
-		DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(size);
+		DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
 		//PLUG_FACTORY_PTR->CPUFree(mem);
 		DIOGENES_Atomic_Malloc.exchange(false);
 	} else {

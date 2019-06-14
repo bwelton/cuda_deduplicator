@@ -249,12 +249,19 @@ MemManage::~MemManage() {
 }
 std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
 
-
+// class DiogenesMemLockExchangeReset {
+// 	bool _original;
+// 	std::atomic<bool> * _lock;
+// public:
+// 	DiogenesMemLockExchangeReset(std::atomic<bool> * lock) : _lock(lock), _original(lock->exchange(true)) { };
+// 	~DiogenesMemLockExchangeReset() {_lock->exchange(_original)};
+// };
 
 #define PLUG_BUILD_FACTORY(param) \
 	if (DIOGENES_MEMORY_MANAGER.get() == NULL) { \
 		bool original = DIOGENES_Atomic_Malloc.exchange(true); \
 		DIOGENES_MEMORY_MANAGER.reset(new MemManage(param)); \
+		DIOGENES_TRANSFER_MEMMANGE.reset(new TransferMemoryManager()); \
 		DIOGENES_Atomic_Malloc.exchange(original); \
 	} 
 
@@ -274,6 +281,7 @@ private:
 		auto it = _memRanges.find(size);
 		if(it == _memRanges.end())
 			_memRanges[size] = std::vector<void*>();
+		return mem;
 	};
 
 public:
@@ -291,10 +299,12 @@ public:
 	};
 
 	bool IsOurAllocation(void * mem) {
-		auto it = _MemAddrToSize.find((uint64_t)mem);
+		auto it = _MemAddrToSize.lower_bound((uint64_t)mem);
 		if (it == _MemAddrToSize.end())
 			return false;
-		return true;
+		if (it->first <= (uint64_t)mem && it->first + it->second >= (uint64_t)mem)
+			return true;
+		return false;
 	}
 	bool ReleaseMemory(void * mem) {
 		auto it = _MemAddrToSize.find((uint64_t)mem);
@@ -307,14 +317,23 @@ public:
 
 volatile bool DIOGENES_MEMMANGE_TEAR_DOWN = false
 volatile bool IN_INSTRIMENTATION = false;
+volatile void * DIOGENES_CURRENT_STREAM = NULL;
+
+inline cudaStream_t ConvertInternalCUStream(void * inStream) {
+	return (cudaStream_t)(inStream - 136);
+};
+
+inline cudaStream_t ConvertUserToInternalCUStream(cudaStream_t inStream)  {
+	return *((cudaStream_t*)inStream);
+};
 
 struct  DelayedTransferCopy {
 	uint64_t size;
 	void * processAddress;
 	void * diogenesTemp;
 	cudaStream_t stream;
-	DelayedTransferCopy(void * _processAddress, void * _diogenesTemp, uint64_t _size) : processAddress(_processAddress), 
-						_diogenesTemp(diogenesTemp), _size(size) {};
+	DelayedTransferCopy(void * _processAddress, void * _diogenesTemp, uint64_t _size, cudaStream_t _stream) : processAddress(_processAddress), 
+						diogenesTemp(_diogenesTemp), size(_size), stream(_stream) {};
 
 	inline void CopyTempToPro() {
 		memcpy(processAddress, diogenesTemp, size);
@@ -323,18 +342,90 @@ struct  DelayedTransferCopy {
 	void * GetTempAddress() {
 		return diogenesTemp;
 	};
-}
+};
+
+class TransferMemoryStreamTracker {
+private:
+	std::map<cudaStream_t, uint64_t> _streamsSeen;
+public:
+	TransferMemoryStreamTracker() {};
+
+	void SeenSynchronization(cudaStream_t stream) {
+		auto it = _streamsSeen.find(stream);
+		if (it == _streamsSeen.end()) {
+			_streamsSeen[stream] = 0;
+			it = _streamsSeen.find(stream);
+		}
+		it->second++;
+	};
+
+	std::string Print(cudaStream_t ctxStream, cudaStream_t defaultStream){
+		std::stringstream ss;
+		ss << "[TransferMemoryStreamTracker::StreamsSeen] Streams seen during execution " << std::endl;
+		ss << "[TransferMemoryStreamTracker::StreamsSeen] CTX stream = " << std::hex << (uint64_t)ctxStream << std::endl;
+		ss << "[TransferMemoryStreamTracker::StreamsSeen] Default stream = " << std::hex << (uint64_t)defaultStream << std::endl;
+		for (auto i : _streamsSeen) {
+			ss << "[TransferMemoryStreamTracker::StreamsSeen] " << std::hex << (uint64_t)i.first << " Sync Calls Seen = " << std::dec << i.second << std::endl;
+		}
+		return ss.str();
+	};
+};
+
 
 class TransferMemoryManager {
 private:
 	std::shared_ptr<MemAllocatorManager> _MemAlloc;
-	std::vector<DelayedTransferCopy> _delayedCopies;
+	std::map<cudaStream_t, std::vector<std::shared_ptr<DelayedTransferCopy>>> _delayedCopies;
+	TransferMemoryStreamTracker _streamsSeen;
+	bool _initStreams;
+	// hack for ctx synchronization
+	cudaStream_t _ctxSynchronize;
+ 	cudaStream_t _defaultStream;
+ 	void FindDefaultStream(){
+		void * host = malloc(1024);
+		void * dst;
+		assert(cudaMalloc(&dst, 1024) == cudaSuccess);
+		assert(cudaMemcpyAsync(dst, host, 1024, cudaMemcpyHostToDevice, 0) == cudaSuccess);
+		DIOGENES_CURRENT_STREAM = NULL;
+		cudaStreamSynchronize(0);
+		assert(DIOGENES_CURRENT_STREAM != NULL);
+		_defaultStream = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
+		_initStreams = true;
+		free(host);
+		cudaFree(dst);
+ 	};
+
+	void FindCudaDeviceSynchronization() {
+		DIOGENES_CURRENT_STREAM = NULL;
+		cudaDeviceSynchronize();
+		if (DIOGENES_CURRENT_STREAM != NULL) {
+			_ctxSynchronize = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
+			_initStreams = true;
+			DIOGENES_CURRENT_STREAM = NULL;
+			return;
+		}
+		// Perform a small transfer to get this address...
+		void * host = malloc(1024);
+		void * dst;
+		assert(cudaMalloc(&dst, 1024) == cudaSuccess);
+		assert(cudaMemcpyAsync(dst, host, 1024, cudaMemcpyHostToDevice, 0) == cudaSuccess);
+		DIOGENES_CURRENT_STREAM = NULL;
+		cudaDeviceSynchronize();
+		assert(DIOGENES_CURRENT_STREAM != NULL);
+		_ctxSynchronize = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
+		_initStreams = true;
+		free(host);
+		cudaFree(dst);
+		DIOGENES_CURRENT_STREAM = NULL;
+	};
 public:
 
-	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()) {};
+	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {};
 	~TransferMemoryManager() { 
 		DIOGENES_MEMMANGE_TEAR_DOWN = true;
-	}
+		std::cerr << _streamsSeen.Print(_ctxSynchronize, _defaultStream) << std::endl;
+	};
+
 	void * MallocMemory(size_t size) {
 		return _MemAlloc->AllocateMemory(size);
 	};
@@ -342,42 +433,93 @@ public:
 	void ReleaseMemory(void * mem) {
 		if (_MemAlloc->ReleaseMemory(mem) == false) 
 			free(mem);
-
 	};
 
+	template <typename T, typename D> 
+	void AddToMapVector(T key, D & value, std::map<T,std::vector<D>> & mmap) {
+		auto it = mmap.find(key);
+		if (it == mmap.end()) {
+			mmap[key] = std::vector<D>();
+			it = mmap.find(key);
+		}
+		it->second.push_back(value);
+	};
+
+
 	void * InitiateTransfer(void * dst, size_t size, cudaStream_t stream) {
+		if (_initStreams == false){
+			FindCudaDeviceSynchronization();
+			FindDefaultStream();
+		}
+		if (stream == 0)
+			stream = _defaultStream;
+		else {
+			stream = ConvertUserToInternalCUStream(stream);
+		}
 		if (_MemAlloc->IsOurAllocation(dst) == false) {
-			_delayedCopies.push_back(DelayedTransferCopy(dst, _MemAlloc->AllocateMemory(size), size, stream));
-			return _delayedCopies.back().GetTempAddress();
+			std::shared_ptr<DelayedTransferCopy> tmp(new DelayedTransferCopy(dst, _MemAlloc->AllocateMemory(size), size, stream));
+			AddToMapVector<cudaStream_t, std::shared_ptr<DelayedTransferCopy>>(stream, tmp, _delayedCopies);
+			return tmp->GetTempAddress();
 		}
 		return dst;
 	};
 
 
 	void PerformSynchronizationAction() {
-		for (auto i : _delayedCopies)
+		void * local = DIOGENES_CURRENT_STREAM;
+		if (local == NULL) {
+			std::cerr << "DIOGENES_CURRENT_STREAM is NULL!!!! We don't know what, if anything to synchronize!!!" << std::endl;
+		} else {
+			cudaStream_t myStream = ConvertInternalCUStream(local);
+			_streamsSeen.SeenSynchronization(myStream);
+			if (myStream == _ctxSynchronize) {
+				// Synchronize everything
+				for (auto & i : _delayedCopies) {
+					for(auto n : i.second) {
+						n->CopyTempToPro();
+						ReleaseMemory(n->GetTempAddress());
+					}
+					i.second.clear();
+				}
+			} else {
+				auto it = _delayedCopies.find(myStream);
+				if (it != _delayedCopies.end()) {
+					for (auto n : it->second) {
+						n->CopyTempToPro();
+						ReleaseMemory(n->GetTempAddress());
+					}
+					it->second.clear();
+				}
+			}
+		}
 	};
 };
 
+std::shared_ptr<TransferMemoryManager> DIOGENES_TRANSFER_MEMMANGE;
 
 extern "C" {
+
 cudaError_t  DIOGENES_cudaFreeWrapper(void * mem) {
+	bool original = DIOGENES_Atomic_Malloc.exchange(true); 
 	if (IN_INSTRIMENTATION == false) {
 		IN_INSTRIMENTATION = true;
 		PLUG_BUILD_FACTORY()
 		bool sync;
 		cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
+		DIOGENES_Atomic_Malloc.exchange(original);
 		IN_INSTRIMENTATION = false;
 		return ret;
 	} else {
 		assert("WE SHOULD NOT BE HERE!" == 0);
 	}
+	DIOGENES_Atomic_Malloc.exchange(original);
 	return cudaSuccess;
 	// //fprintf(stderr,"I am freeing an address of %p \n", mem);
 	// return cudaFree(mem);
 }
 
 cudaError_t  DIOGENES_synchronousCudaFree(void * mem) {
+	bool original = DIOGENES_Atomic_Malloc.exchange(true); 
 	if (IN_INSTRIMENTATION == false) {
 		IN_INSTRIMENTATION = true;
 		PLUG_BUILD_FACTORY()
@@ -386,10 +528,12 @@ cudaError_t  DIOGENES_synchronousCudaFree(void * mem) {
 		if (sync == false)
 			cudaDeviceSynchronize();
 		IN_INSTRIMENTATION = false;
+		DIOGENES_Atomic_Malloc.exchange(original);
 		return ret;
 	}else {
 		assert("WE SHOULD NOT BE HERE!" == 0);
 	}
+	DIOGENES_Atomic_Malloc.exchange(original);
 	return cudaSuccess;
 	// //fprintf(stderr,"I am freeing an address of %p \n", mem);
 	// return cudaFree(mem);
@@ -397,10 +541,12 @@ cudaError_t  DIOGENES_synchronousCudaFree(void * mem) {
 
 
 cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
+	bool original = DIOGENES_Atomic_Malloc.exchange(true); 
 	PLUG_BUILD_FACTORY()
 
-	return PLUG_FACTORY_PTR->GPUAllocate(mem, uint64_t(size));
-
+	cudaError_t ret = PLUG_FACTORY_PTR->GPUAllocate(mem, uint64_t(size));
+	DIOGENES_Atomic_Malloc.exchange(original);
+	return ret;
 	// cudaError_t tmp = cudaMalloc(mem, size);
 	// if (tmp == cudaSuccess)
 	// 	std::cerr << "I alloced an address at " << std::hex << *((uint64_t**)mem)  <<  " of size " << size << std::endl;
@@ -409,14 +555,21 @@ cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
 
 
 
+void DIOGENES_SUB_33898PRECALL(void * param2) {
+	DIOGENES_CURRENT_STREAM = param2;
+};
+
 cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
-	PLUG_BUILD_FACTORY()
-	if (kind == cudaMemcpyDeviceToHost) {
-		void * mem = PLUG_FACTORY_PTR->MallocPinMim(size, dst);
-		dst = mem;
+	bool original = DIOGENES_Atomic_Malloc.exchange(true); 
+	if (kind == cudaMemcpyDeviceToHost && DIOGENES_MEMMANGE_TEAR_DOWN == false) {
+		PLUG_BUILD_FACTORY()
+		dst = DIOGENES_TRANSFER_MEMMANGE->InitiateTransfer(dst, size, stream);
+		//void * mem = PLUG_FACTORY_PTR->MallocPinMim(size, dst);
+		//st = mem;
 		//PLUG_FACTORY_PTR->CheckDestTransMem(dst);
 	}
 	//std::cerr << "Initiating a transfer between  " << std::hex << dst <<  " and " << std::hex << src << " of size " << size << std::endl;
+	DIOGENES_Atomic_Malloc.exchange(original);
 	return cudaMemcpyAsync(dst, src, size, kind, stream);
 }
 

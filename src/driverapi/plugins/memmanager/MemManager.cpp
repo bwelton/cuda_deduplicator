@@ -375,6 +375,15 @@ public:
 };
 
 
+#define NUM_GOTFUNCS 1
+extern "C" void DIOGENES_FREEWrapper(void * mem);
+
+typeof(&fputs_wrapper) DIOGENES_LIBCFREE = NULL;
+
+gotcha_wrappee_t DIOGENES_wrappee_free_handle;
+struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
+	{"free",DIOGENES_FREEWrapper,&DIOGENES_wrappee_free_handle}};
+
 class TransferMemoryManager {
 private:
 	std::shared_ptr<MemAllocatorManager> _MemAlloc;
@@ -423,7 +432,11 @@ private:
 	};
 public:
 
-	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {};
+	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {
+		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
+		wrappee_fputs = gotcha_get_wrappee(wrappee_fputs_handle);
+
+	};
 	~TransferMemoryManager() { 
 		DIOGENES_MEMMANGE_TEAR_DOWN = true;
 		std::cerr << _streamsSeen.Print(_ctxSynchronize, _defaultStream) << std::endl;
@@ -499,6 +512,7 @@ public:
 };
 
 std::shared_ptr<TransferMemoryManager> DIOGENES_TRANSFER_MEMMANGE;
+
 
 extern "C" {
 

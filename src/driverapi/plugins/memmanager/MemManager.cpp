@@ -279,9 +279,9 @@ private:
 		if(cudaMallocHost(&mem,size) != cudaSuccess)
 			assert("Could not malloc anything with cudaMallocHost!" != 0);
 		_MemAddrToSize[(uint64_t)mem] = size;
-		auto it = _memRanges.find(size);
+		auto it = _memRanges.find((uint64_t)size);
 		if(it == _memRanges.end())
-			_memRanges[size] = std::vector<void*>();
+			_memRanges[(uint64_t)size] = std::vector<void*>();
 		return mem;
 	};
 
@@ -289,7 +289,7 @@ public:
 	MemAllocatorManager() {};
 	void * AllocateMemory(size_t size) {
 		auto it = _memRanges.find();
-		if (it == _memRanges.end(size))
+		if (it == _memRanges.end((uint64_t)size))
 			return InternalAllocate(size);
 		if (it->second.size() > 0) {
 			void * ret = it->second.back();

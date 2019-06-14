@@ -578,7 +578,7 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 	bool setVal = false;
 	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
 		PLUG_BUILD_FACTORY()	
-		tmp = malloc(size);
+		tmp = DIOGENES_TRANSFER_MEMMANGE->MallocMemory(size);
 		//tmp = PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
 		DIOGENES_Atomic_Malloc.exchange(false);
 	} else {
@@ -601,7 +601,7 @@ void DIOGENES_FREEWrapper(void * mem) {
 	bool setVal = false;
 	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
 		PLUG_BUILD_FACTORY()
-		free(mem);
+		DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(size);
 		//PLUG_FACTORY_PTR->CPUFree(mem);
 		DIOGENES_Atomic_Malloc.exchange(false);
 	} else {

@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <fstream> 
 #include <memory>   
@@ -288,7 +289,7 @@ public:
 	MemAllocatorManager() {};
 	void * AllocateMemory(size_t size) {
 		auto it = _memRanges.find();
-		if (it == _memRanges.end())
+		if (it == _memRanges.end(size))
 			return InternalAllocate(size);
 		if (it->second.size() > 0) {
 			void * ret = it->second.back();
@@ -315,15 +316,17 @@ public:
 	};
 };
 
-volatile bool DIOGENES_MEMMANGE_TEAR_DOWN = false
+volatile bool DIOGENES_MEMMANGE_TEAR_DOWN = false;
 volatile bool IN_INSTRIMENTATION = false;
 volatile void * DIOGENES_CURRENT_STREAM = NULL;
 
-inline cudaStream_t ConvertInternalCUStream(void * inStream) {
+inline cudaStream_t ConvertInternalCUStream(volatile void * inStream) {
 	return (cudaStream_t)(inStream - 136);
 };
 
 inline cudaStream_t ConvertUserToInternalCUStream(cudaStream_t inStream)  {
+	if (inStream == NULL)
+		return NULL;
 	return *((cudaStream_t*)inStream);
 };
 
@@ -576,11 +579,15 @@ cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t
 void * DIOGENES_MALLOCWrapper(size_t size) {
 	void * tmp = NULL;
 	bool setVal = false;
-	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
-		PLUG_BUILD_FACTORY()	
-		tmp = DIOGENES_TRANSFER_MEMMANGE->MallocMemory(size);
-		//tmp = PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
-		DIOGENES_Atomic_Malloc.exchange(false);
+	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
+		if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
+			PLUG_BUILD_FACTORY()	
+			tmp = DIOGENES_TRANSFER_MEMMANGE->MallocMemory(size);
+			//tmp = PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
+			DIOGENES_Atomic_Malloc.exchange(false);
+		} else {
+			tmp = malloc(size);
+		}
 	} else {
 		tmp = malloc(size);
 	} 

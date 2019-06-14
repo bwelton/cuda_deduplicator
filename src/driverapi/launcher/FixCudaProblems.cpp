@@ -128,12 +128,24 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 					}
 				}
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc")){
+					if (remPoints->CheckArray(MALLOC_REP, x.GetStackPoint())) {
+        				if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+        					continue;    		
+        				x.ReplaceFunctionCall(mallocWrapper[0]);						
+        				std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
+					}
 					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 					// 	continue;
 					// x.ReplaceFunctionCall(mallocWrapper[0]);
 					// std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				}
 				if (*(x.GetCalledFunction()) == std::string("__libc_free")){
+					if (remPoints->CheckArray(FREE_REP, x.GetStackPoint())) {
+        				if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+        					continue;    		
+        				x.ReplaceFunctionCall(freeWrapper[0]);						
+        				std::cerr << "Found function call to free in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
+					}
 					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 					// 	continue;
 					// x.ReplaceFunctionCall(freeWrapper[0]);

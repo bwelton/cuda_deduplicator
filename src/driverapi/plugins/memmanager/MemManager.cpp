@@ -288,8 +288,8 @@ private:
 public:
 	MemAllocatorManager() {};
 	void * AllocateMemory(size_t size) {
-		auto it = _memRanges.find();
-		if (it == _memRanges.end((uint64_t)size))
+		auto it = _memRanges.find((uint64_t)size);
+		if (it == _memRanges.end())
 			return InternalAllocate(size);
 		if (it->second.size() > 0) {
 			void * ret = it->second.back();

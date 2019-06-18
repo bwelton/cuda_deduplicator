@@ -540,10 +540,10 @@ public:
 	};
 
 	void ReleaseMemory(void * mem) {
-		mtx.lock();
+		//mtx.lock();
 		if (_MemAlloc->ReleaseMemory(mem) == false) 
 			DIOGENES_LIBCFREE(mem);
-		mtx.unlock();
+		//mtx.unlock();
 	};
 
 	template <typename T, typename D> 
@@ -748,7 +748,7 @@ void DIOGENES_FREEWrapper(void * mem) {
 		//if (DIOGENES_MUTEX_MANAGER->EnterFree()) {
 			DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
 		//	DIOGENES_MUTEX_MANAGER->ExitFree();
-		//} else {
+		//} //else {
 		//	DIOGENES_LIBCFREE(mem);
 		// 	// if (DIOGENES_LIBCFREE != NULL){
 			

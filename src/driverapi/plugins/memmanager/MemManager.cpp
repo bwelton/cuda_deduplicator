@@ -342,10 +342,34 @@ pthread_t gettid() {
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_MANAGER.get()
 
 
+#define NUM_GOTFUNCS 1
+extern "C" void DIOGENES_FREEWrapper(void * mem);
+
+typeof(&DIOGENES_FREEWrapper) DIOGENES_LIBCFREE;
+
+gotcha_wrappee_handle_t DIOGENES_wrappee_free_handle;
+struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
+	{"free",(void*)DIOGENES_FREEWrapper,&DIOGENES_wrappee_free_handle}};
+
+
+template<typename T> 
+class NoMallocVector : public std::vector<T> {
+	static void* operator new(size_t sz) {
+		return malloc(sz);
+	}
+	static void operator delete(void * ptr) {
+		if (DIOGENES_LIBCFREE != NULL) {
+			DIOGENES_LIBCFREE(ptr);
+		} else {
+			free(ptr);
+		}
+	}
+};
+
 
 class MemAllocatorManager {
 private:
-	std::map<size_t, std::vector<void*>> _memRanges;
+	std::map<size_t, NoMallocVector<void*>> _memRanges;
 	std::map<uint64_t, size_t> _MemAddrToSize;
 	void * InternalAllocate(size_t size) {
 		void * mem;
@@ -443,15 +467,6 @@ public:
 	};
 };
 
-
-#define NUM_GOTFUNCS 1
-extern "C" void DIOGENES_FREEWrapper(void * mem);
-
-typeof(&DIOGENES_FREEWrapper) DIOGENES_LIBCFREE;
-
-gotcha_wrappee_handle_t DIOGENES_wrappee_free_handle;
-struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
-	{"free",(void*)DIOGENES_FREEWrapper,&DIOGENES_wrappee_free_handle}};
 
 class TransferMemoryManager {
 private:

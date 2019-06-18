@@ -383,7 +383,7 @@ typeof(&DIOGENES_FREEWrapper) DIOGENES_LIBCFREE = NULL;
 
 gotcha_wrappee_handle_t DIOGENES_wrappee_free_handle;
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
-	{"free",DIOGENES_FREEWrapper,&DIOGENES_wrappee_free_handle}};
+	{"free",(void*)DIOGENES_FREEWrapper,&DIOGENES_wrappee_free_handle}};
 
 class TransferMemoryManager {
 private:

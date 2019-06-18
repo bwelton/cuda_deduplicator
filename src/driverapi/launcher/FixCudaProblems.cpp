@@ -140,12 +140,12 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 					// std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				}
 				if (*(x.GetCalledFunction()) == std::string("__libc_free")){
-					if (remPoints->CheckArray(FREE_REP, x.GetStackPoint())) {
+					/*if (remPoints->CheckArray(FREE_REP, x.GetStackPoint())) {
         				if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
         					continue;    		
         				x.ReplaceFunctionCall(freeWrapper[0]);						
         				std::cerr << "Found function call to free in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
-					}
+					}*/
 					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
 					// 	continue;
 					// x.ReplaceFunctionCall(freeWrapper[0]);

@@ -12,6 +12,7 @@
 #include <cuda.h>
 #include <atomic> 
 #include <cstring>
+#include "gotcha/gotcha.h"
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
 
 //#define MEMMANAGE_DEBUG 1
@@ -261,8 +262,8 @@ std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
 #define PLUG_BUILD_FACTORY(param) \
 	if (DIOGENES_MEMORY_MANAGER.get() == NULL) { \
 		bool original = DIOGENES_Atomic_Malloc.exchange(true); \
-		DIOGENES_MEMORY_MANAGER.reset(new MemManage(param)); \
 		DIOGENES_TRANSFER_MEMMANGE.reset(new TransferMemoryManager()); \
+		DIOGENES_MEMORY_MANAGER.reset(new MemManage(param)); \
 		DIOGENES_Atomic_Malloc.exchange(original); \
 	} 
 
@@ -403,7 +404,7 @@ private:
 		assert(DIOGENES_CURRENT_STREAM != NULL);
 		_defaultStream = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
 		_initStreams = true;
-		free(host);
+		DIOGENES_LIBCFREE(host);
 		cudaFree(dst);
  	};
 
@@ -426,7 +427,7 @@ private:
 		assert(DIOGENES_CURRENT_STREAM != NULL);
 		_ctxSynchronize = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
 		_initStreams = true;
-		free(host);
+		DIOGENES_LIBCFREE(host);
 		cudaFree(dst);
 		DIOGENES_CURRENT_STREAM = NULL;
 	};
@@ -434,8 +435,8 @@ public:
 
 	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
-		wrappee_fputs = gotcha_get_wrappee(wrappee_fputs_handle);
-
+		DIOGENES_LIBCFREE = gotcha_get_wrappee(wrappee_fputs_handle);
+		assert(DIOGENES_LIBCFREE != NULL);
 	};
 	~TransferMemoryManager() { 
 		DIOGENES_MEMMANGE_TEAR_DOWN = true;
@@ -448,7 +449,7 @@ public:
 
 	void ReleaseMemory(void * mem) {
 		if (_MemAlloc->ReleaseMemory(mem) == false) 
-			free(mem);
+			DIOGENES_LIBCFREE(mem);
 	};
 
 	template <typename T, typename D> 
@@ -626,7 +627,7 @@ void DIOGENES_FREEWrapper(void * mem) {
 		//PLUG_FACTORY_PTR->CPUFree(mem);
 		DIOGENES_Atomic_Malloc.exchange(false);
 	} else {
-		free(mem);
+		DIOGENES_LIBCFREE(mem);
 	}
 }
 }

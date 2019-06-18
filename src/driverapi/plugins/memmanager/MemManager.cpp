@@ -26,7 +26,7 @@ enum DIOGLockTypes{IN_INIT = 0, IN_OP, IN_NONE, IN_FREECALL, IN_TEARDOWN};
 class DiogAtomicMutex {
 private:
 	DIOGLockTypes _m;
-	DIOGLockTypes _freeLock;
+	std::atomic<DIOGLockTypes> _freeLock;
 public:
 
 	DiogAtomicMutex() : _m(IN_NONE), _freeLock(IN_NONE) {};
@@ -47,13 +47,15 @@ public:
 	};
 
 	bool EnterFree() {
-		if(_freeLock == IN_FREECALL)
-			return false;
-		_freeLock = IN_FREECALL;
+		DIOGLockTypes lt = IN_FREECALL;
+		if(_freeLock.compare_exchange_weak(lt, IN_NONE)) {
+			return true;
+		}
+		return false;
 	};
 
 	void ExitFree() {
-		_freeLock = IN_NONE;
+		_freeLock.exchange(IN_NONE);
 	};
 
 	void EnterInit() {

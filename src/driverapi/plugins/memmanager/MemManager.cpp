@@ -378,7 +378,7 @@ private:
 		_MemAddrToSize[(uint64_t)mem] = size;
 		auto it = _memRanges.find((uint64_t)size);
 		if(it == _memRanges.end())
-			_memRanges[(uint64_t)size] = std::vector<void*>();
+			_memRanges[(uint64_t)size] = NoMallocVector<void*>();
 		return mem;
 	};
 

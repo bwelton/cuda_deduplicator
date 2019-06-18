@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <dlfcn.h>
+#include <pthread.h>
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
 
 volatile bool DIOGENES_MEMMANGE_TEAR_DOWN = false;
@@ -306,7 +307,7 @@ MemManage::~MemManage() {
 }
 std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
 std::shared_ptr<DiogAtomicMutex> DIOGENES_MUTEX_MANAGER = NULL;
-pid_t DIOG_PROC_TID = 0;
+pthread_t DIOG_PROC_TID = 0;
 // class DiogenesMemLockExchangeReset {
 // 	bool _original;
 // 	std::atomic<bool> * _lock;
@@ -315,10 +316,10 @@ pid_t DIOG_PROC_TID = 0;
 // 	~DiogenesMemLockExchangeReset() {_lock->exchange(_original)};
 // };
 
-thread_local pid_t L_PID = 0;
-pid_t gettid() {
+thread_local pthread_t L_PID = 0;
+pthread_t gettid() {
 	if (L_PID == 0)
-		L_PID = syscall(SYS_gettid);
+		L_PID = pthread_self();
 	return L_PID;
 }
 

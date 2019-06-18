@@ -16,6 +16,10 @@
 #include <dlfcn.h>
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
 
+volatile bool DIOGENES_MEMMANGE_TEAR_DOWN = false;
+volatile bool IN_INSTRIMENTATION = false;
+volatile void * DIOGENES_CURRENT_STREAM = NULL;
+
 enum DIOGLockTypes{IN_INIT = 0, IN_OP, IN_NONE, IN_TEARDOWN};
 
 class DiogAtomicMutex {
@@ -355,10 +359,6 @@ public:
 		return true;
 	};
 };
-
-volatile bool DIOGENES_MEMMANGE_TEAR_DOWN = false;
-volatile bool IN_INSTRIMENTATION = false;
-volatile void * DIOGENES_CURRENT_STREAM = NULL;
 
 inline cudaStream_t ConvertInternalCUStream(volatile void * inStream) {
 	return (cudaStream_t)(inStream - 136);

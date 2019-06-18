@@ -379,7 +379,7 @@ public:
 #define NUM_GOTFUNCS 1
 extern "C" void DIOGENES_FREEWrapper(void * mem);
 
-typeof(&fputs_wrapper) DIOGENES_LIBCFREE = NULL;
+typeof(&DIOGENES_FREEWrapper) DIOGENES_LIBCFREE = NULL;
 
 gotcha_wrappee_t DIOGENES_wrappee_free_handle;
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
@@ -435,7 +435,7 @@ public:
 
 	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
-		DIOGENES_LIBCFREE = gotcha_get_wrappee(wrappee_fputs_handle);
+		DIOGENES_LIBCFREE = gotcha_get_wrappee(DIOGENES_wrappee_free_handle);
 		assert(DIOGENES_LIBCFREE != NULL);
 	};
 	~TransferMemoryManager() { 

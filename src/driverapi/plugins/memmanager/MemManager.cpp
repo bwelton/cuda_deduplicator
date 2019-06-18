@@ -41,7 +41,6 @@ public:
 	};
 
 	void ExitOp() {
-
 		_m = IN_NONE;
 	}
 
@@ -688,12 +687,12 @@ void DIOGENES_FREEWrapper(void * mem) {
 	bool setVal = false;
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
+		//if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
 			DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
-			DIOGENES_MUTEX_MANAGER->ExitOp();
-		} else {
+		//	DIOGENES_MUTEX_MANAGER->ExitOp();
+		/*} else {
 			DIOGENES_LIBCFREE(mem);
-		}
+		}*/
 	} 
 }
 }

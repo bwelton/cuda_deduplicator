@@ -16,6 +16,40 @@
 #include <dlfcn.h>
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
 
+
+class DiogAtomicMutex {
+private:
+	enum {IN_INIT = 0, IN_OP, IN_NONE, IN_TEARDOWN} LockTypes;
+	LockTypes _m;
+public:
+
+	AtomicMutex() : _m(IN_NONE) {};
+	~AtomicMutex() {
+		DIOGENES_MEMMANGE_TEAR_DOWN = true;
+	};
+	bool EnterOp() {
+		if (_m == IN_NONE) {
+			_m = IN_OP;
+		} else if (_m == IN_OP || _m == IN_INIT) {
+			return false;
+		}
+		return true;
+	};
+
+	void ExitOp() {
+		_m = IN_NONE;
+	}
+
+	void EnterInit() {
+		_m = IN_INIT;
+	};
+
+	void ExitInit() {
+		_m = IN_NONE;
+	};
+};
+
+
 //#define MEMMANAGE_DEBUG 1
 class MemStats {
 public:
@@ -251,7 +285,7 @@ MemManage::~MemManage() {
 	DIOGENES_Atomic_Malloc.exchange(true);
 }
 std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
-
+std::shared_ptr<DiogAtomicMutex> DIOGENES_MUTEX_MANAGER;
 // class DiogenesMemLockExchangeReset {
 // 	bool _original;
 // 	std::atomic<bool> * _lock;
@@ -261,11 +295,14 @@ std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
 // };
 
 #define PLUG_BUILD_FACTORY(param) \
-	if (DIOGENES_MEMORY_MANAGER.get() == NULL) { \
-		bool original = DIOGENES_Atomic_Malloc.exchange(true); \
+	if (DIOGENES_MUTEX_MANAGER.get() == NULL && DIOGENES_MEMMANGE_TEAR_DOWN == false) { \
+		DIOGENES_MEMMANGE_TEAR_DOWN = true; \
+		DIOGENES_MUTEX_MANAGER.reset(new DiogAtomicMutex()); \
+		DIOGENES_MUTEX_MANAGER->EnterInit(); \
 		DIOGENES_TRANSFER_MEMMANGE.reset(new TransferMemoryManager()); \
 		DIOGENES_MEMORY_MANAGER.reset(new MemManage(param)); \
-		DIOGENES_Atomic_Malloc.exchange(original); \
+		DIOGENES_MUTEX_MANAGER->ExitInit(); \
+		DIOGENES_MEMMANGE_TEAR_DOWN = false; \
 	} 
 
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_MANAGER.get()
@@ -524,40 +561,39 @@ std::shared_ptr<TransferMemoryManager> DIOGENES_TRANSFER_MEMMANGE;
 extern "C" {
 
 cudaError_t  DIOGENES_cudaFreeWrapper(void * mem) {
-	bool original = DIOGENES_Atomic_Malloc.exchange(true); 
-	if (IN_INSTRIMENTATION == false) {
-		IN_INSTRIMENTATION = true;
+	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-		bool sync;
-		cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
-		DIOGENES_Atomic_Malloc.exchange(original);
-		IN_INSTRIMENTATION = false;
+		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
+			bool sync;
+			cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
+			DIOGENES_MUTEX_MANAGER->ExitOp();
+		} else {
+			assert( "WE SHOULD NOT BE HERE!" == 0);
+		}
 		return ret;
-	} else {
-		assert("WE SHOULD NOT BE HERE!" == 0);
-	}
-	DIOGENES_Atomic_Malloc.exchange(original);
+	} 
 	return cudaSuccess;
 	// //fprintf(stderr,"I am freeing an address of %p \n", mem);
 	// return cudaFree(mem);
 }
 
 cudaError_t  DIOGENES_synchronousCudaFree(void * mem) {
-	bool original = DIOGENES_Atomic_Malloc.exchange(true); 
-	if (IN_INSTRIMENTATION == false) {
-		IN_INSTRIMENTATION = true;
+	// bool original = DIOGENES_Atomic_Malloc.exchange(true); 
+	// if (IN_INSTRIMENTATION == false) {
+	// 	IN_INSTRIMENTATION = true;
+	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-		bool sync;
-		cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
-		if (sync == false)
-			cudaDeviceSynchronize();
-		IN_INSTRIMENTATION = false;
-		DIOGENES_Atomic_Malloc.exchange(original);
+		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
+			bool sync;
+			cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
+			if (sync == false)
+				cudaDeviceSynchronize();
+			DIOGENES_MUTEX_MANAGER->ExitOp();
+		} else {
+			assert("WE SHOULD NOT BE HERE!" == 0);
+		}
 		return ret;
-	}else {
-		assert("WE SHOULD NOT BE HERE!" == 0);
 	}
-	DIOGENES_Atomic_Malloc.exchange(original);
 	return cudaSuccess;
 	// //fprintf(stderr,"I am freeing an address of %p \n", mem);
 	// return cudaFree(mem);
@@ -565,11 +601,17 @@ cudaError_t  DIOGENES_synchronousCudaFree(void * mem) {
 
 
 cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
-	bool original = DIOGENES_Atomic_Malloc.exchange(true); 
-	PLUG_BUILD_FACTORY()
-
-	cudaError_t ret = PLUG_FACTORY_PTR->GPUAllocate(mem, uint64_t(size));
-	DIOGENES_Atomic_Malloc.exchange(original);
+	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
+		PLUG_BUILD_FACTORY()
+		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
+			cudaError_t ret = PLUG_FACTORY_PTR->GPUAllocate(mem, uint64_t(size));
+			DIOGENES_MUTEX_MANAGER->ExitOp();
+		} else {
+			assert("WE SHOULD NOT BE HERE!" == 0);
+		}
+	} else {
+		assert("WE SHOULD NOT BE HERE!" == 0);
+	}
 	return ret;
 	// cudaError_t tmp = cudaMalloc(mem, size);
 	// if (tmp == cudaSuccess)
@@ -600,20 +642,33 @@ cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t
 void * DIOGENES_MALLOCWrapper(size_t size) {
 	void * tmp = NULL;
 	bool setVal = false;
+
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
-		if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
-			PLUG_BUILD_FACTORY()	
+		PLUG_BUILD_FACTORY()
+		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
 			tmp = DIOGENES_TRANSFER_MEMMANGE->MallocMemory(size);
-			//tmp = PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
-			DIOGENES_Atomic_Malloc.exchange(false);
+			DIOGENES_MUTEX_MANAGER->ExitOp();
 		} else {
 			tmp = malloc(size);
 		}
 	} else {
 		tmp = malloc(size);
-	} 
-	//std::cerr << "Malloced data at  " << std::hex << tmp << " of size " << size << std::endl;
+	}
 	return tmp;
+	// if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
+	// 	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
+	// 		PLUG_BUILD_FACTORY()	
+	// 		tmp = DIOGENES_TRANSFER_MEMMANGE->MallocMemory(size);
+	// 		//tmp = PLUG_FACTORY_PTR->CPUAllocate(uint64_t(size));
+	// 		DIOGENES_Atomic_Malloc.exchange(false);
+	// 	} else {
+	// 		tmp = malloc(size);
+	// 	}
+	// } else {
+	// 	tmp = malloc(size);
+	// } 
+	// //std::cerr << "Malloced data at  " << std::hex << tmp << " of size " << size << std::endl;
+	// return tmp;
 }
 
 // void DIOGENES_EXITWrapper() {
@@ -627,15 +682,15 @@ void DIOGENES_SyncExit() {
 
 void DIOGENES_FREEWrapper(void * mem) {
 	bool setVal = false;
-	if (DIOGENES_MEMMANGE_TEAR_DOWN == true)
-		return;
-	if(DIOGENES_MEMMANGE_TEAR_DOWN == false) {
+	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-		DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
-		//PLUG_FACTORY_PTR->CPUFree(mem);
-	} else {
-		DIOGENES_LIBCFREE(mem);
-	}
+		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
+			DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
+			DIOGENES_MUTEX_MANAGER->ExitOp();
+		} else {
+			DIOGENES_LIBCFREE(mem);
+		}
+	} 
 }
 }
 

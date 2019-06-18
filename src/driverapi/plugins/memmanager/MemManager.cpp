@@ -435,7 +435,7 @@ public:
 
 	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
-		DIOGENES_LIBCFREE = gotcha_get_wrappee(DIOGENES_wrappee_free_handle);
+		DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) gotcha_get_wrappee(DIOGENES_wrappee_free_handle);
 		assert(DIOGENES_LIBCFREE != NULL);
 	};
 	~TransferMemoryManager() { 

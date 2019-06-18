@@ -561,11 +561,12 @@ std::shared_ptr<TransferMemoryManager> DIOGENES_TRANSFER_MEMMANGE;
 extern "C" {
 
 cudaError_t  DIOGENES_cudaFreeWrapper(void * mem) {
+	cudaError_t ret;
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
 		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
 			bool sync;
-			cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
+			ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
 			DIOGENES_MUTEX_MANAGER->ExitOp();
 		} else {
 			assert( "WE SHOULD NOT BE HERE!" == 0);
@@ -581,11 +582,12 @@ cudaError_t  DIOGENES_synchronousCudaFree(void * mem) {
 	// bool original = DIOGENES_Atomic_Malloc.exchange(true); 
 	// if (IN_INSTRIMENTATION == false) {
 	// 	IN_INSTRIMENTATION = true;
+	cudaError_t ret;
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
 		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
 			bool sync;
-			cudaError_t ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
+			ret = PLUG_FACTORY_PTR->GPUFree(mem, sync);
 			if (sync == false)
 				cudaDeviceSynchronize();
 			DIOGENES_MUTEX_MANAGER->ExitOp();
@@ -601,10 +603,11 @@ cudaError_t  DIOGENES_synchronousCudaFree(void * mem) {
 
 
 cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
+	cudaError_t  ret;
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
 		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
-			cudaError_t ret = PLUG_FACTORY_PTR->GPUAllocate(mem, uint64_t(size));
+		    ret = PLUG_FACTORY_PTR->GPUAllocate(mem, uint64_t(size));
 			DIOGENES_MUTEX_MANAGER->ExitOp();
 		} else {
 			assert("WE SHOULD NOT BE HERE!" == 0);

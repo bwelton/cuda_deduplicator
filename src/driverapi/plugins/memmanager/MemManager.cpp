@@ -435,6 +435,7 @@ public:
 
 	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {
 		void * handle = dlopen("libc.so.6", RTLD_LOCAL | RTLD_LAZY);
+		assert(handle != NULL);
 		DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) dlsym(handle, "free");
 		assert(DIOGENES_LIBCFREE != NULL);
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");

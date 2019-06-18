@@ -14,6 +14,7 @@
 #include <cstring>
 #include "gotcha/gotcha.h"
 #include <mutex> 
+#include <sys/types.h>
 #include <dlfcn.h>
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
 
@@ -674,7 +675,9 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
+		if (DIOG_PROC_TID != gettid()) {
+			tmp = malloc(size);
+		} else if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
 			tmp = DIOGENES_TRANSFER_MEMMANGE->MallocMemory(size);
 			DIOGENES_MUTEX_MANAGER->ExitOp();
 		} else {

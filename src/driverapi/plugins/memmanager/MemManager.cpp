@@ -303,7 +303,8 @@ MemManage::~MemManage() {
 	DIOGENES_Atomic_Malloc.exchange(true);
 }
 std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
-thread_local std::shared_ptr<DiogAtomicMutex> DIOGENES_MUTEX_MANAGER = NULL;
+std::shared_ptr<DiogAtomicMutex> DIOGENES_MUTEX_MANAGER = NULL;
+pid_t DIOG_PROC_TID = 0;
 // class DiogenesMemLockExchangeReset {
 // 	bool _original;
 // 	std::atomic<bool> * _lock;
@@ -315,6 +316,7 @@ thread_local std::shared_ptr<DiogAtomicMutex> DIOGENES_MUTEX_MANAGER = NULL;
 #define PLUG_BUILD_FACTORY(param) \
 	if (DIOGENES_MUTEX_MANAGER == NULL && DIOGENES_MEMMANGE_TEAR_DOWN == false) {\
 		DIOGENES_MEMMANGE_TEAR_DOWN = true; \
+		DIOG_PROC_TID = gettid();\
 		DIOGENES_MUTEX_MANAGER.reset(new DiogAtomicMutex()); \
 		DIOGENES_MEMMANGE_TEAR_DOWN = false; \
 	} \
@@ -711,6 +713,11 @@ void DIOGENES_FREEWrapper(void * mem) {
 	bool setVal = false;
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
+		if (DIOG_PROC_TID != gettid()) {
+			std::cerr << "Different TID Detected! " << gettid() << std::endl;
+			DIOGENES_LIBCFREE(mem);
+			return;
+		}
 		if (DIOGENES_MUTEX_MANAGER->EnterFree()) {
 			DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
 			DIOGENES_MUTEX_MANAGER->ExitFree();

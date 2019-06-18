@@ -314,6 +314,13 @@ pid_t DIOG_PROC_TID = 0;
 // 	~DiogenesMemLockExchangeReset() {_lock->exchange(_original)};
 // };
 
+thread_local pid_t L_PID = 0;
+pid_t gettid() {
+	if (L_PID == 0)
+		L_PID = syscall(SYS_gettid);
+	return L_PID;
+}
+
 #define PLUG_BUILD_FACTORY(param) \
 	if (DIOGENES_MUTEX_MANAGER == NULL && DIOGENES_MEMMANGE_TEAR_DOWN == false) {\
 		DIOGENES_MEMMANGE_TEAR_DOWN = true; \

@@ -351,6 +351,19 @@ gotcha_wrappee_handle_t DIOGENES_wrappee_free_handle;
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
 	{"free",(void*)DIOGENES_FREEWrapper,&DIOGENES_wrappee_free_handle}};
 
+template<typename T, typename D> 
+class NoMallocMap : public std::map<T,D> {
+	static void* operator new(size_t sz) {
+		return malloc(sz);
+	}
+	static void operator delete(void * ptr) {
+		if (DIOGENES_LIBCFREE != NULL) {
+			DIOGENES_LIBCFREE(ptr);
+		} else {
+			free(ptr);
+		}
+	}
+};
 
 template<typename T> 
 class NoMallocVector : public std::vector<T> {
@@ -369,8 +382,8 @@ class NoMallocVector : public std::vector<T> {
 
 class MemAllocatorManager {
 private:
-	std::map<size_t, NoMallocVector<void*>> _memRanges;
-	std::map<uint64_t, size_t> _MemAddrToSize;
+	NoMallocMap<size_t, NoMallocVector<void*>> _memRanges;
+	NoMallocMap<uint64_t, size_t> _MemAddrToSize;
 	void * InternalAllocate(size_t size) {
 		void * mem;
 		if(cudaMallocHost(&mem,size) != cudaSuccess)

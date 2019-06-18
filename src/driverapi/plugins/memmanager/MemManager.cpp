@@ -621,12 +621,17 @@ void DIOGENES_SyncExit() {
 
 void DIOGENES_FREEWrapper(void * mem) {
 	bool setVal = false;
+	if (DIOGENES_LIBCFREE == NULL){
+		free(mem);
+		return;
+	}
 	if(DIOGENES_Atomic_Malloc.compare_exchange_weak(setVal, true)) {
 		PLUG_BUILD_FACTORY()
 		DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
 		//PLUG_FACTORY_PTR->CPUFree(mem);
 		DIOGENES_Atomic_Malloc.exchange(false);
 	} else {
+
 		DIOGENES_LIBCFREE(mem);
 	}
 }

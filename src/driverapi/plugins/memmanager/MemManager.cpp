@@ -15,6 +15,7 @@
 #include "gotcha/gotcha.h"
 #include <mutex> 
 #include <sys/types.h>
+#include <unistd.h>
 #include <dlfcn.h>
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
 

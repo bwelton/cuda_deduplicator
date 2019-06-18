@@ -300,7 +300,7 @@ MemManage::~MemManage() {
 	DIOGENES_Atomic_Malloc.exchange(true);
 }
 std::shared_ptr<MemManage> DIOGENES_MEMORY_MANAGER;
-std::shared_ptr<DiogAtomicMutex> DIOGENES_MUTEX_MANAGER;
+thread_local std::shared_ptr<DiogAtomicMutex> DIOGENES_MUTEX_MANAGER = NULL;
 // class DiogenesMemLockExchangeReset {
 // 	bool _original;
 // 	std::atomic<bool> * _lock;
@@ -310,9 +310,13 @@ std::shared_ptr<DiogAtomicMutex> DIOGENES_MUTEX_MANAGER;
 // };
 
 #define PLUG_BUILD_FACTORY(param) \
-	if (DIOGENES_MUTEX_MANAGER.get() == NULL && DIOGENES_MEMMANGE_TEAR_DOWN == false) { \
+	if (DIOGENES_MUTEX_MANAGER == NULL && DIOGENES_MEMMANGE_TEAR_DOWN == false) {\
 		DIOGENES_MEMMANGE_TEAR_DOWN = true; \
 		DIOGENES_MUTEX_MANAGER.reset(new DiogAtomicMutex()); \
+		DIOGENES_MEMMANGE_TEAR_DOWN = false; \
+	} \
+	if (DIOGENES_TRANSFER_MEMMANGE.get() == NULL && DIOGENES_MEMMANGE_TEAR_DOWN == false) { \
+		DIOGENES_MEMMANGE_TEAR_DOWN = true; \
 		DIOGENES_MUTEX_MANAGER->EnterInit(); \
 		DIOGENES_TRANSFER_MEMMANGE.reset(new TransferMemoryManager()); \
 		DIOGENES_MEMORY_MANAGER.reset(new MemManage(param)); \
@@ -436,6 +440,7 @@ struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
 
 class TransferMemoryManager {
 private:
+	std::mutex mtx;
 	std::shared_ptr<MemAllocatorManager> _MemAlloc;
 	std::map<cudaStream_t, std::vector<std::shared_ptr<DelayedTransferCopy>>> _delayedCopies;
 	TransferMemoryStreamTracker _streamsSeen;
@@ -498,12 +503,17 @@ public:
 	};
 
 	void * MallocMemory(size_t size) {
-		return _MemAlloc->AllocateMemory(size);
+		mtx.lock();
+		void * ret = _MemAlloc->AllocateMemory(size);
+		mtx.unlock();
+		return ret;
 	};
 
 	void ReleaseMemory(void * mem) {
+		mtx.lock();
 		if (_MemAlloc->ReleaseMemory(mem) == false) 
 			DIOGENES_LIBCFREE(mem);
+		mtx.unlock();
 	};
 
 	template <typename T, typename D> 
@@ -701,7 +711,11 @@ void DIOGENES_FREEWrapper(void * mem) {
 		if (DIOGENES_MUTEX_MANAGER->EnterFree()) {
 			DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
 			DIOGENES_MUTEX_MANAGER->ExitFree();
-		} 
+		} else {
+			if (DIOGENES_LIBCFREE != NULL){
+				DIOGENES_LIBCFREE(mem);
+			}
+		}
 	} 
 }
 }

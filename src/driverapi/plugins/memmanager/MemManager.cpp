@@ -379,7 +379,7 @@ public:
 #define NUM_GOTFUNCS 1
 extern "C" void DIOGENES_FREEWrapper(void * mem);
 
-typeof(&DIOGENES_FREEWrapper) DIOGENES_LIBCFREE = NULL;
+typeof(&DIOGENES_FREEWrapper) DIOGENES_LIBCFREE;
 
 gotcha_wrappee_handle_t DIOGENES_wrappee_free_handle;
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
@@ -434,9 +434,13 @@ private:
 public:
 
 	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {
-		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
-		DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) gotcha_get_wrappee(DIOGENES_wrappee_free_handle);
+		void * handle = dlopen("libc.so.6", RTLD_LOCAL | RTLD_LAZY);
+		DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) dlsym(handle, "free");
 		assert(DIOGENES_LIBCFREE != NULL);
+		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
+
+		//DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) gotcha_get_wrappee(DIOGENES_wrappee_free_handle);
+		//assert(DIOGENES_LIBCFREE != NULL);
 	};
 	~TransferMemoryManager() { 
 		DIOGENES_MEMMANGE_TEAR_DOWN = true;

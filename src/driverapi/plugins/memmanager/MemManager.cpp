@@ -13,6 +13,7 @@
 #include <atomic> 
 #include <cstring>
 #include "gotcha/gotcha.h"
+#include <mutex> 
 #include <dlfcn.h>
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
 

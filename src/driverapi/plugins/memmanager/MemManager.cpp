@@ -20,14 +20,15 @@ volatile bool DIOGENES_MEMMANGE_TEAR_DOWN = false;
 volatile bool IN_INSTRIMENTATION = false;
 volatile void * DIOGENES_CURRENT_STREAM = NULL;
 
-enum DIOGLockTypes{IN_INIT = 0, IN_OP, IN_NONE, IN_TEARDOWN};
+enum DIOGLockTypes{IN_INIT = 0, IN_OP, IN_NONE, IN_FREECALL, IN_TEARDOWN};
 
 class DiogAtomicMutex {
 private:
 	DIOGLockTypes _m;
+	DIOGLockTypes _freeLock;
 public:
 
-	DiogAtomicMutex() : _m(IN_NONE) {};
+	DiogAtomicMutex() : _m(IN_NONE), _freeLock(IN_NONE) {};
 	~DiogAtomicMutex() {
 		DIOGENES_MEMMANGE_TEAR_DOWN = true;
 	};
@@ -42,7 +43,17 @@ public:
 
 	void ExitOp() {
 		_m = IN_NONE;
-	}
+	};
+
+	bool EnterFree() {
+		if(_freeLock == IN_FREECALL)
+			return false;
+		_freeLock = IN_FREECALL;
+	};
+
+	void ExitFree() {
+		_freeLock = IN_NONE;
+	};
 
 	void EnterInit() {
 		_m = IN_INIT;
@@ -687,12 +698,13 @@ void DIOGENES_FREEWrapper(void * mem) {
 	bool setVal = false;
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-		//if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
+		if (DIOGENES_MUTEX_MANAGER->EnterFree()) {
 			DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
-		//	DIOGENES_MUTEX_MANAGER->ExitOp();
-		/*} else {
-			DIOGENES_LIBCFREE(mem);
-		}*/
+			DIOGENES_MUTEX_MANAGER->ExitFree();
+		} else {
+			if (DIOGENES_LIBCFREE != NULL)
+				DIOGENES_LIBCFREE(mem);
+		}
 	} 
 }
 }

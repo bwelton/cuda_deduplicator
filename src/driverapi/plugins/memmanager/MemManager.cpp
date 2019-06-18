@@ -16,27 +16,28 @@
 #include <dlfcn.h>
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
 
+enum DIOGLockTypes{IN_INIT = 0, IN_OP, IN_NONE, IN_TEARDOWN};
 
 class DiogAtomicMutex {
 private:
-	enum {IN_INIT = 0, IN_OP, IN_NONE, IN_TEARDOWN} LockTypes;
-	LockTypes _m;
+	DIOGLockTypes _m;
 public:
 
-	AtomicMutex() : _m(IN_NONE) {};
-	~AtomicMutex() {
+	DiogAtomicMutex() : _m(IN_NONE) {};
+	~DiogAtomicMutex() {
 		DIOGENES_MEMMANGE_TEAR_DOWN = true;
 	};
 	bool EnterOp() {
 		if (_m == IN_NONE) {
 			_m = IN_OP;
-		} else if (_m == IN_OP || _m == IN_INIT) {
+		} else if (_m == IN_OP || _m == IN_INIT || _m == IN_TEARDOWN) {
 			return false;
 		}
 		return true;
 	};
 
 	void ExitOp() {
+
 		_m = IN_NONE;
 	}
 

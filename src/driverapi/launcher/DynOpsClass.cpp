@@ -16,7 +16,7 @@ std::vector<BPatch_function*> DynOpsClass::GetFunctionsByOffeset(BPatch_addressS
 			BPatch_Vector<BPatch_function*> fvec;
 			i->getProcedures(fvec);
 			for (auto n : fvec) {
-				std::cerr << "[DEBUG] Function starting at " << std::dec << n->getBaseAddr() - n->getModule()->getBaseAddr() << " loaded at " << std::hex << n->getBaseAddr() << std::endl;
+				std::cerr << "[DEBUG] Function starting at " << std::dec << ((uint64_t)n->getBaseAddr()) - ((uint64_t) n->getModule()->getBaseAddr()) << " loaded at " << std::hex << n->getBaseAddr() << std::endl;
 			}
 			exit(0);
 		}

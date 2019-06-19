@@ -371,7 +371,8 @@ public:
 	};
 
 	void pop_back() {
-		_size--;
+		if (_size > 0)
+			_size--;
 	};
 
 	void push_back(void * m){ 
@@ -431,7 +432,7 @@ public:
 };
 
 inline cudaStream_t ConvertInternalCUStream(volatile void * inStream) {
-	return (cudaStream_t)(inStream - 136);
+	return (cudaStream_t)(((char*)inStream) - 136);
 };
 
 inline cudaStream_t ConvertUserToInternalCUStream(cudaStream_t inStream)  {
@@ -706,7 +707,7 @@ cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t
 		//PLUG_FACTORY_PTR->CheckDestTransMem(dst);
 	}
 	//std::cerr << "Initiating a transfer between  " << std::hex << dst <<  " and " << std::hex << src << " of size " << size << std::endl;
-	DIOGENES_Atomic_Malloc.exchange(original);
+	//DIOGENES_Atomic_Malloc.exchange(original);
 	return cudaMemcpyAsync(dst, src, size, kind, stream);
 }
 
@@ -750,7 +751,7 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 
 void DIOGENES_SyncExit() {
 	PLUG_BUILD_FACTORY()
-	PLUG_FACTORY_PTR->ReturnPinMem();
+	//PLUG_FACTORY_PTR->ReturnPinMem();
 }
 
 void DIOGENES_FREEWrapper(void * mem) {
@@ -758,18 +759,11 @@ void DIOGENES_FREEWrapper(void * mem) {
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
 		if (DIOG_PROC_TID != gettid()) {
-			std::cerr << "Different TID Detected! " << gettid() << std::endl;
+			//std::cerr << "Different TID Detected! " << gettid() << std::endl;
 			DIOGENES_LIBCFREE(mem);
 			return;
 		}
-		//if (DIOGENES_MUTEX_MANAGER->EnterFree()) {
 		DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
-		//	DIOGENES_MUTEX_MANAGER->ExitFree();
-		//} else {
-		 //	if (DIOGENES_LIBCFREE != NULL){
-		//		DIOGENES_LIBCFREE(mem);
-		//	}
-		//}
 	} 
 }
 }

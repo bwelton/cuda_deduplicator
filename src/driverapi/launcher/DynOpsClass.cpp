@@ -3,12 +3,16 @@ DynOpsClass::DynOpsClass() {
 	init = false;
 	_syncLocation = 0;
 }
-
 std::vector<BPatch_function*> DynOpsClass::GetFunctionsByOffeset(BPatch_addressSpace * aspace, BPatch_object * obj, uint64_t offset) {
 	std::vector<BPatch_function*> ret;
 	BPatch_image * _img = aspace->getImage();
 	uint64_t offsetAddress = obj->fileOffsetToAddr(offset);
-	ret.push_back(_img->findFunction(offsetAddress));
+	BPatch_function * func = _img->findFunction(offsetAddress);
+	if (func == NULL){
+		std::cerr << "Could not find function at supplied offset - " << std::hex << offset << " (symtab offset of: " << offsetAddress << ")" << std::dec << std::endl;
+		return ret;
+	}
+	ret.push_back(func);
 	return ret;
 }
 

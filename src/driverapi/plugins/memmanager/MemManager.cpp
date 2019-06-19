@@ -581,6 +581,11 @@ public:
 			FindDefaultStream();
 			_initStreams = true;
 		}
+		if (stream == 0)
+			stream = _defaultStream;
+		else 
+			stream = ConvertUserToInternalCUStream(stream);
+		_streamsSeen.SeenSynchronization(stream);
 		return dst;
 		// if (stream == 0)
 		// 	stream = _defaultStream;

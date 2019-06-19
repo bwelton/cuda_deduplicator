@@ -163,7 +163,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 	}
 
 	std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
-	std::vector<BPatch_function*> cudaSyncStreamFunc = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, 333898);
+	std::vector<BPatch_function*> cudaSyncStreamFunc = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, 0x333898);
 	assert(cudaSyncFunctions.size() > 0);
 	assert(cudaSyncStreamFunc.size() > 0);
 	{

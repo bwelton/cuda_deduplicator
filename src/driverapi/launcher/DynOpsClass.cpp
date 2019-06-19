@@ -9,7 +9,17 @@ std::vector<BPatch_function*> DynOpsClass::GetFunctionsByOffeset(BPatch_addressS
 	uint64_t offsetAddress = obj->fileOffsetToAddr(offset);
 	BPatch_function * func = _img->findFunction(offsetAddress);
 	if (func == NULL){
-		std::cerr << "Could not find function at supplied offset - " << std::hex << offset << " (symtab offset of: " << offsetAddress << ")" << std::dec << std::endl;
+		std::cerr << "Could not find function at supplied offset - " << std::dec << offset << " (symtab offset of: " << std::hex << offsetAddress << ")" << std::dec << std::endl;
+		std::vector<BPatch_module *> tmpMod;
+		obj->modules(tmpMod);
+		for (auto i : tmpMod) {
+			BPatch_Vector<BPatch_function*> fvec;
+			i->getProcedures(fvec);
+			for (auto n : fvec) {
+				std::cerr << "[DEBUG] Function starting at " << std::dec << n->getBaseAddr() - n->getModule()->getBaseAddr() << " loaded at " << std::hex << n->getBaseAddr() << std::endl;
+			}
+			exit(0);
+		}
 		return ret;
 	}
 	ret.push_back(func);

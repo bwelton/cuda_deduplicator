@@ -693,7 +693,8 @@ cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
 
 
 
-void DIOGENES_SUB_33898PRECALL(void * param2) {
+void DIOGENES_SUB_333898PRECALL(void * param2) {
+	PLUG_BUILD_FACTORY()
 	DIOGENES_CURRENT_STREAM = param2;
 };
 

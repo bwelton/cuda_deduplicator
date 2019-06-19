@@ -354,19 +354,19 @@ struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
 
 class NoFreeVector {
 private:
-	void * _storage;
+	uint64_t * _storage;
 	int _size;
 
 public:
-	NoFreeVector() : _storage(malloc(10000*sizeof(void *))), _size(0) { };
+	NoFreeVector() : _storage((uint64_t*)malloc(10000*sizeof(uint64_t))), _size(0) { };
 
 	~NoFreeVector() {};
 	int size() {
 		return _size;
 	};
 	void * back() {
-		if (size > 0)
-			return _storage[size - 1];
+		if (_size > 0)
+			return (void*)(_storage[_size - 1]);
 		return NULL;
 	};
 
@@ -376,7 +376,7 @@ public:
 
 	void push_back(void * m){ 
 		if (_size < 10000){
-			_storage[_size] = m;
+			_storage[_size] = (uint64_t)m;
 			_size++;
 		} else {
 			assert("WE SHOULD NOT BE HERE!" == 0);
@@ -405,7 +405,7 @@ public:
 		auto it = _memRanges.find((uint64_t)size);
 		if (it == _memRanges.end())
 			return InternalAllocate(size);
-		if (it->second.size() > 0) {
+		if (it->second->size() > 0) {
 			void * ret = it->second->back();
 			it->second->pop_back();
 			return ret;

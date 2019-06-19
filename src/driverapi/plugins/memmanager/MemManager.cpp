@@ -536,8 +536,6 @@ private:
 public:
 
 	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {
-		FindDefaultStream();
-		FindCudaDeviceSynchronization();
 		void * handle = dlopen("libc.so.6", RTLD_LOCAL | RTLD_LAZY);
 		assert(handle != NULL);
 		DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) dlsym(handle, "free");
@@ -581,18 +579,20 @@ public:
 		if (_initStreams == false){
 			FindCudaDeviceSynchronization();
 			FindDefaultStream();
-		}
-		if (stream == 0)
-			stream = _defaultStream;
-		else {
-			stream = ConvertUserToInternalCUStream(stream);
-		}
-		if (_MemAlloc->IsOurAllocation(dst) == false) {
-			std::shared_ptr<DelayedTransferCopy> tmp(new DelayedTransferCopy(dst, _MemAlloc->AllocateMemory(size), size, stream));
-			AddToMapVector<cudaStream_t, std::shared_ptr<DelayedTransferCopy>>(stream, tmp, _delayedCopies);
-			return tmp->GetTempAddress();
+			_initStreams = true;
 		}
 		return dst;
+		// if (stream == 0)
+		// 	stream = _defaultStream;
+		// else {
+		// 	stream = ConvertUserToInternalCUStream(stream);
+		// }
+		// if (_MemAlloc->IsOurAllocation(dst) == false) {
+		// 	std::shared_ptr<DelayedTransferCopy> tmp(new DelayedTransferCopy(dst, _MemAlloc->AllocateMemory(size), size, stream));
+		// 	AddToMapVector<cudaStream_t, std::shared_ptr<DelayedTransferCopy>>(stream, tmp, _delayedCopies);
+		// 	return tmp->GetTempAddress();
+		// }
+		// return dst;
 	};
 
 

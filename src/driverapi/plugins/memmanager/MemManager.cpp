@@ -351,39 +351,43 @@ gotcha_wrappee_handle_t DIOGENES_wrappee_free_handle;
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
 	{"free",(void*)DIOGENES_FREEWrapper,&DIOGENES_wrappee_free_handle}};
 
-template<typename T, typename D> 
-class NoMallocMap : public std::map<T,D> {
-	static void* operator new(size_t sz) {
-		return malloc(sz);
-	}
-	static void operator delete(void * ptr) {
-		if (DIOGENES_LIBCFREE != NULL) {
-			DIOGENES_LIBCFREE(ptr);
-		} else {
-			free(ptr);
-		}
-	}
-};
 
-template<typename T> 
-class NoMallocVector : public std::vector<T> {
-	static void* operator new(size_t sz) {
-		return malloc(sz);
-	}
-	static void operator delete(void * ptr) {
-		if (DIOGENES_LIBCFREE != NULL) {
-			DIOGENES_LIBCFREE(ptr);
-		} else {
-			free(ptr);
-		}
-	}
-};
+class NoFreeVector {
+private:
+	void * _storage;
+	int _size;
 
+public:
+	NoFreeVector() : _storage(malloc(10000*sizeof(void *))), _size(0) { };
+
+	~NoFreeVector() {};
+	int size() {
+		return _size;
+	};
+	void * back() {
+		if (size > 0)
+			return _storage[size - 1];
+		return NULL;
+	};
+
+	void pop_back() {
+		_size--;
+	};
+
+	void push_back(void * m){ 
+		if (_size < 10000){
+			_storage[_size] = m;
+			_size++;
+		} else {
+			assert("WE SHOULD NOT BE HERE!" == 0);
+		}
+	};
+};
 
 class MemAllocatorManager {
 private:
-	NoMallocMap<size_t, NoMallocVector<void*>> _memRanges;
-	NoMallocMap<uint64_t, size_t> _MemAddrToSize;
+	std::map<size_t, NoFreeVector *> _memRanges;
+	std::map<uint64_t, size_t> _MemAddrToSize;
 	void * InternalAllocate(size_t size) {
 		void * mem;
 		if(cudaMallocHost(&mem,size) != cudaSuccess)
@@ -391,7 +395,7 @@ private:
 		_MemAddrToSize[(uint64_t)mem] = size;
 		auto it = _memRanges.find((uint64_t)size);
 		if(it == _memRanges.end())
-			_memRanges[(uint64_t)size] = NoMallocVector<void*>();
+			_memRanges[(uint64_t)size] = new NoFreeVector();
 		return mem;
 	};
 
@@ -402,8 +406,8 @@ public:
 		if (it == _memRanges.end())
 			return InternalAllocate(size);
 		if (it->second.size() > 0) {
-			void * ret = it->second.back();
-			it->second.pop_back();
+			void * ret = it->second->back();
+			it->second->pop_back();
 			return ret;
 		}
 		return InternalAllocate(size);
@@ -421,7 +425,7 @@ public:
 		auto it = _MemAddrToSize.find((uint64_t)mem);
 		if (it == _MemAddrToSize.end())
 			return false;
-		_memRanges[it->second].push_back(mem);
+		_memRanges[it->second]->push_back(mem);
 		return true;
 	};
 };

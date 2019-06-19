@@ -581,7 +581,7 @@ public:
 			FindDefaultStream();
 			_initStreams = true;
 		}
-		if (stream == 0)
+		if (stream == 0 || stream == 1)
 			stream = _defaultStream;
 		else 
 			stream = ConvertUserToInternalCUStream(stream);

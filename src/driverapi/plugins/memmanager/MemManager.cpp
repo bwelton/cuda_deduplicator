@@ -762,15 +762,14 @@ void DIOGENES_FREEWrapper(void * mem) {
 			DIOGENES_LIBCFREE(mem);
 			return;
 		}
-		//if (DIOGENES_MUTEX_MANAGER->EnterFree()) {
+		if (DIOGENES_MUTEX_MANAGER->EnterFree()) {
 			DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
-		//	DIOGENES_MUTEX_MANAGER->ExitFree();
-		//} //else {
-		//	DIOGENES_LIBCFREE(mem);
-		// 	// if (DIOGENES_LIBCFREE != NULL){
-			
-		// 	// }
-		//}
+			DIOGENES_MUTEX_MANAGER->ExitFree();
+		} else {
+		 	if (DIOGENES_LIBCFREE != NULL){
+				DIOGENES_LIBCFREE(mem);
+			}
+		}
 	} 
 }
 }

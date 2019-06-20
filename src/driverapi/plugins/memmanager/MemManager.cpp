@@ -765,7 +765,7 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 void DIOGENES_SyncExit() {
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-		DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction();
+		//DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction();
 	}
 }
 

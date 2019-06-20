@@ -725,7 +725,7 @@ cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
 void DIOGENES_SIGNALSYNC(cudaStream_t stream) {
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-		DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction();
+		DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction(stream);
 	}
 };
 

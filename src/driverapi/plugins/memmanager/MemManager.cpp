@@ -499,10 +499,15 @@ private:
  	void FindDefaultStream(){
 		void * host = malloc(1024);
 		void * dst;
-		assert(cudaMalloc(&dst, 1024) == cudaSuccess);
-		assert(cudaMemcpyAsync(dst, host, 1024, cudaMemcpyHostToDevice, 0) == cudaSuccess);
+		int attempts = 0;
 		DIOGENES_CURRENT_STREAM = NULL;
-		cudaStreamSynchronize(0);
+		assert(cudaMalloc(&dst, 1024) == cudaSuccess);
+		while (DIOGENES_CURRENT_STREAM == NULL && attempts < 10) {
+			cudaMemcpyAsync(dst, host, 1024, cudaMemcpyHostToDevice, 0);
+			DIOGENES_CURRENT_STREAM = NULL;
+			cudaStreamSynchronize(0);
+			attempts++;
+		}	
 		assert(DIOGENES_CURRENT_STREAM != NULL);
 		_defaultStream = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
 		_initStreams = true;
@@ -760,7 +765,7 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 void DIOGENES_SyncExit() {
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-		DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction();
+	//	DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction();
 	}
 }
 

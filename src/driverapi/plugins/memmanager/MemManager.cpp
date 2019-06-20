@@ -496,6 +496,8 @@ private:
 	// hack for ctx synchronization
 	cudaStream_t _ctxSynchronize;
  	cudaStream_t _defaultStream;
+
+ 	uint64_t _initTransferCallCount;
  	void FindDefaultStream(){
  		_defaultStream = NULL;
  		_ctxSynchronize = (cudaStream_t)(0x999);
@@ -543,7 +545,7 @@ private:
 	};
 public:
 
-	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL) {
+	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL), _initTransferCallCount(0) {
 		void * handle = dlopen("libc.so.6", RTLD_LOCAL | RTLD_LAZY);
 		assert(handle != NULL);
 		DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) dlsym(handle, "free");
@@ -555,6 +557,7 @@ public:
 	};
 	~TransferMemoryManager() { 
 		DIOGENES_MEMMANGE_TEAR_DOWN = true;
+		std::cerr << "Init transfer call count = " << _initTransferCallCount << std::endl;
 		std::cerr << _streamsSeen.Print(_ctxSynchronize, _defaultStream) << std::endl;
 	};
 
@@ -600,6 +603,7 @@ public:
 		// else {
 		// 	stream = ConvertUserToInternalCUStream(stream);
 		// }
+		_initTransferCallCount++;
 		if (_MemAlloc->IsOurAllocation(dst) == false) {
 			std::shared_ptr<DelayedTransferCopy> tmp(new DelayedTransferCopy(dst, _MemAlloc->AllocateMemory(size), size, stream));
 			AddToMapVector<cudaStream_t, std::shared_ptr<DelayedTransferCopy>>(stream, tmp, _delayedCopies);

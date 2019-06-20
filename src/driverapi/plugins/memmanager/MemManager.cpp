@@ -758,8 +758,10 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 // }
 
 void DIOGENES_SyncExit() {
-	PLUG_BUILD_FACTORY()
-	//PLUG_FACTORY_PTR->ReturnPinMem();
+	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
+		PLUG_BUILD_FACTORY()
+		DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction();
+	}
 }
 
 void DIOGENES_FREEWrapper(void * mem) {

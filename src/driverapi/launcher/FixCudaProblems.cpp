@@ -133,7 +133,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 					if (remPoints->CheckArray(MALLOC_REP, x.GetStackPoint())) {
         				if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
         					continue;    		
-        				x.ReplaceFunctionCall(mallocWrapper[0]);						
+        				//x.ReplaceFunctionCall(mallocWrapper[0]);						
         				std::cerr << "Found function call to malloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 					}
 					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))

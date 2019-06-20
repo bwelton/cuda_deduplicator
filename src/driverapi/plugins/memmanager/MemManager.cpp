@@ -550,7 +550,7 @@ public:
 		assert(handle != NULL);
 		DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) dlsym(handle, "free");
 		assert(DIOGENES_LIBCFREE != NULL);
-		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
+		//gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
 
 		//DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) gotcha_get_wrappee(DIOGENES_wrappee_free_handle);
 		//assert(DIOGENES_LIBCFREE != NULL);

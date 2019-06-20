@@ -497,46 +497,49 @@ private:
 	cudaStream_t _ctxSynchronize;
  	cudaStream_t _defaultStream;
  	void FindDefaultStream(){
-		void * host = malloc(1024);
-		void * dst;
-		int attempts = 0;
-		DIOGENES_CURRENT_STREAM = NULL;
-		assert(cudaMalloc(&dst, 1024) == cudaSuccess);
-		while (DIOGENES_CURRENT_STREAM == NULL && attempts < 10) {
-			cudaMemcpyAsync(dst, host, 1024, cudaMemcpyHostToDevice, 0);
-			DIOGENES_CURRENT_STREAM = NULL;
-			cudaStreamSynchronize(0);
-			attempts++;
-		}	
-		assert(DIOGENES_CURRENT_STREAM != NULL);
-		_defaultStream = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
-		_initStreams = true;
-		DIOGENES_LIBCFREE(host);
-		cudaFree(dst);
+ 		_defaultStream = NULL;
+ 		_ctxSynchronize = (cudaStream_t)(0x999);
+
+		// void * host = malloc(1024);
+		// void * dst;
+		// int attempts = 0;
+		// DIOGENES_CURRENT_STREAM = NULL;
+		// assert(cudaMalloc(&dst, 1024) == cudaSuccess);
+		// while (DIOGENES_CURRENT_STREAM == NULL && attempts < 10) {
+		// 	cudaMemcpyAsync(dst, host, 1024, cudaMemcpyHostToDevice, 0);
+		// 	DIOGENES_CURRENT_STREAM = NULL;
+		// 	cudaStreamSynchronize(0);
+		// 	attempts++;
+		// }	
+		// assert(DIOGENES_CURRENT_STREAM != NULL);
+		// _defaultStream = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
+		// _initStreams = true;
+		// DIOGENES_LIBCFREE(host);
+		// cudaFree(dst);
  	};
 
 	void FindCudaDeviceSynchronization() {
-		DIOGENES_CURRENT_STREAM = NULL;
-		cudaDeviceSynchronize();
-		if (DIOGENES_CURRENT_STREAM != NULL) {
-			_ctxSynchronize = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
-			_initStreams = true;
-			DIOGENES_CURRENT_STREAM = NULL;
-			return;
-		}
-		// Perform a small transfer to get this address...
-		void * host = malloc(1024);
-		void * dst;
-		assert(cudaMalloc(&dst, 1024) == cudaSuccess);
-		assert(cudaMemcpyAsync(dst, host, 1024, cudaMemcpyHostToDevice, 0) == cudaSuccess);
-		DIOGENES_CURRENT_STREAM = NULL;
-		cudaDeviceSynchronize();
-		assert(DIOGENES_CURRENT_STREAM != NULL);
-		_ctxSynchronize = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
-		_initStreams = true;
-		DIOGENES_LIBCFREE(host);
-		cudaFree(dst);
-		DIOGENES_CURRENT_STREAM = NULL;
+		// DIOGENES_CURRENT_STREAM = NULL;
+		// cudaDeviceSynchronize();
+		// if (DIOGENES_CURRENT_STREAM != NULL) {
+		// 	_ctxSynchronize = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
+		// 	_initStreams = true;
+		// 	DIOGENES_CURRENT_STREAM = NULL;
+		// 	return;
+		// }
+		// // Perform a small transfer to get this address...
+		// void * host = malloc(1024);
+		// void * dst;
+		// assert(cudaMalloc(&dst, 1024) == cudaSuccess);
+		// assert(cudaMemcpyAsync(dst, host, 1024, cudaMemcpyHostToDevice, 0) == cudaSuccess);
+		// DIOGENES_CURRENT_STREAM = NULL;
+		// cudaDeviceSynchronize();
+		// assert(DIOGENES_CURRENT_STREAM != NULL);
+		// _ctxSynchronize = ConvertInternalCUStream(DIOGENES_CURRENT_STREAM);
+		// _initStreams = true;
+		// DIOGENES_LIBCFREE(host);
+		// cudaFree(dst);
+		// DIOGENES_CURRENT_STREAM = NULL;
 	};
 public:
 
@@ -590,7 +593,7 @@ public:
 			stream = _defaultStream;
 		else 
 			stream = ConvertUserToInternalCUStream(stream);
-		_streamsSeen.SeenSynchronization(stream);
+		//_streamsSeen.SeenSynchronization(stream);
 		//return dst;
 		// if (stream == 0)
 		// 	stream = _defaultStream;
@@ -606,12 +609,20 @@ public:
 	};
 
 
-	void PerformSynchronizationAction() {
-		volatile void * local = DIOGENES_CURRENT_STREAM;
+	void PerformSynchronizationAction(cudaStream_t stream) {
+		//volatile void * local = DIOGENES_CURRENT_STREAM;
 		if (local == NULL) {
 			std::cerr << "DIOGENES_CURRENT_STREAM is NULL!!!! We don't know what, if anything to synchronize!!!" << std::endl;
 		} else {
-			cudaStream_t myStream = ConvertInternalCUStream(local);
+			cudaStream_t myStream = stream;
+			if (myStream == NULL || ((uint64_t) myStream) == 1) {
+				myStream = _defaultStream;
+			} else if (((uint64_t)myStream) == 0x999) {
+				myStream = _ctxSynchronize;
+			} else {
+				myStream = ConvertUserToInternalCUStream(myStream);
+			}
+			//cudaStream_t myStream = ConvertInternalCUStream(local);
 			_streamsSeen.SeenSynchronization(myStream);
 			if (myStream == _ctxSynchronize) {
 				// Synchronize everything
@@ -705,9 +716,17 @@ cudaError_t DIOGENES_cudaMallocWrapper(void ** mem, size_t size) {
 
 
 
-void DIOGENES_SUB_333898PRECALL(void * param2) {
-	PLUG_BUILD_FACTORY()
-	DIOGENES_CURRENT_STREAM = param2;
+// void DIOGENES_SUB_333898PRECALL(void * param2) {
+// 	PLUG_BUILD_FACTORY()
+// 	DIOGENES_CURRENT_STREAM = param2;
+// };
+
+
+void DIOGENES_SIGNALSYNC(cudaStream_t stream) {
+	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
+		PLUG_BUILD_FACTORY()
+		DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction();
+	}
 };
 
 cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {

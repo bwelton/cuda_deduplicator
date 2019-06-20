@@ -21,8 +21,9 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 	std::vector<BPatch_function *> cudaMemcpyWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMemcpyAsyncWrapper"), wrapper);
 	std::vector<BPatch_function *> mallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_MALLOCWrapper"), wrapper);
 	std::vector<BPatch_function *> freeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_FREEWrapper"), wrapper);
-	std::vector<BPatch_function *> syncExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SyncExit"), wrapper);
-	std::vector<BPatch_function *> syncGetStream = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SUB_333898PRECALL"), wrapper);
+	std::vector<BPatch_function *> syncExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SIGNALSYNC"), wrapper);
+	// std::vector<BPatch_function *> syncExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SyncExit"), wrapper);
+	// std::vector<BPatch_function *> syncGetStream = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SUB_333898PRECALL"), wrapper);
 	assert(cudaFreeWrapper.size() > 0);
 	assert(cudaMallocWrapper.size() > 0);
 	assert(cudaMemcpyWrapper.size() > 0);
@@ -30,7 +31,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 	assert(freeWrapper.size() > 0);
 	assert(syncExit.size() > 0);
 	assert(cudaFreeSyncWrapper.size() > 0);
-	assert(syncGetStream.size() > 0);
+	// assert(syncGetStream.size() > 0);
 
 	RemovePointsPtr remPoints = callTrans->GetRemoveCalls();
     remPoints->BuildTreeMap();
@@ -168,25 +169,53 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 		//}
 	}
 
-	std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
-	std::vector<BPatch_function*> cudaSyncStreamFunc = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, 0x333898);
-	assert(cudaSyncFunctions.size() > 0);
-	assert(cudaSyncStreamFunc.size() > 0);
-	{
-		std::vector<BPatch_point*> * entryPoints = cudaSyncFunctions[0]->findPoint(BPatch_locExit);
+
+	std::vector<std::string> streamSynchronousFunctions = {"cuStreamSynchronize"};
+	std::vector<std::string> deviceSynchronousFunctions = {"cuMemcpy","cuMemcpy2D","cuMemcpy2DUnaligned","cuMemcpy3D",
+									"cuMemcpyAtoD","cuMemcpyAtoH","cuMemcpyDtoA","cuMemcpyDtoH","cuMemcpyHtoA",
+									"cuMemcpyHtoD","cuMemcpyPeer","cuMemFree","cuCtxSynchronize","cuMemFree"};
+
+	for (auto i : streamSynchronousFunctions) {
+		std::vector<BPatch_function *> cudaFunction = ops->FindFuncsByName(_proc->GetAddressSpace(), i, libcuda);
+		assert(cudaFunction.size() == 1);
+		std::vector<BPatch_point*> * entryPoints = cudaFunction[0]->findPoint(BPatch_locExit);
 		std::vector<BPatch_snippet*> recordArgs;
+		recordArgs.push_back(new BPatch_paramExpr(0));
 		BPatch_funcCallExpr entryExpr(*(syncExit[0]), recordArgs);	
 		assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 	}
-	{
-		std::vector<BPatch_point*> * entryPoints = cudaSyncStreamFunc[0]->findPoint(BPatch_locEntry);
+
+
+	for (auto i : deviceSynchronousFunctions) {
+		std::vector<BPatch_function *> cudaFunction = ops->FindFuncsByName(_proc->GetAddressSpace(), i, libcuda);
+		assert(cudaFunction.size() == 1);
+		std::vector<BPatch_point*> * entryPoints = cudaFunction[0]->findPoint(BPatch_locExit);
 		std::vector<BPatch_snippet*> recordArgs;
-		recordArgs.push_back(new BPatch_paramExpr(1));
-		BPatch_funcCallExpr entryExpr(*(syncGetStream[0]), recordArgs);	
+		recordArgs.push_back(new BPatch_constExpr(uint64_t(0x999)));
+		BPatch_funcCallExpr entryExpr(*(syncExit[0]), recordArgs);	
 		assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 	}
-	std::cerr << "[FixCudaProblems::InsertAnalysis] CudaFree's Replaced = " << freesReplaced << " Skipped = " << freesSkipped << std::endl;
-	std::cerr << "[FixCudaProblems::InsertAnalysis] cudaMallocs Replaced = " << mallocsReplaced << " Skipped = " << mallocsSkipped << std::endl;
+
+
+	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
+	// std::vector<BPatch_function*> cudaSyncStreamFunc = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, 0x333898);
+	// assert(cudaSyncFunctions.size() > 0);
+	// assert(cudaSyncStreamFunc.size() > 0);
+	// {
+	// 	std::vector<BPatch_point*> * entryPoints = cudaSyncFunctions[0]->findPoint(BPatch_locExit);
+	// 	std::vector<BPatch_snippet*> recordArgs;
+	// 	BPatch_funcCallExpr entryExpr(*(syncExit[0]), recordArgs);	
+	// 	assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
+	// }
+	// {
+	// 	std::vector<BPatch_point*> * entryPoints = cudaSyncStreamFunc[0]->findPoint(BPatch_locEntry);
+	// 	std::vector<BPatch_snippet*> recordArgs;
+	// 	recordArgs.push_back(new BPatch_paramExpr(1));
+	// 	BPatch_funcCallExpr entryExpr(*(syncGetStream[0]), recordArgs);	
+	// 	assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
+	// }
+	// std::cerr << "[FixCudaProblems::InsertAnalysis] CudaFree's Replaced = " << freesReplaced << " Skipped = " << freesSkipped << std::endl;
+	// std::cerr << "[FixCudaProblems::InsertAnalysis] cudaMallocs Replaced = " << mallocsReplaced << " Skipped = " << mallocsSkipped << std::endl;
 	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
 	// assert(cudaSyncFunctions.size() > 0);
 
@@ -196,6 +225,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 	// assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 	// 
 }
+
 
 void FixCudaProblems::PostProcessing() {
 

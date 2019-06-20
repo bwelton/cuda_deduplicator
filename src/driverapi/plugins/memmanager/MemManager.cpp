@@ -611,39 +611,36 @@ public:
 
 	void PerformSynchronizationAction(cudaStream_t stream) {
 		//volatile void * local = DIOGENES_CURRENT_STREAM;
-		if (local == NULL) {
-			std::cerr << "DIOGENES_CURRENT_STREAM is NULL!!!! We don't know what, if anything to synchronize!!!" << std::endl;
+		cudaStream_t myStream = stream;
+		if (myStream == NULL || ((uint64_t) myStream) == 1) {
+			myStream = _defaultStream;
+		} else if (((uint64_t)myStream) == 0x999) {
+			myStream = _ctxSynchronize;
 		} else {
-			cudaStream_t myStream = stream;
-			if (myStream == NULL || ((uint64_t) myStream) == 1) {
-				myStream = _defaultStream;
-			} else if (((uint64_t)myStream) == 0x999) {
-				myStream = _ctxSynchronize;
-			} else {
-				myStream = ConvertUserToInternalCUStream(myStream);
+			myStream = ConvertUserToInternalCUStream(myStream);
+		}
+		//cudaStream_t myStream = ConvertInternalCUStream(local);
+		_streamsSeen.SeenSynchronization(myStream);
+		if (myStream == _ctxSynchronize) {
+			// Synchronize everything
+			for (auto & i : _delayedCopies) {
+				for(auto n : i.second) {
+					n->CopyTempToPro();
+					ReleaseMemory(n->GetTempAddress());
+				}
+				i.second.clear();
 			}
-			//cudaStream_t myStream = ConvertInternalCUStream(local);
-			_streamsSeen.SeenSynchronization(myStream);
-			if (myStream == _ctxSynchronize) {
-				// Synchronize everything
-				for (auto & i : _delayedCopies) {
-					for(auto n : i.second) {
-						n->CopyTempToPro();
-						ReleaseMemory(n->GetTempAddress());
-					}
-					i.second.clear();
+		} else {
+			auto it = _delayedCopies.find(myStream);
+			if (it != _delayedCopies.end()) {
+				for (auto n : it->second) {
+					n->CopyTempToPro();
+					ReleaseMemory(n->GetTempAddress());
 				}
-			} else {
-				auto it = _delayedCopies.find(myStream);
-				if (it != _delayedCopies.end()) {
-					for (auto n : it->second) {
-						n->CopyTempToPro();
-						ReleaseMemory(n->GetTempAddress());
-					}
-					it->second.clear();
-				}
+				it->second.clear();
 			}
 		}
+	
 	};
 };
 

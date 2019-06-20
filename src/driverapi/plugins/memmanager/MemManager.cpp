@@ -591,18 +591,18 @@ public:
 		else 
 			stream = ConvertUserToInternalCUStream(stream);
 		_streamsSeen.SeenSynchronization(stream);
-		return dst;
+		//return dst;
 		// if (stream == 0)
 		// 	stream = _defaultStream;
 		// else {
 		// 	stream = ConvertUserToInternalCUStream(stream);
 		// }
-		// if (_MemAlloc->IsOurAllocation(dst) == false) {
-		// 	std::shared_ptr<DelayedTransferCopy> tmp(new DelayedTransferCopy(dst, _MemAlloc->AllocateMemory(size), size, stream));
-		// 	AddToMapVector<cudaStream_t, std::shared_ptr<DelayedTransferCopy>>(stream, tmp, _delayedCopies);
-		// 	return tmp->GetTempAddress();
-		// }
-		// return dst;
+		if (_MemAlloc->IsOurAllocation(dst) == false) {
+			std::shared_ptr<DelayedTransferCopy> tmp(new DelayedTransferCopy(dst, _MemAlloc->AllocateMemory(size), size, stream));
+			AddToMapVector<cudaStream_t, std::shared_ptr<DelayedTransferCopy>>(stream, tmp, _delayedCopies);
+			return tmp->GetTempAddress();
+		}
+	    return dst;
 	};
 
 
@@ -765,7 +765,7 @@ void * DIOGENES_MALLOCWrapper(size_t size) {
 void DIOGENES_SyncExit() {
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
-	//	DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction();
+		DIOGENES_TRANSFER_MEMMANGE->PerformSynchronizationAction();
 	}
 }
 

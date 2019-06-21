@@ -157,7 +157,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 					if (remPoints->CheckArray(CUMEMCPY_REP, x.GetStackPoint())) {
         				if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
         					continue;  
-						x.ReplaceFunctionCall(cudaMemcpyWrapper[0]);						
+						//x.ReplaceFunctionCall(cudaMemcpyWrapper[0]);						
         				std::cerr << "Found function call to cudaMemcpyAsync in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;        				  								
 					}
 					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))

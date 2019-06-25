@@ -210,6 +210,7 @@ void SyncTesting::CopyOldFiles() {
 		    dst << src.rdbuf();	
 		    src.close();
 		    dst.close();
+		    remove(i.c_str());
 		}
 	}
 }

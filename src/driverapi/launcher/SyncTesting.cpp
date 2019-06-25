@@ -197,7 +197,7 @@ void SyncTesting::CopyOldFiles() {
 
 	std::string nextFolder = std::string("./DiogenesData/") + std::to_string(GetNextDirNumber(std::string("./DiogenesData")));
 	std::set<std::string> files = GetAllFilesInDirectory(std::string("."));
-	std::set<std::string> filesToMove = GetFileNamesToMove(std::string(DIOGENES_INSTALL_LOCATION_PRE));
+	std::set<std::string> filesToMove = GetFileNamesToMove(std::string(DIOGENES_OUTPUT_FILELIST));
 	bool madeFolder =false;
 	for (auto i : files) {
 		if (filesToMove.find(i) != filesToMove.end()) {
@@ -306,6 +306,8 @@ void SyncTesting::RunTimeUse(StackRecMap & recs, std::vector<StackPoint> & uses)
 
 
 void SyncTesting::Run() {
+	CopyOldFiles();
+	return;
 	StackRecMap syncTiming; 
 	double time;
 	// {

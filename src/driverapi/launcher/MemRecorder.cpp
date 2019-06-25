@@ -119,6 +119,10 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	std::vector<BPatch_function*> cudaMallocPostwrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAMallocCheck"), wrapper);
 	std::vector<BPatch_function*> cudaFreeWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAFreeCheck"), wrapper);
 
+	if (cudaMalloc.size() > 1)
+		for (auto i : cudaMalloc){
+			std::cerr << "CudaMalloc Duplicate at function name - " << i->getName() << " in library - " << i->getModule()->getObject()->pathName() << std::endl;
+		}
 	assert(cudaMalloc.size() == 1);
 	assert(cudaFree.size() == 1 );
 	assert(cudaMallocPreWrap.size() == 1);
@@ -137,6 +141,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	// assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 	// 
 }
+
 
 
 void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, int numParams) {

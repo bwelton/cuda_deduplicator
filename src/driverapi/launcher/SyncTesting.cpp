@@ -173,9 +173,13 @@ int GetNextDirNumber(std::string inDir) {
 	std::set<int> tmp;
 	tmp.insert(0);
 	for (auto n : dirs){
+		try {
 		int tmpN = std::stoi(n);
 		//if(sscanf(n.c_str(), "%d", &tmpN) == 0)
 		tmp.insert(tmpN);
+		} catch (...) {
+			std::cout << "Could Not decode int from filename = " << n << std::endl;
+		}
 	}
 	return (*(tmp.rbegin())) + 1;
 }

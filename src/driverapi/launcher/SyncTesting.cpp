@@ -324,6 +324,7 @@ void SyncTesting::Run() {
 	//CaptureDriverCalls();
 
 	//return;
+	CopyOldFiles();
 	RunWithSyncStacktracing(syncTiming);
 	TimeTransfers();
 	CaptureDuplicateTransfers();

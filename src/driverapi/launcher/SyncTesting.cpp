@@ -173,7 +173,7 @@ int GetNextDirNumber(std::string inDir) {
 	std::set<int> tmp;
 	tmp.insert(0);
 	for (auto n : dirs){
-		int tmpN;
+		int tmpN = 0;
 		if(sscanf(n.c_str(), "%d", &tmpN) == 0)
 			tmp.insert(tmpN);
 	}

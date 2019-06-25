@@ -128,8 +128,6 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	InsertPrePostCall(cudaMalloc[0], cudaMallocPostwrap[0], true, 0);
 	InsertPrePostCall(cudaFree[0], cudaFreeWrap[0], false, 1);
 
-
-
 	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
 	// assert(cudaSyncFunctions.size() > 0);
 

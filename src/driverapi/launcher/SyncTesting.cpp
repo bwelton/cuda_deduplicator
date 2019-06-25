@@ -307,8 +307,8 @@ void SyncTesting::RunTimeUse(StackRecMap & recs, std::vector<StackPoint> & uses)
 
 
 void SyncTesting::Run() {
-	CopyOldFiles();
-	return;
+	// CopyOldFiles();
+	// return;
 	StackRecMap syncTiming; 
 	double time;
 	// {

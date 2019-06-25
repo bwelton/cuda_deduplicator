@@ -1,5 +1,7 @@
 #include "SyncTesting.h"
 #include <chrono>
+#include <sys/types.h>
+#include <sys/stat.h>
 #define  TIMER_FUNCTION_CALL(A,B) std::chrono::high_resolution_clock::time_point starttime = std::chrono::high_resolution_clock::now();\
 	A;\
 	std::chrono::high_resolution_clock::time_point endtime = std::chrono::high_resolution_clock::now();\
@@ -143,6 +145,76 @@ void SyncTesting::RunWithSyncStacktracing(StackRecMap & recs) {
 
 }
 
+std::set<std::string> GetAllFilesInDirectory(std::string inDir) {
+	std::set<std::string> ret;
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir(inDir.c_str())) != NULL) {
+		while ((ent = readdir(dir)) != NULL) {
+			std::cout << "FILENAME! = " << ent->d_name << std::endl;
+			ret.insert(std::string(ent->d_name));
+		}
+	}
+	closedir(dir);
+	return ret;
+}
+
+bool DoesDirectoryExist(std::string inDir) {
+	DIR* dir = opendir(inDir.c_str());
+	if (dir){
+		closedir(dir);
+		return true;
+	}
+	return false;
+}
+
+int GetNextDirNumber(std::string inDir) {
+	auto dirs = GetAllFilesInDirectory(inDir);
+	std::set<int> tmp;
+	tmp.insert(0);
+	for (auto n : dirs){
+		int tmpN;
+		if(sscanf(n.c_str(), "%d", &tmpN) == 0)
+			tmp.insert(tmpN);
+	}
+	return (*(tmp.rbegin())) + 1;
+}
+
+std::set<std::string> GetFileNamesToMove(std::string fileList) {
+	std::ifstream t(fileList.c_str());
+	std::string line;
+	std::set<std::string> ret;
+	while (std::getline(t, line)) {
+		ret.insert(line);
+	}	
+	t.close();
+	return ret;
+}
+
+void SyncTesting::CopyOldFiles() {
+	if (DoesDirectoryExist("./DiogenesData") == false)
+		mkdir("./DiogenesData", S_IRWXU);
+
+	std::string nextFolder = std::string("./DiogenesData/") + std::to_string(GetNextDirNumber(std::string("./DiogenesData")));
+	std::set<std::string> files = GetAllFilesInDirectory(std::string("."));
+	std::set<std::string> filesToMove = GetFileNamesToMove(std::string(DIOGENES_INSTALL_LOCATION_PRE));
+	bool madeFolder =false;
+	for (auto i : files) {
+		if (filesToMove.find(i) != filesToMove.end()) {
+			if (madeFolder == false){
+				mkdir(nextFolder.c_str(), S_IRWXU);
+				madeFolder = true;
+			}
+		    std::ifstream  src(i, std::ios::binary);
+		    std::ofstream  dst(nextFolder + std::string("/") + i,   std::ios::binary);
+		    dst << src.rdbuf();	
+		    src.close();
+		    dst.close();
+		}
+	}
+}
+
+
 void SyncTesting::RunWithoutInstrimentation() {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
@@ -257,7 +329,7 @@ void SyncTesting::Run() {
 	std::vector<StackPoint> uses;
 	RunLoadStoreAnalysis(syncTiming, uses);
 	RunTimeUse(syncTiming, uses);
-	
+
 	StackRecMap empty_map;
 	CallTransPtr transRec = MemRecorderLaunch(empty_map);
 	FixKnownProblems(empty_map, transRec);

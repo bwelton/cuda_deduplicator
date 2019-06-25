@@ -26,6 +26,10 @@ configure_file (
 	"${CMAKE_INSTALL_PREFIX}/lib/LoadStoreFunctions.skip"
 )
 configure_file (
+    "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/OutputFiles.txt"
+    "${CMAKE_INSTALL_PREFIX}/lib/OutputFiles.txt"
+)
+configure_file (
     "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/LoadStoreModules.skip"
 	"${CMAKE_INSTALL_PREFIX}/lib/LoadStoreModules.skip"
 )

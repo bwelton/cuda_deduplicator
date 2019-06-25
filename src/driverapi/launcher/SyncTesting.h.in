@@ -36,6 +36,7 @@
 #include "FixCudaProblems.h"
 #include "CallTransformation.h"
 
+#define DIOGENES_INSTALL_LOCATION_PRE "@CMAKE_INSTALL_PREFIX@"
 #define DRIVER_LIBRARY "@CMAKE_INSTALL_PREFIX@/lib/libDriverAPIWrapper.so"
 #define PLUGIN_LIST {"@CMAKE_INSTALL_PREFIX@/lib/plugins/libCUPTIEventHandler.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeCall.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libSynchTool.so","@CMAKE_INSTALL_PREFIX@/lib/plugins/libDriverAPITrace.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libTimeFirstUse.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libDataTransfer.so", "@CMAKE_INSTALL_PREFIX@/lib/plugins/libDataSyncTimer.so"};
 #define WRAPPER_DEF "@CMAKE_INSTALL_PREFIX@/defs/DriverAPIWrapper.def"
@@ -59,6 +60,7 @@ public:
 	void DecodeStack(std::string infile, std::string outfile);
 	void CaptureDuplicateTransfers();
 	void TimeTransfers();
+	void CopyOldFiles();
 	void RunWithoutInstrimentation();
 	void RunWithSyncStacktracing(StackRecMap & recs);
 	std::shared_ptr<DyninstProcess> LaunchApplication(bool debug);

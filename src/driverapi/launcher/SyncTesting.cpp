@@ -247,11 +247,8 @@ void SyncTesting::Run() {
 	// 	std::cerr << "Application executed with runtime of - " << time << "s" << std::endl;
 	// }
 	//CaptureDriverCalls();
-	StackRecMap empty_map;
-	CallTransPtr transRec = MemRecorderLaunch(empty_map);
 
-	FixKnownProblems(empty_map, transRec);
-	return;
+	//return;
 	RunWithSyncStacktracing(syncTiming);
 	TimeTransfers();
 	CaptureDuplicateTransfers();
@@ -260,6 +257,10 @@ void SyncTesting::Run() {
 	std::vector<StackPoint> uses;
 	RunLoadStoreAnalysis(syncTiming, uses);
 	RunTimeUse(syncTiming, uses);
+	
+	StackRecMap empty_map;
+	CallTransPtr transRec = MemRecorderLaunch(empty_map);
+	FixKnownProblems(empty_map, transRec);
 	//RunTimeUse(sy)
 	return;
 	//RunWithCUPTI();

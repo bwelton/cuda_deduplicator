@@ -247,6 +247,8 @@ struct MemGraph {
 		fclose(fp);
 
 		FreeSitePtr fsite = GetFreeSite(-1);
+		if (fsite.get() == NULL)
+			return;
 		assert(fsite.get() != NULL);
 		if (fsite->count == abs(totalFrees - freeCount)) {
 			for (auto i : fsite->parents)

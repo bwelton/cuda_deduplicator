@@ -4,7 +4,7 @@
 #include <set>
 #include "DetectDuplicateStackpoints.h"
 #define FIX_CUDAMEMFREE 1
-//#define FIX_ASYNCTRANS_NOWRAP 1
+#define FIX_ASYNCTRANS_NOWRAP 1
 // #define FIX_ASYNCTRANS_WWRAP 0
 
 FixCudaProblems::FixCudaProblems(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}

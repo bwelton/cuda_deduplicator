@@ -717,7 +717,7 @@ cudaError_t DIOGENES_CudaFreeHostWrapper(void * mem) {
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
 		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
-			DIOGENES_TRANSFER_MEMMANGE->FreeManagedMemory(mem);
+			DIOGENES_TRANSFER_MEMMANGE->FreeManaged(mem);
 		}
 		DIOGENES_MUTEX_MANAGER->ExitOp();
 	}

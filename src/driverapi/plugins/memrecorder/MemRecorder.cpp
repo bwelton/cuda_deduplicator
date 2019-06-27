@@ -69,7 +69,9 @@ public:
 		auto lb = _addressMap.lower_bound(addr);
 		if (lb == _addressMap.end())
 			return NULL;
-		return lb->second;
+		if (lb->second->addr + lb->second->size >= addr)
+			return lb->second;
+		return NULL;
 	}
 	void AddOneSeen(int64_t id, std::map<int64_t, int64_t> & seenMap) {
 		auto it = seenMap.find(id);
@@ -248,12 +250,15 @@ public:
 volatile bool DIOGENES_TEAR_DOWN = false;
 class MemTracker {
 public:
+
 	MemTracker() {
+		_managedCount = 999999;
 		_NullAddr = new MemAddress();
 		_NullAddr->loc = -1;
 		_NullAddr->size = 0;
 		_cpuLocalMem.reset(new MemKeeper());
 		_gpuLocalMem.reset(new MemKeeper());
+		_pinnedMemory.reset(new MemKeeper());
 		_outWriter.reset(new OutputWriter(_cpuLocalMem, _gpuLocalMem));
 	};
 
@@ -276,25 +281,45 @@ public:
 		_gpuLocalMem->Set(addr,size, loc);
 	};
 	void GPUFreeData(uint64_t addr, int64_t loc) {
+		MemAddress * cudaManaged = _pinnedMemory->GetLowerBound(addr);
+		if (cudaManaged != NULL){
+			FreePinnedMemory(addr);
+			return;
+		}
+
 		MemAddress * gpuAddr = _gpuLocalMem->Get(addr);
 		if (gpuAddr != NULL) {
 			_outWriter->RecordGPUMallocPair(gpuAddr, loc);
 		}		
 		_gpuLocalMem->Delete(loc,addr);	
 	};
+
+	void AllocatePinnedMemory(uint64_t addr, size_t size) {
+		_pinnedMemory->Set(addr, size, _managedCount);
+		//_managedCount++;
+	};
+
+	void FreePinnedMemory(uint64_t addr) {
+		_pinnedMemory->Delete(_managedCount,addr);	
+	}
  	
 	void RecordMemTransfer(uint64_t addr, int64_t loc) {
+		MemAddress * cudaManaged = _pinnedMemory->GetLowerBound(addr);
+		if (cudaManaged != NULL)
+			return;
+
 		MemAddress * cpuAddr = _cpuLocalMem->GetLowerBound(addr);
 		if (cpuAddr == NULL) {
 			cpuAddr = _NullAddr;
 		}
 		_outWriter->RecordCopyRecord(cpuAddr, loc);
 	}
-
+	uint64_t _managedCount;
 	MemAddress * _NullAddr;
 	std::shared_ptr<OutputWriter> _outWriter;
 	std::shared_ptr<MemKeeper> _cpuLocalMem;
 	std::shared_ptr<MemKeeper> _gpuLocalMem;
+	std::shared_ptr<MemKeeper> _pinnedMemory;
 };
 
 
@@ -384,6 +409,21 @@ extern "C" {
 		}
 		free(mem);
 	}
+	cudaError_t DIOGENES_REC_HostCudaMalloc(void ** data, size_t size) {
+		cudaError_t ret = cudaErrorUnknown;
+		DIOGENES_SetInWrapper();
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			ret = cudaMallocHost(data, size);
+			PLUG_FACTORY_PTR->AllocatePinnedMemory((uint64_t)(*data), size);
+			DIOGENES_ReleaseGlobalLock();
+		} else {
+			ret = cudaMallocHost(data, size);
+		}		
+		DIOGENES_UnsetInWrapper();
+		return ret;		
+	}
+
 
 	cudaError_t DIOGENES_REC_CudaMalloc(void ** data, size_t size) {
 		int64_t cache = DIOGENES_CTX_ID;
@@ -413,7 +453,7 @@ extern "C" {
 		cudaError_t ret = cudaFree(data);
 		DIOGENES_UnsetInWrapper();
 		return ret;
-	}
+	} 
 	void ** DIOGENES_CUDA_MALLOC_ARG = NULL;
 	size_t DIOGENES_CUDA_MALLOC_SIZE = 0;
 

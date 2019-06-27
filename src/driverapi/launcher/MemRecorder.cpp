@@ -20,12 +20,15 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	std::vector<BPatch_function *> cudaMemcpyWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpy"), wrapper);
 	std::vector<BPatch_function *> mallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_MALLOCWrapper"), wrapper);
 	std::vector<BPatch_function *> freeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_FREEWrapper"), wrapper);
+	std::vector<BPatch_function *> cudaMallocHostWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_HostCudaMalloc"), wrapper);
 
 	assert(cudaFreeWrapper.size() > 0);
 	assert(cudaMallocWrapper.size() > 0);
 	assert(cudaMemcpyWrapper.size() > 0);
 	assert(mallocWrapper.size() > 0);
 	assert(freeWrapper.size() > 0);
+	assert(cudaMallocHostWrapper.size() > 0);
+	
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 	std::vector<BPatch_function *> all_functions;
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();
@@ -105,6 +108,16 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 					// 	continue;
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cudaMemcpyAsync in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
 					x.ReplaceFunctionCallWithID(cudaMemcpyWrapper[0], ident);
+					_idToStackPoint[ident] = x.GetStackPoint();
+					ident++;					
+				}
+				if (*(x.GetCalledFunction()) == std::string("cudaMallocHost")){
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
+					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cudaMallocHost in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
+					x.ReplaceFunctionCallWithID(cudaMallocHostWrapper[0], ident);
 					_idToStackPoint[ident] = x.GetStackPoint();
 					ident++;					
 				}

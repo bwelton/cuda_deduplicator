@@ -342,14 +342,24 @@ pthread_t gettid() {
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_MANAGER.get()
 
 
-#define NUM_GOTFUNCS 1
+#define NUM_GOTFUNCS 2
+
 extern "C" void DIOGENES_FREEWrapper(void * mem);
+extern "C" cudaError_t DIOGENES_CudaFreeHostWrapper(void * mem);
+extern "C" cudaError_t DIOGENES_CudaMallocHostWrapper(void ** mem, size_t size);
 
 typeof(&DIOGENES_FREEWrapper) DIOGENES_LIBCFREE;
 
+typeof(&DIOGENES_CudaFreeHostWrapper) DIOGENES_CUDAFREEHOST;
+typeof(&DIOGENES_CudaMallocHostWrapper) DIOGENES_CUDAMALLOCHOST;
+
+
 gotcha_wrappee_handle_t DIOGENES_wrappee_free_handle;
+gotcha_wrappee_handle_t DIOGENES_wrappee_cudaFreeHost_handle;
+gotcha_wrappee_handle_t DIOGENES_wrappee_cudaMallocHost_handle;
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {
-	{"free",(void*)DIOGENES_FREEWrapper,&DIOGENES_wrappee_free_handle}};
+	{"cudaFreeHost",(void*)DIOGENES_CudaFreeHostWrapper,&DIOGENES_wrappee_cudaFreeHost_handle},
+	{"cudaMallocHost",(void*)DIOGENES_CudaMallocHostWrapper,&DIOGENES_wrappee_cudaMallocHost_handle}};
 
 
 class NoFreeVector {
@@ -389,6 +399,7 @@ class MemAllocatorManager {
 private:
 	std::map<size_t, NoFreeVector *> _memRanges;
 	std::map<uint64_t, size_t> _MemAddrToSize;
+	std::map<uint64_t, size_t> _appInitCudaManaged;
 	void * InternalAllocate(size_t size) {
 		void * mem;
 		if(cudaMallocHost(&mem,size) != cudaSuccess)
@@ -413,6 +424,24 @@ public:
 		}
 		return InternalAllocate(size);
 	};
+
+	void AddManagedMemory(void * mem, size_t size) {
+		_appInitCudaManaged[(uint64_t)mem] = size;
+	}
+
+	void FreeManagedMemory(void * mem) {
+		auto it = _appInitCudaManaged.find((uint64_t)mem);
+		if (it != _appInitCudaManaged.end())
+			_appInitCudaManaged.erase(it);
+	}
+
+
+	bool IsManagedMemory(void * mem) {
+		auto it = _appInitCudaManaged.find((uint64_t)mem);
+		if (it != _appInitCudaManaged.end() && it->first <= (uint64_t)mem && it->first + it->second >= (uint64_t) mem)
+			return true;
+		return false;
+	}
 
 	bool IsOurAllocation(void * mem) {
 		auto it = _MemAddrToSize.lower_bound((uint64_t)mem);
@@ -546,11 +575,15 @@ private:
 public:
 
 	TransferMemoryManager() : _MemAlloc(new MemAllocatorManager()), _initStreams(false), _defaultStream(NULL),_ctxSynchronize(NULL), _initTransferCallCount(0) {
-		void * handle = dlopen("libc.so.6", RTLD_LOCAL | RTLD_LAZY);
+		void * handle = dlopen("libcudart.so", RTLD_LAZY);
 		assert(handle != NULL);
-		DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) dlsym(handle, "free");
-		assert(DIOGENES_LIBCFREE != NULL);
-		//gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
+		DIOGENES_CUDAMALLOCHOST = (typeof(&DIOGENES_CudaMallocHostWrapper)) dlsym(handle, "cudaMallocHost");
+		DIOGENES_CUDAFREEHOST = (typeof(&DIOGENES_CudaFreeHostWrapper)) dlsym(handle, "cudaFreeHost");
+
+		assert(DIOGENES_CUDAMALLOCHOST != NULL);
+		assert(DIOGENES_CUDAFREEHOST != NULL);
+
+		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
 
 		//DIOGENES_LIBCFREE = (typeof(&DIOGENES_FREEWrapper)) gotcha_get_wrappee(DIOGENES_wrappee_free_handle);
 		//assert(DIOGENES_LIBCFREE != NULL);
@@ -560,6 +593,14 @@ public:
 		std::cerr << "Init transfer call count = " << _initTransferCallCount << std::endl;
 		std::cerr << _streamsSeen.Print(_ctxSynchronize, _defaultStream) << std::endl;
 	};
+
+	void MallocManaged(void * mem, size_t size) {
+		_MemAlloc->AddManagedMemory(mem, size);
+	}
+
+	void FreeManaged(void * mem) {
+		_MemAlloc->FreeManagedMemory(mem);
+	}
 
 	void * MallocMemory(size_t size) {
 		//mtx.lock();
@@ -604,7 +645,7 @@ public:
 		// 	stream = ConvertUserToInternalCUStream(stream);
 		// }
 		_initTransferCallCount++;
-		if (_MemAlloc->IsOurAllocation(dst) == false) {
+		if (_MemAlloc->IsManagedMemory(dst) == false && _MemAlloc->IsOurAllocation(dst) == false) {
 			std::shared_ptr<DelayedTransferCopy> tmp(new DelayedTransferCopy(dst, _MemAlloc->AllocateMemory(size), size, stream));
 			AddToMapVector<cudaStream_t, std::shared_ptr<DelayedTransferCopy>>(stream, tmp, _delayedCopies);
 			return tmp->GetTempAddress();
@@ -653,6 +694,40 @@ std::shared_ptr<TransferMemoryManager> DIOGENES_TRANSFER_MEMMANGE;
 
 extern "C" {
 
+cudaError_t DIOGENES_CudaMallocHostWrapper(void ** mem, size_t size) {
+	cudaError_t ret;
+	if (DIOGENES_CUDAMALLOCHOST != NULL)
+		ret = DIOGENES_CUDAMALLOCHOST(mem, size);
+	else 
+		assert("WE SHOULD NOT BE HERE! " == 0);
+
+	if (DIOGENES_MEMMANGE_TEAR_DOWN == false && ret == cudaSuccess) {
+		PLUG_BUILD_FACTORY()
+		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
+			PLUG_FACTORY_PTR->MallocManaged(*mem, size);
+		}
+		DIOGENES_MUTEX_MANAGER->ExitOp();	
+	}
+	return ret;
+}
+
+
+cudaError_t DIOGENES_CudaFreeHostWrapper(void * mem) {
+	cudaError_t ret;
+	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
+		PLUG_BUILD_FACTORY()
+		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
+			PLUG_FACTORY_PTR->FreeManagedMemory(mem);
+		}
+		DIOGENES_MUTEX_MANAGER->ExitOp();
+	}
+	if (DIOGENES_CUDAFREEHOST != NULL)
+		return DIOGENES_CUDAFREEHOST(mem);
+	else 
+		assert("WE SHOULD NOT BE HERE" == 0);
+	return cudaSuccess;
+
+}
 cudaError_t  DIOGENES_cudaFreeWrapper(void * mem) {
 	cudaError_t ret;
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {

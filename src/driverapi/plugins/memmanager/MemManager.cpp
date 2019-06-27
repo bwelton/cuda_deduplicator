@@ -704,7 +704,7 @@ cudaError_t DIOGENES_CudaMallocHostWrapper(void ** mem, size_t size) {
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false && ret == cudaSuccess) {
 		PLUG_BUILD_FACTORY()
 		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
-			PLUG_FACTORY_PTR->MallocManaged(*mem, size);
+			DIOGENES_TRANSFER_MEMMANGE->MallocManaged(*mem, size);
 		}
 		DIOGENES_MUTEX_MANAGER->ExitOp();	
 	}
@@ -717,7 +717,7 @@ cudaError_t DIOGENES_CudaFreeHostWrapper(void * mem) {
 	if (DIOGENES_MEMMANGE_TEAR_DOWN == false) {
 		PLUG_BUILD_FACTORY()
 		if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
-			PLUG_FACTORY_PTR->FreeManagedMemory(mem);
+			DIOGENES_TRANSFER_MEMMANGE->FreeManagedMemory(mem);
 		}
 		DIOGENES_MUTEX_MANAGER->ExitOp();
 	}

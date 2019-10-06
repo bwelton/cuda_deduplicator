@@ -54,7 +54,7 @@
 class FixCudaProblems {
 public:
 	FixCudaProblems(std::shared_ptr<DyninstProcess> proc);
-	void InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans);
+	void InsertAnalysis(StackRecMap & recs);
 	void PostProcessing();
 private:
 	std::shared_ptr<DyninstProcess> _proc;

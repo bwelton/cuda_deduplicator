@@ -180,5 +180,6 @@ CallTransPtr MemRecorder::PostProcessing() {
 	readRecs.Read(memVec, gMallocVec, cMallocVec);
 	CallTransPtr transformer;
 	transformer.reset(new CallTransformation(gMallocVec, cMallocVec, memVec, _idToStackPoint));
+	transformer->GetRemoveCalls()->Serialize();
 	return transformer;
 }

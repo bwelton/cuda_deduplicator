@@ -426,6 +426,40 @@ struct RemovePoints {
 
 	StackPointVec mallocReplacements;
 	StackPointVec freeReplacements;
+
+	void Serialize() {
+		StackKeyWriter out(fopen("AC_RemovePoints.txt","w"));
+		if(cudaMallocReplacements.size() > 0)
+			out.InsertStack(10, cudaMallocReplacements);
+		if (cudaFreeReplacements.size() > 0)
+			out.InsertStack(20, cudaFreeReplacements);
+		if (cudaFreeReqSync.size() > 0)
+			out.InsertStack(30, cudaFreeReqSync);
+		if (cudaMemcpyAsyncRepl.size() > 0)
+			out.InsertStack(40, cudaMemcpyAsyncRepl);
+		if (mallocReplacements.size() > 0)
+			out.InsertStack(50, mallocReplacements);
+		if (freeReplacements.size() > 0)
+			out.InsertStack(60, freeReplacements);
+	};
+	void Deserialze() {
+		StackKeyReader out(fopen("AC_RemovePoints.txt","rb"));
+		std::map<uint64_t, std::vector<StackPoint> > points = out.ReadStacks();
+		if (points.find(10) != points.end())
+			cudaMallocReplacements = points[10];
+		if (points.find(20) != points.end()) 
+			cudaFreeReplacements = points[20];
+		if (points.find(30) != points.end())
+			cudaFreeReqSync = points[30];
+		if (points.find(40) != points.end())
+			cudaMemcpyAsyncRepl = points[40];
+		if (points.find(50) != points.end()) 
+			mallocReplacements = points[50];
+		if (points.find(60) != points.end())
+			freeReplacements = points[60];
+
+	};
+
 //    std::shared_ptr<StackPointTree> _TreeMapper;
     std::map<RemovePointsVecTypes, std::shared_ptr<StackPointTree>> _TreeMapper;
 	std::map<RemovePointsVecTypes, uint64_t> _curCounts;

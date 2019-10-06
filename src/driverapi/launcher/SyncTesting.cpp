@@ -269,12 +269,12 @@ CallTransPtr SyncTesting::MemRecorderLaunch(StackRecMap & recs) {
 	//t.PostProcessing(recs);
 }
 
-void SyncTesting::FixKnownProblems(StackRecMap & recs, CallTransPtr & trans) {
+void SyncTesting::FixKnownProblems(StackRecMap & recs) {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
 	proc->RunCudaInit();
 	FixCudaProblems t(proc);
-	t.InsertAnalysis(recs, trans);
+	t.InsertAnalysis(recs);
 //	proc->DetachForDebug();
 	TIMER_FUNCTION_CALL(proc->RunUntilCompleation(), "[SEGMENTTIME] Timing of synchronizations = ")
 	t.PostProcessing();
@@ -310,6 +310,11 @@ void SyncTesting::RunTimeUse(StackRecMap & recs, std::vector<StackPoint> & uses)
 }
 
 
+void SyncTesting::RunAutoCorrect() {
+	StackRecMap empty_map;
+	FixKnownProblems(empty_map);
+}
+
 void SyncTesting::Run() {
 	// CopyOldFiles();
 	// return;
@@ -340,7 +345,7 @@ void SyncTesting::Run() {
 	*/
 	StackRecMap empty_map;
 	CallTransPtr transRec = MemRecorderLaunch(empty_map);
-	FixKnownProblems(empty_map, transRec);
+	FixKnownProblems(empty_map);
 	//RunTimeUse(sy)
 	return;
 	//RunWithCUPTI();

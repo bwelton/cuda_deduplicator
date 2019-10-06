@@ -9,7 +9,7 @@
 
 FixCudaProblems::FixCudaProblems(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 
-void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans) {
+void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	DebugInstrimentationTemp debugOutput(std::string("DIOGENES_limitFunctions.txt"), std::string("DIOGENES_funcsInstrimented.txt"));
 
 	_bmap.reset(new BinaryLocationIDMap());
@@ -35,7 +35,8 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs, CallTransPtr callTrans)
 	assert(cudaFreeSyncWrapper.size() > 0);
 	// assert(syncGetStream.size() > 0);
 
-	RemovePointsPtr remPoints = callTrans->GetRemoveCalls();
+	RemovePointsPtr remPoints(new RemovePoints());
+	remPoints->Deserialze(); //callTrans->GetRemoveCalls();
     remPoints->BuildTreeMap();
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 	std::vector<BPatch_function *> all_functions;

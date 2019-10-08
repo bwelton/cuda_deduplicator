@@ -31,7 +31,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 		}
 	}
 
-	std::vector<std::string> functionsToParse = {"cuCtxSynchronize_v2","cuStreamSynchronize_v2","cuMemcpyDtoH_v2","cuMemcpyDtoHAsync_v2","cuMemFree_v2"};
+	std::vector<std::string> functionsToParse = {"cuCtxSynchronize","cuStreamSynchronize","cuMemcpyDtoH_v2","cuMemcpyDtoHAsync_v2","cuMemFree_v2"};
 	std::vector<std::shared_ptr<FuncCFG>> funcCFGs;
 	std::unordered_map<BPatch_function *, std::shared_ptr<FuncCFG>> functionToFuncCFG;
 	//std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;

@@ -76,6 +76,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 	std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;
 
 	for (auto i : funcCFGs) {
+		std::cout << i->getName() << std::endl;
 		std::deque<std::shared_ptr<FuncCFG>> queue;
 		levelOrderDump.push_back(std::unordered_map<std::shared_ptr<FuncCFG>, int>());
 		queue.push_back(i);

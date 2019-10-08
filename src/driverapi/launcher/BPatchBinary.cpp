@@ -138,7 +138,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 }
 
 
-BPatch_Image * BPatchBinary::GetImage() {
+BPatch_image * BPatchBinary::GetImage() {
 	return _be->getImage();
 }
 

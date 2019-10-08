@@ -314,7 +314,7 @@ void SyncTesting::RunAutoCorrect() {
 	StackRecMap empty_map;
 	FixKnownProblems(empty_map);
 }
-
+#include "LocateCudaSynchronization.h"
 void SyncTesting::Run() {
 	// CopyOldFiles();
 	// return;
@@ -332,8 +332,12 @@ void SyncTesting::Run() {
 	// }
 	//CaptureDriverCalls();
 
+
+	LocateCudaSynchronization scuda;
+	scuda.IdentifySyncFunction();
+
 	//return;
-	CopyOldFiles();
+	/*CopyOldFiles();
 	RunWithSyncStacktracing(syncTiming);
 	TimeTransfers();
 	CaptureDuplicateTransfers();
@@ -345,7 +349,7 @@ void SyncTesting::Run() {
 
 	StackRecMap empty_map;
 	CallTransPtr transRec = MemRecorderLaunch(empty_map);
-	FixKnownProblems(empty_map);
+	FixKnownProblems(empty_map);*/
 	//RunTimeUse(sy)
 	return;
 	//RunWithCUPTI();

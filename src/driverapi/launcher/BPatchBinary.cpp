@@ -86,8 +86,8 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 	//std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;
 	std::unordered_map<std::shared_ptr<FuncCFG>, int> mapInterSect;
 	for (auto i : functionToFuncCFG) {
-		if (i->second->HasAllSeen())
-			mapInterSect[i->second] = 1;
+		if (i.second->HasAllSeen())
+			mapInterSect[i.second] = 1;
 	}
 /*
 	for (auto i : funcCFGs) {

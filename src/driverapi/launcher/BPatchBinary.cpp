@@ -100,7 +100,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 		std::unordered_map<std::shared_ptr<FuncCFG>, int> intertmp;
 		for (auto n : levelOrderDump[i]) {
 			if (mapInterSect.find(n.first) != mapInterSect.end()) {
-				intertmp[n.first] = max(n.second, mapInterSect[n.first]);
+				intertmp[n.first] = std::max(n.second, mapInterSect[n.first]);
 			}
 		}
 		mapInterSect = intertmp;

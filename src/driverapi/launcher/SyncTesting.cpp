@@ -333,7 +333,7 @@ void SyncTesting::Run() {
 	//CaptureDriverCalls();
 
 	//return;
-	/*CopyOldFiles();
+	CopyOldFiles();
 	RunWithSyncStacktracing(syncTiming);
 	TimeTransfers();
 	CaptureDuplicateTransfers();
@@ -342,7 +342,7 @@ void SyncTesting::Run() {
 	std::vector<StackPoint> uses;
 	RunLoadStoreAnalysis(syncTiming, uses);
 	RunTimeUse(syncTiming, uses);
-	*/
+
 	StackRecMap empty_map;
 	CallTransPtr transRec = MemRecorderLaunch(empty_map);
 	FixKnownProblems(empty_map);

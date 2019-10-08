@@ -50,7 +50,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 		while(queue.size() > 0) {
 			auto curFunc = queue.front();
 			queue.pop_front();
-			std::shared_ptr<FuncCFG> current(new funcCFG(curFunc));
+			std::shared_ptr<FuncCFG> current(new FuncCFG(curFunc));
 			if (first == false) {
 				funcCFGs.push_back(current);
 				first = true;
@@ -83,8 +83,8 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 		while (queue.size() > 0) {
 			auto curFunc = queue.front();
 			queue.pop_front();
-			if (levelOrderDump.find(curFunc) == levelOrderDump.end()) {
-				levelOrderDump[curFunc] = level;
+			if (levelOrderDump.back().find(curFunc) == levelOrderDump.back().end()) {
+				levelOrderDump.back()[curFunc] = level;
 			} else {
 				continue;
 			}

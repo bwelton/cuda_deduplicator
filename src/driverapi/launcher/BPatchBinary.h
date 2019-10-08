@@ -1,11 +1,13 @@
 #pragma once
 #include "DyninstIncludes.h"
+#include <vector>
+#include <unordered_map>
 #include <memory>
 #include <unordered_set>
 class BPatchBinary {
 public:
 	BPatchBinary(std::string binName, bool output = false, std::string outName = std::string(""));
-	BPatch_Image * GetImage();
+	BPatch_image * GetImage();
 	BPatch_addressSpace * GetAddressSpace();
 	~BPatchBinary();
 	std::vector<uint64_t> FindSyncCandidates();

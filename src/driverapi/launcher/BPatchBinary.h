@@ -66,10 +66,21 @@ private:
 };
 
 struct FuncCFG{ 
-	FuncCFG(BPatch_function * in) : func(in) {};
+	FuncCFG(BPatch_function * in, int count) : func(in), _seenIds(count, false) {};
+	std::vector<bool> _seenIds;
 	std::unordered_set<std::shared_ptr<FuncCFG>> parents;
 	std::unordered_set<std::shared_ptr<FuncCFG>> children;
 	BPatch_function * func; 
+
+	void SetSeen(int id) {
+		_seenIds[id] = true;
+	}
+	bool HasAllSeen() {
+		for (auto i : _seenIds)
+			if (i == false)
+				return false;
+		return true;
+	}
 	void InsertChild(std::shared_ptr<FuncCFG> child) {
 		children.insert(child);
 	}

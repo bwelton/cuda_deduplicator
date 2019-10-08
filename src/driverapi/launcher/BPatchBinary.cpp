@@ -36,6 +36,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 	std::unordered_map<BPatch_function *, std::shared_ptr<FuncCFG>> functionToFuncCFG;
 	//std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;
 	std::unordered_set<BPatch_function *> seen;
+	int posSeen = 0;
 	for (auto i : functionsToParse) {
 		seen.clear();
 		if (func_map.find(i) == func_map.end()) {
@@ -51,34 +52,44 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 			auto curFunc = queue.front();
 			queue.pop_front();
 			std::shared_ptr<FuncCFG> current;
-			if (functionToFuncCFG.find(curFunc) == functionToFuncCFG.end())
-				current = std::shared_ptr<FuncCFG>(new FuncCFG(curFunc));
+			if (functionToFuncCFG.find(curFunc) == functionToFuncCFG.end()) {
+				current = std::shared_ptr<FuncCFG>(new FuncCFG(curFunc, functionsToParse.size()));
+				functionToFuncCFG[curFunc] = current;
+			}
 			else 
 				current = functionToFuncCFG[curFunc];
 			if (first == false) {
 				funcCFGs.push_back(current);
 				first = true;
 			}
+			current->SetSeen(posSeen);
 			std::shared_ptr<std::vector<BPatch_point *>> funcCalls(curFunc->findPoint(BPatch_locSubroutine));
 			for (auto f : *funcCalls) {
 				BPatch_function * calledFunction = f->getCalledFunction();
 				if (calledFunction == NULL)
 					continue;
 				if (functionToFuncCFG.find(calledFunction) == functionToFuncCFG.end()) {
-					functionToFuncCFG[calledFunction] = std::shared_ptr<FuncCFG>(new FuncCFG(calledFunction));
+					functionToFuncCFG[calledFunction] = std::shared_ptr<FuncCFG>(new FuncCFG(calledFunction, functionsToParse.size()));
 				}
 				current->InsertChild(functionToFuncCFG[calledFunction]);
 				functionToFuncCFG[calledFunction]->InsertParent(current);
+				functionToFuncCFG[calledFunction]->SetSeen(posSeen);
 				if (seen.find(calledFunction) == seen.end()) {
 					queue.push_back(calledFunction);
 					seen.insert(calledFunction);
 				}
 			}
 		}
+		posSeen++;
 	}
 
-	std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;
-
+	//std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;
+	std::unordered_map<std::shared_ptr<FuncCFG>, int> mapInterSect;
+	for (auto i : functionToFuncCFG) {
+		if (i->second->HasAllSeen())
+			mapInterSect[i->second] = 1;
+	}
+/*
 	for (auto i : funcCFGs) {
 		std::cout << i->getName() << std::endl;
 		std::deque<std::shared_ptr<FuncCFG>> queue;
@@ -110,7 +121,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 		}
 		mapInterSect = intertmp;
 	}
-
+*/
 	for(auto i : mapInterSect) {
 		std::cout << i.second << "," << i.first->getName() << "," << std::hex << i.first->getAddress() << std::endl;
 	}

@@ -73,6 +73,9 @@ int main(int argc, char * argv[]) {
 			if (vm["synch"].as<bool>() == true) {
 				SyncTesting runSync(vm);
 				runSync.Run();
+			} else if (vm["autocorrect"].as<bool>() == true) {
+				SyncTesting runSync(vm);
+				runSync.RunAutoCorrect();				
 			}
 		} else if (vm["reevaluate"].as<bool>() == true) {
 			SyncTesting runSync(vm);

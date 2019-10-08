@@ -21,6 +21,7 @@ endif (NOT DEFINED SPACK_ROOT)
 
 add_executable(basic_checker_test "basic_checker_test.cpp")
 
+target_link_libraries(basic_checker_test ${Boost_LIBRARY_DIRS})
 target_link_libraries(basic_checker_test ${Boost_LIBRARIES})
 target_link_libraries(basic_checker_test "-lpthread")
 target_link_libraries(basic_checker_test "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")
@@ -46,6 +47,7 @@ install(TARGETS timeline_checker
         RUNTIME DESTINATION tests)
 
 add_executable(desthash_check "DestHashCheck.cpp")
+target_link_libraries(desthash_check ${Boost_LIBRARY_DIRS})
 target_link_libraries(desthash_check ${Boost_LIBRARIES})
 target_link_libraries(desthash_check "-lpthread")
 target_link_libraries(desthash_check "-L${CUDA_TOOLKIT_ROOT_DIR}/lib64 -lcudart")

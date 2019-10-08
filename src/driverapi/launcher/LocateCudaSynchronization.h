@@ -17,6 +17,7 @@
 #include <unistd.h>   
 #include "Constants.h"
 #include "Common.h"
+#include "BPatchBinary.h"
 
 class LocateCudaSynchronization {
 public:
@@ -24,4 +25,5 @@ public:
 	std::map<std::string, uint64_t> ReadDriverList();
 	std::string GetMD5Sum(boost::filesystem::path file);
 	boost::filesystem::path FindLibCuda();
+	void IdentifySyncFunction();
 };

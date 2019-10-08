@@ -49,6 +49,15 @@ std::map<std::string, uint64_t> LocateCudaSynchronization::ReadDriverList() {
 	return ret;
 }
 
+
+void LocateCudaSynchronization::IdentifySyncFunction() {
+	// Strategy: look at various 
+	std::string cudaName = FindLibCuda().string();
+	BPatchBinary bin(cudaName, false, std::string("DONOTWRITE"));
+	std::vector<uint64_t> ret = bin.FindSyncCandidates();
+
+}
+
 std::string LocateCudaSynchronization::GetMD5Sum(boost::filesystem::path file) {
 	/**
 	 * Get the md5sum of the file supplied in file. returns a string repre

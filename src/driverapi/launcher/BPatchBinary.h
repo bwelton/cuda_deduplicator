@@ -80,7 +80,7 @@ struct FuncCFG{
 		return func->getName();
 	};
 	uint64_t getAddress() {
-		return func->getBaseAddr();
+		return (uint64_t)func->getBaseAddr();
 	};
 
 };

@@ -48,6 +48,7 @@ using namespace SymtabAPI;
 #include <unordered_map>
 #include <memory>
 #include <unordered_set>
+#include <math.h>
 class BPatchBinary {
 public:
 	BPatchBinary(std::string binName, bool output = false, std::string outName = std::string(""));
@@ -68,13 +69,19 @@ struct FuncCFG{
 	FuncCFG(BPatch_function * in) : func(in) {};
 	std::unordered_set<std::shared_ptr<FuncCFG>> parents;
 	std::unordered_set<std::shared_ptr<FuncCFG>> children;
-
+	BPatch_function * func; 
 	void InsertChild(std::shared_ptr<FuncCFG> child) {
 		children.insert(child);
 	}
 	void InsertParent(std::shared_ptr<FuncCFG> par) {
 		parents.insert(par);
 	}
-	BPatch_function * func; 
+	std::string getName() {
+		return func->getName();
+	};
+	uint64_t getAddress() {
+		return func->getAddress();
+	};
+
 };
 

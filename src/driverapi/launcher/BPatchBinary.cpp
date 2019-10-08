@@ -14,7 +14,7 @@ BPatchBinary::~BPatchBinary() {
 }
 
 std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
-	std::unordered_map<std::string, BPatch_function *> funcMap;
+	std::unordered_map<std::string, BPatch_function *> func_map;
 	std::vector<BPatch_function *> all_functions;
 	
 	BPatch_image * _img = _be->getImage();
@@ -34,7 +34,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 	std::vector<std::string> functionsToParse = {"cuCtxSynchronize_v2","cuStreamSynchronize_v2","cuMemcpyDtoH_v2","cuMemcpyDtoHAsync_v2","cuMemFree_v2"};
 	std::vector<std::shared_ptr<FuncCFG>> funcCFGs;
 	std::unordered_map<BPatch_function *, std::shared_ptr<FuncCFG>> functionToFuncCFG;
-	std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;
+	//std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;
 	std::unordered_set<BPatch_function *> seen;
 	for (auto i : functionsToParse) {
 		seen.clear();
@@ -43,7 +43,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 			continue;
 		}
 
-		deque<BPatch_function *> queue;
+		std::deque<BPatch_function *> queue;
 		queue.push_back(func_map[i]);
 		seen.insert(func_map[i]);
 		bool first = false;
@@ -55,7 +55,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 				funcCFGs.push_back(current);
 				first = true;
 			}
-			std::shared_ptr<std::vector<BPatch_point *>> funcCalls(_func->findPoint(BPatch_locSubroutine));
+			std::shared_ptr<std::vector<BPatch_point *>> funcCalls(curFunc->findPoint(BPatch_locSubroutine));
 			for (auto f : *funcCalls) {
 				BPatch_function * calledFunction = f->getCalledFunction();
 				if (calledFunction == NULL)
@@ -76,7 +76,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 	std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;
 
 	for (auto i : funcCFGs) {
-		deque<std::shared_ptr<FuncCFG>> queue;
+		std::deque<std::shared_ptr<FuncCFG>> queue;
 		levelOrderDump.push_back(std::unordered_map<std::shared_ptr<FuncCFG>, int>());
 		queue.push_back(i);
 		int level = 0;

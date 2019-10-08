@@ -337,13 +337,13 @@ void SyncTesting::Run() {
 	scuda.IdentifySyncFunction();
 
 	//return;
-	/*CopyOldFiles();
+	CopyOldFiles();
 	RunWithSyncStacktracing(syncTiming);
-	TimeTransfers();
-	CaptureDuplicateTransfers();
+	//TimeTransfers();
+	//CaptureDuplicateTransfers();
     //RunWithoutInstrimentation();
 	TimeSynchronizations(syncTiming);
-	std::vector<StackPoint> uses;
+	/*std::vector<StackPoint> uses;
 	RunLoadStoreAnalysis(syncTiming, uses);
 	RunTimeUse(syncTiming, uses);
 

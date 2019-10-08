@@ -65,7 +65,7 @@ private:
 };
 
 struct FuncCFG{ 
-	FuncCFG(BPatch_Function * in) : func(in) {};
+	FuncCFG(BPatch_function * in) : func(in) {};
 	std::unordered_set<std::shared_ptr<FuncCFG>> parents;
 	std::unordered_set<std::shared_ptr<FuncCFG>> children;
 
@@ -75,6 +75,6 @@ struct FuncCFG{
 	void InsertParent(std::shared_ptr<FuncCFG> par) {
 		parents.insert(par);
 	}
-	BPatch_Function * func; 
+	BPatch_function * func; 
 };
 

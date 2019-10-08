@@ -1,3 +1,4 @@
+link_libraries("-L${BOOST_LIBRARYDIR}")
 add_subdirectory(common)
 add_subdirectory(echo)
 add_subdirectory(transfer_timeline)

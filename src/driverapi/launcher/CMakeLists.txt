@@ -1,3 +1,4 @@
+link_libraries("-L${BOOST_LIBRARYDIR}")
 configure_file (
     "${PROJECT_SOURCE_DIR}/src/driverapi/launcher/main.cpp.in"
 	"${PROJECT_SOURCE_DIR}/src/driverapi/launcher/main.cpp"

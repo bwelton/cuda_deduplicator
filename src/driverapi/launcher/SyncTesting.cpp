@@ -340,6 +340,10 @@ void SyncTesting::IndentifySyncFunction() {
 		proc->RunUntilCompleation();
 		potentials.clear();
 		uint64_t addr = sync.PostProcessing(potentials);
+		if (potentials.size() > 1) {
+			std::cout << "[SyncTesting::IndentifySyncFunction] We have more than one possibility for sync function, picking lowest level one" << std::endl;
+		}
+		scuda.WriteSyncLocation(addr);
 	}
 	// {
 	// 	std::shared_ptr<DyninstProcess> proc = LaunchApplicationByName(std::string("/g/g17/welton2/scratch/nfs/apps/cumf_als/hang_devsynch"), false);

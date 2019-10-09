@@ -3,7 +3,7 @@ LaunchIdentifySync::LaunchIdentifySync(std::shared_ptr<DyninstProcess> proc) : _
 
 }
 
-void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, std::string funcName) { 
+void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, std::string funcName, bool withExit) { 
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> main = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("main"), NULL);
 	BPatch_object * libCuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
@@ -39,7 +39,8 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 			std::vector<BPatch_point*> * entry = f->findPoint(BPatch_locEntry);
 			std::vector<BPatch_point*> * exit = f->findPoint(BPatch_locExit);
 			_proc->GetAddressSpace()->insertSnippet(entryExpr,*entry);
-			_proc->GetAddressSpace()->insertSnippet(exitExpr,*exit,BPatch_callBefore);
+			if (withExit)
+				_proc->GetAddressSpace()->insertSnippet(exitExpr,*exit);
 			idToOffset[curId] = i;
 			curId++;
 			funcMap.erase(i);
@@ -64,18 +65,26 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 	}
 }
 
-void LaunchIdentifySync::PostProcessing() {
+uint64_t LaunchIdentifySync::PostProcessing(std::vector<uint64_t> & allFound) {
 	FILE * fp = fopen("MS_outputids.bin", "rb");
 	fseek(fp, 0, SEEK_END);
 	int size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 	uint64_t id = 0;
 	uint64_t gCount = 0;
+	uint64_t highestValue = 0;
+	uint64_t highestAddress = 0;
 	while (size > 0) {
 		fread(&id, 1, sizeof(uint64_t), fp);
 		fread(&gCount, 1, sizeof(uint64_t), fp);
 		size -= sizeof(uint64_t) * 2;
 		std::cerr << "Location = " << std::hex << idToOffset[id] << std::dec << " gCount = " << gCount << std::endl;
+		if (gCount > highestValue) {
+			highestValue = gCount;
+			highestAddress = idToOffset[id];
+		}
+		allFound.push_back(idToOffset[id]);
 	}
 	fclose(fp);
+	return highestAddress;
 }

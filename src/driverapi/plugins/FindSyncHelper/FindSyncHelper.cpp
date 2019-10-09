@@ -34,7 +34,7 @@ struct MapStore{
 			gcount = i.second;
 			fwrite(&id, 1, sizeof(uint64_t),f);
 			fwrite(&gcount, 1, sizeof(uint64_t),f);
-			std::cerr << "Wrote id = " << id << " count = " << count << std::endl;
+			std::cerr << "Wrote id = " << id << " count = " << gcount << std::endl;
 		}
 		fclose(f);
 	};

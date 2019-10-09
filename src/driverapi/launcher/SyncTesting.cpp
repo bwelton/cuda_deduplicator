@@ -329,8 +329,8 @@ void SyncTesting::RunAutoCorrect() {
 
 void SyncTesting::IndentifySyncFunction() {
 	LocateCudaSynchronization scuda;
-	//if (scuda.FindLibcudaOffset(false) != 0)
-	//	return;
+	if (scuda.FindLibcudaOffset(false) != 0)
+		return;
 	std::vector<uint64_t> potentials = scuda.IdentifySyncFunction();
 	{
 		std::shared_ptr<DyninstProcess> proc = LaunchApplicationByName(std::string("/g/g17/welton2/scratch/nfs/apps/cumf_als/hang_devsynch"), false);

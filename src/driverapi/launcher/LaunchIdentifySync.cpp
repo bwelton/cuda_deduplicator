@@ -6,7 +6,7 @@ LaunchIdentifySync::LaunchIdentifySync(std::shared_ptr<DyninstProcess> proc) : _
 BPatch_point * LaunchIdentifySync::FindPreviousPoint(BPatch_point* point) {
 	auto image = _proc->GetAddressSpace()->getImage();
 	std::vector<BPatch_point *> points;
-	image->findPoints((void*)(((uint64_t)point->getAddress()) - 0x4), points);
+	image->findPoints((((uint64_t)point->getAddress()) - 0x4), points);
 	if (points.size() > 0)
 		return points[0];
 	assert("SHOULD FIND A POINT BUT ARE NOT!!!" == 0);

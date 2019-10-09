@@ -30,6 +30,7 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 		if (funcMap.find(i) == funcMap.end()){
 			std::cerr << "Could not find function at offset = " << std::hex << i << std::endl;
 		} else {
+			std::cerr << "Inserting Instrimentation info function offset = " << std::hex << i << std::endl;
 			std::vector<BPatch_snippet*> recordArgs;
 			recordArgs.push_back(new BPatch_constExpr(curId));
 			BPatch_funcCallExpr entryExpr(*cEntry[0], recordArgs);

@@ -17,12 +17,13 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 
 	std::unordered_map<uint64_t, BPatch_function *> funcMap;
 	std::vector<BPatch_function *> funcs;
-	libCuda->getProcedures(funcs);
+	_proc.GetAddressSpace()->getImage()->getProcedures(funcs);
 	uint64_t curId = 5;
 
 	std::unordered_map<uint64_t, uint64_t> idToOffset;
 	for (auto i : funcs) {
-		funcMap[((uint64_t)i->getBaseAddr()) - ((uint64_t)i->getModule()->getBaseAddr())] = i;
+		if (i->getModule()->getObject() == libCuda)
+			funcMap[((uint64_t)i->getBaseAddr()) - ((uint64_t)i->getModule()->getBaseAddr())] = i;
 	}
 
 	for (auto i : functionsToTrace) {

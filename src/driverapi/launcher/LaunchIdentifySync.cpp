@@ -3,6 +3,16 @@ LaunchIdentifySync::LaunchIdentifySync(std::shared_ptr<DyninstProcess> proc) : _
 
 }
 
+BPatch_point * LaunchIdentifySync::FindPreviousPoint(BPatch_point* point) {
+	auto image = _proc->GetAddressSpace()->getImage();
+	std::vector<BPatch_point *> points;
+	image->findPoints((void*)(((uint64_t)point->getAddress()) - 0x4), points);
+	if (points.size() > 0)
+		return points[0];
+	assert("SHOULD FIND A POINT BUT ARE NOT!!!" == 0);
+
+}
+
 void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, std::string funcName, bool withExit) { 
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	std::vector<BPatch_function *> main = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("main"), NULL);
@@ -39,8 +49,11 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 			std::vector<BPatch_point*> * entry = f->findPoint(BPatch_locEntry);
 			std::vector<BPatch_point*> * exit = f->findPoint(BPatch_locExit);
 			_proc->GetAddressSpace()->insertSnippet(entryExpr,*entry);
-			if (withExit)
-				_proc->GetAddressSpace()->insertSnippet(exitExpr,*exit);
+			if (withExit){
+				std::vector<BPatch_point*> prev;
+				prev.push_back(FindPreviousPoint((*exit)[0]));
+				_proc->GetAddressSpace()->insertSnippet(exitExpr,prev);
+			}
 			idToOffset[curId] = i;
 			curId++;
 			funcMap.erase(i);

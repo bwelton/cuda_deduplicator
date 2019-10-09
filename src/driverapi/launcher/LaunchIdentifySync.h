@@ -50,6 +50,7 @@ public:
 	LaunchIdentifySync(std::shared_ptr<DyninstProcess> proc);
 	void InsertAnalysis(std::vector<uint64_t> functionsToTrace, std::string funcName, bool withExit);
 	uint64_t PostProcessing(std::vector<uint64_t> & allFound);
+	BPatch_point * FindPreviousPoint(BPatch_point* point);
 private:
 	std::unordered_map<uint64_t, uint64_t> idToOffset;
 	std::shared_ptr<DyninstProcess> _proc;

@@ -46,6 +46,7 @@ using namespace SymtabAPI;
 class DyninstProcess {
 public:
 	DyninstProcess(boost::program_options::variables_map vm, bool debug);
+	DyninstProcess(std::string fileName, bool debug);
 	BPatch_addressSpace * LaunchProcess();
 	BPatch_addressSpace * GetAddressSpace();
 	bool RunUntilCompleation(std::string filename = std::string(""));
@@ -59,6 +60,7 @@ public:
 private:
 	bool IsMPIProgram();
 	BPatch_addressSpace * LaunchMPIProcess();
+	std::vector<std::string> _launchString;
 	std::shared_ptr<DynOpsClass> _ops;
 	bool _debug;
 	bool _MPIProc;

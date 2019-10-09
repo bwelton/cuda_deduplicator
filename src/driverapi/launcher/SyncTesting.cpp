@@ -46,6 +46,16 @@ std::shared_ptr<DyninstProcess> SyncTesting::LaunchApplication(bool debug) {
 	return ret;
 }
 
+std::shared_ptr<DyninstProcess> SyncTesting::LaunchApplicationByName(std::string name, bool debug) {
+	std::shared_ptr<DyninstProcess> ret(new DyninstProcess(name, debug));
+	assert(ret->LaunchProcess() != NULL);
+
+	// Load libcuda.so into the address space of the process
+	ret->LoadLibrary(std::string("libcuda.so.1"));
+	return ret;
+}
+
+
 void SyncTesting::CaptureDriverCalls() {
 	system("exec rm -rf ./stackOut.*");
 	std::shared_ptr<DyninstProcess> proc = LaunchApplication(false);
@@ -318,8 +328,11 @@ void SyncTesting::RunAutoCorrect() {
 
 void SyncTesting::IndentifySyncFunction() {
 	LocateCudaSynchronization scuda;
-	scuda.IdentifySyncFunction();
-	
+	if (scuda.FindLibcudaOffset() != 0)
+		return;
+	std::vector<uint64_t> potentials = scuda.IdentifySyncFunction();
+
+
 }
 
 void SyncTesting::Run() {

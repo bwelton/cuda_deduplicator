@@ -71,7 +71,7 @@ public:
 	CallTransPtr MemRecorderLaunch(StackRecMap & recs);
 	void FixKnownProblems(StackRecMap & recs);
 	void RunAutoCorrect();
-
+	std::shared_ptr<DyninstProcess> LaunchApplicationByName(std::string name, bool debug);
 	void IndentifySyncFunction();
 private:
 	std::set<std::string> _syncCalls; 

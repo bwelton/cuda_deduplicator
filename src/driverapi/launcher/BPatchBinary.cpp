@@ -82,12 +82,13 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 		}
 		posSeen++;
 	}
-
+	std::vector<uint64_t> ret;
 	//std::vector<std::unordered_map<std::shared_ptr<FuncCFG>, int>> levelOrderDump;
 	std::unordered_map<std::shared_ptr<FuncCFG>, int> mapInterSect;
 	for (auto i : functionToFuncCFG) {
-		if (i.second->HasAllSeen())
-			mapInterSect[i.second] = 1;
+		if (i.second->HasAllSeen()){
+			ret.push_back(i.first->getAddress());
+		}
 	}
 /*
 	for (auto i : funcCFGs) {
@@ -122,10 +123,10 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 		mapInterSect = intertmp;
 	}
 */
-	for(auto i : mapInterSect) {
-		std::cout << i.second << "," << i.first->getName() << "," << std::hex << i.first->getAddress() << std::endl;
-	}
-	return std::vector<uint64_t>();
+	// for(auto i : mapInterSect) {
+	// 	std::cout << i.second << "," << i.first->getName() << "," << std::hex << i.first->getAddress() << std::endl;
+	// }
+	return ret;
 /*
 	std::vector<std::unordered_set<std::shared_ptr<FuncCFG>>> currentLevel;
 	std::vector<std::unordered_set<std::shared_ptr<FuncCFG>>> levelOrderIntersect;

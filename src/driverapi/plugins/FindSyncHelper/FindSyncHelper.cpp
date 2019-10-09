@@ -1,6 +1,7 @@
 #include <map> 
 #include <unordered_set>
 #include <memory>
+#include <iostream>
 volatile int FINDSYNCFUNC_exited = 0;
 volatile int START_INSTRA = 0;
 volatile uint64_t FINDSYNCFUNC_globalCount = 0;
@@ -14,6 +15,8 @@ struct MapStore{
 			return;
 		if (ids.find(id) == ids.end())
 			ids[id] = FINDSYNCFUNC_globalCount;
+		else 
+			Exit(id);
 	};
 
 	void Exit(uint64_t id) {
@@ -31,6 +34,7 @@ struct MapStore{
 			gcount = i.second;
 			fwrite(&id, 1, sizeof(uint64_t),f);
 			fwrite(&gcount, 1, sizeof(uint64_t),f);
+			std::cerr << "Wrote id = " << id << " count = " << count << std::endl;
 		}
 		fclose(f);
 	};
@@ -61,6 +65,7 @@ extern "C" {
 		if (FINDSYNCFUNC_globalCount > 30000) {
 			FINDSYNCFUNC_exited = 1;
 			MS->WriteOutput();
+			std::cerr << "Program Terminating" << std::endl;
 			exit(0);
 		}
 		

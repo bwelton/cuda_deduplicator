@@ -147,7 +147,8 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 	}
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
-		
+		if (SYNCTOOL_exited == 1)
+			return;
 		//fprintf(stderr, "Inside of stack %llu\n",id);
 		INIT_SYNC_COMMON();
 		_LoadStoreDriver->EnterInstrimentation();
@@ -211,6 +212,7 @@ SynchTool::SynchTool(std::vector<std::string> & cmd_list) {
 }
 
 SynchTool::~SynchTool() {
+	std::cerr << "Exiting SyncTool Now!" << std::endl;
 	SYNCTOOL_exited = 1;
 	_LoadStoreDriver.reset();
 	_dataAccessManager.reset();

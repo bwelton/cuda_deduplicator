@@ -69,8 +69,8 @@ void LaunchIdentifySync::PostProcessing() {
 	fseek(fp, 0, SEEK_END);
 	int size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-	int id = 0;
-	int gCount = 0;
+	uint64_t id = 0;
+	uint64_t gCount = 0;
 	while (size > 0) {
 		fread(&id, 1, sizeof(uint64_t), fp);
 		fread(&gCount, 1, sizeof(uint64_t), fp);

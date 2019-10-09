@@ -329,7 +329,7 @@ void SyncTesting::RunAutoCorrect() {
 
 void SyncTesting::IndentifySyncFunction() {
 	LocateCudaSynchronization scuda;
-	if (scuda.FindLibcudaOffset() != 0)
+	if (scuda.FindLibcudaOffset(false) != 0)
 		return;
 	std::vector<uint64_t> potentials = scuda.IdentifySyncFunction();
 	{

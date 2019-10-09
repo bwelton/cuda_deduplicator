@@ -22,7 +22,7 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 
 	std::unordered_map<uint64_t, uint64_t> idToOffset;
 	for (auto i : funcs) {
-		funcMap[((uint64_t)i->getAddress()) - ((uint64_t)i->getModule()->getBaseAddr())] = i;
+		funcMap[((uint64_t)i->getBaseAddr()) - ((uint64_t)i->getModule()->getBaseAddr())] = i;
 	}
 
 	for (auto i : functionsToTrace) {
@@ -54,7 +54,7 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 	for (auto i : *funcCalls) {
 		if (i->getCalledFunction()->getName().find(funcName) != std::string::npos) {
 			std::vector<BPatch_point*> singlePoint;
-			singlePoint.insert(i);
+			singlePoint.push_back(i);
 			std::vector<BPatch_snippet*> recordArgs;
 			BPatch_funcCallExpr entryExpr(*signalStart[0], recordArgs);
 			_proc->GetAddressSpace()->insertSnippet(entryExpr,singlePoint, BPatch_callBefore);

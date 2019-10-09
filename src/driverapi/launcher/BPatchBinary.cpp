@@ -87,7 +87,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 	std::unordered_map<std::shared_ptr<FuncCFG>, int> mapInterSect;
 	for (auto i : functionToFuncCFG) {
 		if (i.second->HasAllSeen()){
-			ret.push_back(i.first->getAddress());
+			ret.push_back(i.first->getBaseAddr());
 		}
 	}
 /*

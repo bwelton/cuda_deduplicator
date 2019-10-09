@@ -331,8 +331,13 @@ void SyncTesting::IndentifySyncFunction() {
 	if (scuda.FindLibcudaOffset() != 0)
 		return;
 	std::vector<uint64_t> potentials = scuda.IdentifySyncFunction();
-
-
+	{
+		std::shared_ptr<DyninstProcess> proc = LaunchApplicationByName(std::string("/g/g17/welton2/scratch/nfs/apps/cumf_als/hang_devsynch"));
+		proc->RunCudaInit();
+		LaunchIdentifySync sync(proc);
+		sync.InsertAnalysis(potentials, std::string("cudaDeviceSynchronize"));
+		proc->RunUntilCompleation();
+	}
 }
 
 void SyncTesting::Run() {
@@ -352,17 +357,17 @@ void SyncTesting::Run() {
 	// }
 	//CaptureDriverCalls();
 
-
-	LocateCudaSynchronization scuda;
-	scuda.IdentifySyncFunction();
+	IndentifySyncFunction();
+//	LocateCudaSynchronization scuda;
+//	scuda.IdentifySyncFunction();
 
 	//return;
-	CopyOldFiles();
-	RunWithSyncStacktracing(syncTiming);
+	//CopyOldFiles();
+	//RunWithSyncStacktracing(syncTiming);
 	//TimeTransfers();
 	//CaptureDuplicateTransfers();
     //RunWithoutInstrimentation();
-	TimeSynchronizations(syncTiming);
+	//TimeSynchronizations(syncTiming);
 	/*std::vector<StackPoint> uses;
 	RunLoadStoreAnalysis(syncTiming, uses);
 	RunTimeUse(syncTiming, uses);

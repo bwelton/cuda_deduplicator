@@ -9,7 +9,8 @@ BPatch_point * LaunchIdentifySync::FindPreviousPoint(BPatch_point* point) {
 	image->findPoints((((uint64_t)point->getAddress()) - 0x4), points);
 	if (points.size() > 0)
 		return points[0];
-	assert("SHOULD FIND A POINT BUT ARE NOT!!!" == 0);
+	return point;
+	//assert("SHOULD FIND A POINT BUT ARE NOT!!!" == 0);
 
 }
 

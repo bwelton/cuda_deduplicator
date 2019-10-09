@@ -75,7 +75,7 @@ void LaunchIdentifySync::PostProcessing() {
 		fread(&id, 1, sizeof(uint64_t), fp);
 		fread(&gCount, 1, sizeof(uint64_t), fp);
 		size -= sizeof(uint64_t) * 2;
-		std::cerr << "Location = " << std::hex << idToOffset[id] << std::dec << " gCount = " << gCount << std::endl;
+		std::cerr << "Location = " <<  id << std::dec << " gCount = " << gCount << std::endl;
 	}
 	fclose(fp);
 }

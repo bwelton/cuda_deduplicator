@@ -338,6 +338,7 @@ void SyncTesting::IndentifySyncFunction() {
 		LaunchIdentifySync sync(proc);
 		sync.InsertAnalysis(potentials, std::string("cudaDeviceSynchronize"));
 		proc->RunUntilCompleation();
+		proc->PostProcessing();
 	}
 }
 

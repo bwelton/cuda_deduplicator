@@ -49,6 +49,8 @@ class LaunchIdentifySync {
 public:
 	LaunchIdentifySync(std::shared_ptr<DyninstProcess> proc);
 	void InsertAnalysis(std::vector<uint64_t> functionsToTrace, std::string funcName);
+	void PostProcessing();
 private:
+	std::unordered_map<uint64_t, uint64_t> idToOffset;
 	std::shared_ptr<DyninstProcess> _proc;
 };

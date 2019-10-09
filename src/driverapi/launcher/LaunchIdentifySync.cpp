@@ -20,7 +20,7 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 	_proc->GetAddressSpace()->getImage()->getProcedures(funcs);
 	uint64_t curId = 5;
 
-	std::unordered_map<uint64_t, uint64_t> idToOffset;
+	//std::unordered_map<uint64_t, uint64_t> idToOffset;
 	for (auto i : funcs) {
 		if (i->getModule()->getObject() == libCuda)
 			funcMap[((uint64_t)i->getBaseAddr()) - ((uint64_t)i->getModule()->getBaseAddr())] = i;
@@ -62,4 +62,20 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 			_proc->GetAddressSpace()->insertSnippet(entryExpr,singlePoint, BPatch_callBefore);
 		}
 	}
+}
+
+void LaunchIdentifySync::PostProcessing() {
+	FILE * fp = fopen("MS_outputids.bin", "rb");
+	fseek(fp, 0, SEEK_END);
+	int size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	int id = 0;
+	int gCount = 0;
+	while (size > 0) {
+		fread(&id, 1, sizeof(uint64_t), fp);
+		fread(&gCount, 1, sizeof(uint64_t), fp);
+		size -= sizeof(uint64_t) * 2;
+		std::cerr << "Location = " << std::hex << idToOffset[id] << std::dec << " gCount = " << gCount << std::endl;
+	}
+	fclose(fp);
 }

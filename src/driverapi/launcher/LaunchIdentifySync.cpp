@@ -27,7 +27,7 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 	}
 	_proc->BeginInsertionSet();
 	for (auto i : functionsToTrace) {
-		if (funcMap.find(i) == funcMap.end()){
+		if (funcMap.find(i) == funcMap.end() || i < 200000){
 			std::cerr << "Could not find function at offset = " << std::hex << i << std::endl;
 		} else {
 			std::cerr << "Inserting Instrimentation info function offset = " << std::hex << i << std::endl;

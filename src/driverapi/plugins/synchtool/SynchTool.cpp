@@ -1,6 +1,7 @@
 #include "SynchTool.h"
 volatile int SYNCTOOL_exited = 0;
 volatile int SYNCTOOL_inSpecialCase = 0;
+volatile uint64_t SYNCTOOL_LOADSTORE_COUNT =0;
 std::shared_ptr<SynchTool> Worker;
 thread_local LoadStoreDriverPtr _LoadStoreDriver;
 thread_local CheckAccessesPtr _dataAccessManager;
@@ -147,6 +148,7 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 	}
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
+		SYNCTOOL_LOADSTORE_COUNT++;
 		if (SYNCTOOL_exited == 1)
 			return;
 		//fprintf(stderr, "Inside of stack %llu\n",id);
@@ -212,10 +214,11 @@ SynchTool::SynchTool(std::vector<std::string> & cmd_list) {
 }
 
 SynchTool::~SynchTool() {
-	std::cerr << "Exiting SyncTool Now!" << std::endl;
 	SYNCTOOL_exited = 1;
 	_LoadStoreDriver.reset();
 	_dataAccessManager.reset();
+	std::cerr << "Exiting SyncTool Now!" << std::endl;
+	std::cerr << "[SynchTool::~SynchTool] Load Store Count = " << SYNCTOOL_LOADSTORE_COUNT << std::endl;
 }
 
 

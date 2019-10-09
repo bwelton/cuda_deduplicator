@@ -17,7 +17,7 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 
 	std::unordered_map<uint64_t, BPatch_function *> funcMap;
 	std::vector<BPatch_function *> funcs;
-	_proc.GetAddressSpace()->getImage()->getProcedures(funcs);
+	_proc->GetAddressSpace()->getImage()->getProcedures(funcs);
 	uint64_t curId = 5;
 
 	std::unordered_map<uint64_t, uint64_t> idToOffset;

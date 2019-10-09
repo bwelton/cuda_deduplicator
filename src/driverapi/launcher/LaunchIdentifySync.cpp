@@ -25,7 +25,7 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 		if (i->getModule()->getObject() == libCuda)
 			funcMap[((uint64_t)i->getBaseAddr()) - ((uint64_t)i->getModule()->getBaseAddr())] = i;
 	}
-
+	_proc->BeginInsertionSet();
 	for (auto i : functionsToTrace) {
 		if (funcMap.find(i) == funcMap.end()){
 			std::cerr << "Could not find function at offset = " << std::hex << i << std::endl;

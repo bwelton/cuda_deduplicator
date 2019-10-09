@@ -71,6 +71,8 @@ public:
 	CallTransPtr MemRecorderLaunch(StackRecMap & recs);
 	void FixKnownProblems(StackRecMap & recs);
 	void RunAutoCorrect();
+
+	void IndentifySyncFunction();
 private:
 	std::set<std::string> _syncCalls; 
 	std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string> > _wrapperDefFunctions;

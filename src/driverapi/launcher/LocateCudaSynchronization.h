@@ -21,7 +21,7 @@
 
 class LocateCudaSynchronization {
 public:
-	uint64_t FindLibcudaOffset();
+	uint64_t FindLibcudaOffset(bool dassert=true);
 	std::map<std::string, uint64_t> ReadDriverList();
 	std::string GetMD5Sum(boost::filesystem::path file);
 	boost::filesystem::path FindLibCuda();

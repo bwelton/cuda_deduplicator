@@ -315,6 +315,13 @@ void SyncTesting::RunAutoCorrect() {
 	FixKnownProblems(empty_map);
 }
 #include "LocateCudaSynchronization.h"
+
+void SyncTesting::IndentifySyncFunction() {
+	LocateCudaSynchronization scuda;
+	scuda.IdentifySyncFunction();
+	
+}
+
 void SyncTesting::Run() {
 	// CopyOldFiles();
 	// return;

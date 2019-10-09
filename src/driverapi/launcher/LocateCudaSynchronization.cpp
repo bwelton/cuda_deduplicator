@@ -8,7 +8,7 @@
  */
 #include "LocateCudaSynchronization.h"
 #define DEBUG_LOCATECUDA 1
-uint64_t LocateCudaSynchronization::FindLibcudaOffset() {
+uint64_t LocateCudaSynchronization::FindLibcudaOffset(bool dassert) {
 	std::string md5cuda = GetMD5Sum(FindLibCuda());
 	assert(md5cuda != std::string(""));
 	std::map<std::string, uint64_t> driverList = ReadDriverList();
@@ -18,7 +18,9 @@ uint64_t LocateCudaSynchronization::FindLibcudaOffset() {
 		std::cerr << "Dumping Supported Driver MD5SUMs with Offsets: " << std::endl;
 		for (auto i : driverList) 
 			std::cerr << i.first << "," << std::hex << i.second << std::endl;
-		assert(driverList.find(md5cuda) != driverList.end());
+		if(dassert == true)
+			assert(driverList.find(md5cuda) != driverList.end());
+		return 0;
 	}
 	return driverList[md5cuda];
 }

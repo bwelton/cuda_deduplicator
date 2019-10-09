@@ -39,7 +39,7 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 			std::vector<BPatch_point*> * entry = f->findPoint(BPatch_locEntry);
 			std::vector<BPatch_point*> * exit = f->findPoint(BPatch_locExit);
 			_proc->GetAddressSpace()->insertSnippet(entryExpr,*entry);
-			//_proc->GetAddressSpace()->insertSnippet(exitExpr,*exit);
+			_proc->GetAddressSpace()->insertSnippet(exitExpr,*exit,BPatch_callBefore);
 			idToOffset[i] = curId;
 			curId++;
 			funcMap.erase(i);

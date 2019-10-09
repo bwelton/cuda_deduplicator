@@ -14,8 +14,6 @@ struct MapStore{
 			return;
 		if (ids.find(id) == ids.end())
 			ids[id] = FINDSYNCFUNC_globalCount;
-		else
-			Exit(id);
 	};
 
 	void Exit(uint64_t id) {

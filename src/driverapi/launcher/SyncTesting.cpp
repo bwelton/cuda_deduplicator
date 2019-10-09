@@ -365,7 +365,7 @@ void SyncTesting::Run() {
 
 	//return;
 	//CopyOldFiles();
-	//RunWithSyncStacktracing(syncTiming);
+	RunWithSyncStacktracing(syncTiming);
 	//TimeTransfers();
 	//CaptureDuplicateTransfers();
     //RunWithoutInstrimentation();

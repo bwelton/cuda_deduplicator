@@ -35,8 +35,8 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 			BPatch_funcCallExpr entryExpr(*cEntry[0], recordArgs);
 			BPatch_funcCallExpr exitExpr(*cExit[0], recordArgs);
 			auto f = funcMap[i];
-			BPatchPointVecPtr entry(f->findPoint(BPatch_locEntry));
-			BPatchPointVecPtr exit(f->findPoint(BPatch_locExit));
+			std::vector<BPatch_point*> * entry = f->findPoint(BPatch_locEntry);
+			std::vector<BPatch_point*> * exit = f->findPoint(BPatch_locExit);
 			_proc->GetAddressSpace()->insertSnippet(entryExpr,*entry);
 			_proc->GetAddressSpace()->insertSnippet(exitExpr,*exit);
 			idToOffset[i] = curId;
@@ -51,7 +51,7 @@ void LaunchIdentifySync::InsertAnalysis(std::vector<uint64_t> functionsToTrace, 
 				mainFunc = i;
 	}
 
-	BPatchPointVecPtr funcCalls(mainFunc->findPoint(BPatch_locSubroutine));
+	std::vector<BPatch_point*> * funcCalls = mainFunc->findPoint(BPatch_locSubroutine);
 	for (auto i : *funcCalls) {
 		if (i->getCalledFunction()->getName().find(funcName) != std::string::npos) {
 			std::vector<BPatch_point*> singlePoint;

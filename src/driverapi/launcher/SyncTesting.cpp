@@ -325,6 +325,7 @@ void SyncTesting::RunAutoCorrect() {
 	FixKnownProblems(empty_map);
 }
 #include "LocateCudaSynchronization.h"
+#include "LaunchIdentifySync.h"
 
 void SyncTesting::IndentifySyncFunction() {
 	LocateCudaSynchronization scuda;
@@ -332,7 +333,7 @@ void SyncTesting::IndentifySyncFunction() {
 		return;
 	std::vector<uint64_t> potentials = scuda.IdentifySyncFunction();
 	{
-		std::shared_ptr<DyninstProcess> proc = LaunchApplicationByName(std::string("/g/g17/welton2/scratch/nfs/apps/cumf_als/hang_devsynch"));
+		std::shared_ptr<DyninstProcess> proc = LaunchApplicationByName(std::string("/g/g17/welton2/scratch/nfs/apps/cumf_als/hang_devsynch"), false);
 		proc->RunCudaInit();
 		LaunchIdentifySync sync(proc);
 		sync.InsertAnalysis(potentials, std::string("cudaDeviceSynchronize"));

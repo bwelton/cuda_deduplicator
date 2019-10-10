@@ -146,6 +146,51 @@ void StackRecord::PrintEncodedStack(std::ofstream & outStream) {
 	}
 }
 
+uint64_t StackRecord::SerializeStack(FILE * fp) {
+	int ret = 0;
+	uint64_t count = _points.size();
+	fwrite(&_id, 1, sizeof(uint64_t), fp);
+	fwrite(&count, 1, sizeof(uint64_t), fp);
+	ret += sizeof(uint64_t) * 2;
+	for (auto i  : _points) {
+		ret += i.SerializeFP(fp);
+	}
+	count = _ranges.size();
+	fwrite(&count, 1, sizeof(uint64_t), fp);
+	ret += sizeof(uint64_t);
+	for (auto i : _ranges) {
+		ret += i.SerializeFP(fp);
+	}
+	count = _occurances.size();
+	ret += sizeof(uint64_t);
+	fwrite(&count, 1, sizeof(uint64_t), fp);
+	for (auto i : _occurances) {
+		ret += SerializeUint64(fp, i);
+	}
+	return ret;
+}
+
+void StackRecord::DeserializeStack(FILE * fp) {
+	uint64_t count = 0;
+	fread(&_id, 1, sizeof(uint64_t), fp);
+	fread(&count, 1, sizeof(uint64_t), fp);
+	for (int i = 0; i < count; i++) {
+		_points.push_back(StackPoint());
+		_points.back().DeserializeFP(fp);
+	}
+	fread(&count, 1, sizeof(uint64_t), fp);
+	for (int i = 0; i < count; i++) {
+		_ranges.push_back(SyncRangeRecord(0));
+		_ranges.back().DeserializeFP(fp);
+	}
+	fread(&count, 1, sizeof(uint64_t), fp);
+	for (int i = 0; i < count; i++) {
+		uint64_t n = 0;
+		ReadUint64(fp, n);
+		_occurances.push_back(n);
+	}	
+}
+
 CudaCallMap::CudaCallMap() : _pos(1) {
 	_nameToGeneralID[std::string("unknown")] = 0;
 	_stackToGeneral[0] = 0;

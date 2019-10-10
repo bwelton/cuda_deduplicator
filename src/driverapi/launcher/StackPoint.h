@@ -46,6 +46,53 @@
 
 //#define SP_DEBUG 1
 
+uint64_t SerializeUint64(FILE * fp, uint64_t val) {
+	fwrite(&val, 1, sizeof(uint64_t), fp);
+	return sizeof(uint64_t);
+};
+
+void ReadUint64(FILE * fp, uint64_t & val) {
+	fread(&val, 1, sizeof(uint64_t), fp);
+	//return sizeof(uint64_t);
+};
+
+
+uint64_t SerializeSring(FILE * fp, std::string & str) {
+	uint64_t size = str.size();
+	fwrite(&size, 1, sizeof(uint64_t), fp);
+	if (size > 0)
+		fwrite(str.c_str(), sizeof(char), size, fp);
+	return sizeof(uint64_t) + size;
+};
+
+void DeserializeString(FILE * fp, std::string & ret) {
+	uint64_t size = 0;
+	ReadUint64(fp, size);
+	if (size > 0) {
+		std::shared_ptr<char> tmp(new char[size+1]);
+		fread(tmp.get(), sizeof(char), size, fp);
+		ret = std::string(tmp.get(), size);
+	}
+};
+
+uint64_t SerializeBool(FILE * fp, bool b) {
+	uint8_t bt = 0;
+	if(b)
+		bt = 1;
+	fwrite(&bt, 1, sizeof(uint8_t), fp);
+	return sizeof(uint8_t);
+};
+void DeserializeBool(FILE * fp, bool & b) {
+	uint8_t bt;
+	fread(&bt, 1, sizeof(uint8_t), fp);
+	if (bt == 1)
+		b = true;
+	else 
+		b = false;
+};
+
+
+
 struct StackPoint {
 	std::string libname;
 	std::string funcName;
@@ -98,6 +145,32 @@ struct StackPoint {
 		pos += libname.size();
 		std::memcpy(&(data[pos]), &libOffset, sizeof(uint64_t));
 		return pos + sizeof(uint64_t);
+	}
+
+	uint64_t SerializeFP(FILE * fp) {
+		int ret = 0;
+		ret += SerializeSring(fp, libname);
+		ret += SerializeSring(fp, funcName);
+		ret += SerializeUint64(fp, libOffset);
+		ret += SerializeUint64(fp, funcOffset);
+		ret += SerializeUint64(fp, timerID);
+		ret += SerializeBool(fp, inMain);
+		ret += SerializeBool(fp, empty);
+		ret += SerializeUint64(fp, lineNum);
+		ret += SerializeSring(fp, fileName);
+		return ret;
+	};
+
+	void DeserializeFP(FILE * fp) {
+		DeserializeString(fp, libname);
+		DeserializeString(fp, funcName);
+		ReadUint64(fp, libOffset);
+		ReadUint64(fp, funcOffset);
+		ReadUint64(fp, timerID);
+		DeserializeBool(fp, inMain);
+		DeserializeBool(fp, empty);
+		ReadUint64(fp, lineNum);
+		DeserializeString(fp, fileName);		
 	}
 
 	int Deserialize(char * data, int len) {

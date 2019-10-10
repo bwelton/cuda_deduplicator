@@ -23,6 +23,19 @@ struct SyncRangeRecord {
 		id = ident;
 	};
 
+	uint64_t SerializeFP(FILE * fp) {
+		fwrite(&start, 1, sizeof(uint64_t), fp);
+		fwrite(&end, 1, sizeof(uint64_t), fp);
+		fwrite(&id, 1, sizeof(uint64_t), fp);
+		return sizeof(uint64_t) * 3;
+	};
+
+	void DeserializeFP(FILE * fp) {
+		ReadUint64(fp, start);
+		ReadUint64(fp, end);
+		ReadUint64(fp, id);
+	}
+
 	bool ExtendRange(uint64_t i) {
 		if (end + 1 == i){
 			end = end + 1;
@@ -68,7 +81,8 @@ public:
 	void ReturnPreCudaCalls(std::vector<StackPoint> & ret);
 	std::vector<TF_Record> _timing;
 	bool ReplaceLibDynRT(StackPoint p);
-
+	void DeserializeStack(FILE * fp);
+	uint64_t SerializeStack(FILE * fp);
 private:
 	uint64_t _id;
 	std::vector<StackPoint> _points;

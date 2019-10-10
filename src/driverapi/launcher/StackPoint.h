@@ -185,6 +185,7 @@ struct StackKeyWriter {
 			pos += fwrite(&myString[pos], 1, t.size() - pos, out);
 		} while(pos != t.size());
 		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
+		fflush(out);
 		return hash;
 	}
 	void InsertStack(uint64_t id, std::vector<StackPoint> & points){
@@ -280,6 +281,7 @@ struct StackKeyReader {
   			std::string line;
   			while (getline(ifstring, line, '$')) {
   				if (line.find("@") == std::string::npos){
+
   					hash = std::stoull(line);
   					//std::cerr << "My hash - " << hash << std::endl;
   					ret[hash] = std::vector<StackPoint>();

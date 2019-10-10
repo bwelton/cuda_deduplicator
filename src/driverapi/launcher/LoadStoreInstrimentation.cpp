@@ -62,8 +62,8 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 	BPatch_funcCallExpr entryExpr(*enterSync, recordArgs);
 	assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 	//_proc->SetTrampGuard();
-	for (auto i : _dyninstFunctions)
-		i.second->InsertLoadStoreAnalysis();
+	//for (auto i : _dyninstFunctions)
+	//	i.second->InsertLoadStoreAnalysis();
 
 	// Print Debug Info
 	PrintDebug(recs);

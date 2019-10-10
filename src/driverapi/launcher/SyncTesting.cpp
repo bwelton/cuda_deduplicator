@@ -379,13 +379,13 @@ void SyncTesting::Run() {
 	//return;
 	CopyOldFiles();
 	RunWithSyncStacktracing(syncTiming);
-	TimeTransfers();
-	CaptureDuplicateTransfers();
+	//TimeTransfers();
+	//CaptureDuplicateTransfers();
     //RunWithoutInstrimentation();
 	TimeSynchronizations(syncTiming);
 	std::vector<StackPoint> uses;
 	RunLoadStoreAnalysis(syncTiming, uses);
-	RunTimeUse(syncTiming, uses);
+	//RunTimeUse(syncTiming, uses);
 
 	StackRecMap empty_map;
 	CallTransPtr transRec = MemRecorderLaunch(empty_map);

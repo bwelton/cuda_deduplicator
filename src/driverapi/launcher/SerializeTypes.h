@@ -43,12 +43,9 @@
 #include "set"
 #include "LogInfo.h"
 #include "Constants.h"
-#include "StackPoint.h"
 #include "ReadStackKeys.h"
 #include "StackStorage.h"
 
-class StackRecord;
-class StackPoint;
 uint64_t SerializeStackRecMap(FILE * fp,std::map<uint64_t, StackRecord> & srmap);
 void DeSerializeStackRecMap(FILE * fp, std::map<uint64_t, StackRecord> & srmap);
 uint64_t SerializeUint64(FILE * fp, uint64_t val);

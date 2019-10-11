@@ -25,6 +25,42 @@ std::vector<StackPoint> StackRecord::GetStackpoints() {
 	return _points;
 }
 
+
+bool StackRecord::FullCompare(StackRecord & other) {
+	if (_id != other._id)
+		return false;
+	auto oPoints = other.GetStackpoints();
+	if (_points.size() != oPoints.size())
+		return false;
+	for (int i = 0; i < _points.size(); i++) 
+		if (!_points[i].FullCompare(oPoints[i]))
+			return false;
+	
+	if (_timing.size() != other._timing.size())
+		return false;
+
+	for(int i = 0; i < _timing.size(); i++) 
+		if(!_timing[i].FullCompare(other._timing[i]))
+			return false;
+
+	if (_ranges.size() != other._ranges.size())
+		return false;
+
+	for (int i = 0; i < _ranges.size(); i++)
+		if (!_ranges[i].FullCompare(other._ranges[i]))
+			return false;
+
+	if (_occurances.size() != other._occurances.size())
+		return false;
+
+	for (int i = 0; i < _occurances.size(); i++)
+		if(_occurances[i] != other._occurances[i])
+			return false;
+
+
+	return true;
+
+}
 // Walking out of instrimented frames causes the frame being walked out of to look like it is
 // coming from libdyninstAPI_RT.so, we need to get that position
 uint64_t StackRecord::GetFirstLibDynRTPosition() {

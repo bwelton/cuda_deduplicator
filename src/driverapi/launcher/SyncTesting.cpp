@@ -378,9 +378,38 @@ void DeSerializeStackRecMap(FILE * fp, std::map<uint64_t, StackRecord> & srmap) 
 	}
 };
 
+void CheckSerialization(StackRecMap & expected, std::string fname, std::vector<StackPoint> & euses, bool LSCheck) {
+	StackRecMap tmpMap;
+	FILE * tmp = fopen(fname.c_str(), "rb");
+	DeSerializeStackRecMap(tmp, tmpMap);
+	if (!LSCheck)
+		fclose(tmp);
+
+	for (auto i : expected) {
+		if (tmpMap.find(i.first) == tmpMap.end())
+			assert("COULD NOT FIND ENTRY THAT SHOULD EXIST!" == 0);
+		if (i.second.FullCompare(tmpMap[i.first]) == false)
+			assert("COULD NOT FIND ENTRY THAT SHOULD EXIST!" == 0);
+	}
+	if (LSCheck) {
+		uint64_t size;
+		ReadUint64(tmp, size);
+		if (size != euses.size())
+			assert("COULD NOT FIND ENTRY THAT SHOULD EXIST!" == 0);
+		for (int i = 0; i < size; i++) {
+			StackPoint st;
+			st.DeserializeFP(tmp);
+			if (!st.FullCompare(euses[i]))
+				assert("COULD NOT FIND ENTRY THAT SHOULD EXIST!" == 0);
+		}
+		fclose(tmp);
+	}
+}
+
 
 void SyncTesting::Run() {
 	IndentifySyncFunction();
+	std::vector<StackPoint> emptyUses;
 	std::string stageSelect = _vm["mrun"].as<std::string>();
 
 
@@ -394,6 +423,7 @@ void SyncTesting::Run() {
 		RunWithSyncStacktracing(syncTiming);
 		SerializeStackRecMap(tmp, syncTiming);
 		fclose(tmp);
+		CheckSerialization(syncTiming, std::string("DIOG_ST_Intermediate.bin"),emptyUses, false);
 	}
 
 	if (stageSelect.find("TT") != std::string::npos || stageSelect.find("all") != std::string::npos) {
@@ -413,6 +443,7 @@ void SyncTesting::Run() {
 		tmp = fopen("DIOG_TS_Intermediate.bin", "wb");
 		SerializeStackRecMap(tmp, syncTiming);
 		fclose(tmp);
+		CheckSerialization(syncTiming, std::string("DIOG_TS_Intermediate.bin"), emptyUses, false);
 	}
 
 	if (stageSelect.find("LS") != std::string::npos || stageSelect.find("all") != std::string::npos) {
@@ -430,6 +461,7 @@ void SyncTesting::Run() {
 		for (auto i : uses)
 			i.SerializeFP(tmp);
 		fclose(tmp);
+		CheckSerialization(syncTiming, std::string("DIOG_LS_Intermediate.bin"), uses, true);
 
 	}
 	if (stageSelect.find("TU") != std::string::npos || stageSelect.find("all") != std::string::npos) {

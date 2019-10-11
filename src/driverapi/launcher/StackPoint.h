@@ -77,6 +77,15 @@ struct StackPoint {
 		return false;
 	};
 
+	bool FullCompare(StackPoint & other) {
+		if(libname == other.libname && libOffset == other.libOffset &&
+		   libOffset == other.libOffset && funcOffset == other.funcOffset && 
+		   timerID == other.timerID && inMain == other.inMain && empty == other.empty && 
+		   lineNum == other.lineNum && fileName == other.fileName)
+			return true;		
+		return false;
+	};
+
 	void Print() {
 		std::cerr << "[StackPoint] Stack Point Debug" << std::endl;
 		std::cerr << "[StackPoint] \t libname: " << libname << std::endl;

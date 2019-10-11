@@ -24,6 +24,12 @@ struct SyncRangeRecord {
 		id = ident;
 	};
 
+	bool FullCompare(SyncRangeRecord & other) {
+		if (other.start == start && other.end == end && other.id == id)
+			return true;
+		return false;
+	};
+
 	uint64_t SerializeFP(FILE * fp) {
 		fwrite(&start, 1, sizeof(uint64_t), fp);
 		fwrite(&end, 1, sizeof(uint64_t), fp);
@@ -80,12 +86,15 @@ public:
 	bool IsEqual(StackRecord & other);
 	std::vector<StackPoint> GetStackpoints();
 	void ReturnPreCudaCalls(std::vector<StackPoint> & ret);
-	std::vector<TF_Record> _timing;
+
 	bool ReplaceLibDynRT(StackPoint p);
 	void DeserializeStack(FILE * fp);
 	uint64_t SerializeStack(FILE * fp);
-private:
+
+	bool FullCompare(StackRecord & other);
+
 	uint64_t _id;
+	std::vector<TF_Record> _timing;
 	std::vector<StackPoint> _points;
 	std::vector<SyncRangeRecord> _ranges;
 	std::vector<uint64_t> _occurances;

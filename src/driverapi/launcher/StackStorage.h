@@ -115,9 +115,6 @@ private:
 	// GeneralID,time,count
 };
 
-uint64_t SerializeStackRecMap(FILE * fp,std::map<uint64_t, StackRecord> & srmap);
-void DeSerializeStackRecMap(FILE * fp, std::map<uint64_t, StackRecord> & srmap);
-
 // class AppVisibleStacks {
 // public:
 // 	AppVisibleStacks();

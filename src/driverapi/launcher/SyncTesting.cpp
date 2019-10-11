@@ -402,9 +402,9 @@ void SyncTesting::Run() {
 		tmp = fopen("DIOG_LS_Intermediate.bin", "wb");
 		SerializeStackRecMap(tmp, syncTiming);
 		uint64_t size = uses.size();
-		SerializeUint64(fp, size);
+		SerializeUint64(tmp, size);
 		for (auto i : uses)
-			SerializeUint64(fp, i);
+			SerializeUint64(tmp, i);
 		fclose(tmp);
 
 	}
@@ -414,10 +414,10 @@ void SyncTesting::Run() {
 		FILE * tmp = fopen("DIOG_LS_Intermediate.bin", "rb");
 		DeSerializeStackRecMap(tmp, syncTiming);
 		uint64_t size;
-		ReadUint64(fp, size);
+		ReadUint64(tmp, size);
 		for (int i = 0; i < size; i++) {
 			uint64_t myval = 0;
-			ReadUint64(fp, myval);
+			ReadUint64(tmp, myval);
 			uses.push_back(myval);
 		}
 		fclose(tmp);

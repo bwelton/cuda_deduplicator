@@ -201,6 +201,13 @@ uint64_t StackRecord::SerializeStack(FILE * fp) {
 	for (auto i : _occurances) {
 		ret += SerializeUint64(fp, i);
 	}
+
+	count = _timing.size();
+	ret += sizeof(uint64_t);
+	fwrite(&count, 1, sizeof(uint64_t), fp);
+	for (auto i : _timing) {
+		i.Write(fp);
+	}		
 	return ret;
 }
 
@@ -223,6 +230,11 @@ void StackRecord::DeserializeStack(FILE * fp) {
 		ReadUint64(fp, n);
 		_occurances.push_back(n);
 	}	
+	fread(&count, 1, sizeof(uint64_t), fp);
+	for (int i = 0; i < count; i++) {
+		_timing.push_back(TF_Record());
+		_timing.back().Read(fp);
+	}
 }
 
 CudaCallMap::CudaCallMap() : _pos(1) {

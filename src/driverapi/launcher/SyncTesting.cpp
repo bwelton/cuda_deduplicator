@@ -417,7 +417,7 @@ void SyncTesting::Run() {
 		ReadUint64(tmp, size);
 		for (int i = 0; i < size; i++) {
 			uses.push_back(StackPoint());
-			uses.back().DeserializeFP(fp);
+			uses.back().DeserializeFP(tmp);
 		}
 		fclose(tmp);
 		RunTimeUse(syncTiming, uses);

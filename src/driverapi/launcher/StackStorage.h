@@ -1,5 +1,4 @@
 #pragma once
-#include "SerializeTypes.h"
 #include "StackPoint.h"
 #include "SymbolLookup.h"
 #include "TFReaderWriter.h"
@@ -7,8 +6,6 @@
 #define DEBUG_STACKRECORD 1
 
 typedef std::map<std::string, std::shared_ptr<SymbolLookup> > SymbolMap;
-
-
 
 struct SyncRangeRecord {
 	uint64_t start;
@@ -117,8 +114,7 @@ private:
 	// GeneralID,time,count
 };
 
-uint64_t SerializeStackRecMap(FILE * fp,std::map<uint64_t, StackRecord> & srmap);
-void DeSerializeStackRecMap(FILE * fp, std::map<uint64_t, StackRecord> & srmap);
+
 
 // class AppVisibleStacks {
 // public:

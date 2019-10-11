@@ -44,10 +44,8 @@
 #include "LogInfo.h"
 #include "Constants.h"
 #include "ReadStackKeys.h"
-#include "StackStorage.h"
 
-uint64_t SerializeStackRecMap(FILE * fp,std::map<uint64_t, StackRecord> & srmap);
-void DeSerializeStackRecMap(FILE * fp, std::map<uint64_t, StackRecord> & srmap);
+
 uint64_t SerializeUint64(FILE * fp, uint64_t val);
 void ReadUint64(FILE * fp, uint64_t & val);
 uint64_t SerializeSring(FILE * fp, std::string & str);

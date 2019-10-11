@@ -1,28 +1,7 @@
 #include "SerializeTypes.h"
 
 
-uint64_t SerializeStackRecMap(FILE * fp,std::map<uint64_t, StackRecord> & srmap) {
-	uint64_t ret = 0;
-	uint64_t size = srmap.size();
-	ret += SerializeUint64(fp, size);
-	for (auto i : srmap) {
-		ret += SerializeUint64(fp, i.first);
-		ret += i.second.SerializeStack(fp);
-	}
-	return ret;
-};
 
-void DeSerializeStackRecMap(FILE * fp, std::map<uint64_t, StackRecord> & srmap) {
-	uint64_t size = 0;
-	ReadUint64(fp, size);
-	for (int i = 0; i < size; i++) {
-		uint64_t tmp = 0;
-		StackRecord sr;
-		ReadUint64(fp, tmp);
-		sr.DeserializeStack(fp);
-		srmap[tmp] = sr;
-	}
-};
 
 uint64_t SerializeUint64(FILE * fp, uint64_t val) {
 	fwrite(&val, 1, sizeof(uint64_t), fp);

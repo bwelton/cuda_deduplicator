@@ -2,6 +2,7 @@
 #include "StackPoint.h"
 #include "SymbolLookup.h"
 #include "TFReaderWriter.h"
+#include "SerializeTypes.h"
 #include <sstream> 
 #define DEBUG_STACKRECORD 1
 

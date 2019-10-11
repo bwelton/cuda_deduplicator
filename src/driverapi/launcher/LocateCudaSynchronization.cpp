@@ -66,7 +66,6 @@ void LocateCudaSynchronization::WriteSyncLocation(uint64_t addr) {
   	fs.open(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/SyncDriverVerisons.txt"), std::fstream::out | std::fstream::app);
   	fs << md5cuda << "$0x" << std::hex << addr << std::dec << std::endl;
   	fs.close();
-
 }
 
 std::string LocateCudaSynchronization::GetMD5Sum(boost::filesystem::path file) {

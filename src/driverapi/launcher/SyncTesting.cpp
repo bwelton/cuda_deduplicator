@@ -404,7 +404,7 @@ void SyncTesting::Run() {
 		uint64_t size = uses.size();
 		SerializeUint64(tmp, size);
 		for (auto i : uses)
-			SerializeUint64(tmp, i);
+			i.SerializeFP(tmp);
 		fclose(tmp);
 
 	}
@@ -416,9 +416,8 @@ void SyncTesting::Run() {
 		uint64_t size;
 		ReadUint64(tmp, size);
 		for (int i = 0; i < size; i++) {
-			uint64_t myval = 0;
-			ReadUint64(tmp, myval);
-			uses.push_back(myval);
+			uses.push_back(StackPoint());
+			uses.back().DeserializeFP(fp);
 		}
 		fclose(tmp);
 		RunTimeUse(syncTiming, uses);

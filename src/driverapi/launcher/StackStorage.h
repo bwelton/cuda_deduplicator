@@ -1,4 +1,5 @@
 #pragma once
+#include "SerializeTypes.h"
 #include "StackPoint.h"
 #include "SymbolLookup.h"
 #include "TFReaderWriter.h"

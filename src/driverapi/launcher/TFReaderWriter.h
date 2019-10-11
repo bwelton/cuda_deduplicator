@@ -68,8 +68,12 @@ struct TF_Record {
 	TF_TransferRec r;
 	TF_RECORD_TYPE type;
 	bool FullCompare(TF_Record & other) {
-		if (other.type == type && s.FullCompare(other.s) && r.FullCompare(other.r))
-			return true;
+		if (other.type == type) {
+			if (type == TF_SYNCRECORD && s.FullCompare(other.s))
+				return true;
+			if (type == TF_TRANSFERREC &&  r.FullCompare(other.r))
+				return true;
+		}
 		return false;
 	};
 	void Write(FILE * fp) {

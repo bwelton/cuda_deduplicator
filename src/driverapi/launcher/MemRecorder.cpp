@@ -42,7 +42,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 
 	std::string tmpLibname = std::string("");
 	std::string tmpFuncName = std::string("");
-	_proc->BeginInsertionSet(); /*
+	_proc->BeginInsertionSet(); 
 	int64_t ident = 2;
 	for (auto i : _dyninstFunctions) {
 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
@@ -125,7 +125,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 		//}
 	}
 
-	*/
+	
 	std::vector<BPatch_function*> cudaMalloc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cudaMalloc"), NULL);
 	std::vector<BPatch_function*> cudaFree = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cudaFree"), NULL);
 	std::vector<BPatch_function*> cudaMallocPreWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAMallocPreCheck"), wrapper);

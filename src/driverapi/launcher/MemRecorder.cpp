@@ -125,7 +125,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 		//}
 	}
 
-
+	*/
 	std::vector<BPatch_function*> cudaMalloc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cudaMalloc"), NULL);
 	std::vector<BPatch_function*> cudaFree = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cudaFree"), NULL);
 	std::vector<BPatch_function*> cudaMallocPreWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAMallocPreCheck"), wrapper);
@@ -144,7 +144,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	InsertPrePostCall(cudaMalloc[0], cudaMallocPreWrap[0], false, 2);
 	InsertPrePostCall(cudaMalloc[0], cudaMallocPostwrap[0], true, 0);
 	InsertPrePostCall(cudaFree[0], cudaFreeWrap[0], false, 1);
-	*/
+	
 	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
 	// assert(cudaSyncFunctions.size() > 0);
 

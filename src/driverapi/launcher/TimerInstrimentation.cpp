@@ -75,7 +75,7 @@ void TimerInstrimentation::PostProcessing(StackRecMap & recs) {
 			for (auto n : i.second._timing)
 				assert(n.s.dynId == dynID);
 			assert(_idToFunc.find(dynID) != _idToFunc.end());
-			i.second.ReplaceLibDynRT(_idToFunc[dynID]);
+			i.second.ReplaceLibDynRT(_idToFunc[dynID], std::string("libTimeCall.so"));
 		}
 		i.second.PrintStack();
 		std::vector<StackPoint> tmp_map = i.second.GetStackpoints();

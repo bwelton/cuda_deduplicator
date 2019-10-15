@@ -63,10 +63,15 @@ bool StackRecord::FullCompare(StackRecord & other) {
 }
 // Walking out of instrimented frames causes the frame being walked out of to look like it is
 // coming from libdyninstAPI_RT.so, we need to get that position
-uint64_t StackRecord::GetFirstLibDynRTPosition() {
+uint64_t StackRecord::GetFirstLibDynRTPosition(std::string extraLib) {
 	for (int i = _points.size() - 1; i >= 0; i = i - 1){
 		if(_points[i].libname.find("libdyninstAPI_RT.so") != std::string::npos){
 			return i;
+		}
+		if (extraLib.size() > 0) {
+			if(_points[i].libname.find(extraLib) != std::string::npos){
+				return i;
+			}			
 		}
 	}	
 	return 0;
@@ -98,8 +103,8 @@ bool StackRecord::IsEqual(StackRecord & other) {
 	return true;
 }
 
-bool StackRecord::ReplaceLibDynRT(StackPoint p) {
-	uint64_t pos = GetFirstLibDynRTPosition();
+bool StackRecord::ReplaceLibDynRT(StackPoint p, std::string extraLib) {
+	uint64_t pos = GetFirstLibDynRTPosition(extraLib);
 	if (pos == 0)
 		return false;
 	std::vector<StackPoint> tmp;

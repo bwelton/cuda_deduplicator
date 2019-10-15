@@ -82,12 +82,12 @@ public:
 	void PrintStack(std::stringstream & outStream);
 	//void AddTimingData(uint64_t start, uint64_t len, double time);
 	StackPoint GetFirstCudaCall();
-	uint64_t GetFirstLibDynRTPosition();
+	uint64_t GetFirstLibDynRTPosition(std::string extraLib = std::string(""));
 	bool IsEqual(StackRecord & other);
 	std::vector<StackPoint> GetStackpoints();
 	void ReturnPreCudaCalls(std::vector<StackPoint> & ret);
 
-	bool ReplaceLibDynRT(StackPoint p);
+	bool ReplaceLibDynRT(StackPoint p, std::string extraLib);
 	void DeserializeStack(FILE * fp);
 	uint64_t SerializeStack(FILE * fp);
 

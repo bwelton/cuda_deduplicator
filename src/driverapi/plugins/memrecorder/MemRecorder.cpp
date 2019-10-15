@@ -424,6 +424,8 @@ extern "C" {
 		return ret;		
 	}
 
+	//cudaError_t DIOGENES_REC_HostcuMemAlloc()
+
 
 	cudaError_t DIOGENES_REC_CudaMalloc(void ** data, size_t size) {
 		int64_t cache = DIOGENES_CTX_ID;

@@ -413,7 +413,7 @@ void SyncTesting::Run() {
 	std::string stageSelect = _vm["mrun"].as<std::string>();
 
 
-	if (stageSelect.find("all") != std::string::npos){
+	if (stageSelect.find("all") != std::string::npos || stageSelect.find("CP") != std::string::end){
 		CopyOldFiles();
 	}	
 

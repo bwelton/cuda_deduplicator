@@ -49,8 +49,13 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	    for (auto n : tmpPoints) {
 	        std::vector<BPatch_function *> funcsInClass = ops->FindFunctionsByLibnameOffset(_proc->GetAddressSpace(), n.libname, n.libOffset, false);
 	        assert(funcsInClass.size() > 0);
+	        std::unordered_set<uint64_t> tmpTracker;
+
 	        for (auto i : funcsInClass)
-	            _dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
+	        	tmpTracker.insert((uint64_t)i->getBaseAddr());
+	        for (auto i : funcsInClass)
+	        	if (tmpTracker.find((uint64_t)i->getBaseAddr()+0x8) == tmpTracker.end())
+	            	_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	    }	    
 	}
 

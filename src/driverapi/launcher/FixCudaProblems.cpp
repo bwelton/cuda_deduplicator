@@ -43,7 +43,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	BPatch_image * img = _proc->GetAddressSpace()->getImage();
 //	std::vector<BPatch_object *> objs;
 //	img->getObjects(objs);
-	{
+	/*{
 	    StackPointVec tmpPoints = remPoints->GetAllStackPoints();
     //    std::set<std::string> libsToCheck = remPoints->GetLibs();
 	    for (auto n : tmpPoints) {
@@ -57,11 +57,11 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	        	if (tmpTracker.find((uint64_t)i->getBaseAddr()+0x8) == tmpTracker.end())
 	            	_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	    }	    
-	}
+	}*/
 
 	
-//	img->getProcedures(all_functions);
-/*	for (auto i : all_functions) {
+    img->getProcedures(all_functions);
+    for (auto i : all_functions) {
 	    std::string tmpLib = i->getModule()->getObject()->pathName();
 	    void * start;
 	    void * end;
@@ -73,12 +73,8 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	        if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*tmp)[0], lOffset, true))
 		        lOffset = start;
 	    }
-	    
-	    
-
 		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	}
-*/
 
 	std::string binary_name = std::string("main");
 	std::string tmpLibname = std::string("");

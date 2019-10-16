@@ -76,6 +76,15 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	}
 
+	std::vector<uint64_t> deleteList;
+	for (auto i : _dyninstFunctions) {
+		if(_dyninstFunctions.find(i.first + 0x8) != _dyninstFunctions.end())
+			deleteList.push_back(i.first);
+	}
+	for (auto i : deleteList) 
+		if (_dyninstFunctions.find(i) != _dyninstFunctions.end())
+			_dyninstFunctions.erase(i);
+
 	std::string binary_name = std::string("main");
 	std::string tmpLibname = std::string("");
 	std::string tmpFuncName = std::string("");

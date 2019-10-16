@@ -71,7 +71,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	    uint64_t dist = ((uint64_t) end) - ((uint64_t) start); 
 	    if (tmp->size() > 0) {
 	        if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*tmp)[0], lOffset, true))
-		        lOffset = start;
+		        lOffset = (uint64_t)start;
 	    }
 		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	}

@@ -19,6 +19,8 @@
 #include <dlfcn.h>
 #include <pthread.h>
 std::atomic<bool> DIOGENES_Atomic_Malloc(false);
+volatile int DIOGENES_DEBUG_FREE_PASSED = 0;
+volatile int DIOGENES_DEBUG_MALLOC_PASSED = 0;
 
 volatile bool DIOGENES_MEMMANGE_TEAR_DOWN = false;
 volatile bool IN_INSTRIMENTATION = false;

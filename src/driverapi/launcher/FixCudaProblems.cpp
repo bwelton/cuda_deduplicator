@@ -126,11 +126,12 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc")) {
 					#ifdef FIX_CUDAMEMFREE
 					//if (remPoints->CheckArray(CUMALLOC_REP, x.GetStackPoint())) {
+						std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " 
+						          << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
         				if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
         					continue;    					
 						mallocsReplaced++;
-						std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " 
-						          << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
+
 						x.ReplaceFunctionCall(cudaMallocWrapper[0]);
 					//} else {
 					//	mallocsSkipped++;

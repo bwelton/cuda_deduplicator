@@ -14,6 +14,9 @@ void CallTransformation::BuildRequiredSet() {
 	LSDependencyVec lvec;
 	ReadDependencyFile dep(fopen("LS_syncaccess.bin", "rb"));
 	dep.Read(lvec);
+	ReadLSTraceDepFile traceDep(fopen("LS_trace.bin", "rb"));
+	traceDep.Read();
+
 	LSStackGraphVec sgraph;
 	std::map<uint64_t, int> _mapToSgraph;
 	int pos = 0;
@@ -35,15 +38,30 @@ void CallTransformation::BuildRequiredSet() {
 		}
 	}
 
-	for (auto i : lvec) {
+	for (size_t i = 0; i < lvec.size(); i++) {
+		auto tmp = lvec[i];
+		if (tmp->newDependents) {
+			if (i < lvec.size() - 1) {
+				if (!traceDep.IsInSet(lvec[i+1]->id))
+					continue;
+			} 
+			auto it = _mapToSgraph.find(tmp->id);
+			if (it != _mapToSgraph.end()) {
+				sgraph[it->second]._required = true;
+			}
+		}
+	}
+
+	/*for (auto i : lvec) {
 		if(i->newDependents) {
+			if (i->)
 			auto it = _mapToSgraph.find(i->id);
 			if (it != _mapToSgraph.end()) {
 				sgraph[it->second]._required = true;
 				//std::cerr << "[CallTransformation::BuildRequiredSet] " 
 			}
 		}
-	}
+	}*/
 	std::vector<FreeSitePtr> freeSites;
 
 	for (auto i : sgraph) {

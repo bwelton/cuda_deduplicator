@@ -254,6 +254,9 @@ struct LSDependency{
 	uint64_t id;
 	uint64_t newDependents;
 	uint64_t lastDependent;
+	uint64_t isRequired;
+
+	LSDependency() : id(0), newDependents(0), lastDependent(0), isRequired(0) {};
 
 	inline static uint64_t GetSize() {
 		return sizeof(uint64_t) * 3;
@@ -266,6 +269,38 @@ struct LSDependency{
 		ret->newDependents = tmp[1];
 		ret->lastDependent = tmp[2];
 		return ret;
+	};
+};
+
+struct ReadLSTraceDepFile {
+	FILE * _fid;
+
+	unordered_set<uint64_t> _needed;
+	ReadLSTraceDepFile(FILE * fp) : _fid(fp) { };
+	~ReadLSTraceDepFile() { fclose(_fid);};
+
+	void Read() {
+		fseek(_fid, 0, SEEK_END);
+		size_t size = ftell(_fid);
+		fseek(_fid, 0, SEEK_SET);
+		size = size / (sizeof(uint64_t) * 2);
+		uint64_t id = 0;
+		uint64_t hashID = 0;
+		while (size > 0) {
+			fread(&id, 1, sizeof(uint64_t), _fid);
+			fread(&hashID, 1, sizeof(uint64_t), _fid);
+			if (size < size - (sizeof(uint64_t) * 2))
+				size = 0;
+			else
+				size = size - (sizeof(uint64_t) * 2);
+			_needed.insert(hashID);
+		}
+	};
+
+	inline bool IsInSet(uint64_t id) {
+		if (_needed.find(id) != _needed.end())
+			return true;
+		return false;
 	};
 };
 

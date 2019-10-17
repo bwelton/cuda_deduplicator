@@ -11,6 +11,10 @@ OutputWriter::OutputWriter(bool timeType) : _curPos(1), _timeType(timeType), _pr
 	}
 }
 
+// LS_stackkey.bin = stacks that synchronize
+// LS_trace.bin = stacks that write/read locations of GPU written data
+// LS_syncaccess.bin = sequence info. 
+
 void OutputWriter::RecordAccess(uint64_t id, std::vector<uint64_t> & currentStack, double timeID) {
 	uint64_t hash = HashStack(currentStack);
 	if (_prevStacks.find(hash) == _prevStacks.end()) {

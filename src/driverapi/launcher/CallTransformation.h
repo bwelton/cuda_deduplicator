@@ -218,8 +218,8 @@ struct MemGraph {
 				if (dAlreadySeen.find(n) != dAlreadySeen.end())
 					continue;
 				dAlreadySeen.insert(n);
-				if (n->HasUnknownChild() != 0)
-					continue;
+				//if (n->HasUnknownChild() != 0)
+				//	continue;
 				dlist.push_back(n);
 				cn.insert(cn.end(), n->GetStart(), n->GetEnd());
 			}

@@ -135,7 +135,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc")) {
 					#ifdef FIX_CUDAMEMFREE
-					//if (remPoints->CheckArray(CUMALLOC_REP, x.GetStackPoint())) {
+					if (remPoints->CheckArray(CUMALLOC_REP, x.GetStackPoint())) {
 						std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " 
 						          << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
         				//if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
@@ -143,9 +143,9 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 						mallocsReplaced++;
 
 						x.ReplaceFunctionCall(cudaMallocWrapper[0]);
-					//} else {
-					//	mallocsSkipped++;
-					//}
+					} else {
+						mallocsSkipped++;
+					}
 					#endif
 				}
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc")){

@@ -275,7 +275,7 @@ struct LSDependency{
 struct ReadLSTraceDepFile {
 	FILE * _fid;
 
-	unordered_set<uint64_t> _needed;
+	std::set<uint64_t> _needed;
 	ReadLSTraceDepFile(FILE * fp) : _fid(fp) { };
 	~ReadLSTraceDepFile() { fclose(_fid);};
 

@@ -37,7 +37,7 @@ void CallTransformation::BuildRequiredSet() {
 			}
 		}
 	}
-
+/*
 	for (size_t i = 0; i < lvec.size(); i++) {
 		auto tmp = lvec[i];
 		if (tmp->newDependents) {
@@ -51,17 +51,16 @@ void CallTransformation::BuildRequiredSet() {
 			}
 		}
 	}
-
-	/*for (auto i : lvec) {
+*/
+	for (auto i : lvec) {
 		if(i->newDependents) {
-			if (i->)
 			auto it = _mapToSgraph.find(i->id);
 			if (it != _mapToSgraph.end()) {
 				sgraph[it->second]._required = true;
 				//std::cerr << "[CallTransformation::BuildRequiredSet] " 
 			}
 		}
-	}*/
+	}
 	std::vector<FreeSitePtr> freeSites;
 
 	for (auto i : sgraph) {

@@ -77,7 +77,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
-				//std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) << std::endl;
+				std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaFree") && !useLowLevel){
 					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;

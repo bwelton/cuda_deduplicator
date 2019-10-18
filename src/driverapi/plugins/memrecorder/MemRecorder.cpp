@@ -397,6 +397,8 @@ extern "C" {
 			return malloc(size);
 		}
 	}
+
+
 	void DIOGENES_REC_FREEWrapper(void * mem) {
 		int64_t cache = DIOGENES_CTX_ID;
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
@@ -423,9 +425,20 @@ extern "C" {
 		DIOGENES_UnsetInWrapper();
 		return ret;		
 	}
-
-	//cudaError_t DIOGENES_REC_HostcuMemAlloc()
-
+	CUresult DIOGENES_REC_cuMemAllocHost(void ** data, size_t size) {
+		CUresult ret = CUDA_ERROR_UNKNOWN;
+		DIOGENES_SetInWrapper();
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			ret = cuMemAllocHost(data, size);
+			PLUG_FACTORY_PTR->AllocatePinnedMemory((uint64_t)(*data), size);
+			DIOGENES_ReleaseGlobalLock();
+		} else {
+			ret = cuMemAllocHost(data, size);
+		}		
+		DIOGENES_UnsetInWrapper();
+		return ret;		
+	}
 
 	cudaError_t DIOGENES_REC_CudaMalloc(void ** data, size_t size) {
 		int64_t cache = DIOGENES_CTX_ID;
@@ -444,6 +457,24 @@ extern "C" {
 		return ret;
 	}
 
+
+	CUresult DIOGENES_REC_cuMemAlloc(CUdeviceptr* data, size_t size) {
+		int64_t cache = DIOGENES_CTX_ID;
+		CUresult ret = CUDA_ERROR_UNKNOWN;
+		DIOGENES_SetInWrapper();
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			ret = cuMemAlloc(data, size);
+			PLUG_FACTORY_PTR->GPUMallocData((uint64_t)(*data), size, cache);
+			DIOGENES_ReleaseGlobalLock();
+		} else {
+			ret = cuMemAlloc(data, size);
+		}
+		DIOGENES_UnsetInWrapper();
+		//assert(1==0);
+		return ret;
+	}
+
 	cudaError_t DIOGENES_REC_CudaFree(void * data) {
 		int64_t cache = DIOGENES_CTX_ID;
 		DIOGENES_SetInWrapper();
@@ -453,6 +484,19 @@ extern "C" {
 			DIOGENES_ReleaseGlobalLock();
 		}
 		cudaError_t ret = cudaFree(data);
+		DIOGENES_UnsetInWrapper();
+		return ret;
+	} 
+
+	CUresult DIOGENES_REC_cuMemFree(CUdeviceptr data) {
+		int64_t cache = DIOGENES_CTX_ID;
+		DIOGENES_SetInWrapper();
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			PLUG_FACTORY_PTR->GPUFreeData((uint64_t)(data), cache);
+			DIOGENES_ReleaseGlobalLock();
+		}
+		CUresult ret = cuMemFree(data);
 		DIOGENES_UnsetInWrapper();
 		return ret;
 	} 

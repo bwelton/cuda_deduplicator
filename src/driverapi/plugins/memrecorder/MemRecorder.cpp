@@ -572,6 +572,16 @@ extern "C" {
 		//assert(1==0);
 		return cudaMemcpyAsync(dst,src,size,kind,stream);
 	}
+
+	CUresult DIOGENES_REC_cuMemcpyDtoHAsync(void * dst, CUdeviceptr src, size_t size, cudaStream_t stream) {
+		int64_t cache = DIOGENES_CTX_ID;
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			PLUG_FACTORY_PTR->RecordMemTransfer((uint64_t)dst, cache);
+			DIOGENES_ReleaseGlobalLock();
+		}
+		return cuMemcpyDtoHAsync(dst,src,size,stream);
+	}
 	// void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
 	// 	int64_t cache = DIOGENES_CTX_ID;
 	// 	if(DIOGENES_GetGlobalLock()) {

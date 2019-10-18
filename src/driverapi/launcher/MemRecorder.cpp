@@ -22,12 +22,23 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	std::vector<BPatch_function *> freeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_FREEWrapper"), wrapper);
 	std::vector<BPatch_function *> cudaMallocHostWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_HostCudaMalloc"), wrapper);
 
+	// Low Level driver wrappers
+	std::vector<BPatch_function *> LLcudaFreeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemFree"), wrapper);
+	std::vector<BPatch_function *> LLcudaMallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAlloc"), wrapper);
+	std::vector<BPatch_function *> LLcudaMemcpyWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemcpyDtoHAsync"), wrapper);
+	std::vector<BPatch_function *> LLcudaMallocHostWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAllocHost"), wrapper);
+
 	assert(cudaFreeWrapper.size() > 0);
 	assert(cudaMallocWrapper.size() > 0);
 	assert(cudaMemcpyWrapper.size() > 0);
 	assert(mallocWrapper.size() > 0);
 	assert(freeWrapper.size() > 0);
 	assert(cudaMallocHostWrapper.size() > 0);
+	assert(LLcudaFreeWrapper.size() > 0);
+	assert(LLcudaMallocWrapper.size() > 0);
+	assert(LLcudaMemcpyWrapper.size() > 0);
+	assert(LLcudaMallocHostWrapper.size() > 0);
+
 	
 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
 	std::vector<BPatch_function *> all_functions;
@@ -44,6 +55,8 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	std::string tmpFuncName = std::string("");
 	_proc->BeginInsertionSet(); 
 	int64_t ident = 2;
+
+	std::vector<std::string> useLowLevelBindings = {"libcufftw"};
 	for (auto i : _dyninstFunctions) {
 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
 
@@ -51,13 +64,20 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 			continue;
 		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos || tmpLibname.find("libcudart") != std::string::npos || tmpLibname.find("libcuda") != std::string::npos)
 			continue;
-		
+		bool useLowLevel = false;
+		for (auto i : useLowLevelBindings) {
+			if (tmpLibname.find(i) != std::string::npos) {
+				useLowLevel = true;
+				break;
+			}
+		}
+
 		//if (tmpLibname.find(binary_name) != std::string::npos) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
 				//std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) << std::endl;
-				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
+				if (*(x.GetCalledFunction()) == std::string("cudaFree") && !useLowLevel){
 					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;
 					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
@@ -66,8 +86,17 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 					x.ReplaceFunctionCallWithID(cudaFreeWrapper[0], ident);
 					_idToStackPoint[ident] = x.GetStackPoint();
 					ident++;
+				} else if ((*(x.GetCalledFunction()) == std::string("cuMemFree") || *(x.GetCalledFunction()) == std::string("cuMemFree_v2")) && useLowLevel) {
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
+					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cuMemFree in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
+					x.ReplaceFunctionCallWithID(LLcudaFreeWrapper[0], ident);
+					_idToStackPoint[ident] = x.GetStackPoint();
+					ident++;					
 				}
-				if (*(x.GetCalledFunction()) == std::string("cudaMalloc")) {
+				if (*(x.GetCalledFunction()) == std::string("cudaMalloc") && !useLowLevel) {
 					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;
 					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
@@ -80,6 +109,16 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 					//x.ReplaceFunctionCall(cudaMallocWrapper[0]);
 					
 					//return;
+				} else if ((*(x.GetCalledFunction()) == std::string("cuMemAlloc") || *(x.GetCalledFunction()) == std::string("cuMemAlloc_v2")) && useLowLevel) { 
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
+					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cuMemAlloc in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
+					x.ReplaceFunctionCallWithID(LLcudaMallocWrapper[0], ident);
+					_idToStackPoint[ident] = x.GetStackPoint();
+					ident++;					
+
 				}
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc")){
 					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
@@ -101,7 +140,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 					ident++;
 					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to free in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
 				}
-				if (*(x.GetCalledFunction()) == std::string("cudaMemcpyAsync")){
+				if (*(x.GetCalledFunction()) == std::string("cudaMemcpyAsync") && !useLowLevel){
 					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;
 					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
@@ -110,8 +149,20 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 					x.ReplaceFunctionCallWithID(cudaMemcpyWrapper[0], ident);
 					_idToStackPoint[ident] = x.GetStackPoint();
 					ident++;					
+				} else if ((*(x.GetCalledFunction()) == std::string("cuMemcpyDtoHAsync") || *(x.GetCalledFunction()) == std::string("cuMemcpyDtoHAsync_v2")) && useLowLevel) { 
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
+					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cuMemcpyDtoHAsync in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
+					x.ReplaceFunctionCallWithID(LLcudaMemcpyWrapper[0], ident);
+					_idToStackPoint[ident] = x.GetStackPoint();
+					ident++;								
 				}
-				if (*(x.GetCalledFunction()) == std::string("cudaMallocHost")){
+
+
+
+				if (*(x.GetCalledFunction()) == std::string("cudaMallocHost") && !useLowLevel){
 					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
 						continue;
 					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
@@ -120,7 +171,17 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 					x.ReplaceFunctionCallWithID(cudaMallocHostWrapper[0], ident);
 					_idToStackPoint[ident] = x.GetStackPoint();
 					ident++;					
+				} else if ((*(x.GetCalledFunction()) == std::string("cuMemAllocHost") || *(x.GetCalledFunction()) == std::string("cuMemAllocHost_v2")) && useLowLevel) { 
+					if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+						continue;
+					// if (!debugOutput.InstrimentFunction(tmpLibname, tmpFuncName,x.GetPointFileAddress()))
+					// 	continue;
+					std::cerr << "[MemRecorder::InsertAnalysis] Found function call to cuMemAllocHost in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
+					x.ReplaceFunctionCallWithID(LLcudaMallocHostWrapper[0], ident);
+					_idToStackPoint[ident] = x.GetStackPoint();
+					ident++;		
 				}
+
 			}
 		//}
 	}

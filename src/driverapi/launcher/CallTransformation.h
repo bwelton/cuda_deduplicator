@@ -358,6 +358,18 @@ struct LSStackGraph {
 				break;
 			}
 		}
+		// Handle case where only the driver API is present
+		if (_found == false) {
+			for(int i = _points.size() - 1; i >= 0; i--) {
+				if (_points[i].libname.find("libcuda") != std::string::npos) {
+					tmpFound = true;
+				} else if (tmpFound == true) {
+					_beforeLibcuda = _points[i];
+					_found = true;
+					break;
+				}
+			}			
+		}
 	};
 };
 

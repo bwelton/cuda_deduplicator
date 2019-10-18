@@ -512,6 +512,39 @@ extern "C" {
 	}
 
 
+	void DIOG_cuMemAllocPreCheck(void ** data, size_t size) {
+		//std::cerr << "We are here! (MALLOCPRE)" << std::endl;
+		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
+			return;
+		DIOGENES_CUDA_MALLOC_ARG = data;
+		DIOGENES_CUDA_MALLOC_SIZE = size;	
+	}
+
+	void DIOG_cuMemAllocCheck() {
+		if(DIOG_WriteTotals == NULL)
+			DIOG_WriteTotals.reset(new WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
+
+		DIOG_WriteTotals->mallocCount++;
+		//std::cerr << "We are here! (MALLOC)" << std::endl;
+		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
+			return;
+		//std::cerr << "We are here! (MALLOC)" << std::endl;
+		if (DIOGENES_CUDA_MALLOC_ARG == NULL)
+			return;
+
+		if (DIOGENES_GetGlobalLock()) {
+			PLUG_BUILD_FACTORY();
+			// Fallback mode, do slow stack walk and save it to file.
+			std::vector<StackPoint> points;
+			bool ret = GET_FP_STACKWALK(points);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(points));
+			PLUG_FACTORY_PTR->GPUMallocData((uint64_t)(*DIOGENES_CUDA_MALLOC_ARG), DIOGENES_CUDA_MALLOC_SIZE, myID);
+			std::cerr << "[DIOGENES::DIOG_CUDAMallocCheck] Unknown Malloc Entry for Identifier = " << myID << std::endl;
+			DIOGENES_CUDA_MALLOC_ARG = NULL;
+			DIOGENES_CUDA_MALLOC_SIZE = 0;
+			DIOGENES_ReleaseGlobalLock();
+		}
+	} 
 	void DIOG_CUDAMallocCheck() {
 		if(DIOG_WriteTotals == NULL)
 			DIOG_WriteTotals.reset(new WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));

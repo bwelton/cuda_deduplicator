@@ -71,7 +71,8 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 				break;
 			}
 		}
-
+		if (useLowLevel) 
+			std::cerr << "[MemRecorder::InsertAnalysis] Internal function detected!" << std::endl; 
 		//if (tmpLibname.find(binary_name) != std::string::npos) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);

@@ -56,7 +56,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	_proc->BeginInsertionSet(); 
 	int64_t ident = 2;
 
-	std::vector<std::string> useLowLevelBindings = {"libcufftw"};
+	std::vector<std::string> useLowLevelBindings = {"libcufft"};
 	for (auto i : _dyninstFunctions) {
 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
 

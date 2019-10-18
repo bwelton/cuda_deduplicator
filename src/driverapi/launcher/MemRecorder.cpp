@@ -194,7 +194,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	std::vector<BPatch_function*> cudaMallocPostwrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAMallocCheck"), wrapper);
 	std::vector<BPatch_function*> cudaFreeWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAFreeCheck"), wrapper);
 
-	std::vector<BPatch_function*> cuMemAlloc_v2 = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemAlloc_v2"), NULL);
+	std::vector<BPatch_function*> cuMemAlloc_v2 = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemAlloc"), NULL);
 	std::vector<BPatch_function*> cuMemAllocPreWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_cuMemAllocPreCheck"), wrapper);
 	std::vector<BPatch_function*> cuMemAllocPostwrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_cuMemAllocCheck"), wrapper);
 	if (cudaMalloc.size() > 1)

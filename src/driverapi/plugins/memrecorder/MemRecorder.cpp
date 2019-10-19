@@ -511,19 +511,21 @@ extern "C" {
 		DIOGENES_CUDA_MALLOC_SIZE = size;	
 	}
 
-
+	std::set<void*> checkMapDiog;
 	void DIOG_cuMemAllocPreCheck(void ** data, size_t size) {
 		//std::cerr << "We are here! (MALLOCPRE)" << std::endl;
-		if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
-			return;
+
+		//if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
+		//	return;
 		DIOGENES_CUDA_MALLOC_ARG = data;
 		DIOGENES_CUDA_MALLOC_SIZE = size;	
 	}
-
+	
 	void DIOG_cuMemAllocCheck() {
 		if(DIOG_WriteTotals == NULL)
 			DIOG_WriteTotals.reset(new WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
 
+		checkMapDiog.insert(*DIOGENES_CUDA_MALLOC_ARG);
 		DIOG_WriteTotals->mallocCount++;
 		//std::cerr << "We are here! (MALLOC)" << std::endl;
 		//if (DIOGENES_GetWrapperStatus() || DIOGENES_TEAR_DOWN == true)
@@ -545,6 +547,11 @@ extern "C" {
 		//	DIOGENES_ReleaseGlobalLock();
 		//}
 	} 
+
+	void DIOG_cuMemcpyDtoHAsyncPrewrapCheck(void * dst, void * src, size_t size, cudaStream_t stream) {
+		if(checkMapDiog.find(src) == checkMapDiog.end())
+			std::cerr << "UNKNOWN MEMORY LOCATION - " << src << std::endl;
+	}
 	void DIOG_CUDAMallocCheck() {
 		if(DIOG_WriteTotals == NULL)
 			DIOG_WriteTotals.reset(new WriteTotals(fopen("DIOGENES_UnknownWriteCount.bin", "wb")));
@@ -570,6 +577,8 @@ extern "C" {
 			DIOGENES_ReleaseGlobalLock();
 		}
 	}
+
+
 
 	void DIOG_CUDAFreeCheck(void * data) {
 		if(DIOG_WriteTotals == NULL)

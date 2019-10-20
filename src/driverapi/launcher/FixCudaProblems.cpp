@@ -238,7 +238,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	InsertPrePostCall(free_glibc[0], freePre[0], false, false, 1);
 	
 
-
+	std::cerr << "Wrapping complete" << std::endl;
 
 	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
 	// std::vector<BPatch_function*> cudaSyncStreamFunc = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, 0x333898);

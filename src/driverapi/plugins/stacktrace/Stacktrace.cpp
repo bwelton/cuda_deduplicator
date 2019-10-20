@@ -58,7 +58,7 @@ public:
 		// }
 		if (id >= 0 && id < 1024){
 			_seenCalls[id] = true;
-			//_callCounts[id]++;
+			_callCounts[id]++;
 		}
 		else {
 			fprintf(stderr, "%s\n", "Unknown ID Seen");
@@ -69,8 +69,8 @@ public:
 		for (int i = 0; i < _seenCalls.size(); i++) {
 			if (_seenCalls[i] == true)
 				fwrite(&i, 1, sizeof(int),_outFile.outFile);
-			// if (_callCounts[i] > 0)
-			// 	std::cerr << "[CallCount] " << i << " - " << _callCounts[i] << std::endl;
+			if (_callCounts[i] > 0)
+			 	std::cerr << "[CallCount] " << i << " - " << _callCounts[i] << std::endl;
 		}
 	};
 private:

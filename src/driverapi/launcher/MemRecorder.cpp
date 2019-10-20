@@ -195,8 +195,6 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	std::vector<BPatch_function*> cudaFreeWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_CUDAFreeCheck"), wrapper);
 
 	std::vector<BPatch_function*> cuMemAlloc_v2 = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemAlloc_v2"), NULL);
-	std::vector<BPatch_function*> cuMemcpyDtoHAsync_v2 = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemcpyDtoHAsync_v2"), NULL);
-	std::vector<BPatch_function*> cuMemcpyDtoHAsyncPreWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_cuMemcpyDtoHAsyncPrewrapCheck"), wrapper);
 	std::vector<BPatch_function*> cuMemAllocPreWrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_cuMemAllocPreCheck"), wrapper);
 	std::vector<BPatch_function*> cuMemAllocPostwrap = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOG_cuMemAllocCheck"), wrapper);
 	if (cudaMalloc.size() > 1)
@@ -211,17 +209,13 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	assert(cuMemAlloc_v2.size() == 1);
 	assert(cuMemAllocPreWrap.size() == 1);
 	assert(cuMemAllocPostwrap.size() == 1);
-	assert(cuMemcpyDtoHAsync_v2.size() == 1);
-	assert(cuMemcpyDtoHAsyncPreWrap.size() == 1);
-
 
 	InsertPrePostCall(cudaMalloc[0], cudaMallocPreWrap[0], false, 2);
 	InsertPrePostCall(cudaMalloc[0], cudaMallocPostwrap[0], true, 0);
 	InsertPrePostCall(cudaFree[0], cudaFreeWrap[0], false, 1);
 	
 
-	InsertPrePostCall(cuMemAlloc_v2[0], cuMemAllocPreWrap[0], false, 2);
-	InsertPrePostCall(cuMemcpyDtoHAsync_v2[0], cuMemcpyDtoHAsyncPreWrap[0], false, 4);
+	//InsertPrePostCall(cuMemAlloc_v2[0], cuMemAllocPreWrap[0], false, 2);
 	InsertPrePostCall(cuMemAlloc_v2[0], cuMemAllocPostwrap[0], true, 0);
 	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
 	// assert(cudaSyncFunctions.size() > 0);

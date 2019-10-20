@@ -820,33 +820,6 @@ cudaError_t DIOGENES_cudaMemcpyAsyncWrapper(void * dst, const void * src, size_t
 	//DIOGENES_Atomic_Malloc.exchange(original);
 	return cudaMemcpyAsync(dst, src, size, kind, stream);
 }
-volatile size_t DIOGENES_MALLOC_SIZE_VALUE = 0;
-void DIOGENES_MALLOC_PRE(size_t size) {
-	DIOGENES_MALLOC_SIZE_VALUE = size;
-}
-
-void DIOGENES_MALLOC_POST(void * retExpression) {
-	size_t cache = DIOGENES_MALLOC_SIZE_VALUE;
-	DIOGENES_MALLOC_SIZE_VALUE = 0;
-	if (cache != 0)
-		if (cudaSuccess != cudaHostRegister(retExpression, cache, cudaHostRegisterDefault))
-			fprintf(stderr, "Could not register memory\n");
-	/*
-	if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
-	
-			
-		DIOGENES_MUTEX_MANAGER->ExitOp();
-	}*/
-	
-}
-
-void DIOGENES_FREE_PRE(void * addr) {
-	/*if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
-		cudaHostUnregister(addr);
-		DIOGENES_MUTEX_MANAGER->ExitOp();
-	}*/
-}
-
 
 void * DIOGENES_MALLOCWrapper(size_t size) {
 	void * tmp = NULL;

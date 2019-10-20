@@ -75,7 +75,7 @@ int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_funct
 }
 
 bool DynOpsClass::IsNeverInstriment(BPatch_function * func) {
-	static std::vector<std::string> librariesToSkip = {"libgcc","xerces-c","libelf", "libscalapack", "dyninst_10", "dyninst/build", "libessl", "dyninst/install","cudadedup-develop", "/opt/mellanox", "/usr/lib64/librt-", "spectrum-mpi", "ld-2.17", "libpthread-2.17.so"};
+	static std::vector<std::string> librariesToSkip = {"libstdc++","libgcc","xerces-c","libelf", "libscalapack", "dyninst_10", "dyninst/build", "libessl", "dyninst/install","cudadedup-develop", "/opt/mellanox", "/usr/lib64/librt-", "spectrum-mpi", "ld-2.17", "libpthread-2.17.so"};
     std::string tmpLibname = func->getModule()->getObject()->pathName();
     for (auto i : librariesToSkip)
     	if (tmpLibname.find(i) != std::string::npos)

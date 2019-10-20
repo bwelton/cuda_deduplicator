@@ -222,6 +222,24 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	}
 
 
+	std::vector<BPatch_function *> malloc_glibc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("__GI___libc_malloc"), NULL);
+	std::vector<BPatch_function *> mallocPre = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_MALLOC_PRE"), wrapper);
+	std::vector<BPatch_function *> postMalloc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_MALLOC_POST"), wrapper);
+	std::vector<BPatch_function *> free_glibc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("__libc_free"), NULL);
+	std::vector<BPatch_function *> freePre = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_FREE_PRE"), wrapper);
+	assert(malloc_glibc.size() == 1);
+	assert(mallocPre.size() == 1);
+	assert(postMalloc.size() == 1);
+	assert(free_glibc.size() == 1);
+	assert(freePre.size() == 1);
+
+	InsertPrePostCall(malloc_glibc[0], mallocPre[0], false, false, 1);
+	InsertPrePostCall(malloc_glibc[0], postMalloc[0], true, true, 0);
+	InsertPrePostCall(free_glibc[0], freePre[0], false, false, 1);
+	
+
+
+
 	// std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
 	// std::vector<BPatch_function*> cudaSyncStreamFunc = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, 0x333898);
 	// assert(cudaSyncFunctions.size() > 0);
@@ -249,6 +267,25 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	// BPatch_funcCallExpr entryExpr(*(syncExit[0]), recordArgs);	
 	// assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
 	// 
+}
+
+
+void FixCudaProblems::InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, bool getReturn, int numParams) {
+	BPatchPointVecPtr locationEntry;
+	if (postCall == false)
+		locationEntry.reset(origFunction->findPoint(BPatch_locEntry));
+	else
+		locationEntry.reset(origFunction->findPoint(BPatch_locExit));
+	std::vector<BPatch_snippet*> recordArgs;
+	for (int i = 0; i < numParams; i++){
+		recordArgs.push_back(new BPatch_paramExpr(i));
+	}	
+	if (getReturn && postCall) {
+		recordArgs.push_back(new BPatch_retExpr());
+	}
+	assert(locationEntry->size() > 0);
+	BPatch_funcCallExpr recordAddrCall(*instrimentation, recordArgs);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,*locationEntry) != NULL);
 }
 
 

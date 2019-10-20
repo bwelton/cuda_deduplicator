@@ -56,6 +56,7 @@ public:
 	FixCudaProblems(std::shared_ptr<DyninstProcess> proc);
 	void InsertAnalysis(StackRecMap & recs);
 	void PostProcessing();
+	void InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, bool getReturn, int numParams);
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	//std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;

@@ -97,6 +97,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	int mallocsReplaced = 0;
 	int mallocsSkipped = 0;
 	for (auto i : _dyninstFunctions) {
+		break;
 		// if (i.second->IsExcludedFunction(LOAD_STORE_INST))
 		// 	continue;
 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);

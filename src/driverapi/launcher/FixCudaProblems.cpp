@@ -234,7 +234,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	assert(free_glibc.size() == 1);
 	assert(freePre.size() == 1);
 
-	//InsertPrePostCall(malloc_glibc[0], mallocPre[0], false, false, 1);
+	InsertPrePostCall(malloc_glibc[0], mallocPre[0], false, false, 1);
 	//InsertPrePostCall(malloc_glibc[0], postMalloc[0], true, true, 0);
 	//InsertPrePostCall(free_glibc[0], freePre[0], false, false, 1);
 	

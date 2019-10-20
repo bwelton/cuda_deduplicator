@@ -20,6 +20,7 @@
 extern "C" {
 	volatile int64_t DIOGENES_CTX_ID = -1;
 	volatile int64_t DIOGENES_UNKNOWN_CTX_ID = 100000000;
+	volatile int64_t DIOGENES_IN_CUMEMCPY_INST = 0;
 }
 
 struct MemAddress {
@@ -606,14 +607,31 @@ extern "C" {
 		return cudaMemcpyAsync(dst,src,size,kind,stream);
 	}
 
+	void DIOGENES_REC_ENTRY_cuMemcpyDtoHAsync(void * dst, CUdeviceptr src, size_t size, cudaStream_t stream) {
+		if (DIOGENES_IN_CUMEMCPY_INST == 1)
+			return;
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			// Do really slow stacktrace to get address
+			std::vector<StackPoint> points;
+			bool ret = GET_FP_STACKWALK(points);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(points));			
+			PLUG_FACTORY_PTR->RecordMemTransfer((uint64_t)dst, myID);
+			DIOGENES_ReleaseGlobalLock();
+		}		
+	}
+
 	CUresult DIOGENES_REC_cuMemcpyDtoHAsync(void * dst, CUdeviceptr src, size_t size, cudaStream_t stream) {
 		int64_t cache = DIOGENES_CTX_ID;
-		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false && DIOGENES_IN_CUMEMCPY_INST == 0) {
 			PLUG_BUILD_FACTORY();
 			PLUG_FACTORY_PTR->RecordMemTransfer((uint64_t)dst, cache);
 			DIOGENES_ReleaseGlobalLock();
 		}
-		return cuMemcpyDtoHAsync(dst,src,size,stream);
+		DIOGENES_IN_CUMEMCPY_INST = 1;
+		CUresult ret = cuMemcpyDtoHAsync(dst,src,size,stream);
+		DIOGENES_IN_CUMEMCPY_INST = 0;
+		return ret;
 	}
 	// void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
 	// 	int64_t cache = DIOGENES_CTX_ID;

@@ -827,15 +827,17 @@ void DIOGENES_MALLOC_PRE(size_t size) {
 
 void DIOGENES_MALLOC_POST(void * retExpression) {
 	size_t cache = DIOGENES_MALLOC_SIZE_VALUE;
-	if (cudaSuccess != cudaHostRegister(retExpression, cache, cudaHostRegisterDefault))
-		fprintf(stderr, "Could not register memory\n");
+	DIOGENES_MALLOC_SIZE_VALUE = 0;
+	if (cache != 0)
+		if (cudaSuccess != cudaHostRegister(retExpression, cache, cudaHostRegisterDefault))
+			fprintf(stderr, "Could not register memory\n");
 	/*
 	if (DIOGENES_MUTEX_MANAGER->EnterOp()) {
 	
 			
 		DIOGENES_MUTEX_MANAGER->ExitOp();
 	}*/
-	DIOGENES_MALLOC_SIZE_VALUE = 0;
+	
 }
 
 void DIOGENES_FREE_PRE(void * addr) {

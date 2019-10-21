@@ -202,7 +202,6 @@ MemManage::MemManage() :  _cpuStats(new MemStats(std::string("CPU"))), _gpuStats
 				_gpuMemSize[size] = std::vector<void *>();
 			_gpuMemSize[size].push_back(*mem);
 		}
-
 	}
 }
 

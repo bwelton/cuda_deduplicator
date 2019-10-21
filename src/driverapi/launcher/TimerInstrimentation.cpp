@@ -44,7 +44,7 @@ void TimerInstrimentation::InsertTimers(StackRecMap & recs) {
 			InsertTimer(i, curId);
 		_idToFunc[curId] = GetPointFromBpatchFunc(i);
 		curId++;
-		break;
+		//break;
 	}
 
 }

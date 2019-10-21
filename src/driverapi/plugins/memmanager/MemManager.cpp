@@ -198,10 +198,11 @@ MemManage::MemManage() :  _cpuStats(new MemStats(std::string("CPU"))), _gpuStats
 		if (tmp == cudaSuccess){
 			_gpuStats->AllocatedMemory(size);
 			_gpuMem[*((uint64_t*)mem)] = size;	
+			if (_gpuMemSize.find(size) == _gpuMemSize.end())
+				_gpuMemSize[size] = std::vector<void *>();
+			_gpuMemSize[size].push_back(*mem);
 		}
-		bool sync = false;
-		GPUFree(*mem,sync);
-		assert(sync == false);
+
 	}
 }
 

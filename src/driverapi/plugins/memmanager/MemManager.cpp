@@ -190,17 +190,43 @@ void MemStats::FreedMemory(uint64_t size) {
 
 
 MemManage::MemManage() :  _cpuStats(new MemStats(std::string("CPU"))), _gpuStats(new MemStats(std::string("GPU"))) {
-
+	// Allocate if we must...
+	for (int i = 0; i < 30; i++) {
+		void ** mem;
+		size_t size = 80000000;
+		cudaError_t tmp = cudaMalloc(mem, size);
+		if (tmp == cudaSuccess){
+			_gpuStats->AllocatedMemory(size);
+			_gpuMem[*((uint64_t*)mem)] = size;	
+		}
+		GPUFree(*mem,false);
+	}
 }
 
 bool FindFreeMemory(std::map<uint64_t, std::vector<void *> >  & memRegions, void ** mem, uint64_t size) {
-	if(memRegions.find(size) != memRegions.end())
+	auto itpair =  memRegions.equal_range(size);
+	if (itpair.first != memRegions.end() && itpair.first->first == size) {
+		if(itpair.first->second.size() > 0) {
+			*mem = itpair.first->second.back();
+			itpair.first->second.pop_back();
+			return true;
+		}
+	}
+	if (itpair.second != memRegions.end())
+		if (itpair.second->first > size) {
+			if (itpair.second->second.size() > 0) {
+				*mem = itpair.first->second.back();
+				itpair.first->second.pop_back();
+				return true;				
+			}
+		}
+	/*if(memRegions.find(size) != memRegions.end())
 		if (memRegions[size].size() > 0){
 			*mem = (memRegions[size].back());
 			memRegions[size].pop_back();
 			return true;
 		}
-
+	*/
 	return false;
 }
 

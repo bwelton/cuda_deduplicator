@@ -199,7 +199,8 @@ MemManage::MemManage() :  _cpuStats(new MemStats(std::string("CPU"))), _gpuStats
 			_gpuStats->AllocatedMemory(size);
 			_gpuMem[*((uint64_t*)mem)] = size;	
 		}
-		GPUFree(*mem,false);
+		bool sync = false;
+		GPUFree(*mem,sync);
 	}
 }
 

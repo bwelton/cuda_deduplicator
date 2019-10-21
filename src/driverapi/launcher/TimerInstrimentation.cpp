@@ -40,8 +40,8 @@ void TimerInstrimentation::InsertTimers(StackRecMap & recs) {
 
 	uint64_t curId = 1;
 	for (auto i : instFuncs) {
-		InsertTimer(i, curId);
-		_idToFunc[curId] = GetPointFromBpatchFunc(i);
+		//InsertTimer(i, curId);
+		//_idToFunc[curId] = GetPointFromBpatchFunc(i);
 		curId++;
 	}
 

@@ -4,7 +4,7 @@
 #include <set>
 #include "DetectDuplicateStackpoints.h"
 #define FIX_CUDAMEMFREE 1
-#define FIX_ASYNCTRANS_NOWRAP 1
+//#define FIX_ASYNCTRANS_NOWRAP 1
 // #define FIX_ASYNCTRANS_WWRAP 0
 
 FixCudaProblems::FixCudaProblems(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
@@ -113,14 +113,14 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 				std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) <<  " @ address= " << std::hex << x.GetPointAddress() << std::dec << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
 					#ifdef FIX_CUDAMEMFREE
-					if (remPoints->CheckArray(CUFREE_REP, x.GetStackPoint())) {		
+					i//f (remPoints->CheckArray(CUFREE_REP, x.GetStackPoint())) {		
 					    if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
     					    continue;			
 						freesReplaced++;
 						std::cerr << "Found function call to cudaFree in " << tmpFuncName 
 						          << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
 						x.ReplaceFunctionCall(cudaFreeWrapper[0]);
-
+					/*
 					} else if (remPoints->CheckArray(CUFREE_REQUIRED, x.GetStackPoint())) {		
 					    if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
     					    continue;			
@@ -130,12 +130,12 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 						x.ReplaceFunctionCall(cudaFreeSyncWrapper[0]);
 					} else {
 						freesSkipped++;
-					}
+					}*/
 					#endif
 				}
 				if (*(x.GetCalledFunction()) == std::string("cudaMalloc")) {
 					#ifdef FIX_CUDAMEMFREE
-					if (remPoints->CheckArray(CUMALLOC_REP, x.GetStackPoint())) {
+					//if (remPoints->CheckArray(CUMALLOC_REP, x.GetStackPoint())) {
 						std::cerr << "Found function call to cudaMalloc in " << tmpFuncName << " within library " 
 						          << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")" << std::endl;
         				//if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
@@ -143,9 +143,9 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 						mallocsReplaced++;
 
 						x.ReplaceFunctionCall(cudaMallocWrapper[0]);
-					} else {
-						mallocsSkipped++;
-					}
+					//} else {
+					//	mallocsSkipped++;
+					//}
 					#endif
 				}
 				if (*(x.GetCalledFunction()) == std::string("__GI___libc_malloc")){

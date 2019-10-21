@@ -330,10 +330,13 @@ struct StackKeyReader {
 		in = fp;
 	}
 	~StackKeyReader() {
-		fclose(in);
+		if (in != NULL)
+			fclose(in);
 	}
 	std::map<uint64_t, std::vector<StackPoint> > ReadStacks() {
 		std::map<uint64_t, std::vector<StackPoint> > ret;
+		if (in == NULL)
+			return ret;
 		fseek(in, 0, SEEK_END);
   		uint64_t size = ftell(in);
   		fseek(in, 0, SEEK_SET);

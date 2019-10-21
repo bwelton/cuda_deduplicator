@@ -206,7 +206,7 @@ MemManage::MemManage() :  _cpuStats(new MemStats(std::string("CPU"))), _gpuStats
 }
 
 bool FindFreeMemory(std::map<uint64_t, std::vector<void *> >  & memRegions, void ** mem, uint64_t size) {
-	/*auto itpair =  memRegions.equal_range(size);
+	auto itpair =  memRegions.equal_range(size);
 	if (itpair.first != memRegions.end() && itpair.first->first == size) {
 		if(itpair.first->second.size() > 0) {
 			*mem = itpair.first->second.back();
@@ -221,14 +221,14 @@ bool FindFreeMemory(std::map<uint64_t, std::vector<void *> >  & memRegions, void
 				itpair.second->second.pop_back();
 				return true;				
 			}
-		}*/
-	if(memRegions.find(size) != memRegions.end())
+		}
+	/*if(memRegions.find(size) != memRegions.end())
 		if (memRegions[size].size() > 0){
 			*mem = (memRegions[size].back());
 			memRegions[size].pop_back();
 			return true;
 		}
-	
+	*/
 	return false;
 }
 

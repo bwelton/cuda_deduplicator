@@ -201,6 +201,7 @@ MemManage::MemManage() :  _cpuStats(new MemStats(std::string("CPU"))), _gpuStats
 		}
 		bool sync = false;
 		GPUFree(*mem,sync);
+		assert(sync == false);
 	}
 }
 

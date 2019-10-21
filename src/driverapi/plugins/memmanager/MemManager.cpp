@@ -216,8 +216,8 @@ bool FindFreeMemory(std::map<uint64_t, std::vector<void *> >  & memRegions, void
 	if (itpair.second != memRegions.end())
 		if (itpair.second->first > size) {
 			if (itpair.second->second.size() > 0) {
-				*mem = itpair.first->second.back();
-				itpair.first->second.pop_back();
+				*mem = itpair.second->second.back();
+				itpair.second->second.pop_back();
 				return true;				
 			}
 		}

@@ -113,7 +113,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 				std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) <<  " @ address= " << std::hex << x.GetPointAddress() << std::dec << std::endl;
 				if (*(x.GetCalledFunction()) == std::string("cudaFree")){
 					#ifdef FIX_CUDAMEMFREE
-					i//f (remPoints->CheckArray(CUFREE_REP, x.GetStackPoint())) {		
+					//if (remPoints->CheckArray(CUFREE_REP, x.GetStackPoint())) {		
 					    if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
     					    continue;			
 						freesReplaced++;

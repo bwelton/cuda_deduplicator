@@ -66,24 +66,29 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	BPatch_variableExpr * cmemcpyvar = img->findVariable("DIOGENES_TMP_GLOBALC_CMEMCPY_PTR", true);
 	BPatch_variableExpr * cmemcpyasyncvar = img->findVariable("DIOGENES_TMP_GLOBALC_CMEMCPYASYNC_PTR", true);
 	{
-		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cudaMemcpy"), NULL);
-		bool found = false;
-		for (auto i : cmemcpy) {
-			std::string tmpLib = i->getModule()->getObject()->pathName();
-			if (tmpLib.find("cufft") != std::string::npos) 
-				if (found == false) {
+		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemcpyDtoH_v2"), libcuda);
+		//std::string tmpLib = cmemcpy[0]->getModule()->getObject()->pathName();
+		void * tempAddr = (i->getBaseAddr());
+		cmemcpyvar->writeValue(&tempAddr, 8);
+		//bool found = false;
+		//for (auto i : cmemcpy) {
+			//std::string tmpLib = i->getModule()->getObject()->pathName();
+			//if (tmpLib.find("cufft") != std::string::npos) 
+		/*		if (found == false) {
 					found = true;
 					void * tempAddr = (i->getBaseAddr());
 					cmemcpyvar->writeValue(&tempAddr, 8);
 				} else {
 					assert("FOUND 2 CUDAMEMCPY FUNCTIONS!!!!" == 0);
-				}
-		}
-		assert(found != false);
+				}*/
+		//}
+		//assert(found != false);
 	}
 	{
-		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cudaMemcpyAsync"), NULL);
-		bool found = false;
+		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemcpyDtoHAsync_v2"), libcuda);
+		void * tempAddr = (i->getBaseAddr());
+		cmemcpyasyncvar->writeValue(&tempAddr, 8);
+		/*bool found = false;
 		for (auto i : cmemcpy) {
 			std::string tmpLib = i->getModule()->getObject()->pathName();
 			if (tmpLib.find("cufft") != std::string::npos) 
@@ -95,7 +100,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 					assert("FOUND 2 CUDAMEMCPYASYNC FUNCTIONS!!!!" == 0);
 				}
 		}
-		assert(found != false);
+		assert(found != false);*/
 	}	
     img->getProcedures(all_functions);
     for (auto i : all_functions) {

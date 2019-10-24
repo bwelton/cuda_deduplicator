@@ -73,9 +73,10 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 			if (tmpLib.find("cufft") != std::string::npos) 
 				if (found == false) {
 					found = true;
-					cmemcpyvar->writeValue(&(i->getBaseAddr()), 8);
+					void * tempAddr = (i->getBaseAddr());
+					cmemcpyvar->writeValue(&tempAddr, 8);
 				} else {
-					assert("FOUND 2 CUDAMEMCPY FUNCTIONS!!!!" == 1);
+					assert("FOUND 2 CUDAMEMCPY FUNCTIONS!!!!" == 0);
 				}
 		}
 	}
@@ -87,9 +88,10 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 			if (tmpLib.find("cufft") != std::string::npos) 
 				if (found == false) {
 					found = true;
-					cmemcpyasyncvar->writeValue(&(i->getBaseAddr()), 8);
+					void * tempAddr = (i->getBaseAddr());
+					cmemcpyasyncvar->writeValue(&tempAddr, 8);
 				} else {
-					assert("FOUND 2 CUDAMEMCPY FUNCTIONS!!!!" == 1);
+					assert("FOUND 2 CUDAMEMCPYASYNC FUNCTIONS!!!!" == 0);
 				}
 		}
 	}	

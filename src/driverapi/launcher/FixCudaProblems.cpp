@@ -145,14 +145,14 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 
 		if (tmpFuncName.find("DIOGENES_") != std::string::npos || tmpLibname.find("/lib/plugins/") != std::string::npos)
 			continue;
-		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos || tmpLibname.find("libcudart") != std::string::npos)
+		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos || tmpLibname.find("libcudart") != std::string::npos  || tmpLibname.find("libcuda") != std::string::npos)
 			continue;
 		
 		//if (tmpLibname.find(binary_name) != std::string::npos) {
 			std::vector<DyninstCallsite> callsites;
 			i.second->GetCallsites(callsites);
 			for (auto x : callsites) {
-				if (*(x.GetCalledFunction()) == std::string("cudaMemcpy")){
+				if (*(x.GetCalledFunction()) == std::string("cuMemcpyDtoH_v2")){
 					std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) <<  " @ address= " << std::hex << x.GetPointAddress() << " in function " << tmpFuncName << std::dec << std::endl;
 					x.ReplaceFunctionCall(testCudaMemcpySyncWrapper[0]);
 				}

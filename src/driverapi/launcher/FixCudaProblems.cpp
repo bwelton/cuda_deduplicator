@@ -68,7 +68,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	{
 		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemcpyDtoH_v2"), libcuda);
 		//std::string tmpLib = cmemcpy[0]->getModule()->getObject()->pathName();
-		void * tempAddr = (i->getBaseAddr());
+		void * tempAddr = (cmemcpy[0]->getBaseAddr());
 		cmemcpyvar->writeValue(&tempAddr, 8);
 		//bool found = false;
 		//for (auto i : cmemcpy) {
@@ -86,7 +86,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	}
 	{
 		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemcpyDtoHAsync_v2"), libcuda);
-		void * tempAddr = (i->getBaseAddr());
+		void * tempAddr = (cmemcpy[0]->getBaseAddr());
 		cmemcpyasyncvar->writeValue(&tempAddr, 8);
 		/*bool found = false;
 		for (auto i : cmemcpy) {

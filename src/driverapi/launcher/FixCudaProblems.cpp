@@ -79,6 +79,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 					assert("FOUND 2 CUDAMEMCPY FUNCTIONS!!!!" == 0);
 				}
 		}
+		assert(found != false);
 	}
 	{
 		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cudaMemcpyAsync"), NULL);
@@ -94,6 +95,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 					assert("FOUND 2 CUDAMEMCPYASYNC FUNCTIONS!!!!" == 0);
 				}
 		}
+		assert(found != false);
 	}	
     img->getProcedures(all_functions);
     for (auto i : all_functions) {

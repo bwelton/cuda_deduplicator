@@ -70,7 +70,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 		bool found = false;
 		for (auto i : cmemcpy) {
 			std::string tmpLib = i->getModule()->getObject()->pathName();
-			if (tmpLib.find("cufft") != tmpLib.end()) 
+			if (tmpLib.find("cufft") != std::string::npos) 
 				if (found == false) {
 					found = true;
 					cmemcpyvar->writeValue(&(i->getBaseAddr()), 8);
@@ -84,7 +84,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 		bool found = false;
 		for (auto i : cmemcpy) {
 			std::string tmpLib = i->getModule()->getObject()->pathName();
-			if (tmpLib.find("cufft") != tmpLib.end()) 
+			if (tmpLib.find("cufft") != std::string::npos) 
 				if (found == false) {
 					found = true;
 					cmemcpyasyncvar->writeValue(&(i->getBaseAddr()), 8);

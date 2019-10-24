@@ -907,17 +907,16 @@ void DIOGENES_FREEWrapper(void * mem) {
 		DIOGENES_TRANSFER_MEMMANGE->ReleaseMemory(mem);
 	} 
 }
-// extern "C" {
-// int (*DIOGENES_TMP_GLOBALC_CMEMCPY_PTR)(void *, const void *, size_t, cudaMemcpyKind);
-// int (*DIOGENES_TMP_GLOBALC_CMEMCPYASYNC_PTR)(void *, const void *, size_t, cudaMemcpyKind, cudaStream_t);
+int (*DIOGENES_TMP_GLOBALC_CMEMCPY_PTR)(void *, const void *, size_t, cudaMemcpyKind);
+int (*DIOGENES_TMP_GLOBALC_CMEMCPYASYNC_PTR)(void *, const void *, size_t, cudaMemcpyKind, cudaStream_t);
 
 
-// int DIOGENES_cudaMemcpySyncWrapper(void * src, const void * dst, size_t count, cudaMemcpyKind kind){
-// 	fprintf(stderr, "Pointer to CMEMCPY is... %p\n",DIOGENES_TMP_GLOBALC_CMEMCPY_PTR);
-// 	if (kind != cudaMemcpyHostToDevice)
-// 		return DIOGENES_TMP_GLOBALC_CMEMCPY_PTR(src, dst, count, kind);
-// 	return DIOGENES_TMP_GLOBALC_CMEMCPY_PTR(src, dst, count, kind);
-// 	//return DIOGENES_TMP_GLOBALC_CMEMCPYASYNC_PTR(src, dst, count, kind, 0);
-// }
-// }
+int DIOGENES_cudaMemcpySyncWrapper(void * src, const void * dst, size_t count, cudaMemcpyKind kind){
+	fprintf(stderr, "Pointer to CMEMCPY is... %p\n",DIOGENES_TMP_GLOBALC_CMEMCPY_PTR);
+	if (kind != cudaMemcpyHostToDevice)
+		return DIOGENES_TMP_GLOBALC_CMEMCPY_PTR(src, dst, count, kind);
+	return DIOGENES_TMP_GLOBALC_CMEMCPY_PTR(src, dst, count, kind);
+	//return DIOGENES_TMP_GLOBALC_CMEMCPYASYNC_PTR(src, dst, count, kind, 0);
+}
+}
 

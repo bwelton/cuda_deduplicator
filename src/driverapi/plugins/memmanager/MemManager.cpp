@@ -913,9 +913,9 @@ int (*DIOGENES_TMP_GLOBALC_CMEMCPYASYNC_PTR)(void *, const void *, size_t, cudaS
 
 int DIOGENES_cudaMemcpySyncWrapper(void * src, const void * dst, size_t count){
 	fprintf(stderr, "Pointer to CMEMCPY is... %p\n",DIOGENES_TMP_GLOBALC_CMEMCPY_PTR);
-	if (kind != cudaMemcpyHostToDevice)
+	//if (kind != cudaMemcpyHostToDevice)
 		return DIOGENES_TMP_GLOBALC_CMEMCPY_PTR(src, dst, count);
-	return DIOGENES_TMP_GLOBALC_CMEMCPY_PTR(src, dst, count);
+	//return DIOGENES_TMP_GLOBALC_CMEMCPY_PTR(src, dst, count);
 	//return DIOGENES_TMP_GLOBALC_CMEMCPYASYNC_PTR(src, dst, count, kind, 0);
 }
 }

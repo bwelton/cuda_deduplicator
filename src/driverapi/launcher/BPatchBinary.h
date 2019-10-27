@@ -20,6 +20,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <mutex>
+#include <fstream>
 #include <queue>
 #include <boost/program_options.hpp>
 

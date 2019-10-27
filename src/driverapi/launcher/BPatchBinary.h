@@ -104,7 +104,7 @@ struct FuncCFG{
 		}
 		for (auto i : children) {
 			traveresed.insert(i);
-			tmp += i->GetDotString() + "\n";
+			tmp += i->GetDotString(traveresed) + "\n";
 		}
 		_dotString =  tmp;
 		return tmp;

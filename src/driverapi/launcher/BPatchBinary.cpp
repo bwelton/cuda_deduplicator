@@ -86,7 +86,7 @@ std::vector<uint64_t> BPatchBinary::FindSyncCandidates() {
 		std::unordered_set<std::shared_ptr<FuncCFG>> tmp_set;
 		tmp_set.insert(i);
 		std::string diaGraph = i->GetDotString(tmp_set);
-		diaGraph = "graph " + i->getName() + "_graph {\n" + diaGraph + "\n}"
+		diaGraph = "graph " + i->getName() + "_graph {\n" + diaGraph + "\n}";
 		std::ofstream diaFile(i->getName() + ".dot",  std::ofstream::out);
 		diaFile << diaGraph << std::endl;
 		diaFile.close();

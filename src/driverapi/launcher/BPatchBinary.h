@@ -100,7 +100,7 @@ struct FuncCFG{
 
 		std::string tmp;
 		for (auto i : children) {
-			tmp +=  getName() + " -> " + i->getName() + ";\n"
+			tmp +=  getName() + " -> " + i->getName() + ";\n";
 		}
 		for (auto i : children) {
 			traveresed.insert(i);

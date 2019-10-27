@@ -167,7 +167,8 @@ struct StackPoint {
 		DeserializeBool(fp, inMain);
 		DeserializeBool(fp, empty);
 		ReadUint64(fp, lineNum);
-		DeserializeString(fp, fileName);		
+		DeserializeString(fp, fileName);
+		_cached = false;		
 	}
 
 	int Deserialize(char * data, int len) {
@@ -191,6 +192,7 @@ struct StackPoint {
 #endif
 		empty = false;
 		pos += sizeof(uint64_t);
+		_cached = false;
 		return pos;
 	}
 

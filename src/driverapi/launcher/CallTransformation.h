@@ -349,7 +349,18 @@ struct LSStackGraph {
 	bool _required;
 	LSStackGraph(std::vector<StackPoint> points, uint64_t oID) : _points(points), _oID(oID), _idPointID(-1),_found(false), _required(false) {
 		bool tmpFound = false;
-		for(int i = _points.size() - 1; i >= 0; i--) {
+
+		for (int i = 0; i < _points.size(); i++) {
+			if (_points[i].IsDriverAPI() || _points[i].IsRuntimeAPI()) {
+				if (i - 1 >= 0) {
+					_beforeLibcuda = _points[i-1];
+					_found = true;					
+				}
+				return;
+			}
+		}
+
+/*		for(int i = _points.size() - 1; i >= 0; i--) {
 			if (_points[i].libname.find("libcudart") != std::string::npos) {
 				tmpFound = true;
 			} else if (tmpFound == true) {
@@ -358,6 +369,7 @@ struct LSStackGraph {
 				break;
 			}
 		}
+*/
 	};
 };
 

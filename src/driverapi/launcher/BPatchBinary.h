@@ -66,11 +66,14 @@ private:
 };
 
 struct FuncCFG{ 
-	FuncCFG(BPatch_function * in, int count) : func(in), _seenIds(count, false) {};
+	FuncCFG(BPatch_function * in, int count) : func(in), _seenIds(count, false), _dotString(""), _inTraversal(false) {};
 	std::vector<bool> _seenIds;
 	std::unordered_set<std::shared_ptr<FuncCFG>> parents;
 	std::unordered_set<std::shared_ptr<FuncCFG>> children;
 	BPatch_function * func; 
+	std::string _dotString;
+	bool _inTraversal;
+
 
 	void SetSeen(int id) {
 		_seenIds[id] = true;
@@ -87,6 +90,26 @@ struct FuncCFG{
 	void InsertParent(std::shared_ptr<FuncCFG> par) {
 		parents.insert(par);
 	}
+
+	std::string GetDotString(std::unordered_set<std::shared_ptr<FuncCFG>> & traveresed) {
+		if (_inTraversal)
+			return std::string("");
+		_inTraversal = true;
+		if (_dotString != std::string(""))
+			return _dotString;
+
+		std::string tmp;
+		for (auto i : children) {
+			tmp +=  getName() + " -> " + i->getName() + ";\n"
+		}
+		for (auto i : children) {
+			traveresed.insert(i);
+			tmp += i->GetDotString() + "\n";
+		}
+		_dotString =  tmp;
+		return tmp;
+	};
+
 	std::string getName() {
 		return func->getName();
 	};

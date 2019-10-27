@@ -46,6 +46,7 @@
 #include "SerializeTypes.h"
 //#define SP_DEBUG 1
 
+enum SPPointType {NONE = 0, LIBCUDART = 1, LIBCUDA = 2}; 
 
 struct StackPoint {
 	std::string libname;
@@ -58,17 +59,50 @@ struct StackPoint {
 	// Not used for anything other than giving to python analysis tool....
 	uint64_t lineNum;
 	std::string fileName;
+
+	// Not saved
+	bool _cached;
+	SPPointType _ptype;
 	StackPoint(std::string _libname, std::string _funcName, uint64_t _libOffset, uint64_t _funcOffset) : empty(false), libname(_libname), funcName(_funcName), libOffset(_libOffset), funcOffset(_funcOffset) 
 	{
 		fileName = std::string("");
 		lineNum = 0;
 		inMain = false;
+		_cached = false;
 	};
+
+
 
 	StackPoint() : empty(true), libOffset(0), funcOffset(0), funcName(std::string("")), libname(std::string("")) {
 		fileName = std::string("");
 		lineNum = 0;
 		inMain = false;
+		_cached = false;
+	};
+
+	void SetPType() {
+		if (_cached)
+			return;
+		_cached = true;
+		if (libname.find("libcudart") != std::string::npos)
+			_ptype =LIBCUDART;
+		else if (libname.find("libcuda") != std::string::npos) 
+			_ptype = LIBCUDA;
+		else
+			_ptype = NONE;
+	};
+
+	bool IsDriverAPI() {
+		SetPType();
+		if (_ptype == LIBCUDA)
+			return true;
+		return false;
+	};
+	bool IsRuntimeAPI() {
+		SetPType();
+		if (_ptype == LIBCUDART)
+			return true;
+		return false;		
 	};
 
 	bool IsEqual(StackPoint & other) {

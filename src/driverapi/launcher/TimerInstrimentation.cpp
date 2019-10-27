@@ -40,8 +40,8 @@ void TimerInstrimentation::InsertTimers(StackRecMap & recs) {
 
 	uint64_t curId = 1;
 	for (auto i : instFuncs) {
-		if (curId != 3)
-			InsertTimer(i, curId);
+		//if (curId != 3)
+		InsertTimer(i, curId);
 		_idToFunc[curId] = GetPointFromBpatchFunc(i);
 		curId++;
 		//break;

@@ -136,6 +136,8 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 			_func->relocateFunction();
 		return;
 	}
+	if (_obj->pathName().find("libcufft") != std::string::npos)
+		return;
 	_lsDone = true;
 	if (_func->getName().find("__device_stub__") != std::string::npos || 
 		//_func->getName().find("thrust::") != std::string::npos ||

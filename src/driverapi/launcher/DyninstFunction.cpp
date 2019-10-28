@@ -130,6 +130,8 @@ void DyninstFunction::EntryExitWrapping() {
 void DyninstFunction::InsertLoadStoreAnalysis() {
 	//if(_wrapper.InsertLoadStoreInstrimentation(_func, _bmap))
 	//	return;
+	if (_func->getName().find("xerces") != std::string::npos)
+		return;
 	if (_obj->pathName().find("qb") != std::string::npos)
 		_func->relocateFunction();
 	return;

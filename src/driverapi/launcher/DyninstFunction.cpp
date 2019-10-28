@@ -205,7 +205,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 			std::get<1>(_insertedInst[(uint64_t)i->getAddress()]) = writeValue;
 		}
 	}
-	if (AddedLoadStoreInst == true)
+	//if (AddedLoadStoreInst == true)
 		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Load store analysis inserted into function: " << _func->getName() << " in library " << libname << std::endl;
 	if (_obj->pathName().find("cuibm") != std::string::npos && _addedTRAC == false  && _addedLS == false)
                _func->relocateFunction();

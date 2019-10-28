@@ -69,13 +69,13 @@ std::string DyninstFunction::PrintInst(InstStats & stats) {
 }
 
 void DyninstFunction::EntryExitWrapping() {
-
+	return;
 	// Find the function calls being made
 	if(_exitEntryDone == true)
 		return;
 	std::string libname = _obj->pathName();
 	// Skip entry/exit instrimentation on libcuda
-	if (libname.find("libcuda.so") != std::string::npos || libname.find("libcufftw") != std::string::npos) {
+	if (libname.find("libcuda.so") != std::string::npos) {
 		_exitEntryDone = true;
 		return;
 	}

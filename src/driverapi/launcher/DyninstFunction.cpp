@@ -136,7 +136,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	_lsDone = true;
 	if (_func->getName().find("__device_stub__") != std::string::npos || 
 		//_func->getName().find("thrust::") != std::string::npos ||
-		//_func->getName().find("std::string::_Rep") != std::string::npos ||
+		_func->getName().find("std::string::_Rep") != std::string::npos ||
 		_func->getName().find("cudaRegisterAll") != std::string::npos ||
 		//_func->getName().find("YAML::") != std::string::npos ||
 		_func->getName().find("__tcf_0") != std::string::npos)
@@ -162,6 +162,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		return;
 	std::set<uint64_t> exclude;
 	uint64_t setID = 0;
+	bool AddedLoadStoreInst = false;
 	// Check for non-returning functions (not supported)
 	if (!GenExclusionSet(exclude))
 		return;
@@ -177,6 +178,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 			if(_bmap->AlreadyExists(libname, libOffsetAddr)){
 				writeValue = -1;
 			} else {
+				AddedLoadStoreInst = true;
 				std::vector<BPatch_point*> singlePoint;
 				singlePoint.push_back(i);
 				writeValue = 1;
@@ -198,6 +200,8 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 			std::get<1>(_insertedInst[(uint64_t)i->getAddress()]) = writeValue;
 		}
 	}
+	if (AddedLoadStoreInst == true)
+		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Load store analysis inserted into function: " << _func->getName() << " in library " << libname << std::endl;
 	if (_obj->pathName().find("cuibm") != std::string::npos && _addedTRAC == false  && _addedLS == false)
                _func->relocateFunction();
 

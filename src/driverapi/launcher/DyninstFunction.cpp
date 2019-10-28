@@ -128,6 +128,7 @@ void DyninstFunction::EntryExitWrapping() {
 }
 
 void DyninstFunction::InsertLoadStoreAnalysis() {
+	return;
 	if(_wrapper.InsertLoadStoreInstrimentation(_func, _bmap))
 		return;
 	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone || _entrySize < (0x4 * 7) ){

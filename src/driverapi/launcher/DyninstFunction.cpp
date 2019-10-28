@@ -121,6 +121,8 @@ void DyninstFunction::EntryExitWrapping() {
 			std::get<0>(_insertedInst[(uint64_t)i->getAddress()]) = writeValue;
 		}
 	}
+	if (_addedTRAC == true)
+		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Entry Exit Wrapping inserted into function: " << _func->getName() << " in library " << libname << std::endl;
 	_exitEntryDone = true;
 }
 

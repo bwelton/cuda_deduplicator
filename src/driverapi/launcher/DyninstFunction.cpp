@@ -139,7 +139,8 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	
 	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone || _entrySize < (0x4 * 7) ){
 		_lsDone = true;
-		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis by IsExcludedFunction or its size is too small" << std::endl;
+		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis by IsExcludedFunction or its size is too small (" << _entrySize << ")" << std::endl;
+
 		if (_obj->pathName().find("cuibm") != std::string::npos && _addedTRAC == false )
 			_func->relocateFunction();
 		return;

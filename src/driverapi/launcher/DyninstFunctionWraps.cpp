@@ -662,7 +662,7 @@ bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func
 	BPatch_object * obj = func->getModule()->getObject();
 	if (obj->pathName().find(DFW_MAP[tmpName].library) == std::string::npos)
 		return false;
-	return true;
+	//return true;
 //	std::cerr << "[DyninstFunctionWraps::InsertLoadStoreInstrimentation] Inserting custom function wrap for function " 
 //		      << func->getName() << " In library " <<  DFW_MAP[tmpName].library << std::endl;
 

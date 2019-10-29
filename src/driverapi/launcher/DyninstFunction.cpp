@@ -130,19 +130,24 @@ void DyninstFunction::EntryExitWrapping() {
 void DyninstFunction::InsertLoadStoreAnalysis() {
 	if(_wrapper.InsertLoadStoreInstrimentation(_func, _bmap))
 		return;
-	if (_func->getName().find("xerces") != std::string::npos || _func->getName().find("RuntimeException") != std::string::npos || _func->getName().find("Exception") != std::string::npos)
+	if (_func->getName().find("xerces") != std::string::npos || _func->getName().find("RuntimeException") != std::string::npos || _func->getName().find("Exception") != std::string::npos) {
+		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis by being in xerces (and unsupported library)" << std::endl;
 		return;
-	if (_obj->pathName().find("qb") != std::string::npos)
-	 	_func->relocateFunction();
+	}
+	// if (_obj->pathName().find("qb") != std::string::npos)
+	//  	_func->relocateFunction();
 	
 	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone || _entrySize < (0x4 * 7) ){
 		_lsDone = true;
+		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis by IsExcludedFunction or its size is too small" << std::endl;
 		if (_obj->pathName().find("cuibm") != std::string::npos && _addedTRAC == false )
 			_func->relocateFunction();
 		return;
 	}
-	if (_obj->pathName().find("libcufft") != std::string::npos)
+	if (_obj->pathName().find("libcufft") != std::string::npos){
+		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis by being libcufft" << std::endl;
 		return;
+	}
 	_lsDone = true;
 	if (_func->getName().find("__device_stub__") != std::string::npos || 
 		//_func->getName().find("thrust::") != std::string::npos ||
@@ -162,20 +167,26 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	assert(recordMemAccess.size() == 1);
 	std::string libname = _obj->pathName();
  	if (libname.find("/lib64/ld64") != std::string::npos || 
-	    libname.find("lib/spectrum_mpi/") != std::string::npos)
+	    libname.find("lib/spectrum_mpi/") != std::string::npos) {
+ 		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis by being in spectrum_mpi/ld64" << std::endl;
  		return;
+ 	}
 	std::set<BPatch_opCode> axs;
 	axs.insert(BPatch_opLoad);
 	axs.insert(BPatch_opStore);
 	BPatchPointVecPtr loadsAndStores(_func->findPoint(axs));
-	if (loadsAndStores == NULL)
+	if (loadsAndStores == NULL){
+		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis due to no load stores" << std::endl;
 		return;
+	}
 	std::set<uint64_t> exclude;
 	uint64_t setID = 0;
 	bool AddedLoadStoreInst = false;
 	// Check for non-returning functions (not supported)
-	if (!GenExclusionSet(exclude))
+	if (!GenExclusionSet(exclude)) {
+		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis due being a non-returning function" << std::endl;
 		return;
+	}
 	for (auto i : *loadsAndStores) {
 		int writeValue = 0;
 		uint64_t addr = (uint64_t)i->getAddress();
@@ -211,7 +222,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		}
 	}
 	//if (AddedLoadStoreInst == true)
-		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Load store analysis inserted into function: " << _func->getName() << " in library " << libname << std::endl;
+	std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Load store analysis inserted into function: " << _func->getName() << " in library " << libname << std::endl;
 	if (_obj->pathName().find("cuibm") != std::string::npos && _addedTRAC == false  && _addedLS == false)
                _func->relocateFunction();
 

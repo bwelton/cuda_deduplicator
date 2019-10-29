@@ -357,8 +357,9 @@ uint64_t DyninstFunction::GetSmallestEntryBlockSize() {
 }
 
 bool DyninstFunction::IsExcludedFunction(InstType T) {
+	//if(_track->ShouldInstrimentFunciton(_func, T))
 	if (_track->ShouldInstrimentFunciton(_func, T) && _track->ShouldInstrimentModule(_func, T))
-		return false;
-	return true;
+		return true;
+	return false;
 
 }

@@ -137,7 +137,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 	// if (_obj->pathName().find("qb") != std::string::npos)
 	//  	_func->relocateFunction();
 	
-	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone ){
+	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone || _entrySize < (0x4 * 5) ){
 		_lsDone = true;
 		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis by IsExcludedFunction or its size is too small (" << _entrySize << ")" << std::endl;
 
@@ -363,8 +363,8 @@ bool DyninstFunction::IsExcludedFunction(InstType T) {
 	//	std::cerr << "[DyninstFunction::IsExcludedFunction] Returned false for function" << std::endl;
 	//if (!_track->ShouldInstrimentModule(_func, T))
 	//	std::cerr << "[DyninstFunction::IsExcludedFunction] Returned false for module" << std::endl;
-	//if (_track->ShouldInstrimentFunciton(_func, T) && _obj->pathName().find("qb_cuda8_mpirun") != std::string::npos)
-	//	return false;
+	if (_track->ShouldInstrimentFunciton(_func, T) && _obj->pathName().find("qb_cuda8_mpirun") != std::string::npos)
+		return false;
 	if (_track->ShouldInstrimentFunciton(_func, T) && _track->ShouldInstrimentModule(_func, T))
 		return false;
 	return true;

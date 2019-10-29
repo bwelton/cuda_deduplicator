@@ -1,9 +1,17 @@
 #include "MemRecorder.h"
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
 #include <set>
 
 MemRecorder::MemRecorder(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
+
+// bool MemRecorder::ReplaceFunctionCall(std::string & libname, DyninstCallsite & cs, BPatch_function * wrapper, uint64_t ident) {
+// 	if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
+// 		continue;	
+
+// };
+
 
 void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	DebugInstrimentationTemp debugOutput(std::string("DIOGENES_limitFunctions.txt"), std::string("DIOGENES_funcsInstrimented.txt"));
@@ -14,6 +22,34 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
 	// BPatch_object * libcudart = _proc->LoadLibrary(std::string("libcudart.so.1"));
 	BPatch_object * wrapper = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libDiogenesMemRecorder.so"));
+
+	std::unordered_map<std::string, std::vector<BPatch_function *>> wrapperFunctions;
+	std::unordered_map<std::string, int> parameterCounts;
+
+	// Runtime API
+	wrapperFunctions["cudaFree"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFree"), wrapper);
+	wrapperFunctions["cudaMalloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMalloc"), wrapper);
+	wrapperFunctions["cudaMemcpyAsync"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsync"), wrapper);
+	wrapperFunctions["cudaMemcpy"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpy"), wrapper);
+	wrapperFunctions["cudaMallocHost"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_HostCudaMalloc"), wrapper);
+
+	// Driver API
+	wrapperFunctions["cuMemcpyHtoD_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemcpyHtoD"), wrapper);
+	wrapperFunctions["cuMemcpyDtoH_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemcpyDtoH"), wrapper);
+	wrapperFunctions["cuMemFree_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemFree"), wrapper);
+	wrapperFunctions["cuMemAlloc_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAlloc"), wrapper);
+	wrapperFunctions["cuMemAllocHost_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAllocHost"), wrapper);
+
+	parameterCounts["cudaFree"] = 1;
+	parameterCounts["cudaMalloc"] = 2;
+	parameterCounts["cudaMemcpyAsync"] = 5;
+	parameterCounts["cudaMemcpy"] = 4;
+	parameterCounts["cudaMallocHost"] = 2;
+	parameterCounts["cuMemcpyHtoD_v2"] = 3;
+	parameterCounts["cuMemcpyDtoH_v2"] = 3;
+	parameterCounts["cuMemFree_v2"] = 1;
+	parameterCounts["cuMemAlloc_v2"] = 2;
+	parameterCounts["cuMemAllocHost_v2"] = 2;
 
 	std::vector<BPatch_function *> cudaFreeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFree"), wrapper);
 	std::vector<BPatch_function *> cudaMallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMalloc"), wrapper);

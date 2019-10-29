@@ -32,6 +32,19 @@ void OutputWriter::RecordAccess(uint64_t id, std::vector<uint64_t> & currentStac
 	}
 }
 
+void OutputWriter::FlushAll() {
+	if (_accessFile)
+		_accessFile->FlushFile();
+	if (_stackKeyFile)
+		_stackKeyFile->FlushFile();
+	if (_syncAccess)
+		_syncAccess->FlushFile();
+	if (_timingValues)
+		_timingValues->FlushFile();
+	if (_firstUse)
+		_firstUse->FlushFile();
+}
+
 void OutputWriter::WriteSequenceInfo(std::vector<uint64_t> & currentStack, bool newDependents) {
 	if (_timeType == true) 
 		return;

@@ -277,12 +277,12 @@ void SynchTool::GetLiveTransfer(std::shared_ptr<Parameters> params) {
 	_dataAccessManager->AddMemoryTransfer(tmp);
 
 //#ifdef SYNCH_DEBUG
-	std::stringstream ss;
+	/*std::stringstream ss;
 	ss << "[SynchTool] Adding Memory Transfer - " << params.get()->GetName() << " with the following info\n" 
 	   << "\tCPU Starting Address = 0x" << std::hex << tmp.begin << std::dec 
 	   << "\n\tTransfer Size = " << tmp.size 
 	   << "\n\tStream = " << tmp.stream;
-	std::cerr << ss.str() << std::endl;
+	std::cerr << ss.str() << std::endl;*/
 	//_sync_log.get()->Write(ss.str());
 //#endif
 }

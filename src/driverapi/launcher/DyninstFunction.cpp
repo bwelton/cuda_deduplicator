@@ -69,7 +69,7 @@ std::string DyninstFunction::PrintInst(InstStats & stats) {
 }
 
 void DyninstFunction::EntryExitWrapping() {
-	return;
+	//return;
 	// Find the function calls being made
 	if(_exitEntryDone == true)
 		return;

@@ -132,8 +132,8 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 		return;
 	if (_func->getName().find("xerces") != std::string::npos || _func->getName().find("RuntimeException") != std::string::npos || _func->getName().find("Exception") != std::string::npos)
 		return;
-	// if (_obj->pathName().find("qb") != std::string::npos)
-	// 	_func->relocateFunction();
+	if (_obj->pathName().find("qb") != std::string::npos)
+	 	_func->relocateFunction();
 	
 	if (IsExcludedFunction(LOAD_STORE_INST) || _lsDone || _entrySize < (0x4 * 7) ){
 		_lsDone = true;

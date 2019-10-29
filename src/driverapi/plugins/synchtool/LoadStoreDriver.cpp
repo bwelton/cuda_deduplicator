@@ -50,11 +50,12 @@ void LoadStoreDriver::RecordAccess(uint64_t id, uint64_t addr) {
 			_firstWrite = false;
 			_writer->RecordAccess(id,_stackAtSync);
 			_found = true;
-			if (_checkCount % 100000 == 0){
+			if (_checkCount > 100000){
 				auto end = std::chrono::high_resolution_clock::now();
 				std::chrono::duration<double> diff =  std::chrono::high_resolution_clock::now() - _start;
 				std::cerr << "[LoadStoreDriver::RecordAccess] Flushing files at checkcount " << _checkCount << " at time " << std::dec << diff.count() << std::endl;
 				_writer->FlushAll();
+				_checkCount = 0;
 			}				
 			_instControler.FoundUse();
 		}

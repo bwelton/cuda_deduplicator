@@ -33,7 +33,7 @@ void OneTimeFillMap() {
 	DFW_MAP[tmp.wrap] = tmp;
 
 	// string copy style wrapper (dest, source)
-	tmp = {
+/*	tmp = {
 		.wrap =  std::string("__strcpy_power7"),
 		.library = std::string("libc-2.17.so"),
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
@@ -66,7 +66,7 @@ void OneTimeFillMap() {
 		.library = std::string("libc-2.17.so"),
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
-	};
+	};*/
 	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__strcpy_small"),
@@ -654,7 +654,7 @@ void OneTimeFillMap() {
 DyninstFunctionWraps::DyninstFunctionWraps(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 
 bool DyninstFunctionWraps::InsertLoadStoreInstrimentation(BPatch_function * func, std::shared_ptr<BinaryLocationIDMap> bmap) {
-	return false;
+
 	OneTimeFillMap();
 	if (DFW_MAP.find(func->getName()) == DFW_MAP.end())
 		return false;

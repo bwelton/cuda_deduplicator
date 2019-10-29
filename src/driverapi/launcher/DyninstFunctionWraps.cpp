@@ -66,7 +66,7 @@ void OneTimeFillMap() {
 		.library = std::string("libc-2.17.so"),
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
-	};*/
+	};
 	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__strcpy_small"),
@@ -104,7 +104,7 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
-/
+
 	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
 		.wrap =  std::string("__strcmp_power7"),
@@ -133,7 +133,7 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
-	*/
+	
 
 	DFW_MAP[tmp.wrap] = tmp;
 	tmp = {
@@ -647,7 +647,7 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_bzero_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
-	DFW_MAP[tmp.wrap] = tmp;	
+	DFW_MAP[tmp.wrap] = tmp;	*/
 
 }
 

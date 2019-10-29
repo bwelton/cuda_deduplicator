@@ -48,6 +48,7 @@ private:
 	std::vector<uint64_t> _storedStack;
 	std::vector<uint64_t> _stackAtSync;
 	uint64_t _checkCount;
+	uint64_t _totalCheck;
 	std::chrono::time_point<std::chrono::high_resolution_clock> _start;
 	OutputWriterPtr _writer;
 	CheckAccessesPtr _access;
@@ -57,6 +58,7 @@ private:
 	bool _firstSync;
 	uint64_t _syncStackDepth;
 	bool _timefu;
+
 	InstrimentationControl _instControler;
 };
 

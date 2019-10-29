@@ -10,7 +10,7 @@ void OneTimeFillMap() {
 	DFW_MAP.clear();
 
 	// String search for char functions
-	tmp = {
+/*	tmp = {
 		.wrap =  std::string("strchr"),
 		.library = std::string("libc-2.17.so"),
 		.wrapperName = std::string("diogenes_strchr_wrapper"),
@@ -30,10 +30,10 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_strchr_wrapper"),
 		.argMap = {std::make_pair(0,0)},
 	};
-	DFW_MAP[tmp.wrap] = tmp;
+	DFW_MAP[tmp.wrap] = tmp;*/
 
 	// string copy style wrapper (dest, source)
-/*	tmp = {
+	tmp = {
 		.wrap =  std::string("__strcpy_power7"),
 		.library = std::string("libc-2.17.so"),
 		.wrapperName = std::string("diogenes_strcpy_wrapper"),
@@ -647,7 +647,7 @@ void OneTimeFillMap() {
 		.wrapperName = std::string("diogenes_bzero_wrapper"),
 		.argMap = {std::make_pair(0,0),std::make_pair(1,1)},
 	};
-	DFW_MAP[tmp.wrap] = tmp;	*/
+	DFW_MAP[tmp.wrap] = tmp;	
 
 }
 

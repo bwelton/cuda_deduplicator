@@ -359,6 +359,10 @@ uint64_t DyninstFunction::GetSmallestEntryBlockSize() {
 
 bool DyninstFunction::IsExcludedFunction(InstType T) {
 	//if(_track->ShouldInstrimentFunciton(_func, T))
+	if (!_track->ShouldInstrimentFunciton(_func, T))
+		std::cerr << "[DyninstFunction::IsExcludedFunction] Returned false for function" << std::endl;
+	if (!_track->ShouldInstrimentModule(_func, T))
+		std::cerr << "[DyninstFunction::IsExcludedFunction] Returned false for module" << std::endl;
 	if (_track->ShouldInstrimentFunciton(_func, T) && _track->ShouldInstrimentModule(_func, T))
 		return false;
 	return true;

@@ -70,7 +70,7 @@ StackPoint DynOpsClass::GenerateStackPoint(BPatch_addressSpace * aspace, BPatch_
 	BPatchPointVecPtr entryPoints = GetPoints(func, BPatch_locEntry);
 	assert(entryPoints->size() > 0);
 	if (!GetFileOffset(aspace, (*entryPoints)[0], libOffsetAddr, true))
-		libOffsetAddr = (uint64_t) func->getAddress();
+		libOffsetAddr = (uint64_t) (*entryPoints)[0]->getAddress();
 	ret.libOffset = libOffsetAddr;
 	return ret;
 }

@@ -81,9 +81,13 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 				std::cerr << "[LoadStoreInstrimentation::InsertEntryExit] Could not find function - " << z.funcName << std::endl;
 				continue;
 			}
-			BPatch_function * tmpFunctrial;
+			BPatch_function * tmpFunctrial = NULL;
+			BPatch_object * obj = ops->FindObjectByName(aspace, z.libname, true);
+			if (obj != NULL){
+				tmpFunctrial = img->findFunction(obj->fileOffsetToAddr(z.libOffset));
 
-			ops->FindFuncByLibnameOffset(_proc->GetAddressSpace(), tmpFunctrial, z.libname, z.libOffset);
+			}
+			//ops->FindFuncByLibnameOffset(_proc->GetAddressSpace(), tmpFunctrial, z.libname, z.libOffset);
 
 			std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point " << z.funcName << "@" << z.libOffset << " found function " << func->getName() << std::endl;
 			if (tmpFunctrial != NULL)

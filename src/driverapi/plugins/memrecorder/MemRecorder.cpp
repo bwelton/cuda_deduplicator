@@ -377,7 +377,7 @@ E_cuMemcpyDtoH_v2,
 E_cuMemFree_v2,
 E_cuMemAlloc_v2,
 E_cuMemAllocHost_v2,
-E_cuMemFreeHost_v2,
+E_cuMemFreeHost,
 };
 
 struct EnumClassHash
@@ -406,7 +406,7 @@ void SetupDiogGlobalSPS() {
 	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cuMemFree_v2, StackPoint("cuMemFree_v2", "cuMemFree_v2",0,0)));
 	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cuMemAlloc_v2, StackPoint("cuMemAlloc_v2", "cuMemAlloc_v2",0,0)));
 	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cuMemAllocHost_v2, StackPoint("cuMemAllocHost_v2","cuMemAllocHost_v2",0,0)));
-	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cuMemFreeHost_v2, StackPoint("cuMemFreeHost_v2","cuMemFreeHost_v2",0,0)));
+	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cuMemFreeHost, StackPoint("cuMemFreeHost","cuMemFreeHost",0,0)));
 	DIOG_GLOBAL_SPS->find(E_cudaFree)->second.raFramePos =(uint64_t)E_cudaFree; 
 	DIOG_GLOBAL_SPS->find(E_cudaMalloc)->second.raFramePos =(uint64_t)E_cudaMalloc; 
 	DIOG_GLOBAL_SPS->find(E_cudaMemcpyAsync)->second.raFramePos =(uint64_t)E_cudaMemcpyAsync; 
@@ -416,7 +416,7 @@ void SetupDiogGlobalSPS() {
 	DIOG_GLOBAL_SPS->find(E_cuMemcpyDtoH_v2)->second.raFramePos =(uint64_t)E_cuMemcpyDtoH_v2; 
 	DIOG_GLOBAL_SPS->find(E_cuMemFree_v2)->second.raFramePos =(uint64_t)E_cuMemFree_v2; 
 	DIOG_GLOBAL_SPS->find(E_cuMemAlloc_v2)->second.raFramePos =(uint64_t)E_cuMemAlloc_v2; 
-	DIOG_GLOBAL_SPS->find(E_cuMemFreeHost_v2)->second.raFramePos = (uint64_t)E_cuMemFreeHost_v2;
+	DIOG_GLOBAL_SPS->find(E_cuMemFreeHost)->second.raFramePos = (uint64_t)E_cuMemFreeHost;
 };
 
 #define PLUG_BUILD_FACTORY() \
@@ -435,6 +435,7 @@ thread_local size_t DIOGENES_MALLOC_MEMSIZE = 0;
 thread_local bool DIOGENES_SEEN_RUNTIMEMALLOCAPI = false;
 thread_local bool DIOGENES_SEEN_RUNTIMECPY = false;
 thread_local bool DIOGENES_SEEN_RUNTIMEFREE = false;
+thread_local std::vector<StackPoint> DIOGENES_CACHED_POINTS;
 extern "C" {
 
 	void DIOGENES_REC_CudaMalloc(void ** mem, size_t size) {
@@ -470,13 +471,13 @@ extern "C" {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
-			std::vector<StackPoint> points;
-			bool ret = GET_FP_STACKWALK(points);
+			DIOGENES_CACHED_POINTS.clear();
+			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
 			auto n = local->find(idType);
 			if (n == local->end())
 				assert(n != local->end());
-			points.push_back(n->second);
-			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStackFastCheck(points));
+			DIOGENES_CACHED_POINTS.push_back(n->second);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStackFastCheck(DIOGENES_CACHED_POINTS));
 			if (idType != E_cuMemAllocHost_v2 && idType != E_cudaMallocHost)
 				PLUG_FACTORY_PTR->GPUMallocData((uint64_t)addr, size, myID);
 			else
@@ -526,13 +527,13 @@ extern "C" {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
-			std::vector<StackPoint> points;
-			bool ret = GET_FP_STACKWALK(points);
+			DIOGENES_CACHED_POINTS.clear();
+			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
 			auto n = local->find(idType);
 			if (n == local->end())
 				assert(n != local->end());
-			points.push_back(n->second);
-			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStackFastCheck(points));
+			DIOGENES_CACHED_POINTS.push_back(n->second);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStackFastCheck(DIOGENES_CACHED_POINTS));
 			PLUG_FACTORY_PTR->RecordMemTransfer(hostptr, myID);
 			DIOGENES_ReleaseGlobalLock();
 		}
@@ -542,13 +543,13 @@ extern "C" {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
-			std::vector<StackPoint> points;
-			bool ret = GET_FP_STACKWALK(points);
+			DIOGENES_CACHED_POINTS.clear();
+			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
 			auto n = local->find(idType);
 			if (n == local->end())
 				assert(n != local->end());
-			points.push_back(n->second);
-			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStackFastCheck(points));
+			DIOGENES_CACHED_POINTS.push_back(n->second);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStackFastCheck(DIOGENES_CACHED_POINTS));
 			PLUG_FACTORY_PTR->GPUFreeData(ptr, myID);
 			DIOGENES_ReleaseGlobalLock();
 		}		

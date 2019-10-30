@@ -208,11 +208,15 @@ typedef std::vector<StackPoint> StackPointVec;
 struct RecursiveDictionaryStackHasher{
 	std::unordered_map<uint64_t, std::shared_ptr<RecursiveDictionaryStackHasher>> _map;
 	uint64_t _localID;
-	RecursiveDictionaryStackHasher(uint64_t localID) : _localID(localID) {};
+	bool _written;
+	RecursiveDictionaryStackHasher(uint64_t localID) : _localID(localID), _written(false) {};
 
 	uint64_t FindIfExists(std::vector<StackPoint> & points, int pos) {
-		if (points.size() <= pos)
+		if (points.size() <= pos){
+			if (_written == false)
+				return 0;
 			return _localID;
+		}
 		auto it = _map.find(points[pos].raFramePos);
 		if (it == _map.end())
 			return 0;
@@ -220,8 +224,10 @@ struct RecursiveDictionaryStackHasher{
 	};
 
 	void InsertStack(std::vector<StackPoint> & points, int pos, uint64_t & globalID) {
-		if (points.size() <= pos)
+		if (points.size() <= pos){
+			_written = true;
 			return;
+		}
 		auto it = _map.find(points[pos].raFramePos);
 		if (it == _map.end()) {
 			_map[points[pos].raFramePos] = std::shared_ptr<RecursiveDictionaryStackHasher>(new RecursiveDictionaryStackHasher(globalID));

@@ -86,7 +86,8 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 			ops->FindFuncByLibnameOffset(_proc->GetAddressSpace(), tmpFunctrial, z.libname, z.libOffset);
 
 			std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point " << z.funcName << "@" << z.libOffset << " found function " << func->getName() << std::endl;
-			std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point ALT" << z.funcName << "@" << z.libOffset << " found function " << tmpFunctrial->getName() << std::endl;
+			if (tmpFunctrial != NULL)
+				std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point ALT" << z.funcName << "@" << z.libOffset << " found function " << tmpFunctrial->getName() << std::endl;
 			uint64_t f_addr = (uint64_t)func->getBaseAddr();
 			if (_dyninstFunctions.find(f_addr) != _dyninstFunctions.end()) {
 				_dyninstFunctions[f_addr]->EntryExitWrapping();

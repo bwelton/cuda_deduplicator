@@ -88,7 +88,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 		else
 			wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, libcudart);
 
-		if (wrapper.size() == 0) {
+		if (wrapVector.size() == 0) {
 			std::cerr << "[MemRecorder::InsertAnalysis] ERROR!! Could not wrap function - " << funcName << std::endl;
 			continue;
 		}
@@ -110,7 +110,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 		else
 			wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, libcudart);
 
-		if (wrapper.size() == 0) {
+		if (wrapVector.size() == 0) {
 			std::cerr << "[MemRecorder::InsertAnalysis] ERROR!! Could not wrap function - " << funcName << std::endl;
 			continue;
 		}

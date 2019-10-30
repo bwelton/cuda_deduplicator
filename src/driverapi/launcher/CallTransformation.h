@@ -11,6 +11,8 @@
 #include <memory>
 #include <algorithm>
 #include <sys/types.h>
+#include <unordered_map>
+#include <unordered_set>
 #include <unistd.h>
 #include "APICaptureInstrimentation.h"
 
@@ -376,7 +378,7 @@ struct LSStackGraph {
 typedef std::vector<LSStackGraph> LSStackGraphVec;
 
 struct MatchLoadStoreStacksRecursive {
-	std::unordered_multimap<std::string, MatchLoadStoreStacksRecursive *> _libmap; 
+	std::unordered_map<std::string, MatchLoadStoreStacksRecursive *> _libmap; 
 	std::unordered_set<uint64_t> _offsetMap;
 	uint64_t myId;
 	MatchLoadStoreStacksRecursive() : myId(0) {};

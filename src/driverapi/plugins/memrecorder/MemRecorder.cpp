@@ -380,13 +380,22 @@ E_cuMemAllocHost_v2,
 E_cuMemFreeHost_v2,
 };
 
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
+
 std::shared_ptr<MemTracker> DIOGENES_MEMORY_RECORDER;
 std::shared_ptr<StackKeyWriter> DIOGENES_MEM_KEYFILE;
 std::shared_ptr<WriteTotals> DIOG_WriteTotals;
-std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint>> DIOG_GLOBAL_SPS;
+std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> DIOG_GLOBAL_SPS;
 
 void SetupDiogGlobalSPS() {
-	DIOG_GLOBAL_SPS.reset(new std::unordered_map<DIOG_IDNUMBER,StackPoint>());
+	DIOG_GLOBAL_SPS.reset(new std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>());
 	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cudaFree, StackPoint("cudaFree", "cudaFree",0,0)));
 	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cudaMalloc, StackPoint("cudaMalloc", "cudaMalloc",0,0)));
 	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cudaMemcpyAsync, StackPoint("cudaMemcpyAsync", "cudaMemcpyAsync",0,0)));
@@ -569,7 +578,7 @@ extern "C" {
 		}
 	}
 
-	void DIOGENES_REC_CudaMemcpyAsync(void * dst, void * srt, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
+	void DIOGENES_REC_CudaMemcpyAsync(void * dst, void * src, size_t size, cudaMemcpyKind kind, cudaStream_t stream) {
 		void * hostptr = NULL;
 		if (kind == cudaMemcpyDeviceToHost) {
 			hostptr = dst;
@@ -583,7 +592,7 @@ extern "C" {
 	}
 
 
-	void DIOGENES_REC_CudaMemcpy(void * dst, void * srt, size_t size, cudaMemcpyKind kind) {
+	void DIOGENES_REC_CudaMemcpy(void * dst, void * src, size_t size, cudaMemcpyKind kind) {
 		void * hostptr = NULL;
 		if (kind == cudaMemcpyDeviceToHost) {
 			hostptr = dst;

@@ -7,6 +7,7 @@
 #include <cassert>
 #include <deque>
 #include <sys/time.h>
+#include <unordered_map>
 #include <cstdlib>
 #include <sstream>
 #include <tuple>
@@ -60,6 +61,8 @@ struct StackPoint {
 	uint64_t lineNum;
 	std::string fileName;
 
+	uint64_t raFramePos;
+
 	// Not saved
 	bool _cached;
 	SPPointType _ptype;
@@ -69,6 +72,7 @@ struct StackPoint {
 		lineNum = 0;
 		inMain = false;
 		_cached = false;
+		raFramePos = 0;
 	};
 
 
@@ -77,6 +81,7 @@ struct StackPoint {
 		fileName = std::string("");
 		lineNum = 0;
 		inMain = false;
+		raFramePos = 0;
 		_cached = false;
 	};
 
@@ -200,6 +205,33 @@ struct StackPoint {
 
 typedef std::vector<StackPoint> StackPointVec;
 
+struct RecursiveDictionaryStackHasher{
+	std::unordered_map<uint64_t, std::shared_ptr<RecursiveDictionaryStackHasher>> _map;
+	uint64_t _localID;
+	RecursiveDictionaryStackHasher(uint64_t localID) : _localID(localID) {};
+
+	uint64_t FindIfExists(std::vector<StackPoint> & points, int pos) {
+		if (points.size() <= pos)
+			return _localID;
+		auto it = _map.find(points[pos].raFramePos);
+		if (it == _map.end())
+			return 0;
+		return it->second->FindIfExists(points, pos+1);
+	};
+
+	void InsertStack(std::vector<StackPoint> & points, int pos, uint64_t & globalID) {
+		if (points.size() <= pos)
+			return;
+		auto it = _map.find(points[pos].raFramePos);
+		if (it == _map.end()) {
+			_map[points[pos].raFramePos] = std::shared_ptr<RecursiveDictionaryStackHasher>(new RecursiveDictionaryStackHasher(globalID));
+			globalID++;
+			it = _map.find(points[pos].raFramePos);
+		}
+		it->second->InsertStack(points, pos + 1, globalID);
+	};
+};
+
 struct StackHasher{
 	std::stringstream ss;
 	uint64_t HashStack(std::vector<StackPoint> & points) {
@@ -213,24 +245,54 @@ struct StackHasher{
 };
 
 
+
+
 // Key file for the stacks outputted
 struct StackKeyWriter {
+	RecursiveDictionaryStackHasher _fastHash;
 	char buffer[512000];
 	uint64_t curPos;
 	std::map<uint64_t, uint64_t> prevStacks;
 	StackHasher h;
 	FILE * out;
-	StackKeyWriter(FILE * fp) {
+	StackKeyWriter(FILE * fp) : _fastHash(0) {
 		out = fp;
 		curPos = 1;
 	}
-	StackKeyWriter(FILE * fp, uint64_t startPos) {
+	StackKeyWriter(FILE * fp, uint64_t startPos) : _fastHash(0) {
 		out = fp;
 		curPos = startPos;
 	}
 	~StackKeyWriter() {
 		fclose(out);
 	}
+	uint64_t InsertStackFastCheck(std::vector<StackPoint> & points) {
+		uint64_t hash = _fastHash.FindIfExists(points, 0);
+		if (hash == 0) {
+			_fastHash.InsertStack(points, 0, curPos);
+			hash = _fastHash.FindIfExists(points,0);
+			assert(hash != 0);
+		} else {
+			return hash;
+		}
+		int pos = 0;
+		std::stringstream outStr;
+		outStr << hash << "$";
+		for (auto i : points)
+			outStr << i.libname << "@" << i.libOffset << "$";
+
+		std::string t = outStr.str();
+		t.pop_back();
+		t = t + std::string("\n");
+		do {
+			const char * myString = t.c_str();
+			pos += fwrite(&myString[pos], 1, t.size() - pos, out);
+		} while(pos != t.size());
+		std::cerr << "Wrote stack with hash id: " << hash << std::endl;
+		fflush(out);
+		return hash;
+	};
+
 	uint64_t InsertStack(std::vector<StackPoint> & points){
 		uint64_t hash = h.HashStack(points);
 		if (hash == 0)

@@ -51,6 +51,7 @@ extern "C" {
 			frame.getLibOffset(lib, offset, stab);
 			sp.libname = lib;
 			sp.libOffset = offset;
+			sp.raFramePos = (uint64_t)frame.getRA();
 			ret.push_back(sp);
 		}
 		return true;

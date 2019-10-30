@@ -469,7 +469,7 @@ extern "C" {
 	void POSTPROCESS_MALLOC(uint64_t addr, size_t size, DIOG_IDNUMBER idType) {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
-			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint>> local = DIOG_GLOBAL_SPS;
+			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			std::vector<StackPoint> points;
 			bool ret = GET_FP_STACKWALK(points);
 			auto n = local->find(idType);
@@ -525,7 +525,7 @@ extern "C" {
 	void POSTPROCESS_COPY(uint64_t hostptr, DIOG_IDNUMBER idType) {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
-			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint>> local = DIOG_GLOBAL_SPS;
+			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			std::vector<StackPoint> points;
 			bool ret = GET_FP_STACKWALK(points);
 			auto n = local->find(idType);
@@ -541,7 +541,7 @@ extern "C" {
 	void POSTPROCESS_FREE(uint64_t ptr, DIOG_IDNUMBER idType) {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
-			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint>> local = DIOG_GLOBAL_SPS;
+			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			std::vector<StackPoint> points;
 			bool ret = GET_FP_STACKWALK(points);
 			auto n = local->find(idType);

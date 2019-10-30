@@ -6,12 +6,6 @@
 
 MemRecorder::MemRecorder(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 
-// bool MemRecorder::ReplaceFunctionCall(std::string & libname, DyninstCallsite & cs, BPatch_function * wrapper, uint64_t ident) {
-// 	if (dupCheck.CheckAndInsert(tmpLibname, x.GetPointFileAddress()) == false)
-// 		continue;	
-
-// };
-
 
 void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	DebugInstrimentationTemp debugOutput(std::string("DIOGENES_limitFunctions.txt"), std::string("DIOGENES_funcsInstrimented.txt"));
@@ -20,26 +14,35 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	_bmap.reset(new BinaryLocationIDMap());
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
-	// BPatch_object * libcudart = _proc->LoadLibrary(std::string("libcudart.so.1"));
+	BPatch_object * libcudart = _proc->LoadLibrary(std::string("libcudart.so.1"));
 	BPatch_object * wrapper = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libDiogenesMemRecorder.so"));
 
-	std::unordered_map<std::string, std::vector<BPatch_function *>> wrapperFunctions;
+	std::unordered_map<std::string, std::vector<BPatch_function *>> preWrapperFunctions;
+	std::unordered_map<std::string, std::vector<BPatch_function *>> postWrapperFunctions;
 	std::unordered_map<std::string, int> parameterCounts;
+	std::unordered_map<std::string, bool> driverAPI;
 
-	// Runtime API
-	wrapperFunctions["cudaFree"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFree"), wrapper);
-	wrapperFunctions["cudaMalloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMalloc"), wrapper);
-	wrapperFunctions["cudaMemcpyAsync"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsync"), wrapper);
-	wrapperFunctions["cudaMemcpy"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpy"), wrapper);
-	wrapperFunctions["cudaMallocHost"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_HostCudaMalloc"), wrapper);
+	// Runtime API wrappers
+	preWrapperFunctions["cudaFree"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFree"), wrapper);
+	preWrapperFunctions["cudaMalloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMalloc"), wrapper);
+	preWrapperFunctions["cudaMemcpyAsync"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsync"), wrapper);
+	preWrapperFunctions["cudaMemcpy"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpy"), wrapper);
+	preWrapperFunctions["cudaMallocHost"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_HostCudaMalloc"), wrapper);
 
-	// Driver API
-	wrapperFunctions["cuMemcpyHtoD_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemcpyHtoD"), wrapper);
-	wrapperFunctions["cuMemcpyDtoH_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemcpyDtoH"), wrapper);
-	wrapperFunctions["cuMemFree_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemFree"), wrapper);
-	wrapperFunctions["cuMemAlloc_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAlloc"), wrapper);
-	wrapperFunctions["cuMemAllocHost_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAllocHost"), wrapper);
+	// Driver API wrappers
+	preWrapperFunctions["cuMemcpyHtoD_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemcpyHtoD"), wrapper);
+	preWrapperFunctions["cuMemcpyDtoH_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemcpyDtoH"), wrapper);
+	preWrapperFunctions["cuMemFree_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemFree"), wrapper);
+	preWrapperFunctions["cuMemAlloc_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAlloc"), wrapper);
+	preWrapperFunctions["cuMemAllocHost_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAllocHost"), wrapper);
 
+	// Post wrapper function calls
+	postWrapperFunctions["cudaMalloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMallocPost"), wrapper);
+	postWrapperFunctions["cudaMallocHost"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMallocPost"), wrapper);
+	postWrapperFunctions["cuMemAlloc_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMallocPost"), wrapper);
+	postWrapperFunctions["cuMemAllocHost_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMallocPost"), wrapper);
+
+	// Set parameter counts for each call
 	parameterCounts["cudaFree"] = 1;
 	parameterCounts["cudaMalloc"] = 2;
 	parameterCounts["cudaMemcpyAsync"] = 5;
@@ -50,6 +53,59 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	parameterCounts["cuMemFree_v2"] = 1;
 	parameterCounts["cuMemAlloc_v2"] = 2;
 	parameterCounts["cuMemAllocHost_v2"] = 2;
+
+	// Set whether the call is in the driver API or not
+	driverAPI["cudaFree"] = false;
+	driverAPI["cudaMalloc"] = false;
+	driverAPI["cudaMemcpyAsync"] = false;
+	driverAPI["cudaMemcpy"] = false;
+	driverAPI["cudaMallocHost"] = false;
+	driverAPI["cuMemcpyHtoD_v2"] = true;
+	driverAPI["cuMemcpyDtoH_v2"] = true;
+	driverAPI["cuMemFree_v2"] = true;
+	driverAPI["cuMemAlloc_v2"] = true;
+	driverAPI["cuMemAllocHost_v2"] = true;
+
+
+	_proc->BeginInsertionSet(); 
+	for (auto x : preWrapperFunctions) {
+		auto funcName = x.first;
+		auto funcVector = x.second;
+		std::cerr << "[MemRecorder::InsertAnalysis] Starting wrapping of function - " << funcName << std::endl;
+		assert(funcVector.size() == 1);
+		assert(parameterCounts.find(funcName) != parameterCounts.end());
+		assert(driverAPI.find(funcName) != driverAPI.end());
+
+		std::vector<BPatch_function*> wrapVector;
+		if (driverAPI[funcName])
+			wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, libcuda);
+		else
+			wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, libcudart);
+
+		assert(wrapVector.size() == 1);
+
+		InsertPrePostCall(wrapVector[0], funcVector[0], false, parameterCounts[funcName]);
+	}
+
+	for (auto x : postWrapperFunctions) {
+		auto funcName = x.first;
+		auto funcVector = x.second;
+		std::cerr << "[MemRecorder::InsertAnalysis] Starting post wrap call of function - " << funcName << std::endl;		
+		assert(funcVector.size() == 1);
+		assert(parameterCounts.find(funcName) != parameterCounts.end());
+		assert(driverAPI.find(funcName) != driverAPI.end());
+		std::vector<BPatch_function*> wrapVector;
+		if (driverAPI[funcName])
+			wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, libcuda);
+		else
+			wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, libcudart);
+
+		assert(wrapVector.size() == 1);
+
+		InsertPrePostCall(wrapVector[0], funcVector[0], true, 0);		
+	}
+/*
+
 
 	std::vector<BPatch_function *> cudaFreeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFree"), wrapper);
 	std::vector<BPatch_function *> cudaMallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMalloc"), wrapper);
@@ -188,7 +244,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	// std::vector<BPatch_snippet*> recordArgs;
 	// BPatch_funcCallExpr entryExpr(*(syncExit[0]), recordArgs);	
 	// assert(_proc->GetAddressSpace()->insertSnippet(entryExpr,*entryPoints) != NULL);
-	// 
+	*/
 }
 
 
@@ -199,12 +255,24 @@ void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_funct
 		locationEntry.reset(origFunction->findPoint(BPatch_locEntry));
 	else
 		locationEntry.reset(origFunction->findPoint(BPatch_locExit));
+	
+	assert(locationEntry->size() > 0);
+
 	std::vector<BPatch_snippet*> recordArgs;
 	for (int i = 0; i < numParams; i++){
 		recordArgs.push_back(new BPatch_paramExpr(i));
 	}	
-	assert(locationEntry->size() > 0);
+
+	std::string libname = _func->getModule()->getObject()->pathName();
+	uint64_t libOffsetAddr = 0;
+	if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*locationEntry)[0], libOffsetAddr, true))
+		libOffsetAddr = (uint64_t) i->getAddress();
+	uint64_t ident = _bmap->StorePosition(libname, libOffsetAddr);
+
+	recordArgs.push_back(new BPatch_constExpr(ident));
+	
 	BPatch_funcCallExpr recordAddrCall(*instrimentation, recordArgs);
+
 	assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,*locationEntry) != NULL);
 }
 

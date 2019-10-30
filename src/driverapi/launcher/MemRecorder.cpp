@@ -250,6 +250,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 
 
 void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, int numParams) {
+	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatchPointVecPtr locationEntry;
 	if (postCall == false)
 		locationEntry.reset(origFunction->findPoint(BPatch_locEntry));
@@ -263,10 +264,10 @@ void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_funct
 		recordArgs.push_back(new BPatch_paramExpr(i));
 	}	
 
-	std::string libname = _func->getModule()->getObject()->pathName();
+	std::string libname = origFunction->getModule()->getObject()->pathName();
 	uint64_t libOffsetAddr = 0;
 	if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*locationEntry)[0], libOffsetAddr, true))
-		libOffsetAddr = (uint64_t) i->getAddress();
+		libOffsetAddr = (uint64_t) (*locationEntry)[0]->getAddress();
 	uint64_t ident = _bmap->StorePosition(libname, libOffsetAddr);
 
 	recordArgs.push_back(new BPatch_constExpr(ident));

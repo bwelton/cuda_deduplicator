@@ -129,6 +129,10 @@ BPatch_function * DynOpsClass::FindFunctionInAddrList(BPatch_addressSpace * aspa
 			if (i->pathName().find(".so") != std::string::npos) {
 				std::vector<BPatch_module *> mods;
 				i->modules(mods);
+				if (mods.size() == 0){
+					std::cerr << "CANNOT FIND MODULE FOR PATHNAME - " << i->pathName() << std::endl;
+					continue;
+				}
 				if(_addressList.find(((uint64_t)mods[0]->getBaseAddr()) + p.libOffset) != _addressList.end())
 					return _addressList[((uint64_t)mods[0]->getBaseAddr()) + p.libOffset];
 			}

@@ -454,7 +454,7 @@ void SyncTesting::Run() {
 		FILE * tmp = fopen("DIOG_TS_Intermediate.bin", "rb");
 		DeSerializeStackRecMap(tmp, syncTiming);
 		fclose(tmp);
-		return;
+
 		RunLoadStoreAnalysis(syncTiming, uses);
 
 		tmp = fopen("DIOG_LS_Intermediate.bin", "wb");

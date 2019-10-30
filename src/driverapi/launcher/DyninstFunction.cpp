@@ -113,7 +113,7 @@ void DyninstFunction::EntryExitWrapping() {
 			if (_proc->GetAddressSpace()->insertSnippet(exitExpr,singlePoint,BPatch_callAfter) == NULL) {
 				std::cerr << "[LoadStoreInst][EntryExit] \t\t ERROR! Could not insert exit tracking into " << _func->getName() << std::endl;
 			}
-			std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Entry Exit Wrapping inserted into function inserted at point - " << libName << "@" << std::dec << libOffsetAddr << std::endl;
+			std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Entry Exit Wrapping inserted into function inserted at point - " << libname << "@" << std::dec << libOffsetAddr << std::endl;
 		}
 
 		if(_insertedInst.find((uint64_t)i->getAddress()) == _insertedInst.end()){

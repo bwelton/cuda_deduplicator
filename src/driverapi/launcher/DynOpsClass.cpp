@@ -135,6 +135,7 @@ BPatch_function * DynOpsClass::FindFunctionInAddrList(BPatch_addressSpace * aspa
 				}
 				if(_addressList.find(((uint64_t)mods[0]->getBaseAddr()) + p.libOffset) != _addressList.end())
 					return _addressList[((uint64_t)mods[0]->getBaseAddr()) + p.libOffset];
+				std::cerr << "Did not find funcname in this library - " << i->pathName() << std::endl;
 			}
 		}
 	}

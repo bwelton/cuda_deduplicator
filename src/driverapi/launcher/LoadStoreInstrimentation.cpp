@@ -85,16 +85,21 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 				continue;
 			}
 			BPatch_function * tmpFunctrial = NULL;
+			if (z.libname.find("libcufft") == std::string::npos) {
+				tmpFunctrial = ops->FindFunctionInAddrList(_proc->GetAddressSpace(), z);
+			}
+
 			//BPatch_object * obj = ops->FindObjectByName(_proc->GetAddressSpace(), z.libname, true);
 			//if (obj != NULL){
 			//	BPatch_image * img = _proc->GetAddressSpace()->getImage();
-				tmpFunctrial = ops->FindFunctionInAddrList(_proc->GetAddressSpace(), z); //img->findFunction(obj->fileOffsetToAddr(z.libOffset));
+			//	tmpFunctrial = ops->FindFunctionInAddrList(_proc->GetAddressSpace(), z); //img->findFunction(obj->fileOffsetToAddr(z.libOffset));
 			//}
 			//ops->FindFuncByLibnameOffset(_proc->GetAddressSpace(), tmpFunctrial, z.libname, z.libOffset);
 
 			std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point " << z.funcName << "@" << z.libOffset << " found function " << func->getName() << std::endl;
 			if (tmpFunctrial != NULL)
 				std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point ALT" << z.funcName << "@" << z.libOffset << " found function " << tmpFunctrial->getName() << std::endl;
+
 			uint64_t f_addr = (uint64_t)func->getBaseAddr();
 			if (_dyninstFunctions.find(f_addr) != _dyninstFunctions.end()) {
 				_dyninstFunctions[f_addr]->EntryExitWrapping();
@@ -104,6 +109,18 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 				_dyninstFunctions[f_addr + 8]->EntryExitWrapping();
 			} else {
 				assert("CANT FIND ID" == 0);
+			}
+			if (tmpFunctrial != NULL) {
+				f_addr = (uint64_t)tmpFunctrial->getBaseAddr();
+				if (_dyninstFunctions.find(f_addr) != _dyninstFunctions.end()) {
+					_dyninstFunctions[f_addr]->EntryExitWrapping();
+				} else if (_dyninstFunctions.find(f_addr - 8) != _dyninstFunctions.end()) {
+					_dyninstFunctions[f_addr - 8]->EntryExitWrapping();
+				} else if (_dyninstFunctions.find(f_addr + 8) != _dyninstFunctions.end()) {
+					_dyninstFunctions[f_addr + 8]->EntryExitWrapping();
+				} else {
+					assert("CANT FIND ID" == 0);
+				}
 			}
 			//assert(_funcPositions.find(func) != _funcPositions.end());
 			//_dyninstFunctions[_funcPositions[func]]->EntryExitWrapping();

@@ -125,8 +125,8 @@ BPatch_function * DynOpsClass::FindFunctionInAddrList(BPatch_addressSpace * aspa
 	std::string filename = pDir.stem().string();
 	std::vector<BPatch_object *> objects = GetObjects(aspace);
 	for (auto i : objects) {
-		std::cerr << i->pathName() << std::endl;
-		std::cerr << filename << std::endl;
+		//std::cerr << i->pathName() << std::endl;
+		//std::cerr << filename << std::endl;
 		if (i->pathName().find(filename) != std::string::npos) {
 			if (i->pathName().find(".so") != std::string::npos) {
 				std::vector<BPatch_module *> mods;

@@ -81,6 +81,7 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 				std::cerr << "[LoadStoreInstrimentation::InsertEntryExit] Could not find function - " << z.funcName << std::endl;
 				continue;
 			}
+			std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point " << x.funcName << "@" << x.libOffset << " found function " << func->getName() << std::endl;
 			uint64_t f_addr = (uint64_t)func->getBaseAddr();
 			if (_dyninstFunctions.find(f_addr) != _dyninstFunctions.end()) {
 				_dyninstFunctions[f_addr]->EntryExitWrapping();

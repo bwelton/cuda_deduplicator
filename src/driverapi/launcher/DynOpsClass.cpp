@@ -110,7 +110,7 @@ void DynOpsClass::GenerateAddrList(BPatch_addressSpace * aspace) {
 		for (auto n : blocks) {
 			auto start = n->getStartAddress();
 			auto end =  n->getEndAddress(); 
-			for (int z = start; z <= end; z++){
+			for (uint64_t z = start; z <= end; z++){
 				//if (_addressList.find(z) != _addressList.end())
 				//	std::cerr << "Conflix between functions - " << _addressList[z]->getName() << " and " << i->getName() << " at addr " << z << std::endl;
 				_addressList[z] = i;

@@ -122,7 +122,7 @@ void DynOpsClass::GenerateAddrList(BPatch_addressSpace * aspace) {
 
 BPatch_function * DynOpsClass::FindFunctionInAddrList(BPatch_addressSpace * aspace, StackPoint & p) {
 	boost::filesystem::path pDir(p.libname);
-	std::string filename = pDir.stem();
+	std::string filename = pDir.stem().string();
 	std::vector<BPatch_object *> objects = GetObjects(aspace);
 	for (auto i : objects) {
 		if (i->pathName().find(filename) != std::string::npos) {

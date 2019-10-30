@@ -82,7 +82,7 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 				continue;
 			}
 			BPatch_function * tmpFunctrial = NULL;
-			BPatch_object * obj = ops->FindObjectByName(aspace, z.libname, true);
+			BPatch_object * obj = ops->FindObjectByName(_proc->GetAddressSpace(), z.libname, true);
 			if (obj != NULL){
 				tmpFunctrial = img->findFunction(obj->fileOffsetToAddr(z.libOffset));
 

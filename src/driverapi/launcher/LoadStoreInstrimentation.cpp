@@ -85,11 +85,11 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 				continue;
 			}
 			BPatch_function * tmpFunctrial = NULL;
-			BPatch_object * obj = ops->FindObjectByName(_proc->GetAddressSpace(), z.libname, true);
-			if (obj != NULL){
-				BPatch_image * img = _proc->GetAddressSpace()->getImage();
+			//BPatch_object * obj = ops->FindObjectByName(_proc->GetAddressSpace(), z.libname, true);
+			//if (obj != NULL){
+			//	BPatch_image * img = _proc->GetAddressSpace()->getImage();
 				tmpFunctrial = ops->FindFunctionInAddrList(_proc->GetAddressSpace(), z); //img->findFunction(obj->fileOffsetToAddr(z.libOffset));
-			}
+			//}
 			//ops->FindFuncByLibnameOffset(_proc->GetAddressSpace(), tmpFunctrial, z.libname, z.libOffset);
 
 			std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point " << z.funcName << "@" << z.libOffset << " found function " << func->getName() << std::endl;

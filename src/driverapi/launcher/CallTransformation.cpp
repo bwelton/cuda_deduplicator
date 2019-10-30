@@ -1,11 +1,13 @@
 #include "CallTransformation.h"
 
 CallTransformation::CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuVec, 
-	MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints) : _gpuVec(gpuVec), _cpuVec(cpuVec), _memVec(memVec), _idPoints(idPoints) {
+	MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints, std::unordered_map<std::string, StackPoint> & wrapperReplacements) : _gpuVec(gpuVec), _cpuVec(cpuVec), _memVec(memVec), _idPoints(idPoints), _wrapperReplacements(wrapperReplacements) {
 
 	BuildGraph();
 	BuildRequiredSet();
 }
+
+ // CallTransformation::
 
 
 void CallTransformation::BuildRequiredSet() {

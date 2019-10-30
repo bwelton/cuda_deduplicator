@@ -652,7 +652,7 @@ void BuildMemoryGraph(std::vector<T> & memSites, std::map<int64_t, StackPoint> &
 
 class CallTransformation {
 public:
-	CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuVec, MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints);
+	CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuVec, MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints, std::unordered_map<std::string, StackPoint> & wrapperReplacements);
 	void BuildRequiredSet();
 	RemovePointsPtr GetRemoveCalls();
 	//void GetCudaFreeMallocPairs(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, CudaFreeCallsites & callsites);
@@ -665,6 +665,7 @@ private:
 	GPUMallocVec _gpuVec;
 	CPUMallocVec _cpuVec;
 	MemTransVec _memVec;
+	std::unordered_map<std::string, StackPoint> _wrapperReplacements;
 	std::map<int64_t, StackPoint> _idPoints;
 	RemovePointsPtr _removeCalls;
 };

@@ -98,7 +98,7 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 
 			std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point " << z.funcName << "@" << z.libOffset << " found function " << func->getName() << std::endl;
 			if (tmpFunctrial != NULL)
-				std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point ALT" << z.funcName << "@" << z.libOffset << " found function " << tmpFunctrial->getName() << std::endl;
+				std::cerr << "[LoadStoreInstrimentation::InsertEntryExit} For point ALT " << z.funcName << "@" << z.libOffset << " found function " << tmpFunctrial->getName() << std::endl;
 
 			uint64_t f_addr = (uint64_t)func->getBaseAddr();
 			if (_dyninstFunctions.find(f_addr) != _dyninstFunctions.end()) {
@@ -118,9 +118,9 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 					_dyninstFunctions[f_addr - 8]->EntryExitWrapping();
 				} else if (_dyninstFunctions.find(f_addr + 8) != _dyninstFunctions.end()) {
 					_dyninstFunctions[f_addr + 8]->EntryExitWrapping();
-				} else {
+				} /*else {
 					assert("CANT FIND ID" == 0);
-				}
+				}*/
 			}
 			//assert(_funcPositions.find(func) != _funcPositions.end());
 			//_dyninstFunctions[_funcPositions[func]]->EntryExitWrapping();

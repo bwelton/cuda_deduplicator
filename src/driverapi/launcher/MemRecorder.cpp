@@ -291,7 +291,7 @@ CallTransPtr MemRecorder::PostProcessing() {
 	MemRecDataFile readRecs(fopen("DIOGENES_MemRecords.bin", "rb"));
 	readRecs.Read(memVec, gMallocVec, cMallocVec);
 	CallTransPtr transformer;
-	transformer.reset(new CallTransformation(gMallocVec, cMallocVec, memVec, _idToStackPoint));
+	transformer.reset(new CallTransformation(gMallocVec, cMallocVec, memVec, _idToStackPoint,_wrapperReplacements));
 	transformer->GetRemoveCalls()->Serialize();
 	return transformer;
 }

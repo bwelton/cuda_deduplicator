@@ -72,7 +72,10 @@ void LoadStoreInstrimentation::InsertAnalysis(StackRecMap & recs) {
 }
 
 void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
+
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
+	ops->GenerateAddrList(_proc->GetAddressSpace());
+
 	for (auto i : recs) {
 		std::vector<StackPoint> points = i.second.GetStackpoints();
 		for (auto z : points) {
@@ -85,8 +88,7 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 			BPatch_object * obj = ops->FindObjectByName(_proc->GetAddressSpace(), z.libname, true);
 			if (obj != NULL){
 				BPatch_image * img = _proc->GetAddressSpace()->getImage();
-				tmpFunctrial = img->findFunction(obj->fileOffsetToAddr(z.libOffset));
-
+				tmpFunctrial = ops->FindFunctionInAddrList(_proc->GetAddressSpace(), z); //img->findFunction(obj->fileOffsetToAddr(z.libOffset));
 			}
 			//ops->FindFuncByLibnameOffset(_proc->GetAddressSpace(), tmpFunctrial, z.libname, z.libOffset);
 

@@ -98,6 +98,44 @@ bool DynOpsClass::IsNeverInstriment(BPatch_function * func) {
 
 }
 
+
+void DynOpsClass::GenerateAddrList(BPatch_addressSpace * aspace) {
+	BPatch_Vector<BPatch_function*> fvec;
+	BPatch_image * img = aspace->getImage();
+	img->getProcedures(fvec);
+	std::set<BPatch_basicBlock *>  blocks;
+	for (auto i : fvec) {
+		blocks.clear();
+		GetBasicBlocks(i, blocks);
+		for (auto n : blocks) {
+			auto start = n->getStartAddress();
+			auto end =  n->getEndAddress(); 
+			for (int z = start; z <= end; z++){
+				if (_addressList.find(z) != _addressList.end())
+					std::cerr << "Conflix between functions - " << _addressList[z]->getName() << " and " << i->getName() << " at addr " << z << std::endl;
+				_addressList[z] = i;
+			}
+		}
+	}
+}
+
+
+BPatch_function * DynOpsClass::FindFunctionInAddrList(BPatch_addressSpace * aspace, StackPoint & p) {
+	boost::filesystem::path pDir(p.libname);
+	std::string filename = pDir.stem();
+	std::vector<BPatch_object *> objects = GetObjects(aspace);
+	for (auto i : objects) {
+		if (i->pathName().find(filename) != std::string::npos) {
+			if (i->pathName().find(".so") != std::string::npos) {
+				std::vector<BPatch_module *> mods;
+				i->modules(mods);
+				if(_addressList.find(mods[0]->getBaseAddr() + p.libOffset) != _addressList.end())
+					return _addressList[mods[0]->getBaseAddr() + p.libOffset];
+			}
+		}
+	}
+	return NULL;
+}
 BPatchPointVecPtr DynOpsClass::GetPoints(BPatch_function * func, const BPatch_procedureLocation pos) {
 	BPatchPointVecPtr ret;
 	ret.reset(func->findPoint(pos));

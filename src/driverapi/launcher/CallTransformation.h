@@ -384,7 +384,7 @@ struct MatchLoadStoreStacksRecursive {
 	MatchLoadStoreStacksRecursive() : myId(0) {};
 
 	void AddOffset(uint64_t offset){
-		_offsetMap->insert(offset);
+		_offsetMap.insert(offset);
 	};
 	bool HasOffset(uint64_t offset) {
 		if(_offsetMap.find(offset) == _offsetMap.end())

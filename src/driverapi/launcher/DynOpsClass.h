@@ -78,6 +78,8 @@ public:
 	bool FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p);
 	BPatchPointVecPtr GetPoints(BPatch_function * func, const BPatch_procedureLocation pos);
 	bool IsNeverInstriment(BPatch_function * func);
+	StackPoint GenerateStackPoint(BPatch_addressSpace * aspace, BPatch_function * func);
+
 private:
 	std::map<uint64_t, BPatch_function *> _powerFuncmap;
 	bool init;

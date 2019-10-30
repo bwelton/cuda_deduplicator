@@ -89,6 +89,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 			wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, libcudart);
 
 		assert(wrapVector.size() == 1);
+		_wrapperReplacements[funcName] = ops->GenerateStackPoint(_proc->GetAddressSpace(), wrapVector[0]);
 
 		InsertPrePostCall(wrapVector[0], funcVector[0], false, parameterCounts[funcName]);
 	}
@@ -107,6 +108,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 			wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, libcudart);
 
 		assert(wrapVector.size() == 1);
+
 
 		InsertPrePostCall(wrapVector[0], funcVector[0], true, 0);		
 	}

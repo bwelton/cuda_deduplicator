@@ -62,6 +62,18 @@ bool DynOpsClass::FillStackpoint(BPatch_addressSpace * aspace, StackPoint & p) {
 	return 1;
 
 }
+
+StackPoint DynOpsClass::GenerateStackPoint(BPatch_addressSpace * aspace, BPatch_function * func) {
+	StackPoint ret;
+	ret.libname = func->getModule()->getObject()->pathName();
+	uint64_t libOffsetAddr = 0;
+	BPatchPointVecPtr entryPoints = GetPoints(func, BPatch_locEntry);
+	assert(entryPoints->size() > 0);
+	if (!GetFileOffset(aspace, (*entryPoints)[0], libOffsetAddr, true))
+		libOffsetAddr = (uint64_t) func->getAddress();
+	ret.libOffset = libOffsetAddr;
+	return ret;
+}
 int DynOpsClass::FindFuncByStackPoint(BPatch_addressSpace * aspace, BPatch_function * & ret, StackPoint & point) {
 	if (aspace == NULL) 
 		return -1;

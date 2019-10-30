@@ -64,4 +64,5 @@ private:
 	std::map<uint64_t, std::shared_ptr<DyninstFunction>> _dyninstFunctions;
 	std::shared_ptr<BinaryLocationIDMap> _bmap;
 	std::map<int64_t, StackPoint> _idToStackPoint;
+	std::unordered_map<std::string, StackPoint> _wrapperReplacements;
 };

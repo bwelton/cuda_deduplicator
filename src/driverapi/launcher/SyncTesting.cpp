@@ -375,6 +375,7 @@ void DeSerializeStackRecMap(FILE * fp, std::map<uint64_t, StackRecord> & srmap) 
 		ReadUint64(fp, tmp);
 		sr.DeserializeStack(fp);
 		srmap[tmp] = sr;
+		std::cout << "[DeSerializeStackRecMap]" << std::endl;
 		sr.PrintStack();
 	}
 };

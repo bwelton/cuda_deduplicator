@@ -7,7 +7,7 @@ CallTransformation::CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuV
 	BuildRequiredSet();
 }
 
-std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorderKeys() {
+std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorderKeys(std::map<uint64_t, std::string> & typeMap) {
 	StackKeyReader r(fopen("DIOENES_MemRecUnknowns.bin","rb"));
 	std::map<uint64_t, std::vector<StackPoint> > m = r.ReadStacks();
 	for (auto & i : m) {
@@ -18,6 +18,7 @@ std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorder
 			if(i.second[x].libname.find("lib/plugins/") != std::string::npos)
 				i.second.pop_back();
 			else {
+				typeMap[i.first] = tmp.libname;
 				i.second.push_back(_wrapperReplacements[tmp.libname]);
 				break;
 			}
@@ -54,6 +55,7 @@ std::map<uint64_t, uint64_t> CallTransformation::MatchLStoMR(std::map<uint64_t, 
 
 void CallTransformation::BuildRequiredSet() {
 	StackKeyReader r(fopen("LS_stackkey.txt","rb"));
+	std::map<uint64_t, std::string> typeMap;
 	std::map<uint64_t, std::vector<StackPoint> > LS = r.ReadStacks();
 	std::map<uint64_t, std::vector<StackPoint> > MR = ReadMemRecorderKeys();
 	std::map<uint64_t, uint64_t> matchSet = MatchLStoMR(LS,MR);
@@ -61,8 +63,62 @@ void CallTransformation::BuildRequiredSet() {
 	LSDependencyVec lvec;
 	ReadDependencyFile dep(fopen("LS_syncaccess.bin", "rb"));
 	dep.Read(lvec);
+
+
 	ReadLSTraceDepFile traceDep(fopen("LS_trace.bin", "rb"));
 	traceDep.Read();
+
+	std::set<uint64_t> required; 
+	std::set<uint64_t> notRequired; 
+
+	// First pass: cudaFreeChecks
+	for (size_t i = 0; i < lvec.size(); i++) {
+		auto tmp = lvec[i];
+		bool notRequired = false;
+		if (!tmp->newDependents) {
+			notRequired = true;
+		} else {
+			if (i < lvec.size() - 1) {
+				if (!(traceDep.IsInSet(tmp->id))){
+					notRequired = true;
+				}
+			} 			
+		}
+		if (notRequired) {
+			auto it =  matchSet.find(tmp->id);
+			if (it != matchSet.end()) {
+				if (typeMap[it->second].find("cuMemFree") != std::string::npos || 
+					typeMap[it->second].find("cudaFree") != std::string::npos) {
+					notRequired.insert(tmp->id);
+				}
+			}
+		}
+	}
+
+	// Second pass: cudaMemcpy/cudaMemcpyAsync
+	for (size_t i = 0; i < lvec.size(); i++) {
+		auto tmp = lvec[i];
+		bool notRequired = false;
+		if (!tmp->newDependents) {
+			notRequired = true;
+		} else {
+			if (i < lvec.size() - 1) {
+				if (!(traceDep.IsInSet(tmp->id))  && notRequired.find(lvec[i+1]->id) == notRequired.end()){
+					notRequired = true;
+				}
+			} 			
+		}
+		if (notRequired) {
+			auto it =  matchSet.find(tmp->id);
+			if (it != matchSet.end()) {
+				if (typeMap[it->second].find("cuMemcpy") != std::string::npos || 
+					typeMap[it->second].find("cudaMemcpy") != std::string::npos) {
+					notRequired.insert(tmp->id);
+				}
+			}
+		}
+	}	
+
 
 	LSStackGraphVec sgraph;
 	std::map<uint64_t, int> _mapToSgraph;

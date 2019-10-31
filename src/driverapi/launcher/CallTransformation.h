@@ -655,7 +655,7 @@ public:
 	CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuVec, MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints, std::unordered_map<std::string, StackPoint> & wrapperReplacements);
 	void BuildRequiredSet();
 	RemovePointsPtr GetRemoveCalls();
-	std::map<uint64_t, std::vector<StackPoint> > ReadMemRecorderKeys();
+	std::map<uint64_t, std::vector<StackPoint> > ReadMemRecorderKeys(std::map<uint64_t, std::string> & typeMap);
 	std::map<uint64_t, uint64_t> MatchLStoMR(std::map<uint64_t, std::vector<StackPoint> > & LS, std::map<uint64_t, std::vector<StackPoint> > & MR);
 	//void GetCudaFreeMallocPairs(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, CudaFreeCallsites & callsites);
 	//void GetMemTransReplacement(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, MemTransCallsites & callsites);

@@ -28,7 +28,7 @@ LoadStoreDriver::LoadStoreDriver(CheckAccessesPtr access, bool timefu) : _firstS
 }
 
 void LoadStoreDriver::RecordAccessRange(uint64_t id, uint64_t addr, uint64_t count) {
-	_checkCount++;
+	//_checkCount++;
 	if (_syncTriggered && !_found) {
 		if(_access->IsAddressRangeProtected(addr, count)) {
 			if (_firstWrite)
@@ -51,7 +51,7 @@ void LoadStoreDriver::RecordAccess(uint64_t id, uint64_t addr) {
 			_firstWrite = false;
 			_writer->RecordAccess(id,_stackAtSync);
 			_found = true;
-			if (_checkCount > 100000){
+			/*if (_checkCount > 100000){
 				_totalCheck += _checkCount;
 				auto end = std::chrono::high_resolution_clock::now();
 				std::chrono::duration<double> diff =  std::chrono::high_resolution_clock::now() - _start;
@@ -60,7 +60,7 @@ void LoadStoreDriver::RecordAccess(uint64_t id, uint64_t addr) {
 				if (diff.count()/60 > 40)
 					exit(0);
 				_checkCount = 0;
-			}			
+			}*/			
 			_instControler.FoundUse();
 		}
 	}

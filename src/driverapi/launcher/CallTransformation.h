@@ -231,7 +231,7 @@ struct MemGraph {
 	void CheckForExitFrees() {
 		// Checks for the presence of exit frees
 		// If the number of frees at exit == unknown frees, remove free[-1].
-		FILE * fp = fopen("DIOGENES_UnknownWriteCount.bin", "rb");
+		/*FILE * fp = fopen("DIOGENES_UnknownWriteCount.bin", "rb");
 		if (fp == NULL)
 			return;
 		fseek(fp, 0, SEEK_END);
@@ -258,7 +258,7 @@ struct MemGraph {
 			fsite->parents.clear();
 
 			//fsite->Remove(fsite);
-		}
+		}*/
 	};
 
 	FreeSitePtr GetFreeSite(int64_t id) {
@@ -409,7 +409,7 @@ struct MatchLoadStoreStacksRecursive {
 	};
 
 	uint64_t FindEntry(std::vector<StackPoint> & points, int pos) {
-		uint64_t ret = 0;
+		uint64_t ret = myId;
 		uint64_t startPos = 20000;
 		for (int i = pos; i < points.size(); i++){
 			uint64_t libOffset = points[i].libOffset;
@@ -655,6 +655,8 @@ public:
 	CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuVec, MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints, std::unordered_map<std::string, StackPoint> & wrapperReplacements);
 	void BuildRequiredSet();
 	RemovePointsPtr GetRemoveCalls();
+	std::map<uint64_t, std::vector<StackPoint> > ReadMemRecorderKeys();
+	std::map<uint64_t, uint64_t> MatchLStoMR(std::map<uint64_t, std::vector<StackPoint> > & LS, std::map<uint64_t, std::vector<StackPoint> > & MR);
 	//void GetCudaFreeMallocPairs(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, CudaFreeCallsites & callsites);
 	//void GetMemTransReplacement(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, MemTransCallsites & callsites);
 private:

@@ -70,7 +70,7 @@ void CallTransformation::BuildRequiredSet() {
 
 	std::set<uint64_t> required; 
 	std::set<uint64_t> notRequired; 
-
+	std::set<uint64_t> couldNotFindStack;
 	// First pass: cudaFreeChecks
 	for (size_t i = 0; i < lvec.size(); i++) {
 		auto tmp = lvec[i];
@@ -91,6 +91,8 @@ void CallTransformation::BuildRequiredSet() {
 					typeMap[it->second].find("cudaFree") != std::string::npos) {
 					notRequired.insert(tmp->id);
 				}
+			} else {
+				couldNotFindStack.insert(tmp->id);
 			}
 		}
 	}
@@ -115,10 +117,15 @@ void CallTransformation::BuildRequiredSet() {
 					typeMap[it->second].find("cudaMemcpy") != std::string::npos) {
 					notRequired.insert(tmp->id);
 				}
+			} else {
+				couldNotFindStack.insert(tmp->id);
 			}
 		}
 	}	
 
+	for(auto i : couldNotFindStack) {
+		std::cerr << "[CallTransformation::BuildRequiredSet"
+	}
 
 	LSStackGraphVec sgraph;
 	std::map<uint64_t, int> _mapToSgraph;

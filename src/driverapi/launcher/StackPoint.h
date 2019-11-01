@@ -428,6 +428,45 @@ struct ReadDependencyFile {
 	};
 };
 
+struct RAStackReaderWriter{
+	FILE * io;
+	RAStackReaderWriter (FILE * fp) {
+		io = fp;
+	};
+	~RAStackReaderWriter() {
+		fclose(io);
+	};
+	void WriteRAStack(std::vector<uint64_t> & stack) {
+		uint64_t size = stack.size();
+		fwrite(&size, 1, sizeof(uint64_t), io);
+		for(auto i : stack)
+			fwrite(&i, 1, sizeof(uint64_t), io);
+	};
+
+	std::vector<std::vector<uint64_t>> ReadStacks() {
+		std::vector<std::vector<uint64_t>> ret;
+		fseek(io, 0, SEEK_END);
+  		uint64_t size = ftell(io);
+  		fseek(io, 0, SEEK_SET);
+  		while(size > 0) {
+  			uint64_t stackSize = 0;
+  			uint64_t tmp = 0;
+  			ret.push_back(std::vector<uint64_t>());
+  			fread(&stackSize,1,sizeof(uint64_t),io);
+  			for(int i = 0; i < stackSize; i++) {
+  				fread(&tmp, 1, sizeof(uint64_t), io);
+  				ret.back().push_back(tmp);
+  			}
+  			if (size - ((stackSize * sizeof(uint64_t)) + sizeof(uint64_t)) < size)
+  				size = size - ((stackSize * sizeof(uint64_t)) + sizeof(uint64_t));
+  			else 
+  				size = 0;
+  		}
+  		return ret;
+	};
+
+};
+
 struct StackKeyReader {
 	FILE * in;
 	StackKeyReader(FILE * fp) {

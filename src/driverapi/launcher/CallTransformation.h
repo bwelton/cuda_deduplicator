@@ -396,7 +396,11 @@ struct MatchLoadStoreStacksRecursive {
 		if (points.size() == 0)
 			return;
 		if (points.size() <= pos){
-			assert(myId == 0);
+			if (myId != 0) {
+				std::cerr << "Stacks " << myId << " and " << stackID << " are identical!" << std::endl;
+				assert(myId == 0);
+			}
+			//assert(myId == 0);
 			myId = stackID;
 		} else {
 			uint64_t libOffset = points[pos].libOffset;

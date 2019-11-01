@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include <dlfcn.h>
 #include <pthread.h>
-
+#include "StackPoint.h"
 
 struct RecursiveMap{
 	std::map<uint64_t, RecursiveMap *> _map;
@@ -140,42 +140,42 @@ extern "C" {
 
 //Runtime API Wrappers
 	cudaError_t DIOGENES_cudaFree(void * mem) {
-		
+
 	}
 	cudaError_t DIOGENES_cudaFreeHost(void * mem) {
-		
+
 	}
 	cudaError_t DIOGENES_cudaMalloc(void ** mem, size_t size) {
-		
+
 	}
 	cudaError_t DIOGENES_cudaMallocHost(void ** mem, size_t size) {
-		
+
 	}
 	cudaError_t DIOGENES_cudaMemcpy(void * dst, const void * src, size_t count, cudaMemcpyKind kind) {
-		
+
 	}
 	cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, const void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream) {
-		
+
 	}
 
 // Driver API Wrappers
 	CUresult DIOGENES_cuMemFree(void * mem) {
-		
+
 	}
 	CUresult DIOGENES_cuMemFreeHost(void * mem) {
-		
+
 	}
 	CUresult DIOGENES_cuMemAlloc(void ** mem, size_t size) {
-		
+
 	}
 	CUresult DIOGENES_cuMemAllocHost(void ** mem, size_t size) {
-		
+
 	}
 	CUresult DIOGENES_cuMemcpyDtoH(void * dst, CUdeviceptr src, size_t count) {
-		
+
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
-		
+
 	}
 
 }

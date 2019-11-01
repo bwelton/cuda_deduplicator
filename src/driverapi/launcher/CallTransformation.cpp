@@ -23,6 +23,9 @@ std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorder
 				break;
 			}
 		}
+		std::cerr << "Remade MemRecStack at index " << i.first << std::endl;
+		for (auto x : i.second)
+			std::cerr << x.libname << "@" << std::hex << x.libOffset << std::endl;
 	}	
 	return m;
 }

@@ -57,7 +57,7 @@ void CallTransformation::BuildRequiredSet() {
 	StackKeyReader r(fopen("LS_stackkey.txt","rb"));
 	std::map<uint64_t, std::string> typeMap;
 	std::map<uint64_t, std::vector<StackPoint> > LS = r.ReadStacks();
-	std::map<uint64_t, std::vector<StackPoint> > MR = ReadMemRecorderKeys();
+	std::map<uint64_t, std::vector<StackPoint> > MR = ReadMemRecorderKeys(typeMap);
 	std::map<uint64_t, uint64_t> matchSet = MatchLStoMR(LS,MR);
 
 	LSDependencyVec lvec;
@@ -74,17 +74,17 @@ void CallTransformation::BuildRequiredSet() {
 	// First pass: cudaFreeChecks
 	for (size_t i = 0; i < lvec.size(); i++) {
 		auto tmp = lvec[i];
-		bool notRequired = false;
+		bool syncNotNeeded = false;
 		if (!tmp->newDependents) {
-			notRequired = true;
+			syncNotNeeded = true;
 		} else {
 			if (i < lvec.size() - 1) {
 				if (!(traceDep.IsInSet(tmp->id))){
-					notRequired = true;
+					syncNotNeeded = true;
 				}
 			} 			
 		}
-		if (notRequired) {
+		if (syncNotNeeded) {
 			auto it =  matchSet.find(tmp->id);
 			if (it != matchSet.end()) {
 				if (typeMap[it->second].find("cuMemFree") != std::string::npos || 
@@ -100,17 +100,17 @@ void CallTransformation::BuildRequiredSet() {
 	// Second pass: cudaMemcpy/cudaMemcpyAsync
 	for (size_t i = 0; i < lvec.size(); i++) {
 		auto tmp = lvec[i];
-		bool notRequired = false;
+		bool syncNotNeeded = false;
 		if (!tmp->newDependents) {
-			notRequired = true;
+			syncNotNeeded = true;
 		} else {
 			if (i < lvec.size() - 1) {
 				if (!(traceDep.IsInSet(tmp->id))  && notRequired.find(lvec[i+1]->id) == notRequired.end()){
-					notRequired = true;
+					syncNotNeeded = true;
 				}
 			} 			
 		}
-		if (notRequired) {
+		if (syncNotNeeded) {
 			auto it =  matchSet.find(tmp->id);
 			if (it != matchSet.end()) {
 				if (typeMap[it->second].find("cuMemcpy") != std::string::npos || 
@@ -241,7 +241,8 @@ RemovePointsPtr CallTransformation::GetRemoveCalls() {
 }
 
 void CallTransformation::BuildGraph() {
-	auto MR = ReadMemRecorderKeys();
+	std::map<uint64_t, std::string> typeMap;
+	auto MR = ReadMemRecorderKeys(typeMap);
 	std::map<int64_t, StackPoint> idPointKeys;
 	for (auto i : MR) {
 		idPointKeys[int64_t(i.first)] = i.second.back();

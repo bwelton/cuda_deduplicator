@@ -1,5 +1,4 @@
-add_compile_options(-O3 -g -mno-vsx)
-add_compile_options(-mno-vsx)
+add_compile_options(-O3 -g)
 
 add_library(DiogenesMemManager SHARED "MemManager.cpp")
 target_link_libraries(DiogenesMemManager ${Boost_LIBRARIES})

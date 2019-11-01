@@ -131,7 +131,15 @@ void CallTransformation::BuildRequiredSet() {
 		std::cerr << "[CallTransformation::BuildRequiredSet] Following synchronization is NOT required: " << typeMap[matchSet[i]] <<  " at LS stack = " << matchSet[i] << std::endl;
 	}
 
-// 	// LSStackGraphVec sgraph;
+
+	StackKeyWriter outputKeys(fopen("AC_AutoCorrectStacks.txt", "wb"));
+
+	for (auto i : notRequired) {
+		MR[matchSet[i]].pop_back();
+		outputKeys.InsertStack(i, MR[matchSet[i]]);
+	}
+
+	// 	// LSStackGraphVec sgraph;
 // 	// std::map<uint64_t, int> _mapToSgraph;
 // 	// int pos = 0;
 // 	// for (auto i : LS) {

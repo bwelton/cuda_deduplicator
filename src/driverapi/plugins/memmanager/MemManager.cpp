@@ -158,10 +158,10 @@ struct CudaMemhostPageManager {
 			void * tmp;
 			if (CUDA_SUCCESS != cuMemAllocHost(&tmp,size))
 				assert("CANNOT ALLOCATE PINNED HOST MEMORY" != 0);
-			cachedPages[size] = tmp
+			cachedPages[size] = tmp;
 			it = cachedPages.find(size);
 		}
-		return *it;
+		return it->second;
 	};
 };
 
@@ -250,7 +250,7 @@ extern "C" {
 		void * tmp = pageAllocator->GetPinnedPage(count);
 		
 		CUresult ret = DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
-		memcpy(src, tmp, count);
+		memcpy(dst, tmp, count);
 
 		return ret;
 

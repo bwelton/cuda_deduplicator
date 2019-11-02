@@ -379,12 +379,17 @@ typedef std::vector<LSStackGraph> LSStackGraphVec;
 
 struct MatchLoadStoreStacksRecursive {
 	std::unordered_map<std::string, MatchLoadStoreStacksRecursive *> _libmap; 
-	std::unordered_set<uint64_t> _offsetMap;
+	std::unordered_map<uint64_t, uint64_t> _offsetMap;
+
 	uint64_t myId;
 	MatchLoadStoreStacksRecursive() : myId(0) {};
 
-	void AddOffset(uint64_t offset){
-		_offsetMap.insert(offset);
+	void AddOffset(uint64_t offset, uint64_t ident){
+		if(HasOffset(offset))  {
+			if (ident != _offsetMap[offset])
+				std::cerr << "[MatchLoadStoreStacksRecursive::AddOffset] Warning - Replacing id for offset " << offset << " original " << _offsetMap[offset] << " with " <<  ident << std::endl;
+		}
+		_offsetMap[offset] = ident;
 	};
 	bool HasOffset(uint64_t offset) {
 		if(_offsetMap.find(offset) == _offsetMap.end())
@@ -393,6 +398,24 @@ struct MatchLoadStoreStacksRecursive {
 	};
 
 	void InsertEntry(std::vector<StackPoint> & points, int pos, int stackID) {
+		if(points.size() == 0)
+			return;
+
+		if (points.size() <= pos)
+			return;
+
+		uint64_t libOffset = points[pos].libOffset;
+		std::string libname = points[pos].libname;
+		if (_libmap.find(libname) == _libmap.end()) 
+			_libmap[libname] = new MatchLoadStoreStacksRecursive();
+
+		if (pos + 1 >= points.size()) {
+			_libmap[libname]->AddOffset(libOffset, stackID);
+		} else
+			_libmap[libname]->AddOffset(libOffset, 0);
+		_libmap[libname]->InsertEntry(points, pos+1, stackID);
+
+/*		
 		if (points.size() == 0)
 			return;
 		if (points.size() <= pos){
@@ -409,19 +432,23 @@ struct MatchLoadStoreStacksRecursive {
 				_libmap[libname] = new MatchLoadStoreStacksRecursive();
 			_libmap[libname]->AddOffset(libOffset);
 			_libmap[libname]->InsertEntry(points, pos+1, stackID);
-		}
+		}*/
 	};
 
 	uint64_t FindEntry(std::vector<StackPoint> & points, int pos) {
-		uint64_t ret = myId;
+		if (points.size() == 0)
+			return 0;
+		uint64_t ret = 0;
 		uint64_t startPos = 20000;
 		for (int i = pos; i < points.size(); i++){
 			uint64_t libOffset = points[i].libOffset;
-			std::string libname = points[i].libname;		
+			std::string libname = points[i].libname;	
 			if (_libmap.find(libname) == _libmap.end())
 				continue;
 			if (_libmap[libname]->HasOffset(libOffset)){
+				uint64_t nextOffset = _libmap[libname]->_offsetMap[libOffset];
 				uint64_t tmp = _libmap[libname]->FindEntry(points, i + 1);
+				tmp  = max(tmp,nextOffset);
 				if ((ret  == 0 || i < startPos) && tmp != 0) {
 					ret = tmp;
 					startPos = i;

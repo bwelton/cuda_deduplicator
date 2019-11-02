@@ -85,7 +85,7 @@ void LoadStoreInstrimentation::InsertEntryExit(StackRecMap & recs) {
 				continue;
 			}
 			BPatch_function * tmpFunctrial = NULL;
-			if (z.libname.find("libcufft") != std::string::npos) {
+			if (z.libname.find("libcuff") != std::string::npos ) {
 				tmpFunctrial = ops->FindFunctionInAddrList(_proc->GetAddressSpace(), z);
 			}
 

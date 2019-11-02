@@ -438,12 +438,26 @@ struct MatchLoadStoreStacksRecursive {
 		}*/
 	};
 
+	uint64_t RecurseSinglePath() {
+		if (_libmap.size() == 0)
+			return myId;
+		if (_libmap.size() != 1)
+			return 0;
+		return _libmap.begin()->second->RecurseSinglePath();
+	};
+
 	uint64_t FindEntry(std::vector<StackPoint> & points, int pos) {
 		if(points.size() == 0)
 			return 0;
 
 		if (points.size() <= pos){
-			return myId;
+			uint64_t ret = myId;
+			if (myId == 0){
+				//if there is one path from here to end, assume that this is a match.
+				// This is to deal with ambiguity between LS and MR stacks that may exists 
+				ret = RecurseSinglePath();
+			}
+			return ret;
 		}
 		for (int i = pos; i < points.size(); i++){
 			std::stringstream ss;

@@ -128,7 +128,7 @@ void CallTransformation::BuildRequiredSet() {
 		if (syncNotNeeded) {
 			auto it =  matchSet.find(tmp->id);
 			if (it != matchSet.end()) {
-				std::cerr << "Checking matchset" << std::endl;
+				//std::cerr << "Checking matchset" << std::endl;
 				if (typeMap[it->second].find("cuMemcpy") != std::string::npos || 
 					typeMap[it->second].find("cudaMemcpy") != std::string::npos) {
 					notRequired.insert(tmp->id);

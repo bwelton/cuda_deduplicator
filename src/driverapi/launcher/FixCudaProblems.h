@@ -56,7 +56,7 @@ public:
 	FixCudaProblems(std::shared_ptr<DyninstProcess> proc);
 	void InsertAnalysis(StackRecMap & recs);
 	void PostProcessing();
-	uint64_t GetAbsoluteAddress(StackPoint & p);
+	uint64_t GetAbsoluteAddress(StackPoint & point);
 private:
 	std::shared_ptr<DyninstProcess> _proc;
 	//std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;

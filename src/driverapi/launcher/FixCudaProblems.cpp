@@ -10,14 +10,14 @@
 FixCudaProblems::FixCudaProblems(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 
 
-uint64_t FixCudaProblems::GetAbsoluteAddress(StackPoint & p) {
-	boost::filesystem::path p(p.libname);
+uint64_t FixCudaProblems::GetAbsoluteAddress(StackPoint & point) {
+	boost::filesystem::path p(point.libname);
 	std::string tmpfilename = p.stem().string();
 	if (tmpfilename.find('.') != std::string::npos) {
 		tmpfilename = tmpfilename.substr(0, tmpfilename.find('.'));
 	}	
 	assert(_object_offsets.find(tmpfilename) != _object_offsets.end());
-	return _object_offsets[tmpfilename] + p.libOffset;
+	return _object_offsets[tmpfilename] + point.libOffset;
 };
 
 void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {

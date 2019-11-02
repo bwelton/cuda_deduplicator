@@ -249,7 +249,7 @@ extern "C" {
 			pageAllocator = new CudaMemhostPageManager();		
 		void * tmp = pageAllocator->GetPinnedPage(count);
 		
-		CUresult ret = DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
+		CUresult ret = DIOGENES_cuMemcpyDtoH_wrapper(tmp, src, count);
 		memcpy(dst, tmp, count);
 
 		return ret;

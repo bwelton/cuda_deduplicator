@@ -158,7 +158,7 @@ void CallTransformation::BuildRequiredSet() {
 
 
 	StackKeyWriter outputKeys(fopen("AC_AutoCorrectStacks.txt", "wb"));
-
+	 
 	for (auto i : notRequired) {
 		MR[matchSet[i]].pop_back();
 		outputKeys.InsertStack(matchSet[i], MR[matchSet[i]]);

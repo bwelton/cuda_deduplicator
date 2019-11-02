@@ -9,153 +9,226 @@
 
 FixCudaProblems::FixCudaProblems(std::shared_ptr<DyninstProcess> proc) : _proc(proc) {}
 
+
+uint64_t FixCudaProblems::GetAbsoluteAddress(StackPoint & p) {
+	boost::filesystem::path p(p.libname);
+	std::string tmpfilename = p.stem().string();
+	if (tmpfilename.find('.') != std::string::npos) {
+		tmpfilename = tmpfilename.substr(0, tmpfilename.find('.'));
+	}	
+	assert(_object_offsets.find(tmpfilename) != _object_offsets.end());
+	return _object_offsets[tmpfilename] + p.libOffset;
+};
+
 void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	DebugInstrimentationTemp debugOutput(std::string("DIOGENES_limitFunctions.txt"), std::string("DIOGENES_funcsInstrimented.txt"));
 
 	_bmap.reset(new BinaryLocationIDMap());
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
+	BPatch_object * libcudart = _proc->LoadLibrary(std::string("libcudart.so"));
 	BPatch_object * wrapper = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libDiogenesMemManager.so"));
 
-	std::vector<BPatch_function *> cudaFreeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaFreeWrapper"), wrapper);
-	std::vector<BPatch_function *> cudaFreeSyncWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_synchronousCudaFree"), wrapper);
-	std::vector<BPatch_function *> cudaMallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMallocWrapper"), wrapper);
-	std::vector<BPatch_function *> cudaMemcpyWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMemcpyAsyncWrapper"), wrapper);
-	std::vector<BPatch_function *> mallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_MALLOCWrapper"), wrapper);
-	std::vector<BPatch_function *> freeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_FREEWrapper"), wrapper);
-	std::vector<BPatch_function *> syncExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SIGNALSYNC"), wrapper);
+	std::vector<BPatch_object *> objects = ops->GetObjects(_proc->GetAddressSpace());
+	for (auto i : objects) {
+		if (i->pathName().find(".so") != std::string::npos) {
 
-	std::vector<BPatch_function *> testCudaMemcpySyncWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMemcpySyncWrapper"), wrapper);
-	// std::vector<BPatch_function *> syncExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SyncExit"), wrapper);
-	// std::vector<BPatch_function *> syncGetStream = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SUB_333898PRECALL"), wrapper);
-	assert(cudaFreeWrapper.size() > 0);
-	assert(cudaMallocWrapper.size() > 0);
-	assert(cudaMemcpyWrapper.size() > 0);
-	assert(mallocWrapper.size() > 0);
-	assert(freeWrapper.size() > 0);
-	assert(syncExit.size() > 0);
-	assert(cudaFreeSyncWrapper.size() > 0);
-	assert(testCudaMemcpySyncWrapper.size() > 0);
-	// assert(syncGetStream.size() > 0);
+			boost::filesystem::path p(i->pathName());
+			std::string tmpfilename = p.stem().string();
+			if (tmpfilename.find('.') != std::string::npos) {
+				tmpfilename = tmpfilename.substr(0, tmpfilename.find('.'));
+			}
 
-	RemovePointsPtr remPoints(new RemovePoints());
-	remPoints->Deserialze(); //callTrans->GetRemoveCalls();
-    remPoints->BuildTreeMap();
-	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
-	std::vector<BPatch_function *> all_functions;
-	BPatch_image * img = _proc->GetAddressSpace()->getImage();
-//	std::vector<BPatch_object *> objs;
-//	img->getObjects(objs);
-	/*{
-	    StackPointVec tmpPoints = remPoints->GetAllStackPoints();
-    //    std::set<std::string> libsToCheck = remPoints->GetLibs();
-	    for (auto n : tmpPoints) {
-	        std::vector<BPatch_function *> funcsInClass = ops->FindFunctionsByLibnameOffset(_proc->GetAddressSpace(), n.libname, n.libOffset, false);
-	        assert(funcsInClass.size() > 0);
-	        std::unordered_set<uint64_t> tmpTracker;
-
-	        for (auto i : funcsInClass)
-	        	tmpTracker.insert((uint64_t)i->getBaseAddr());
-	        for (auto i : funcsInClass)
-	        	if (tmpTracker.find((uint64_t)i->getBaseAddr()+0x8) == tmpTracker.end())
-	            	_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
-	    }	    
-	}*/
-
-
-	BPatch_variableExpr * cmemcpyvar = img->findVariable("DIOGENES_TMP_GLOBALC_CMEMCPY_PTR", true);
-	BPatch_variableExpr * cmemcpyasyncvar = img->findVariable("DIOGENES_TMP_GLOBALC_CMEMCPYASYNC_PTR", true);
-	{
-		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemcpyDtoH_v2"), libcuda);
-		//std::string tmpLib = cmemcpy[0]->getModule()->getObject()->pathName();
-		void * tempAddr = (cmemcpy[0]->getBaseAddr());
-		cmemcpyvar->writeValue(&tempAddr, 8);
-		//bool found = false;
-		//for (auto i : cmemcpy) {
-			//std::string tmpLib = i->getModule()->getObject()->pathName();
-			//if (tmpLib.find("cufft") != std::string::npos) 
-		/*		if (found == false) {
-					found = true;
-					void * tempAddr = (i->getBaseAddr());
-					cmemcpyvar->writeValue(&tempAddr, 8);
-				} else {
-					assert("FOUND 2 CUDAMEMCPY FUNCTIONS!!!!" == 0);
-				}*/
-		//}
-		//assert(found != false);
-	}
-	{
-		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemcpyDtoHAsync_v2"), libcuda);
-		void * tempAddr = (cmemcpy[0]->getBaseAddr());
-		cmemcpyasyncvar->writeValue(&tempAddr, 8);
-		/*bool found = false;
-		for (auto i : cmemcpy) {
-			std::string tmpLib = i->getModule()->getObject()->pathName();
-			if (tmpLib.find("cufft") != std::string::npos) 
-				if (found == false) {
-					found = true;
-					void * tempAddr = (i->getBaseAddr());
-					cmemcpyasyncvar->writeValue(&tempAddr, 8);
-				} else {
-					assert("FOUND 2 CUDAMEMCPYASYNC FUNCTIONS!!!!" == 0);
-				}
+			std::vector<BPatch_module *> mods;
+			i->modules(mods);
+			if (mods.size() != 1){
+				std::cerr << "Could not find module for library " << i->pathName() << std::endl;
+				continue;
+			}
+			_object_offsets[tmpfilename] = (uint64_t)mods[0]->getBaseAddr();
+		} else {
+			boost::filesystem::path p(i->pathName());
+			std::string tmpfilename = p.stem().string();
+			if (tmpfilename.find('.') != std::string::npos) {
+				tmpfilename = tmpfilename.substr(0, tmpfilename.find('.'));
+			}	
+			_object_offsets[tmpfilename] = 0;		
 		}
-		assert(found != false);*/
-	}	
-    img->getProcedures(all_functions);
-    for (auto i : all_functions) {
-	    std::string tmpLib = i->getModule()->getObject()->pathName();
-	    void * start;
-	    void * end;
-	    i->getAddressRange(start, end);
-	    std::shared_ptr<std::vector<BPatch_point *> > tmp(i->findPoint(BPatch_locEntry));
-	    uint64_t lOffset = (uint64_t) start;
-	    uint64_t dist = ((uint64_t) end) - ((uint64_t) start); 
-	    if (tmp->size() > 0) {
-	        if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*tmp)[0], lOffset, true))
-		        lOffset = (uint64_t)start;
-	    }
-		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
 	}
 
-	std::vector<uint64_t> deleteList;
-	/*for (auto i : _dyninstFunctions) {
-		if(_dyninstFunctions.find(i.first + 0x8) != _dyninstFunctions.end())
-			deleteList.push_back(i.first);
+
+	StackKeyReader r(fopen("AC_AutoCorrectStacks.txt","rb"));
+	std::map<uint64_t, std::vector<StackPoint> > m = r.ReadStacks();
+
+	{
+		RAStackReaderWriter writeAbsolutes(fopen("AC_BinStacks.bin","wb"));
+		for (auto i : m) {
+			std::vector<uint64_t> absoluteOut;
+			for(auto x : i.second){
+				absoluteOut.push_back(GetAbsoluteAddress(x));
+			}
+			std::reverse(absoluteOut.begin(), absoluteOut.end());
+			writeAbsolutes.WriteRAStack(absoluteOut);
+		}
 	}
-	for (auto i : deleteList) 
-		if (_dyninstFunctions.find(i) != _dyninstFunctions.end())
-			_dyninstFunctions.erase(i);
-	*/
-	std::string binary_name = std::string("main");
-	std::string tmpLibname = std::string("");
-	std::string tmpFuncName = std::string("");
-	_proc->BeginInsertionSet();
 
-	DetectDuplicateStackpoints dupCheck;
 
-	int freesReplaced = 0;
-	int freesSkipped = 0;
-	int mallocsReplaced = 0;
-	int mallocsSkipped = 0;
-	for (auto i : _dyninstFunctions) {
-		// if (i.second->IsExcludedFunction(LOAD_STORE_INST))
-		// 	continue;
-		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
+	std::vector<BPatch_function *> binderFunctions = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_INIT_GOTCHA"), wrapper);
+	std::vector<BPatch_snippet*> recordArgs;
+	BPatch_funcCallExpr entryExpr(*(binderFunctions[0]), recordArgs);
+	std::cerr << "[FixCudaProblems::InsertAnalysis] Fireing off one time call to setup API Capture Instrimentation\n";
+	dynamic_cast<BPatch_process*>(_proc->GetAddressSpace())->oneTimeCode(entryExpr);
 
-		if (tmpFuncName.find("DIOGENES_") != std::string::npos || tmpLibname.find("/lib/plugins/") != std::string::npos)
-			continue;
-		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos || tmpLibname.find("libcudart") != std::string::npos  || tmpLibname.find("libcuda") != std::string::npos)
-			continue;
+
+
+
+
+
+
+
+
+
+
+
+// 	std::vector<BPatch_function *> cudaFreeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaFreeWrapper"), wrapper);
+// 	std::vector<BPatch_function *> cudaFreeSyncWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_synchronousCudaFree"), wrapper);
+// 	std::vector<BPatch_function *> cudaMallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMallocWrapper"), wrapper);
+// 	std::vector<BPatch_function *> cudaMemcpyWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMemcpyAsyncWrapper"), wrapper);
+// 	std::vector<BPatch_function *> mallocWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_MALLOCWrapper"), wrapper);
+// 	std::vector<BPatch_function *> freeWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_FREEWrapper"), wrapper);
+// 	std::vector<BPatch_function *> syncExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SIGNALSYNC"), wrapper);
+
+// 	std::vector<BPatch_function *> testCudaMemcpySyncWrapper = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_cudaMemcpySyncWrapper"), wrapper);
+// 	// std::vector<BPatch_function *> syncExit = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SyncExit"), wrapper);
+// 	// std::vector<BPatch_function *> syncGetStream = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SUB_333898PRECALL"), wrapper);
+// 	assert(cudaFreeWrapper.size() > 0);
+// 	assert(cudaMallocWrapper.size() > 0);
+// 	assert(cudaMemcpyWrapper.size() > 0);
+// 	assert(mallocWrapper.size() > 0);
+// 	assert(freeWrapper.size() > 0);
+// 	assert(syncExit.size() > 0);
+// 	assert(cudaFreeSyncWrapper.size() > 0);
+// 	assert(testCudaMemcpySyncWrapper.size() > 0);
+// 	// assert(syncGetStream.size() > 0);
+
+// 	RemovePointsPtr remPoints(new RemovePoints());
+// 	remPoints->Deserialze(); //callTrans->GetRemoveCalls();
+//     remPoints->BuildTreeMap();
+// 	std::shared_ptr<InstrimentationTracker> tracker(new InstrimentationTracker());
+// 	std::vector<BPatch_function *> all_functions;
+// 	BPatch_image * img = _proc->GetAddressSpace()->getImage();
+// //	std::vector<BPatch_object *> objs;
+// //	img->getObjects(objs);
+// 	/*{
+// 	    StackPointVec tmpPoints = remPoints->GetAllStackPoints();
+//     //    std::set<std::string> libsToCheck = remPoints->GetLibs();
+// 	    for (auto n : tmpPoints) {
+// 	        std::vector<BPatch_function *> funcsInClass = ops->FindFunctionsByLibnameOffset(_proc->GetAddressSpace(), n.libname, n.libOffset, false);
+// 	        assert(funcsInClass.size() > 0);
+// 	        std::unordered_set<uint64_t> tmpTracker;
+
+// 	        for (auto i : funcsInClass)
+// 	        	tmpTracker.insert((uint64_t)i->getBaseAddr());
+// 	        for (auto i : funcsInClass)
+// 	        	if (tmpTracker.find((uint64_t)i->getBaseAddr()+0x8) == tmpTracker.end())
+// 	            	_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
+// 	    }	    
+// 	}*/
+
+
+// 	BPatch_variableExpr * cmemcpyvar = img->findVariable("DIOGENES_TMP_GLOBALC_CMEMCPY_PTR", true);
+// 	BPatch_variableExpr * cmemcpyasyncvar = img->findVariable("DIOGENES_TMP_GLOBALC_CMEMCPYASYNC_PTR", true);
+// 	{
+// 		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemcpyDtoH_v2"), libcuda);
+// 		//std::string tmpLib = cmemcpy[0]->getModule()->getObject()->pathName();
+// 		void * tempAddr = (cmemcpy[0]->getBaseAddr());
+// 		cmemcpyvar->writeValue(&tempAddr, 8);
+// 		//bool found = false;
+// 		//for (auto i : cmemcpy) {
+// 			//std::string tmpLib = i->getModule()->getObject()->pathName();
+// 			//if (tmpLib.find("cufft") != std::string::npos) 
+// 		/*		if (found == false) {
+// 					found = true;
+// 					void * tempAddr = (i->getBaseAddr());
+// 					cmemcpyvar->writeValue(&tempAddr, 8);
+// 				} else {
+// 					assert("FOUND 2 CUDAMEMCPY FUNCTIONS!!!!" == 0);
+// 				}*/
+// 		//}
+// 		//assert(found != false);
+// 	}
+// 	{
+// 		std::vector<BPatch_function *> cmemcpy = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("cuMemcpyDtoHAsync_v2"), libcuda);
+// 		void * tempAddr = (cmemcpy[0]->getBaseAddr());
+// 		cmemcpyasyncvar->writeValue(&tempAddr, 8);
+// 		/*bool found = false;
+// 		for (auto i : cmemcpy) {
+// 			std::string tmpLib = i->getModule()->getObject()->pathName();
+// 			if (tmpLib.find("cufft") != std::string::npos) 
+// 				if (found == false) {
+// 					found = true;
+// 					void * tempAddr = (i->getBaseAddr());
+// 					cmemcpyasyncvar->writeValue(&tempAddr, 8);
+// 				} else {
+// 					assert("FOUND 2 CUDAMEMCPYASYNC FUNCTIONS!!!!" == 0);
+// 				}
+// 		}
+// 		assert(found != false);*/
+// 	}	
+//     img->getProcedures(all_functions);
+//     for (auto i : all_functions) {
+// 	    std::string tmpLib = i->getModule()->getObject()->pathName();
+// 	    void * start;
+// 	    void * end;
+// 	    i->getAddressRange(start, end);
+// 	    std::shared_ptr<std::vector<BPatch_point *> > tmp(i->findPoint(BPatch_locEntry));
+// 	    uint64_t lOffset = (uint64_t) start;
+// 	    uint64_t dist = ((uint64_t) end) - ((uint64_t) start); 
+// 	    if (tmp->size() > 0) {
+// 	        if (!ops->GetFileOffset(_proc->GetAddressSpace(), (*tmp)[0], lOffset, true))
+// 		        lOffset = (uint64_t)start;
+// 	    }
+// 		_dyninstFunctions[(uint64_t)i->getBaseAddr()] = std::shared_ptr<DyninstFunction>(new DyninstFunction(_proc, i, tracker, _bmap));
+// 	}
+
+// 	std::vector<uint64_t> deleteList;
+// 	/*for (auto i : _dyninstFunctions) {
+// 		if(_dyninstFunctions.find(i.first + 0x8) != _dyninstFunctions.end())
+// 			deleteList.push_back(i.first);
+// 	}
+// 	for (auto i : deleteList) 
+// 		if (_dyninstFunctions.find(i) != _dyninstFunctions.end())
+// 			_dyninstFunctions.erase(i);
+// 	*/
+// 	std::string binary_name = std::string("main");
+// 	std::string tmpLibname = std::string("");
+// 	std::string tmpFuncName = std::string("");
+// 	_proc->BeginInsertionSet();
+
+// 	DetectDuplicateStackpoints dupCheck;
+
+// 	int freesReplaced = 0;
+// 	int freesSkipped = 0;
+// 	int mallocsReplaced = 0;
+// 	int mallocsSkipped = 0;
+// 	for (auto i : _dyninstFunctions) {
+// 		// if (i.second->IsExcludedFunction(LOAD_STORE_INST))
+// 		// 	continue;
+// 		i.second->GetFuncInfo(tmpLibname, tmpFuncName);
+
+// 		if (tmpFuncName.find("DIOGENES_") != std::string::npos || tmpLibname.find("/lib/plugins/") != std::string::npos)
+// 			continue;
+// 		if (tmpLibname.find("/usr/lib64/libc-2.17.so") != std::string::npos || tmpLibname.find("libcudart") != std::string::npos  || tmpLibname.find("libcuda") != std::string::npos)
+// 			continue;
 		
-		//if (tmpLibname.find(binary_name) != std::string::npos) {
-			std::vector<DyninstCallsite> callsites;
-			i.second->GetCallsites(callsites);
-			for (auto x : callsites) {
-				if (*(x.GetCalledFunction()) == std::string("cuMemcpyDtoH_v2")){
-					std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) <<  " @ address= " << std::hex << x.GetPointAddress() << " in function " << tmpFuncName << std::dec << std::endl;
-					x.ReplaceFunctionCall(testCudaMemcpySyncWrapper[0]);
-				}
+// 		//if (tmpLibname.find(binary_name) != std::string::npos) {
+// 			std::vector<DyninstCallsite> callsites;
+// 			i.second->GetCallsites(callsites);
+// 			for (auto x : callsites) {
+// 				if (*(x.GetCalledFunction()) == std::string("cuMemcpyDtoH_v2")){
+// 					std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) <<  " @ address= " << std::hex << x.GetPointAddress() << " in function " << tmpFuncName << std::dec << std::endl;
+// 					x.ReplaceFunctionCall(testCudaMemcpySyncWrapper[0]);
+// 				}
 
 				// std::cerr << "[DB]CS Function Name - " << *(x.GetCalledFunction()) <<  " @ address= " << std::hex << x.GetPointAddress() << std::dec << std::endl;
 				// if (*(x.GetCalledFunction()) == std::string("cudaFree")){

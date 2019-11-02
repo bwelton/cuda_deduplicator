@@ -448,7 +448,7 @@ struct MatchLoadStoreStacksRecursive {
 			if (_libmap[libname]->HasOffset(libOffset)){
 				uint64_t nextOffset = _libmap[libname]->_offsetMap[libOffset];
 				uint64_t tmp = _libmap[libname]->FindEntry(points, i + 1);
-				tmp  = max(tmp,nextOffset);
+				tmp  = std::max(tmp,nextOffset);
 				if ((ret  == 0 || i < startPos) && tmp != 0) {
 					ret = tmp;
 					startPos = i;

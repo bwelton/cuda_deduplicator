@@ -43,7 +43,10 @@ std::map<uint64_t, uint64_t> CallTransformation::MatchLStoMR(std::map<uint64_t, 
 	}
 	
 	for (auto i : MR) {
+		auto tmp = i.second.back();
+		i.second.pop_back();
 		uint64_t tmp = LSRecursive.FindEntry(i.second, 0);
+		i.second.push_back(tmp);
 		std::cout << "[CallTransformation::MatchLStoMR] MR " << std::dec << i.first << " has matched with LR " << std::dec << tmp << std::endl;
 		if (tmp == 0){
 			std::cout << "[CallTransformation::MatchLStoMR] WARNING COULD NOT MATCH MR " << std::dec << i.first << std::endl;

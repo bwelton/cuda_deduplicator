@@ -185,65 +185,65 @@ extern "C" {
 
 //Runtime API Wrappers
 	cudaError_t DIOGENES_cudaFree(void * mem) {
-		std::cerr << "In cuda free" << std::endl;
+		//std::cerr << "In cuda free" << std::endl;
 		return DIOGENES_cudaFree_wrapper(mem);
 	}
 	cudaError_t DIOGENES_cudaFreeHost(void * mem) {
-		std::cerr << "In DIOGENES_cudaFreeHost free" << std::endl;
+		//std::cerr << "In DIOGENES_cudaFreeHost free" << std::endl;
 		return DIOGENES_cudaFreeHost_wrapper(mem);
 
 	}
 	cudaError_t DIOGENES_cudaMalloc(void ** mem, size_t size) {
-		std::cerr << "In DIOGENES_cudaMalloc free" << std::endl;
+		//std::cerr << "In DIOGENES_cudaMalloc free" << std::endl;
 
 		return DIOGENES_cudaMalloc_wrapper(mem, size);
 
 	}
 	cudaError_t DIOGENES_cudaMallocHost(void ** mem, size_t size) {
-		std::cerr << "In DIOGENES_cudaMallocHost free" << std::endl;		
+		//std::cerr << "In DIOGENES_cudaMallocHost free" << std::endl;		
 		return DIOGENES_cudaMallocHost_wrapper(mem, size);
 
 	}
 	cudaError_t DIOGENES_cudaMemcpy(void * dst, const void * src, size_t count, cudaMemcpyKind kind) {
-		std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		
+		//std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		
 		return DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
 
 	}
 	cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, const void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream) {
-		std::cerr << "In DIOGENES_cudaMemcpyAsync free" << std::endl;	
+		//std::cerr << "In DIOGENES_cudaMemcpyAsync free" << std::endl;	
 		return DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
 
 	}
 
 // Driver API Wrappers
 	CUresult DIOGENES_cuMemFree(void * mem) {
-		std::cerr << "In DIOGENES_cuMemFree free" << std::endl;	
+		//std::cerr << "In DIOGENES_cuMemFree free" << std::endl;	
 		return DIOGENES_cuMemFree_wrapper(mem);
 
 	}
 	CUresult DIOGENES_cuMemFreeHost(void * mem) {
-		std::cerr << "In DIOGENES_cuMemFreeHost free" << std::endl;	
+		//std::cerr << "In DIOGENES_cuMemFreeHost free" << std::endl;	
 		return DIOGENES_cuMemFreeHost_wrapper(mem);
 	}
 	CUresult DIOGENES_cuMemAlloc(void ** mem, size_t size) {
-		std::cerr << "In DIOGENES_cuMemAlloc free" << std::endl;
+		//std::cerr << "In DIOGENES_cuMemAlloc free" << std::endl;
 		return DIOGENES_cuMemAlloc_wrapper(mem, size);
 
 	}
 	CUresult DIOGENES_cuMemAllocHost(void ** mem, size_t size) {
-		std::cerr << "In DIOGENES_cuMemAllocHost free" << std::endl;
+		//std::cerr << "In DIOGENES_cuMemAllocHost free" << std::endl;
 		return DIOGENES_cuMemAllocHost_wrapper(mem, size);
 
 	}
 	CUresult DIOGENES_cuMemcpyDtoH(void * dst, CUdeviceptr src, size_t count) {
 		CheckStack();
-		std::cerr << "In DIOGENES_cuMemcpyDtoH free" << std::endl;
+		//std::cerr << "In DIOGENES_cuMemcpyDtoH free" << std::endl;
 		return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
 
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
 		CheckStack();
-		std::cerr << "In DIOGENES_cuMemcpyHtoD free" << std::endl;
+		//std::cerr << "In DIOGENES_cuMemcpyHtoD free" << std::endl;
 		return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 
 	}
@@ -418,7 +418,7 @@ extern "C" {
 // 	ss << "Transfer Addresses.... " << std::endl;
 // 	for (auto i : _transAddresses)
 // 		ss << std::hex << i.first << " " << std::dec << i.second << std::endl;
-// 	std::cerr << ss.str();
+// 	//std::cerr << ss.str();
 // }
 
 // void MemStats::UsedCache(size_t size) {
@@ -462,7 +462,7 @@ extern "C" {
 // 	if (_current > size) 
 // 		_current -= size;
 // 	else
-// 		std::cerr << "[MemStats::FreedMemory] We have a free from a memory location we don't know" << std::endl;
+// 		//std::cerr << "[MemStats::FreedMemory] We have a free from a memory location we don't know" << std::endl;
 // }
 
 
@@ -533,7 +533,7 @@ extern "C" {
 // 		}
 // 	}
 
-// 	std::cerr << "We cannot allocate via cudaMallocHost, using original address" << std::endl;
+// 	//std::cerr << "We cannot allocate via cudaMallocHost, using original address" << std::endl;
 // 	return orig;
 // }
 

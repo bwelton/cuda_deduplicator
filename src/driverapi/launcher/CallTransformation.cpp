@@ -96,6 +96,8 @@ void CallTransformation::BuildRequiredSet() {
 			} 			
 		}
 		if (syncNotNeeded) {
+			if (required.find(tmp->id) != required.end())
+				continue;
 			auto it =  matchSet.find(tmp->id);
 			if (it != matchSet.end()) {
 				//std::cerr << "Checking matchset" << std::endl;
@@ -109,6 +111,7 @@ void CallTransformation::BuildRequiredSet() {
 		} else {
 			if(notRequired.find(tmp->id) != notRequired.end())
 				notRequired.erase(tmp->id);
+			required.insert(tmp->id);
 		}
 	}
 
@@ -126,6 +129,8 @@ void CallTransformation::BuildRequiredSet() {
 			} 			
 		}
 		if (syncNotNeeded) {
+			if (required.find(tmp->id) != required.end())
+				continue;
 			auto it =  matchSet.find(tmp->id);
 			if (it != matchSet.end()) {
 				//std::cerr << "Checking matchset" << std::endl;
@@ -139,6 +144,7 @@ void CallTransformation::BuildRequiredSet() {
 		}else {
 			if(notRequired.find(tmp->id) != notRequired.end())
 				notRequired.erase(tmp->id);
+			required.insert(tmp->id);
 		}
 	}	
 

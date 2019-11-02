@@ -146,7 +146,7 @@ void DyninstFunction::InsertLoadStoreAnalysis() {
 			_func->relocateFunction();
 		return;
 	}
-	if (_obj->pathName().find("libcufft") != std::string::npos){
+	if (_obj->pathName().find("libcufft.") != std::string::npos){
 		std::cerr << "[DyninstFunction::InsertLoadStoreAnalysis] Function " << _func->getName() << " is excluded from LS analysis by being libcufft" << std::endl;
 		return;
 	}
@@ -364,7 +364,7 @@ bool DyninstFunction::IsExcludedFunction(InstType T) {
 	//	std::cerr << "[DyninstFunction::IsExcludedFunction] Returned false for function" << std::endl;
 	//if (!_track->ShouldInstrimentModule(_func, T))
 	//	std::cerr << "[DyninstFunction::IsExcludedFunction] Returned false for module" << std::endl;
-	if (_track->ShouldInstrimentFunciton(_func, T) && _obj->pathName().find("qb_cuda8_mpirun") != std::string::npos)
+	if (_track->ShouldInstrimentFunciton(_func, T) && (_obj->pathName().find("qb_cuda8_mpirun") != std::string::npos || _obj->pathName().find("libcufftw") != std::string::npos))
 		return false;
 	if (_track->ShouldInstrimentFunciton(_func, T) && _track->ShouldInstrimentModule(_func, T))
 		return false;

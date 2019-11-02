@@ -310,9 +310,9 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 				// 	// std::cerr << "Found function call to cudaMemcpyAsync in " << tmpFuncName << " within library " << tmpLibname << " (calling " << *(x.GetCalledFunction()) << ")"  << std::endl;
 				// 	// x.ReplaceFunctionCall(cudaMemcpyWrapper[0]);
 				// }
-			}
+	//		}
 		//}
-	}
+	//}
 
 /*
 	std::vector<std::string> streamSynchronousFunctions = {"cuStreamSynchronize"};

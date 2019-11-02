@@ -52,9 +52,9 @@ struct RecursiveMap{
 		return _map[val]->Lookup(input,pos+1);
 	};
 
-	bool IterativeLookup(std::vector<uint64_t> & input, int pos) {
+	bool IterativeLookup(uint64_t * input, int size, int pos) {
 		std::map<uint64_t, RecursiveMap *> * curMap = &_map;
-		uint64_t insize = input.size();
+		int insize = size;
 		while (pos < insize) {
 			auto it = curMap->find(input[pos]);
 			if (it == curMap->end()) 
@@ -124,9 +124,9 @@ typeof(&DIOGENES_cuMemAlloc) DIOGENES_cuMemAlloc_wrapper;
 typeof(&DIOGENES_cuMemAllocHost) DIOGENES_cuMemAllocHost_wrapper;
 typeof(&DIOGENES_cuMemcpyDtoH) DIOGENES_cuMemcpyDtoH_wrapper;
 typeof(&DIOGENES_cuMemcpyHtoD) DIOGENES_cuMemcpyHtoD_wrapper;
+std::shared_ptr<RecursiveMap> DIOGENES_StackChecker;
 
-
-
+uint64_t matchCount = 0;
 
 
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cudaFree,&DIOGENES_cudaFree_handle},
@@ -145,15 +145,16 @@ struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cuda
 bool __attribute__ ((noinline)) CheckStack() {
 	void * local_stack[75];
 	int ret = backtrace(local_stack, 75);
-	for(int i = 0; i < ret; i++) {
+	if(DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3))
+		matchCount++;
+/*	for(int i = 0; i < ret; i++) {
 		fprintf(stderr, "%p,", local_stack[i]);
 	}
-	fprintf(stderr, "\n");
+	fprintf(stderr, "\n");*/
 	return true;
 }	
 
 
-std::shared_ptr<RecursiveMap> DIOGENES_StackChecker;
 
 extern "C" {
 	void DIOGENES_INIT_GOTCHA() {

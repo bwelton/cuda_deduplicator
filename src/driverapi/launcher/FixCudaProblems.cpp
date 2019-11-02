@@ -42,7 +42,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 			std::cout << "[FixCudaProblems::InsertAnalysis] Adding entry for module " << tmpfilename << std::endl;
 			std::vector<BPatch_module *> mods;
 			i->modules(mods);
-			if (mods.size() != 1){
+			if (mods.size() == 0){
 				std::cerr << "Could not find module for library " << i->pathName() << std::endl;
 				continue;
 			}

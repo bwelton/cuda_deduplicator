@@ -67,6 +67,8 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 		for (auto i : m) {
 			std::vector<uint64_t> absoluteOut;
 			for(auto x : i.second){
+				if (x.libname.find("libc.so") != std::string::npos)
+					continue;
 				absoluteOut.push_back(GetAbsoluteAddress(x));
 			}
 			std::reverse(absoluteOut.begin(), absoluteOut.end());

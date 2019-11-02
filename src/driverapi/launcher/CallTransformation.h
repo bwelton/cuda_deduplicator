@@ -461,7 +461,7 @@ struct MatchLoadStoreStacksRecursive {
 			if (ret != 0)
 				return ret;
 		}
-		return 0;
+		return myId;
 		// if (points.size() == 0)
 		// 	return 0;
 		// uint64_t ret = 0;

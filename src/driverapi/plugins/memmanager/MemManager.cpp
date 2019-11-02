@@ -25,6 +25,7 @@
 struct RecursiveMap{
 	uint64_t _total_count;
 	std::map<uint64_t, RecursiveMap *> _map;
+	RecursiveMap() : _total_count(0) {};
 	void Init() {
 		RAStackReaderWriter rs(fopen("AC_BinStacks.bin", "rb"));
 		std::vector<std::vector<uint64_t>>  stacks = rs.ReadStacks();
@@ -35,6 +36,10 @@ struct RecursiveMap{
 		//StackKeyReader r(fopen("AC_AutoCorrectStacks.txt", "rb"));
 		//std::map<uint64_t, std::vector<StackPoint> > stacks = r.ReadStacks();
 
+	};
+	~RecursiveMap() {
+		if (_total_count != 0)
+			std::cout << "NUMBER OF OPTI HITS = " << std::dec << _total_count << std::endl;
 	};
 	void Insert(std::vector<uint64_t> & input, int pos) {
 		if(input.size() <= pos)

@@ -18,7 +18,7 @@ std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorder
 			if(i.second[x].libname.find("lib/plugins/") != std::string::npos)
 				i.second.pop_back();
 			else {
-//				typeMap[i.first] = tmp.libname;
+				typeMap[i.first] = tmp.libname;
 				i.second.push_back(tmp);
 				break;
 			}
@@ -85,6 +85,7 @@ void CallTransformation::BuildRequiredSet() {
 	for (size_t i = 0; i < lvec.size(); i++) {
 		auto tmp = lvec[i];
 		bool syncNotNeeded = false;
+
 		if (!tmp->newDependents) {
 			syncNotNeeded = true;
 		} else {

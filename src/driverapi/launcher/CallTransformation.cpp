@@ -35,6 +35,10 @@ std::map<uint64_t, uint64_t> CallTransformation::MatchLStoMR(std::map<uint64_t, 
 	std::map<uint64_t, uint64_t> ret;
 	MatchLoadStoreStacksRecursive LSRecursive;
 	for (auto i : LS) {
+		std::cerr << "LS Stack ID = " << i.first << std::endl;
+		for (auto x : i.second) {
+			std::cerr << x.libname << "@" << x.libOffset << std::endl;
+		}
 		LSRecursive.InsertEntry(i.second, 0, i.first);
 	}
 	

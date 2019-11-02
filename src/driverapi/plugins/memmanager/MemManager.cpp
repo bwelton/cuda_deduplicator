@@ -307,7 +307,7 @@ extern "C" {
 
 		CUresult ret = cuMemcpyHtoDAsync(dst, tmp, count, 0);
 		if(CheckStack()){
-			SpoilLastPage(false, NULL);
+			pageAllocator->SpoilLastPage(false, NULL);
 			return ret;
 		}
 		if (ret != CUDA_SUCCESS)

@@ -379,32 +379,28 @@ typedef std::vector<LSStackGraph> LSStackGraphVec;
 
 struct MatchLoadStoreStacksRecursive {
 	std::unordered_map<std::string, MatchLoadStoreStacksRecursive *> _libmap; 
-	std::unordered_map<uint64_t, uint64_t> _offsetMap;
 
 	uint64_t myId;
 	MatchLoadStoreStacksRecursive() : myId(0) {};
-
-	void AddOffset(uint64_t offset, uint64_t ident){
-		if(HasOffset(offset))  {
-			if (ident != _offsetMap[offset])
-				std::cerr << "[MatchLoadStoreStacksRecursive::AddOffset] Warning - Replacing id for offset " << offset << " original " << _offsetMap[offset] << " with " <<  ident << std::endl;
-		}
-		_offsetMap[offset] = ident;
-	};
-	bool HasOffset(uint64_t offset) {
-		if(_offsetMap.find(offset) == _offsetMap.end())
-			return false;
-		return true;
-	};
 
 	void InsertEntry(std::vector<StackPoint> & points, int pos, int stackID) {
 		if(points.size() == 0)
 			return;
 
-		if (points.size() <= pos)
+		if (points.size() <= pos){
+			myId = stackID;
 			return;
+		}
 
-		uint64_t libOffset = points[pos].libOffset;
+		std::stringstream ss;
+		ss << points[pos].libname << "@" << std::hex << points[pos].libOffset;
+		std::string tmp = ss.str();
+		if (_libmap.find(tmp) == _libmap.end()) {
+			_libmap[tmp] = new MatchLoadStoreStacksRecursive();
+		}
+		_libmap[tmp]->InsertEntry(points, pos+1, stackID);
+
+/*		uint64_t libOffset = points[pos].libOffset;
 		std::string libname = points[pos].libname;
 		if (_libmap.find(libname) == _libmap.end()) 
 			_libmap[libname] = new MatchLoadStoreStacksRecursive();
@@ -436,26 +432,43 @@ struct MatchLoadStoreStacksRecursive {
 	};
 
 	uint64_t FindEntry(std::vector<StackPoint> & points, int pos) {
-		if (points.size() == 0)
+		if(points.size() == 0)
 			return 0;
-		uint64_t ret = 0;
-		uint64_t startPos = 20000;
+
+		if (points.size() <= pos){
+			return myId;
+		}
 		for (int i = pos; i < points.size(); i++){
-			uint64_t libOffset = points[i].libOffset;
-			std::string libname = points[i].libname;	
+			std::stringstream ss;
+			ss << points[i].libname << "@" << std::hex << points[i].libOffset;
+			std::string libname = ss.str();
 			if (_libmap.find(libname) == _libmap.end())
 				continue;
-			if (_libmap[libname]->HasOffset(libOffset)){
-				uint64_t nextOffset = _libmap[libname]->_offsetMap[libOffset];
-				uint64_t tmp = _libmap[libname]->FindEntry(points, i + 1);
-				tmp  = std::max(tmp,nextOffset);
-				if ((ret  == 0 || i < startPos) && tmp != 0) {
-					ret = tmp;
-					startPos = i;
-				}
-			}
+			uint64_t ret = _libmap[libname]->FindEntry(points, pos+1);
+			if (ret != 0)
+				return ret;
 		}
-		return ret;
+		return 0;
+		// if (points.size() == 0)
+		// 	return 0;
+		// uint64_t ret = 0;
+		// uint64_t startPos = 20000;
+		// for (int i = pos; i < points.size(); i++){
+		// 	uint64_t libOffset = points[i].libOffset;
+		// 	std::string libname = points[i].libname;	
+		// 	if (_libmap.find(libname) == _libmap.end())
+		// 		continue;
+		// 	if (_libmap[libname]->HasOffset(libOffset)){
+		// 		uint64_t nextOffset = _libmap[libname]->_offsetMap[libOffset];
+		// 		uint64_t tmp = _libmap[libname]->FindEntry(points, i + 1);
+		// 		tmp  = std::max(tmp,nextOffset);
+		// 		if ((ret  == 0 || i < startPos) && tmp != 0) {
+		// 			ret = tmp;
+		// 			startPos = i;
+		// 		}
+		// 	}
+		// }
+		// return ret;
 	};
 
 };

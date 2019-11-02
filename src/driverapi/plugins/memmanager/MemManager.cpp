@@ -264,7 +264,8 @@ extern "C" {
 		CUresult ret = cuMemcpyHtoDAsync(dst, tmp, count, 0);
 		if(CheckStack())
 			return ret;
-
+		if (ret != CUDA_SUCCESS)
+			assert(ret == CUDA_SUCCESS);
 		return cuStreamSynchronize(0);
 	}
 

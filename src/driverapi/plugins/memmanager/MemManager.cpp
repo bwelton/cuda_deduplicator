@@ -159,7 +159,14 @@ bool __attribute__ ((noinline)) CheckStack() {
 
 
 struct CudaMemhostPageManager {
-	std::unordered_map<size_t, void *> cachedPages;
+	std::unordered_multimap<size_t, void *> cachedPages;
+	std::unordered_multimap<size_t, void *>::iterator _currentIt;
+
+	std::unordered_map<void *, size_t> spoiledPages;
+	std::unordered_map<void *, void *> copyPages;
+
+	CudaMemhostPageManager() : _currentIt(NULL) {};
+
 	void * GetPinnedPage(size_t size) {
 		auto it = cachedPages.find(size);
 		if (it == cachedPages.end()) {
@@ -169,7 +176,31 @@ struct CudaMemhostPageManager {
 			cachedPages[size] = tmp;
 			it = cachedPages.find(size);
 		}
+		_currentIt = it;
 		return it->second;
+	};
+
+	void AtSync() {
+		for(auto i : spoiledPages) {
+			cachedPages.insert(std::make_pair(i.second,i.first));
+			auto it = copyPages.find(i.first);
+			if(it != copyPages.end()) {
+				memcpy(it->second, i.first, i.second);
+			}
+		}
+		std::cerr << "Clearing pages" << std::endl;
+		spoiledPages.clear();
+		copyPages.clear();
+	};
+
+	void SpoilLastPage(bool copy, void * dst) {
+		if(_currentIt != NULL) {
+			spoiledPages[_currentIt->second] = _currentIt->first;
+			if(copy) 
+				copyPages[_currentIt->second] = dst;
+			cachedPages.erase(_currentIt);
+			_currentIt = NULL;
+		}
 	};
 };
 
@@ -201,6 +232,11 @@ extern "C" {
 
 
 //Runtime API Wrappers
+	void DIOGENES_POSTSYNC_WRAPPER() {
+		if(pageAllocator == NULL)
+			pageAllocator = new CudaMemhostPageManager();
+		pageAllocator->AtSync();
+	}
 	cudaError_t DIOGENES_cudaFree(void * mem) {
 		//std::cerr << "In cuda free" << std::endl;
 		return DIOGENES_cudaFree_wrapper(mem);
@@ -270,8 +306,10 @@ extern "C" {
 		memcpy(tmp, src, count);
 
 		CUresult ret = cuMemcpyHtoDAsync(dst, tmp, count, 0);
-		if(CheckStack())
+		if(CheckStack()){
+			SpoilLastPage(false, NULL);
 			return ret;
+		}
 		if (ret != CUDA_SUCCESS)
 			assert(ret == CUDA_SUCCESS);
 		return cuStreamSynchronize(0);

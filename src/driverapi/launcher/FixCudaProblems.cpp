@@ -88,8 +88,14 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 	std::cerr << "[FixCudaProblems::InsertAnalysis] Fireing off one time call to setup API Capture Instrimentation\n";
 	dynamic_cast<BPatch_process*>(_proc->GetAddressSpace())->oneTimeCode(entryExpr);
 
-
-
+	std::vector<BPatch_function *> wrapperFunc = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_POSTSYNC_WRAPPER"), wrapper);
+	std::vector<BPatch_function*> cudaSyncFunctions = ops->GetFunctionsByOffeset(_proc->GetAddressSpace(), libcuda, ops->GetSyncFunctionLocation());
+	assert(cudaSyncFunctions.size() == 1);
+	assert(wrapperFunc.size() == 1)
+	std::vector<BPatch_point*> * entryLocations = cudaSyncFunctions[0]->findPoint(BPatch_locExit);
+	std::vector<BPatch_snippet*> testArgs;
+	BPatch_funcCallExpr recordFuncEntry(*(wrapperFunc[0]), testArgs);
+	assert(_proc->GetAddressSpace()->insertSnippet(recordFuncEntry,*entryLocations) != false);
 
 
 

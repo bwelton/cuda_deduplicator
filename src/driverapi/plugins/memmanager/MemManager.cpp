@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <string.h>
 struct RecursiveMap{
+	uint64_t _total_count;
 	std::map<uint64_t, RecursiveMap *> _map;
 	void Init() {
 		RAStackReaderWriter rs(fopen("AC_BinStacks.bin", "rb"));
@@ -30,6 +31,7 @@ struct RecursiveMap{
 		for (auto i : stacks) {
 			Insert(i, 0);
 		}
+		_total_count = 0;
 		//StackKeyReader r(fopen("AC_AutoCorrectStacks.txt", "rb"));
 		//std::map<uint64_t, std::vector<StackPoint> > stacks = r.ReadStacks();
 
@@ -63,6 +65,7 @@ struct RecursiveMap{
 			curMap = &(it->second->_map);
 			pos++;
 		}
+		_total_count++;
 		return true;
 	};
 };

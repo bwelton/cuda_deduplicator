@@ -109,13 +109,32 @@ gotcha_wrappee_handle_t DIOGENES_cuMemAlloc_handle;
 gotcha_wrappee_handle_t DIOGENES_cuMemAllocHost_handle;
 gotcha_wrappee_handle_t DIOGENES_cuMemcpyDtoH_handle;
 gotcha_wrappee_handle_t DIOGENES_cuMemcpyHtoD_handle;
+
+
+typeof(&DIOGENES_cudaFree) DIOGENES_cudaFree_wrapper;
+typeof(&DIOGENES_cudaFreeHost) DIOGENES_cudaFreeHost_wrapper;
+typeof(&DIOGENES_cudaMalloc) DIOGENES_cudaMalloc_wrapper;
+typeof(&DIOGENES_cudaMallocHost) DIOGENES_cudaMallocHost_wrapper;
+typeof(&DIOGENES_cudaMemcpy) DIOGENES_cudaMemcpy_wrapper;
+typeof(&DIOGENES_cudaMemcpyAsync) DIOGENES_cudaMemcpyAsync_wrapper;
+typeof(&DIOGENES_cuMemFree) DIOGENES_cuMemFree_wrapper;
+typeof(&DIOGENES_cuMemFreeHost) DIOGENES_cuMemFreeHost_wrapper;
+typeof(&DIOGENES_cuMemAlloc) DIOGENES_cuMemAlloc_wrapper;
+typeof(&DIOGENES_cuMemAllocHost) DIOGENES_cuMemAllocHost_wrapper;
+typeof(&DIOGENES_cuMemcpyDtoH) DIOGENES_cuMemcpyDtoH_wrapper;
+typeof(&DIOGENES_cuMemcpyHtoD) DIOGENES_cuMemcpyHtoD_wrapper;
+
+
+
+
+
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cudaFree,&DIOGENES_cudaFree_handle},
 			{"cudaFreeHost", (void*)DIOGENES_cudaFreeHost,&DIOGENES_cudaFreeHost_handle},
 			{"cudaMalloc", (void*)DIOGENES_cudaMalloc,&DIOGENES_cudaMalloc_handle},
 			{"cudaMallocHost", (void*)DIOGENES_cudaMallocHost,&DIOGENES_cudaMallocHost_handle},
 			{"cudaMemcpy", (void*)DIOGENES_cudaMemcpy,&DIOGENES_cudaMemcpy_handle},
 			{"cudaMemcpyAsync", (void*)DIOGENES_cudaMemcpyAsync,&DIOGENES_cudaMemcpyAsync_handle},
-			{"cuMemFree", (void*)DIOGENES_cuMemFree,&DIOGENES_cuMemFree_handle},
+			{"cuMemFree_v2", (void*)DIOGENES_cuMemFree,&DIOGENES_cuMemFree_handle},
 			{"cuMemFreeHost", (void*)DIOGENES_cuMemFreeHost,&DIOGENES_cuMemFreeHost_handle},
 			{"cuMemAlloc_v2", (void*)DIOGENES_cuMemAlloc,&DIOGENES_cuMemAlloc_handle},
 			{"cuMemAllocHost_v2", (void*)DIOGENES_cuMemAllocHost,&DIOGENES_cuMemAllocHost_handle},
@@ -131,8 +150,20 @@ extern "C" {
 		DIOGENES_StackChecker.reset(new RecursiveMap());
 		DIOGENES_StackChecker->Init();
 		// make sure libcudart and libcuda are loaded into the binary.
-		dlopen("libcudart.so", RTLD_LAZY);
-		dlopen("libcuda.so", RTLD_LAZY);
+		void * cudarthandle = dlopen("libcudart.so", RTLD_LAZY);
+		void * libcudahandle = dlopen("libcuda.so", RTLD_LAZY);
+
+		DIOGENES_cudaFree_wrapper = (typeof(&DIOGENES_cudaFree))dlsym(cudarthandle,"cudaFree")
+		DIOGENES_cudaFreeHost_wrapper = (typeof(&DIOGENES_cudaFreeHost))dlsym(libcudahandle,"cuMemFreeHost")
+		DIOGENES_cudaMalloc_wrapper = (typeof(&DIOGENES_cudaMalloc))dlsym(cudarthandle,"cudaMalloc")
+		DIOGENES_cudaMallocHost_wrapper = (typeof(&DIOGENES_cudaMallocHost))dlsym(cudarthandle,"cudaMallocHost")
+		DIOGENES_cudaMemcpy_wrapper = (typeof(&DIOGENES_cudaMemcpy))dlsym(cudarthandle,"cudaMemcpy")
+		DIOGENES_cudaMemcpyAsync_wrapper = (typeof(&DIOGENES_cudaMemcpyAsync))dlsym(cudarthandle,"cudaMemcpyAsync")
+		DIOGENES_cuMemFree_wrapper = (typeof(&DIOGENES_cuMemFree))dlsym(libcudahandle,"cuMemFree_v2")
+		DIOGENES_cuMemAlloc_wrapper = (typeof(&DIOGENES_cuMemAlloc))dlsym(libcudahandle,"cuMemAlloc_v2")
+		DIOGENES_cuMemAllocHost_wrapper = (typeof(&DIOGENES_cuMemAllocHost))dlsym(libcudahandle,"cuMemAllocHost_v2")
+		DIOGENES_cuMemcpyDtoH_wrapper = (typeof(&DIOGENES_cuMemcpyDtoH))dlsym(libcudahandle,"cuMemcpyDtoH_v2")
+		DIOGENES_cuMemcpyHtoD_wrapper = (typeof(&DIOGENES_cuMemcpyHtoD))dlsym(libcudahandle,"cuMemcpyHtoD_v2")
 		// Wrap functions
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
 	}
@@ -140,41 +171,64 @@ extern "C" {
 
 //Runtime API Wrappers
 	cudaError_t DIOGENES_cudaFree(void * mem) {
-
+		std::cerr << "In cuda free" << std::endl;
+		return DIOGENES_cudaFree_wrapper(mem);
 	}
 	cudaError_t DIOGENES_cudaFreeHost(void * mem) {
+		std::cerr << "In DIOGENES_cudaFreeHost free" << std::endl;
+		return DIOGENES_cudaFreeHost_wrapper(mem);
 
 	}
 	cudaError_t DIOGENES_cudaMalloc(void ** mem, size_t size) {
+		std::cerr << "In DIOGENES_cudaMalloc free" << std::endl;
+
+		return DIOGENES_cudaMalloc_wrapper(mem, size);
 
 	}
 	cudaError_t DIOGENES_cudaMallocHost(void ** mem, size_t size) {
+		std::cerr << "In DIOGENES_cudaMallocHost free" << std::endl;		
+		return DIOGENES_cudaMallocHost_wrapper(mem, size);
 
 	}
 	cudaError_t DIOGENES_cudaMemcpy(void * dst, const void * src, size_t count, cudaMemcpyKind kind) {
+		std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		
+		return DIOGENES_cudaMemcpy_wrapper(dst, srt, count, kind);
 
 	}
 	cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, const void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream) {
+		std::cerr << "In DIOGENES_cudaMemcpyAsync free" << std::endl;	
+		return DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
 
 	}
 
 // Driver API Wrappers
 	CUresult DIOGENES_cuMemFree(void * mem) {
+		std::cerr << "In DIOGENES_cuMemFree free" << std::endl;	
+		return DIOGENES_cuMemFree_wrapper(mem);
 
 	}
 	CUresult DIOGENES_cuMemFreeHost(void * mem) {
-
+		std::cerr << "In DIOGENES_cuMemFreeHost free" << std::endl;	
+		return DIOGENES_cudaFreeHost_wrapper(mem);
 	}
 	CUresult DIOGENES_cuMemAlloc(void ** mem, size_t size) {
+		std::cerr << "In DIOGENES_cuMemAlloc free" << std::endl;
+		return DIOGENES_cuMemAlloc_wrapper(mem, size);
 
 	}
 	CUresult DIOGENES_cuMemAllocHost(void ** mem, size_t size) {
+		std::cerr << "In DIOGENES_cuMemAllocHost free" << std::endl;
+		return DIOGENES_cuMemAllocHost_wrapper(mem, size);
 
 	}
 	CUresult DIOGENES_cuMemcpyDtoH(void * dst, CUdeviceptr src, size_t count) {
+		std::cerr << "In DIOGENES_cuMemcpyDtoH free" << std::endl;
+		return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
 
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
+		std::cerr << "In DIOGENES_cuMemcpyHtoD free" << std::endl;
+		return DIOGENES_cuMemcpyHtoD_wrapper(dst, srt, count);
 
 	}
 

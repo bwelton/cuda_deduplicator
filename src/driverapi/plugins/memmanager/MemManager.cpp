@@ -19,7 +19,8 @@
 #include <dlfcn.h>
 #include <pthread.h>
 #include "StackPoint.h"
-
+#include <execinfo.h>
+#include <unistd.h>
 struct RecursiveMap{
 	std::map<uint64_t, RecursiveMap *> _map;
 	void Init() {
@@ -141,6 +142,15 @@ struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cuda
 			{"cuMemcpyDtoH_v2", (void*)DIOGENES_cuMemcpyDtoH,&DIOGENES_cuMemcpyDtoH_handle},
 			{"cuMemcpyHtoD_v2", (void*)DIOGENES_cuMemcpyHtoD,&DIOGENES_cuMemcpyHtoD_handle} };
 
+bool __attribute__ ((noinline)) CheckStack() {
+	void * local_stack[75];
+	int ret = backtrace(local_stack, 75);
+	for(int i = 0; i < ret; i++) {
+		fprintf(stderr, "%p,", local_stack[i]);
+	}
+	fprintf(stderr, "\n");
+	return true;
+}	
 
 
 std::shared_ptr<RecursiveMap> DIOGENES_StackChecker;
@@ -223,11 +233,13 @@ extern "C" {
 
 	}
 	CUresult DIOGENES_cuMemcpyDtoH(void * dst, CUdeviceptr src, size_t count) {
+		CheckStack();
 		std::cerr << "In DIOGENES_cuMemcpyDtoH free" << std::endl;
 		return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
 
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
+		CheckStack();
 		std::cerr << "In DIOGENES_cuMemcpyHtoD free" << std::endl;
 		return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 

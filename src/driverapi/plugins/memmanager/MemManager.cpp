@@ -147,6 +147,8 @@ bool __attribute__ ((noinline)) CheckStack() {
 	int ret = backtrace(local_stack, 75);
 	if(DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3))
 		matchCount++;
+	if (matchCount == 1)
+		std::cerr << "FOUND A MATCH!!!!!!!!!!!!!!!!!!" << std::endl;
 /*	for(int i = 0; i < ret; i++) {
 		fprintf(stderr, "%p,", local_stack[i]);
 	}

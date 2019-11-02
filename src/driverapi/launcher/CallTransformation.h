@@ -397,6 +397,7 @@ struct MatchLoadStoreStacksRecursive {
 		ss << p.stem() << "@" << std::hex << points[pos].libOffset;
 		std::string tmp = ss.str();
 		if (_libmap.find(tmp) == _libmap.end()) {
+			std::cerr << "Inserting new entry: " << tmp << std::endl;
 			_libmap[tmp] = new MatchLoadStoreStacksRecursive();
 		}
 		_libmap[tmp]->InsertEntry(points, pos+1, stackID);

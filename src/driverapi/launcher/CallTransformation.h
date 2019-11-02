@@ -451,8 +451,10 @@ struct MatchLoadStoreStacksRecursive {
 			return 0;
 
 		if (points.size() <= pos){
+			std::cerr << "In exit at pos " << pos << std::endl;
 			uint64_t ret = myId;
 			if (myId == 0){
+				std::cerr << "In recurse single path " << pos << std::endl;
 				//if there is one path from here to end, assume that this is a match.
 				// This is to deal with ambiguity between LS and MR stacks that may exists 
 				ret = RecurseSinglePath();
@@ -472,7 +474,7 @@ struct MatchLoadStoreStacksRecursive {
 			if (_libmap.find(libname) == _libmap.end())
 				continue;
 			std::cerr << "ENTRY FOUND: " << libname << std::endl;
-			uint64_t ret = _libmap[libname]->FindEntry(points, pos+1);
+			uint64_t ret = _libmap[libname]->FindEntry(points, i+1);
 			if (ret != 0)
 				return ret;
 		}

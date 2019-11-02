@@ -18,8 +18,8 @@ std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorder
 			if(i.second[x].libname.find("lib/plugins/") != std::string::npos)
 				i.second.pop_back();
 			else {
-				typeMap[i.first] = tmp.libname;
-				i.second.push_back(_wrapperReplacements[tmp.libname]);
+//				typeMap[i.first] = tmp.libname;
+				i.second.push_back(tmp);
 				break;
 			}
 		}

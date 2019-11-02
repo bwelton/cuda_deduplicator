@@ -123,7 +123,7 @@ void CallTransformation::BuildRequiredSet() {
 			syncNotNeeded = true;
 		} else {
 			if (i < lvec.size() - 1) {
-				if (!(traceDep.IsInSet(tmp->id))  && notRequired.find(lvec[i+1]->id) == notRequired.end()){
+				if (!(traceDep.IsInSet(tmp->id))){  //&& notRequired.find(lvec[i+1]->id) == notRequired.end()){
 					syncNotNeeded = true;
 				}
 			} 			
@@ -158,7 +158,7 @@ void CallTransformation::BuildRequiredSet() {
 
 
 	StackKeyWriter outputKeys(fopen("AC_AutoCorrectStacks.txt", "wb"));
-	 
+
 	for (auto i : notRequired) {
 		MR[matchSet[i]].pop_back();
 		outputKeys.InsertStack(matchSet[i], MR[matchSet[i]]);

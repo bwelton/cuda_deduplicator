@@ -368,16 +368,16 @@ inline bool DIOGENES_GetWrapperStatus() {
 enum DIOG_IDNUMBER
 {
 E_cudaFree = 10,
-E_cudaMalloc,
-E_cudaMemcpyAsync,
-E_cudaMemcpy,
-E_cudaMallocHost,
-E_cuMemcpyHtoD_v2,
-E_cuMemcpyDtoH_v2,
-E_cuMemFree_v2,
-E_cuMemAlloc_v2,
-E_cuMemAllocHost_v2,
-E_cuMemFreeHost,
+E_cudaMalloc = 11,
+E_cudaMemcpyAsync = 12,
+E_cudaMemcpy = 13,
+E_cudaMallocHost = 14,
+E_cuMemcpyHtoD_v2 = 15,
+E_cuMemcpyDtoH_v2 = 16,
+E_cuMemFree_v2 = 17,
+E_cuMemAlloc_v2 = 18,
+E_cuMemAllocHost_v2 = 19,
+E_cuMemFreeHost = 20,
 };
 
 struct EnumClassHash
@@ -603,7 +603,7 @@ extern "C" {
 			return;
 		}
 		DIOGENES_SEEN_RUNTIMECPY = true;
-		POSTPROCESS_COPY((uint64_t)hostptr,E_cudaMemcpyAsync);
+		POSTPROCESS_COPY((uint64_t)hostptr,E_cudaMemcpy);
 	}
 
 	void DIOGENES_REC_CudaMemcpyAsyncPost() {
@@ -624,7 +624,7 @@ extern "C" {
 
 	void DIOGENES_REC_cuMemFreeHost(void * ptr) {
 		if(!DIOGENES_SEEN_RUNTIMEFREE)
-			POSTPROCESS_FREE((uint64_t)ptr, E_cuMemFree_v2);		
+			POSTPROCESS_FREE((uint64_t)ptr, E_cuMemFreeHost);		
 	}
 
 

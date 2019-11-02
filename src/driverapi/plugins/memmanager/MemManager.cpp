@@ -190,7 +190,7 @@ struct CudaMemhostPageManager {
 				memcpy(it->second, i.first, i.second);
 			}
 		}
-		std::cerr << "Clearing pages" << std::endl;
+		//std::cerr << "Clearing pages" << std::endl;
 		spoiledPages.clear();
 		copyPages.clear();
 	};

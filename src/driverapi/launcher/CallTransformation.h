@@ -400,8 +400,9 @@ struct MatchLoadStoreStacksRecursive {
 		}
 		ss << tmpfilename << "@" << std::hex << points[pos].libOffset;
 		std::string tmp = ss.str();
+		std::cerr << "Inserting entry: " << tmp << std::endl;
 		if (_libmap.find(tmp) == _libmap.end()) {
-			std::cerr << "Inserting new entry: " << tmp << std::endl;
+			
 			_libmap[tmp] = new MatchLoadStoreStacksRecursive();
 		}
 		_libmap[tmp]->InsertEntry(points, pos+1, stackID);
@@ -453,6 +454,7 @@ struct MatchLoadStoreStacksRecursive {
 			}
 			ss << tmpfilename << "@" << std::hex << points[i].libOffset;
 			std::string libname = ss.str();
+			std::cerr << "Looking up entry: " << libname << std::endl;
 			if (_libmap.find(libname) == _libmap.end())
 				continue;
 			uint64_t ret = _libmap[libname]->FindEntry(points, pos+1);

@@ -39,6 +39,7 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 				tmpfilename = tmpfilename.substr(0, tmpfilename.find('.'));
 			}
 
+			std::cout << "[FixCudaProblems::InsertAnalysis] Adding entry for module " << tmpfilename << std::endl;
 			std::vector<BPatch_module *> mods;
 			i->modules(mods);
 			if (mods.size() != 1){
@@ -52,7 +53,8 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 			if (tmpfilename.find('.') != std::string::npos) {
 				tmpfilename = tmpfilename.substr(0, tmpfilename.find('.'));
 			}	
-			_object_offsets[tmpfilename] = 0;		
+			_object_offsets[tmpfilename] = 0;
+			std::cout << "[FixCudaProblems::InsertAnalysis] Adding entry for module " << tmpfilename << std::endl;		
 		}
 	}
 

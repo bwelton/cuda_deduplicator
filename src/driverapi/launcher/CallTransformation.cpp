@@ -98,7 +98,7 @@ void CallTransformation::BuildRequiredSet() {
 		if (syncNotNeeded) {
 			auto it =  matchSet.find(tmp->id);
 			if (it != matchSet.end()) {
-				std::cerr << "Checking matchset" << std::endl;
+				//std::cerr << "Checking matchset" << std::endl;
 				if (typeMap[it->second].find("cuMemFree") != std::string::npos || 
 					typeMap[it->second].find("cudaFree") != std::string::npos) {
 					notRequired.insert(tmp->id);
@@ -106,6 +106,9 @@ void CallTransformation::BuildRequiredSet() {
 			} else {
 				couldNotFindStack.insert(tmp->id);
 			}
+		} else {
+			if(notRequired.find(tmp->id) != notRequired.end())
+				notRequired.erase(tmp->id);
 		}
 	}
 
@@ -133,6 +136,9 @@ void CallTransformation::BuildRequiredSet() {
 			} else {
 				couldNotFindStack.insert(tmp->id);
 			}
+		}else {
+			if(notRequired.find(tmp->id) != notRequired.end())
+				notRequired.erase(tmp->id);
 		}
 	}	
 

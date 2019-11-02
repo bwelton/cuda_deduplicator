@@ -261,10 +261,11 @@ extern "C" {
 		void * tmp = pageAllocator->GetPinnedPage(count);
 		memcpy(tmp, src, count);
 
+		CUresult ret = cuMemcpyHtoDAsync(dst, tmp, count, 0);
 		if(CheckStack())
-			return cuMemcpyHtoDAsync(dst, tmp, count, 0);
+			return ret;
 
-		return DIOGENES_cuMemcpyHtoD_wrapper(dst, tmp, count);
+		return cuStreamSynchronize(0);
 	}
 
 }

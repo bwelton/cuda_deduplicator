@@ -73,6 +73,11 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 			}
 			std::reverse(absoluteOut.begin(), absoluteOut.end());
 			writeAbsolutes.WriteRAStack(absoluteOut);
+			std::cerr << "Writing stack" << std::endl;
+			for (auto x : absoluteOut) {
+				std::cerr << x << ",";
+			}
+			std::cerr << std::endl;
 		}
 	}
 

@@ -394,7 +394,11 @@ struct MatchLoadStoreStacksRecursive {
 
 		std::stringstream ss;
 		boost::filesystem::path p(points[pos].libname);
-		ss << p.stem() << "@" << std::hex << points[pos].libOffset;
+		std::string tmpfilename = p.stem().string();
+		if (tmpfilename.find('.') != std::string::npos) {
+			tmpfilename = tmpfilename.substring(0, tmpfilename.find('.'));
+		}
+		ss << tmpfilename << "@" << std::hex << points[pos].libOffset;
 		std::string tmp = ss.str();
 		if (_libmap.find(tmp) == _libmap.end()) {
 			std::cerr << "Inserting new entry: " << tmp << std::endl;
@@ -443,7 +447,11 @@ struct MatchLoadStoreStacksRecursive {
 		for (int i = pos; i < points.size(); i++){
 			std::stringstream ss;
 			boost::filesystem::path p(points[i].libname);
-			ss << p.stem() << "@" << std::hex << points[i].libOffset;
+			std::string tmpfilename = p.stem().string();
+			if (tmpfilename.find('.') != std::string::npos) {
+				tmpfilename = tmpfilename.substring(0, tmpfilename.find('.'));
+			}
+			ss << tmpfilename << "@" << std::hex << points[i].libOffset;
 			std::string libname = ss.str();
 			if (_libmap.find(libname) == _libmap.end())
 				continue;

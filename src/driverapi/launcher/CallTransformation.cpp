@@ -155,7 +155,7 @@ void CallTransformation::BuildRequiredSet() {
 
 	for (auto i : notRequired) {
 		MR[matchSet[i]].pop_back();
-		outputKeys.InsertStack(i, MR[matchSet[i]]);
+		outputKeys.InsertStack(matchSet[i], MR[matchSet[i]]);
 	}
 
 	// 	// LSStackGraphVec sgraph;

@@ -165,7 +165,9 @@ struct CudaMemhostPageManager {
 	std::unordered_map<void *, size_t> spoiledPages;
 	std::unordered_map<void *, void *> copyPages;
 
-	CudaMemhostPageManager() : _currentIt(NULL) {};
+	CudaMemhostPageManager()  {
+		_currentIt = cachedPages.end();
+	};
 
 	void * GetPinnedPage(size_t size) {
 		auto it = cachedPages.find(size);
@@ -173,7 +175,7 @@ struct CudaMemhostPageManager {
 			void * tmp;
 			if (CUDA_SUCCESS != cuMemAllocHost(&tmp,size))
 				assert("CANNOT ALLOCATE PINNED HOST MEMORY" != 0);
-			cachedPages[size] = tmp;
+			cachedPages.insert(std::make_pair(size, tmp));
 			it = cachedPages.find(size);
 		}
 		_currentIt = it;
@@ -194,12 +196,12 @@ struct CudaMemhostPageManager {
 	};
 
 	void SpoilLastPage(bool copy, void * dst) {
-		if(_currentIt != NULL) {
+		if(_currentIt != cachedPages.end()) {
 			spoiledPages[_currentIt->second] = _currentIt->first;
 			if(copy) 
 				copyPages[_currentIt->second] = dst;
 			cachedPages.erase(_currentIt);
-			_currentIt = NULL;
+			_currentIt = cachedPages.end();
 		}
 	};
 };

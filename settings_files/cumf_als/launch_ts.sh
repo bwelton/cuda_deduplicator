@@ -3,4 +3,4 @@ cd /g/g17/welton2/scratch/nfs/apps/cumf_als
 source /g/g17/welton2/scratch/nfs/apps/setupEnv.sh
 cp /g/g17/welton2/repo/cuda_deduplicator/settings_files/cumf_als/TS_settings.ini /g/g17/welton2/scratch/nfs/apps/cumf_als/settings.ini
 module load cuda/9.2.148
-source /g/g17/welton2/scratch/nfs/apps/cumf_als/run_wait.sh
+time source /g/g17/welton2/scratch/nfs/apps/cumf_als/run_wait.sh

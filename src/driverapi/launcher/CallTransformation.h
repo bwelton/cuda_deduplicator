@@ -471,6 +471,7 @@ struct MatchLoadStoreStacksRecursive {
 			std::cerr << "Looking up entry: " << libname << std::endl;
 			if (_libmap.find(libname) == _libmap.end())
 				continue;
+			std::cerr << "ENTRY FOUND: " << libname << std::endl;
 			uint64_t ret = _libmap[libname]->FindEntry(points, pos+1);
 			if (ret != 0)
 				return ret;

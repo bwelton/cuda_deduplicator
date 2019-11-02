@@ -21,6 +21,7 @@
 #include "StackPoint.h"
 #include <execinfo.h>
 #include <unistd.h>
+#include <string.h>
 struct RecursiveMap{
 	std::map<uint64_t, RecursiveMap *> _map;
 	void Init() {
@@ -145,18 +146,26 @@ struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cuda
 bool __attribute__ ((noinline)) CheckStack() {
 	void * local_stack[75];
 	int ret = backtrace(local_stack, 75);
-	if(DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3))
-		matchCount++;
-	if (matchCount == 1)
-		std::cerr << "FOUND A MATCH!!!!!!!!!!!!!!!!!!" << std::endl;
-/*	for(int i = 0; i < ret; i++) {
-		fprintf(stderr, "%p,", local_stack[i]);
-	}
-	fprintf(stderr, "\n");*/
-	return true;
+	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3);
 }	
 
 
+struct CudaMemhostPageManager {
+	std::unordered_map<size_t, void *> cachedPages;
+	void * GetPinnedPage(size_t size) {
+		auto it = cachedPages.find(size);
+		if (it == cachedPages.end()) {
+			void * tmp;
+			if (CUDA_SUCCESS != cuMemAllocHost(&tmp,size))
+				assert("CANNOT ALLOCATE PINNED HOST MEMORY" != 0);
+			cachedPages[size] = tmp
+			it = cachedPages.find(size);
+		}
+		return *it;
+	};
+};
+
+thread_local CudaMemhostPageManager * pageAllocator;
 
 extern "C" {
 	void DIOGENES_INIT_GOTCHA() {
@@ -236,16 +245,26 @@ extern "C" {
 
 	}
 	CUresult DIOGENES_cuMemcpyDtoH(void * dst, CUdeviceptr src, size_t count) {
-		CheckStack();
-		//std::cerr << "In DIOGENES_cuMemcpyDtoH free" << std::endl;
-		return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
+		if(pageAllocator == NULL)
+			pageAllocator = new CudaMemhostPageManager();		
+		void * tmp = pageAllocator->GetPinnedPage(count);
+		
+		CUresult ret = DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
+		memcpy(src, tmp, count);
+
+		return ret;
 
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
-		CheckStack();
-		//std::cerr << "In DIOGENES_cuMemcpyHtoD free" << std::endl;
-		return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
+		if(pageAllocator == NULL)
+			pageAllocator = new CudaMemhostPageManager();
+		void * tmp = pageAllocator->GetPinnedPage(count);
+		memcpy(tmp, src, count);
 
+		if(CheckStack())
+			return cuMemcpyHtoDAsync(dst, tmp, count, 0);
+
+		return DIOGENES_cuMemcpyHtoD_wrapper(dst, tmp, count);
 	}
 
 }

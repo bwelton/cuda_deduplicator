@@ -364,7 +364,8 @@ bool DyninstFunction::IsExcludedFunction(InstType T) {
 	//	std::cerr << "[DyninstFunction::IsExcludedFunction] Returned false for function" << std::endl;
 	//if (!_track->ShouldInstrimentModule(_func, T))
 	//	std::cerr << "[DyninstFunction::IsExcludedFunction] Returned false for module" << std::endl;
-	if (_track->ShouldInstrimentFunciton(_func, T) && (_obj->pathName().find("qb_cuda8_mpirun") != std::string::npos || _obj->pathName().find("libcufftw") != std::string::npos))
+	if (_track->ShouldInstrimentFunciton(_func, T) && (_obj->pathName().find("qb_cuda8_mpirun") != std::string::npos || _obj->pathName().find("libcufftw") != std::string::npos 
+		|| _obj->pathName().find("/main") != std::string::npos || _obj->pathName.find("/cuibm") != std::string::npos))
 		return false;
 	if (_track->ShouldInstrimentFunciton(_func, T) && _track->ShouldInstrimentModule(_func, T))
 		return false;

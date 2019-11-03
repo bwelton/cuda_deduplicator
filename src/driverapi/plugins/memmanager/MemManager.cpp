@@ -29,7 +29,6 @@ struct RecursiveMap{
 	uint64_t _total_count;
 	std::map<uint64_t, RecursiveMap *> _map;
 	RecursiveMap() : _total_count(0) {};
-	~RecursiveMap() {DIOGENES_SHUTDOWN_MODE = true;}
 	void Init() {
 		RAStackReaderWriter rs(fopen("AC_BinStacks.bin", "rb"));
 		std::vector<std::vector<uint64_t>>  stacks = rs.ReadStacks();
@@ -42,6 +41,7 @@ struct RecursiveMap{
 
 	};
 	~RecursiveMap() {
+		DIOGENES_SHUTDOWN_MODE = true;
 		if (_total_count != 0)
 			std::cout << "NUMBER OF OPTI HITS = " << std::dec << _total_count << std::endl;
 	};
@@ -172,7 +172,7 @@ struct CudaMemhostPageManager {
 	CudaMemhostPageManager()  {
 		_currentIt = cachedPages.end();
 	};
-	~CudaMemoryManager() {
+	~CudaMemhostPageManager() {
 		DIOGENES_SHUTDOWN_MODE = true;
 	};
 
@@ -455,7 +455,7 @@ extern "C" {
 			pinManage = new PinnedPageManager();
 		void * tmp = NULL;
 		bool IsManagedPage = false;
-		if(!(pinManage->IsManagedPage(dst))){
+		if(!(pinManage->IsManagedPage(src))){
 			tmp = pageAllocator->GetPinnedPage(count);
 			memcpy(tmp, src, count);
 		} else {

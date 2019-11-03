@@ -96,7 +96,7 @@ extern "C" cudaError_t DIOGENES_cudaFree(void * mem);
 extern "C" cudaError_t DIOGENES_cudaFreeHost(void * mem);
 extern "C" cudaError_t DIOGENES_cudaMalloc(void ** mem, size_t size);
 extern "C" cudaError_t DIOGENES_cudaMallocHost(void ** mem, size_t size);
-extern "C" cudaError_t DIOGENES_cudaMemcpy(void * dst, const void * src, size_t count, cudaMemcpyKind kind);
+extern "C" cudaError_t DIOGENES_cudaMemcpy(void * dst, void * src, size_t count, cudaMemcpyKind kind);
 extern "C" cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, const void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream);
 
 // Driver API Wrappers
@@ -394,33 +394,56 @@ extern "C" {
 	CUresult DIOGENES_cuMemcpyDtoH(void * dst, CUdeviceptr src, size_t count) {
 		if (DIOGENES_IN_RUNTIME)
 			return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
+
 		void* stackAddr = NULL;
+		void * tmp = NULL;
+		bool IsManagedPage = false;
+		if (pinManage == NULL)
+			pinManage = new PinnedPageManager();
+
 		if(pageAllocator == NULL)
-			pageAllocator = new CudaMemhostPageManager();		
-		void * tmp = pageAllocator->GetPinnedPage(count);
+			pageAllocator = new CudaMemhostPageManager();
+
+		if(!(pinManage->IsManagedPage(dst))){
+			tmp = pageAllocator->GetPinnedPage(count);
+		} else {
+			tmp = dst;
+			IsManagedPage = true;
+		}
 		
 		CUresult ret = cuMemcpyDtoHAsync(tmp, src, count, 0);
 		if(CheckStack() && ((void *)&stackAddr < dst)) {
-			pageAllocator->SpoilLastPage(true, dst);
+			if (!IsManagedPage)
+				pageAllocator->SpoilLastPage(true, dst);
 			return ret;
 		}
 		ret = cuStreamSynchronize(0);
-		memcpy(dst, tmp, count);
+		if (!IsManagedPage)
+			memcpy(dst, tmp, count);
 
 		return ret;
-
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
 		if (DIOGENES_IN_RUNTIME)
 			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();
-		void * tmp = pageAllocator->GetPinnedPage(count);
-		memcpy(tmp, src, count);
+		if (pinManage == NULL)
+			pinManage = new PinnedPageManager();
+		void * tmp = NULL;
+		bool IsManagedPage = false;
+		if(!(pinManage->IsManagedPage(dst))){
+			tmp = pageAllocator->GetPinnedPage(count);
+			memcpy(tmp, src, count);
+		} else {
+			tmp = src;
+			IsManagedPage = true;
+		}
 
 		CUresult ret = cuMemcpyHtoDAsync(dst, tmp, count, 0);
 		if(CheckStack()){
-			pageAllocator->SpoilLastPage(false, NULL);
+			if (!IsManagedPage)
+				pageAllocator->SpoilLastPage(false, NULL);
 			return ret;
 		}
 		if (ret != CUDA_SUCCESS)

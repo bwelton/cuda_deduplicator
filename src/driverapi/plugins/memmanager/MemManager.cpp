@@ -235,13 +235,27 @@ struct CudaMemoryManager {
 
 	};
 };
+struct PinnedPageManager {
+	std::unordered_set<void *> cachedPages;
+	void AddMallocHostPage(void * mem) {
+		cachedPages.insert(mem);
+	};
 
+	bool IsManagedPage(void * mem) {
+		auto it = cachedPages.find(mem);
+		if (it != cachedPages.end())
+			return true;
+		return false;
+	};
+
+};
 
 thread_local bool DIOGENES_IN_RUNTIME = false;
 
 
 thread_local CudaMemhostPageManager * pageAllocator;
 thread_local CudaMemoryManager * mallocManager;
+thread_local PinnedPageManager * pinManage;
 extern "C" {
 	void DIOGENES_INIT_GOTCHA() {
 		DIOGENES_StackChecker.reset(new RecursiveMap());
@@ -276,9 +290,11 @@ extern "C" {
 	cudaError_t DIOGENES_cudaFree(void * mem) {
 		if(mallocManager == NULL)
 			mallocManager = new CudaMemoryManager();
+		DIOGENES_IN_RUNTIME = true
 		bool sync = mallocManager->FreeMemory(mem);
 		if (!CheckStack() && !sync) 
 			cudaDeviceSynchronize();
+		DIOGENES_IN_RUNTIME = false;
 		return cudaSuccess;
 		//std::cerr << "In cuda free" << std::endl;
 		//return DIOGENES_cudaFree_wrapper(mem);
@@ -291,18 +307,61 @@ extern "C" {
 		//std::cerr << "In DIOGENES_cudaMalloc free" << std::endl;
 		if(mallocManager == NULL)
 			mallocManager = new CudaMemoryManager();
+		DIOGENES_IN_RUNTIME = true;
 		*mem =  mallocManager->GetMemoryPage(size);
+		DIOGENES_IN_RUNTIME = false;
 		return cudaSuccess;
 		//return DIOGENES_cudaMalloc_wrapper(mem, size);
 
 	}
 	cudaError_t DIOGENES_cudaMallocHost(void ** mem, size_t size) {
-		//std::cerr << "In DIOGENES_cudaMallocHost free" << std::endl;		
-		return DIOGENES_cudaMallocHost_wrapper(mem, size);
+		// if (pinManage == NULL)
+		// 	pinManage = new PinnedPageManager();
+		// DIOGENES_IN_RUNTIME = true;
+		// //std::cerr << "In DIOGENES_cudaMallocHost free" << std::endl;		
+		// cudaError_t ret = DIOGENES_cudaMallocHost_wrapper(mem, size);
+		// if (ret == cudaSuccess)
+		// 	pinManage->AddMallocHostPage(*mem);
+		// DIOGENES_IN_RUNTIME = false;
+		// return ret;
+		return DIOGENES_cudaMallocHost_wrapper(mem,size);
 
 	}
-	cudaError_t DIOGENES_cudaMemcpy(void * dst, const void * src, size_t count, cudaMemcpyKind kind) {
+	cudaError_t DIOGENES_cudaMemcpy(void * dst, void * src, size_t count, cudaMemcpyKind kind) {
+		// DIOGENES_IN_RUNTIME = true;
+		// if (pinManage == NULL)
+		// 	pinManage = new PinnedPageManager();
+		// if(pageAllocator == NULL)
+		// 	pageAllocator = new CudaMemhostPageManager();
+		// bool performOpt = CheckStack();
+
+		// if (kind == cudaMemcpyHostToDevice) {
+		// 	if (!(pinManage->IsManagedPage(src))){
+		// 		void * tmp = pageAllocator->GetPinnedPage(count);
+		// 		memcpy(src, tmp, count);
+		// 		if (performOpt)
+		// 			pageAllocator->SpoilLastPage(false, NULL);
+		// 		src = tmp;
+		// 	}
+		// } else if (kind == cudaMemcpyDeviceToHost) {
+		// 	if (!(pinManage->IsManagedPage(dst))){
+		// 		void * tmp = pageAllocator->GetPinnedPage(count);
+		// 		if (performOpt)
+		// 			pageAllocator->SpoilLastPage(true, dst);
+		// 		dst = tmp;				
+		// 	}
+		// } else {
+		// 	DIOGENES_IN_RUNTIME = false;
+		// 	return DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
+		// }
+
+		// cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, 0);
+
+		// if (!performOpt)
+		// 	ret = cudaDeviceSynchronize();
+		// DIOGENES_IN_RUNTIME = false;
 		//std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		
+		//return ret;
 		return DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
 
 	}
@@ -333,6 +392,8 @@ extern "C" {
 
 	}
 	CUresult DIOGENES_cuMemcpyDtoH(void * dst, CUdeviceptr src, size_t count) {
+		if (DIOGENES_IN_RUNTIME)
+			return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
 		void* stackAddr = NULL;
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();		
@@ -350,6 +411,8 @@ extern "C" {
 
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
+		if (DIOGENES_IN_RUNTIME)
+			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();
 		void * tmp = pageAllocator->GetPinnedPage(count);

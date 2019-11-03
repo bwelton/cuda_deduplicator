@@ -288,7 +288,7 @@ extern "C" {
 		return DIOGENES_cudaFreeHost_wrapper(mem);
 	}
 	cudaError_t DIOGENES_cudaMalloc(void ** mem, size_t size) {
-		std::cerr << "In DIOGENES_cudaMalloc free" << std::endl;
+		//std::cerr << "In DIOGENES_cudaMalloc free" << std::endl;
 		if(mallocManager == NULL)
 			mallocManager = new CudaMemoryManager();
 		*mem =  mallocManager->GetMemoryPage(size);

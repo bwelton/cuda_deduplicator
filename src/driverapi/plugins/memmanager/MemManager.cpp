@@ -205,9 +205,43 @@ struct CudaMemhostPageManager {
 		}
 	};
 };
+struct CudaMemoryManager {
+	std::unordered_multimap<size_t, void *> cachedPages;
+
+	std::unordered_map<void *, size_t> spoiledPages;
+	void * GetMemoryPage(size_t size) {
+		void * ret;
+		auto it = cachedPages.find(size);
+		if (it == cachedPages.end()) {
+			if (cudaSuccess != DIOGENES_cudaMalloc_wrapper(&ret, size)) 
+				assert("COULD NOT ALLOCATE MEMORY!!!!" != 0);
+		} else {
+			ret = it->second;
+			cachedPages.erase(it);
+		}
+		spoiledPages[ret] = size;
+		return ret;
+	};
+
+	bool FreeMemory(void * mem) {
+		auto it = spoiledPages.find(mem);
+		if (it == spoiledPages.end()){
+			DIOGENES_cudaFree_wrapper(mem);
+			return true;
+		}
+		cachedPages.insert(std::make_pair(it->second, mem));
+		spoiledPages.erase(it);
+		return false;
+
+	};
+};
+
+
+thread_local bool DIOGENES_IN_RUNTIME = false;
+
 
 thread_local CudaMemhostPageManager * pageAllocator;
-
+thread_local CudaMemoryManager * mallocManager;
 extern "C" {
 	void DIOGENES_INIT_GOTCHA() {
 		DIOGENES_StackChecker.reset(new RecursiveMap());
@@ -240,18 +274,25 @@ extern "C" {
 		pageAllocator->AtSync();
 	}
 	cudaError_t DIOGENES_cudaFree(void * mem) {
+		if(mallocManager == NULL)
+			mallocManager = new CudaMemoryManager();
+		bool sync = mallocManager->FreeMemory(mem);
+		if (!CheckStack() && !sync) 
+			cudaDeviceSynchronize();
+		return cudaSuccess;
 		//std::cerr << "In cuda free" << std::endl;
-		return DIOGENES_cudaFree_wrapper(mem);
+		//return DIOGENES_cudaFree_wrapper(mem);
 	}
 	cudaError_t DIOGENES_cudaFreeHost(void * mem) {
 		//std::cerr << "In DIOGENES_cudaFreeHost free" << std::endl;
 		return DIOGENES_cudaFreeHost_wrapper(mem);
-
 	}
 	cudaError_t DIOGENES_cudaMalloc(void ** mem, size_t size) {
 		//std::cerr << "In DIOGENES_cudaMalloc free" << std::endl;
-
-		return DIOGENES_cudaMalloc_wrapper(mem, size);
+		if(mallocManager == NULL)
+			mallocManager = new CudaMemoryManager();
+		return mallocManager->GetMemoryPage(mem,size);
+		//return DIOGENES_cudaMalloc_wrapper(mem, size);
 
 	}
 	cudaError_t DIOGENES_cudaMallocHost(void ** mem, size_t size) {

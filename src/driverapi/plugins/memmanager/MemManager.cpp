@@ -22,10 +22,13 @@
 #include <execinfo.h>
 #include <unistd.h>
 #include <string.h>
+
+thread_local bool DIOGENES_SHUTDOWN_MODE = false;
 struct RecursiveMap{
 	uint64_t _total_count;
 	std::map<uint64_t, RecursiveMap *> _map;
 	RecursiveMap() : _total_count(0) {};
+	~RecursiveMap() {DIOGENES_SHUTDOWN_MODE = true;}
 	void Init() {
 		RAStackReaderWriter rs(fopen("AC_BinStacks.bin", "rb"));
 		std::vector<std::vector<uint64_t>>  stacks = rs.ReadStacks();
@@ -168,6 +171,9 @@ struct CudaMemhostPageManager {
 	CudaMemhostPageManager()  {
 		_currentIt = cachedPages.end();
 	};
+	~CudaMemoryManager() {
+		DIOGENES_SHUTDOWN_MODE = true;
+	};
 
 	void * GetPinnedPage(size_t size) {
 		auto it = cachedPages.find(size);
@@ -209,6 +215,10 @@ struct CudaMemoryManager {
 	std::unordered_multimap<size_t, void *> cachedPages;
 
 	std::unordered_map<void *, size_t> spoiledPages;
+
+	~CudaMemoryManager() {
+		DIOGENES_SHUTDOWN_MODE = true;
+	};
 	void * GetMemoryPage(size_t size) {
 		void * ret;
 		auto it = cachedPages.find(size);
@@ -237,6 +247,9 @@ struct CudaMemoryManager {
 };
 struct PinnedPageManager {
 	std::unordered_set<void *> cachedPages;
+	~PinnedPageManager() {
+		DIOGENES_SHUTDOWN_MODE = true;
+	}
 	void AddMallocHostPage(void * mem) {
 		cachedPages.insert(mem);
 	};
@@ -283,14 +296,19 @@ extern "C" {
 
 //Runtime API Wrappers
 	void DIOGENES_POSTSYNC_WRAPPER() {
+		if (DIOGENES_SHUTDOWN_MODE)
+			return;
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();
-		pageAllocator->AtSync();
+		if(pageAllocator != NULL)
+			pageAllocator->AtSync();
 	}
 	cudaError_t DIOGENES_cudaFree(void * mem) {
+		if (DIOGENES_SHUTDOWN_MODE)
+			return cudaSuccess;
 		if(mallocManager == NULL)
 			mallocManager = new CudaMemoryManager();
-		DIOGENES_IN_RUNTIME = true
+		DIOGENES_IN_RUNTIME = true;
 		bool sync = mallocManager->FreeMemory(mem);
 		if (!CheckStack() && !sync) 
 			cudaDeviceSynchronize();
@@ -392,6 +410,8 @@ extern "C" {
 
 	}
 	CUresult DIOGENES_cuMemcpyDtoH(void * dst, CUdeviceptr src, size_t count) {
+		if (DIOGENES_SHUTDOWN_MODE)
+			return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
 		if (DIOGENES_IN_RUNTIME)
 			return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
 
@@ -424,6 +444,8 @@ extern "C" {
 		return ret;
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
+		if (DIOGENES_SHUTDOWN_MODE)
+			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 		if (DIOGENES_IN_RUNTIME)
 			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 		if(pageAllocator == NULL)

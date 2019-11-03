@@ -6,6 +6,7 @@
 #include <stdio.h> 
 #include <map>
 #include <sstream> 
+#include <unordered_set>
 #include <vector>
 // CUDA include
 #include <cuda_runtime_api.h>

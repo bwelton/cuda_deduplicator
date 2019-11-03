@@ -291,7 +291,8 @@ extern "C" {
 		//std::cerr << "In DIOGENES_cudaMalloc free" << std::endl;
 		if(mallocManager == NULL)
 			mallocManager = new CudaMemoryManager();
-		return mallocManager->GetMemoryPage(size);
+		*mem =  mallocManager->GetMemoryPage(size);
+		return cudaSuccess;
 		//return DIOGENES_cudaMalloc_wrapper(mem, size);
 
 	}

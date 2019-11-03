@@ -19,6 +19,7 @@ std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorder
 				i.second.pop_back();
 			else {
 				typeMap[i.first] = tmp.libname;
+				std::cerr << "Adding entry " << i.first << "," << tmp.libname << " to type map "<< std::endl;
 				i.second.push_back(tmp);
 				break;
 			}

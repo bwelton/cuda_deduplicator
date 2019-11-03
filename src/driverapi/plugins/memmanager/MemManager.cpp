@@ -291,12 +291,13 @@ extern "C" {
 
 	}
 	CUresult DIOGENES_cuMemcpyDtoH(void * dst, CUdeviceptr src, size_t count) {
+		void* stackAddr = NULL;
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();		
 		void * tmp = pageAllocator->GetPinnedPage(count);
 		
 		CUresult ret = cuMemcpyDtoHAsync(tmp, src, count, 0);
-		if(CheckStack()){
+		if(CheckStack() && ((void *)&stackAddr < dst)) {
 			pageAllocator->SpoilLastPage(true, dst);
 			return ret;
 		}

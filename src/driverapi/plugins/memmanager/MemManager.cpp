@@ -376,7 +376,7 @@ extern "C" {
 
 		cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, 0);
 
-		if (!performOpt)
+		//if (!performOpt)
 			ret = cudaDeviceSynchronize();
 		DIOGENES_IN_RUNTIME = false;
 		//std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		

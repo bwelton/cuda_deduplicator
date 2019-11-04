@@ -10,6 +10,7 @@ CallTransformation::CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuV
 std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorderKeys(std::map<uint64_t, std::string> & typeMap) {
 	StackKeyReader r(fopen("DIOENES_MemRecUnknowns.bin","rb"));
 	std::map<uint64_t, std::vector<StackPoint> > m = r.ReadStacks();
+	std::set<uint64_t> removeEmpty;
 	for (auto & i : m) {
 		StackPoint tmp = i.second.back();
 		i.second.pop_back();
@@ -24,10 +25,14 @@ std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorder
 				break;
 			}
 		}
+		if (i.second.size() == 0)
+			removeEmpty.insert(i.first);
 		std::cerr << "Remade MemRecStack at index " << i.first << std::endl;
 		for (auto x : i.second)
 			std::cerr << x.libname << "@" << std::hex << x.libOffset << std::endl;
 	}	
+	for (auto i : removeEmpty)
+		m.erase(i);
 	return m;
 }
 

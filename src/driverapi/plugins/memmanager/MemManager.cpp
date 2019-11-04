@@ -417,6 +417,7 @@ extern "C" {
 		}
 
 		cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
+		assert(ret == cudaSuccess);
 		DIOGENES_IN_RUNTIME = false;
 		// if (!performOpt)
 		// 	ret = cudaDeviceSynchronize();

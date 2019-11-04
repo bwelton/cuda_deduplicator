@@ -353,7 +353,7 @@ extern "C" {
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();
 		bool performOpt = CheckStack();
-
+		void * stackAddr = NULL;
 		if (kind == cudaMemcpyHostToDevice) {
 			if (!(pinManage->IsManagedPage(src))){
 				void * tmp = pageAllocator->GetPinnedPage(count);
@@ -363,7 +363,7 @@ extern "C" {
 				src = tmp;
 			}
 		} else if (kind == cudaMemcpyDeviceToHost) {
-			if (!(pinManage->IsManagedPage(dst))){
+			if (!(pinManage->IsManagedPage(dst)) && ((void *)&stackAddr < dst)){
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				if (performOpt)
 					pageAllocator->SpoilLastPage(true, dst);

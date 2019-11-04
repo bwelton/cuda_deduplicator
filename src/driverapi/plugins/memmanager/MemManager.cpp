@@ -347,40 +347,40 @@ extern "C" {
 
 	}
 	cudaError_t DIOGENES_cudaMemcpy(void * dst, void * src, size_t count, cudaMemcpyKind kind) {
-		// DIOGENES_IN_RUNTIME = true;
-		// if (pinManage == NULL)
-		// 	pinManage = new PinnedPageManager();
-		// if(pageAllocator == NULL)
-		// 	pageAllocator = new CudaMemhostPageManager();
-		// bool performOpt = CheckStack();
+		DIOGENES_IN_RUNTIME = true;
+		if (pinManage == NULL)
+			pinManage = new PinnedPageManager();
+		if(pageAllocator == NULL)
+			pageAllocator = new CudaMemhostPageManager();
+		bool performOpt = CheckStack();
 
-		// if (kind == cudaMemcpyHostToDevice) {
-		// 	if (!(pinManage->IsManagedPage(src))){
-		// 		void * tmp = pageAllocator->GetPinnedPage(count);
-		// 		memcpy(src, tmp, count);
-		// 		if (performOpt)
-		// 			pageAllocator->SpoilLastPage(false, NULL);
-		// 		src = tmp;
-		// 	}
-		// } else if (kind == cudaMemcpyDeviceToHost) {
-		// 	if (!(pinManage->IsManagedPage(dst))){
-		// 		void * tmp = pageAllocator->GetPinnedPage(count);
-		// 		if (performOpt)
-		// 			pageAllocator->SpoilLastPage(true, dst);
-		// 		dst = tmp;				
-		// 	}
-		// } else {
-		// 	DIOGENES_IN_RUNTIME = false;
-		// 	return DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
-		// }
+		if (kind == cudaMemcpyHostToDevice) {
+			if (!(pinManage->IsManagedPage(src))){
+				void * tmp = pageAllocator->GetPinnedPage(count);
+				memcpy(src, tmp, count);
+				if (performOpt)
+					pageAllocator->SpoilLastPage(false, NULL);
+				src = tmp;
+			}
+		} else if (kind == cudaMemcpyDeviceToHost) {
+			if (!(pinManage->IsManagedPage(dst))){
+				void * tmp = pageAllocator->GetPinnedPage(count);
+				if (performOpt)
+					pageAllocator->SpoilLastPage(true, dst);
+				dst = tmp;				
+			}
+		} else {
+			DIOGENES_IN_RUNTIME = false;
+			return DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
+		}
 
-		// cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, 0);
+		cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, 0);
 
-		// if (!performOpt)
-		// 	ret = cudaDeviceSynchronize();
-		// DIOGENES_IN_RUNTIME = false;
-		// //std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		
-		// return ret;
+		if (!performOpt)
+			ret = cudaDeviceSynchronize();
+		DIOGENES_IN_RUNTIME = false;
+		//std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		
+		return ret;
 		return DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
 
 	}

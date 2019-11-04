@@ -101,7 +101,7 @@ extern "C" cudaError_t DIOGENES_cudaFreeHost(void * mem);
 extern "C" cudaError_t DIOGENES_cudaMalloc(void ** mem, size_t size);
 extern "C" cudaError_t DIOGENES_cudaMallocHost(void ** mem, size_t size);
 extern "C" cudaError_t DIOGENES_cudaMemcpy(void * dst, void * src, size_t count, cudaMemcpyKind kind);
-extern "C" cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, const void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream);
+extern "C" cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream);
 
 // Driver API Wrappers
 extern "C" CUresult DIOGENES_cuMemFree(void * mem);

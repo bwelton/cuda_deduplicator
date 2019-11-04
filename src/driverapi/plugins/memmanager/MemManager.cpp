@@ -415,7 +415,7 @@ extern "C" {
 			DIOGENES_IN_RUNTIME = false;
 			return DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
 		}
-
+		std::cerr << "Args = " << std::hex << dst << "," << src << "," << count << "," << kind << "," << stream << std::endl;
 		cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
 		assert(ret == cudaSuccess);
 		DIOGENES_IN_RUNTIME = false;

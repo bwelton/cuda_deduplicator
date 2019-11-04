@@ -334,15 +334,15 @@ extern "C" {
 
 	}
 	cudaError_t DIOGENES_cudaMallocHost(void ** mem, size_t size) {
-		// if (pinManage == NULL)
-		// 	pinManage = new PinnedPageManager();
-		// DIOGENES_IN_RUNTIME = true;
-		// //std::cerr << "In DIOGENES_cudaMallocHost free" << std::endl;		
-		// cudaError_t ret = DIOGENES_cudaMallocHost_wrapper(mem, size);
-		// if (ret == cudaSuccess)
-		// 	pinManage->AddMallocHostPage(*mem);
-		// DIOGENES_IN_RUNTIME = false;
-		// return ret;
+		if (pinManage == NULL)
+			pinManage = new PinnedPageManager();
+		DIOGENES_IN_RUNTIME = true;
+		//std::cerr << "In DIOGENES_cudaMallocHost free" << std::endl;		
+		cudaError_t ret = DIOGENES_cudaMallocHost_wrapper(mem, size);
+		if (ret == cudaSuccess)
+			pinManage->AddMallocHostPage(*mem);
+		DIOGENES_IN_RUNTIME = false;
+		return ret;
 		return DIOGENES_cudaMallocHost_wrapper(mem,size);
 
 	}
@@ -379,8 +379,8 @@ extern "C" {
 		// if (!performOpt)
 		// 	ret = cudaDeviceSynchronize();
 		// DIOGENES_IN_RUNTIME = false;
-		//std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		
-		//return ret;
+		// //std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		
+		// return ret;
 		return DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
 
 	}

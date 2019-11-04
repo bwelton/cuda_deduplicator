@@ -403,14 +403,14 @@ extern "C" {
 				src = tmp;
 			}
 		} else if (kind == cudaMemcpyDeviceToHost) {
-			if (!(pinManage->IsManagedPage(dst)) && ((void *)&stackAddr < dst)){
-				void * tmp = pageAllocator->GetPinnedPage(count);
-				if (performOpt)
-					pageAllocator->SpoilLastPage(true, dst);
-				dst = tmp;				
-			} else if ((void *)&stackAddr > dst){
-				performOpt = false;
-			}
+			// if (!(pinManage->IsManagedPage(dst)) && ((void *)&stackAddr < dst)){
+			// 	void * tmp = pageAllocator->GetPinnedPage(count);
+			// 	if (performOpt)
+			// 		pageAllocator->SpoilLastPage(true, dst);
+			// 	dst = tmp;				
+			// } else if ((void *)&stackAddr > dst){
+			// 	performOpt = false;
+			// }
 		} else {
 			DIOGENES_IN_RUNTIME = false;
 			return DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);

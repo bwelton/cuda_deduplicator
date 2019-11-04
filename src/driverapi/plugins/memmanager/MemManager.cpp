@@ -279,8 +279,8 @@ extern "C" {
 		void * libcudahandle = dlopen("libcuda.so", RTLD_LAZY);
 
 		DIOGENES_cudaFree_wrapper = (typeof(&DIOGENES_cudaFree))dlsym(cudarthandle,"cudaFree");
-		DIOGENES_cuMemFreeHost_wrapper = (typeof(&DIOGENES_cuMemFreeHost))dlsym(cudarthandle,"cuMemFreeHost");
-		DIOGENES_cudaFreeHost_wrapper = (typeof(&DIOGENES_cudaFreeHost))dlsym(libcudahandle,"cudaFreeHost");
+		DIOGENES_cuMemFreeHost_wrapper = (typeof(&DIOGENES_cuMemFreeHost))dlsym(libcudahandle,"cuMemFreeHost");
+		DIOGENES_cudaFreeHost_wrapper = (typeof(&DIOGENES_cudaFreeHost))dlsym(cudarthandle,"cudaFreeHost");
 		DIOGENES_cudaMalloc_wrapper = (typeof(&DIOGENES_cudaMalloc))dlsym(cudarthandle,"cudaMalloc");
 		DIOGENES_cudaMallocHost_wrapper = (typeof(&DIOGENES_cudaMallocHost))dlsym(cudarthandle,"cudaMallocHost");
 		DIOGENES_cudaMemcpy_wrapper = (typeof(&DIOGENES_cudaMemcpy))dlsym(cudarthandle,"cudaMemcpy");

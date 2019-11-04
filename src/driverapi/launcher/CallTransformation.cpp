@@ -15,7 +15,7 @@ std::map<uint64_t, std::vector<StackPoint> > CallTransformation::ReadMemRecorder
 		i.second.pop_back();
 		std::reverse(i.second.begin(), i.second.end());
 		for(int x = i.second.size() - 1; x >= 0; x--) {
-			if(i.second[x].libname.find("lib/plugins/") != std::string::npos)
+			if(i.second[x].libname.find("lib/plugins/") != std::string::npos || i.second[x].libname.find("libdyninstAPI") != std::string::npos)
 				i.second.pop_back();
 			else {
 				typeMap[i.first] = tmp.libname;

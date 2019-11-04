@@ -369,6 +369,9 @@ extern "C" {
 					pageAllocator->SpoilLastPage(true, dst);
 				dst = tmp;				
 			}
+			if ((void *)&stackAddr < dst){
+				performOpt = false;
+			}
 		} else {
 			DIOGENES_IN_RUNTIME = false;
 			return DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
@@ -384,10 +387,44 @@ extern "C" {
 		return DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
 
 	}
-	cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, const void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream) {
-		//std::cerr << "In DIOGENES_cudaMemcpyAsync free" << std::endl;	
-		return DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
+	cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream) {
+		DIOGENES_IN_RUNTIME = true;
+		if (pinManage == NULL)
+			pinManage = new PinnedPageManager();
+		if(pageAllocator == NULL)
+			pageAllocator = new CudaMemhostPageManager();
+		bool performOpt = CheckStack();
+		void * stackAddr = NULL;
+		if (kind == cudaMemcpyHostToDevice) {
+			if (!(pinManage->IsManagedPage(src))){
+				void * tmp = pageAllocator->GetPinnedPage(count);
+				memcpy(tmp, src, count);
+				if (performOpt)
+					pageAllocator->SpoilLastPage(false, NULL);
+				src = tmp;
+			}
+		} else if (kind == cudaMemcpyDeviceToHost) {
+			if (!(pinManage->IsManagedPage(dst)) && ((void *)&stackAddr < dst)){
+				void * tmp = pageAllocator->GetPinnedPage(count);
+				if (performOpt)
+					pageAllocator->SpoilLastPage(true, dst);
+				dst = tmp;				
+			}
+			if ((void *)&stackAddr < dst){
+				performOpt = false;
+			}
+		} else {
+			DIOGENES_IN_RUNTIME = false;
+			return DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
+		}
 
+		cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
+		DIOGENES_IN_RUNTIME = false;
+		// if (!performOpt)
+		// 	ret = cudaDeviceSynchronize();
+
+		//std::cerr << "In DIOGENES_cudaMemcpyAsync free" << std::endl;	
+		return ret;
 	}
 
 // Driver API Wrappers

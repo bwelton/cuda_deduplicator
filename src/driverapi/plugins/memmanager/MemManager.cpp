@@ -24,7 +24,7 @@
 #include <unistd.h>
 #include <string.h>
 
-thread_local bool DIOGENES_SHUTDOWN_MODE = false;
+bool DIOGENES_SHUTDOWN_MODE = false;
 struct RecursiveMap{
 	uint64_t _total_count;
 	std::map<uint64_t, RecursiveMap *> _map;

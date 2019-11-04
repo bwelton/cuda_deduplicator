@@ -129,8 +129,8 @@ void CallTransformation::BuildRequiredSet() {
 			syncNotNeeded = true;
 		} else {
 			if (i < lvec.size() - 1) {
-				if (!(traceDep.IsInSet(tmp->id)) && notRequired.find(lvec[i+1]->id) == notRequired.end()){
-					required.insert(lvec[i+1]->id);
+				if (!(traceDep.IsInSet(tmp->id))){ //&& notRequired.find(lvec[i+1]->id) == notRequired.end()){
+					//required.insert(lvec[i+1]->id);
 					syncNotNeeded = true;
 				}
 			} 			

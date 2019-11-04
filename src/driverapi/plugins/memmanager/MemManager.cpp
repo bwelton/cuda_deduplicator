@@ -357,7 +357,7 @@ extern "C" {
 		if (kind == cudaMemcpyHostToDevice) {
 			if (!(pinManage->IsManagedPage(src))){
 				void * tmp = pageAllocator->GetPinnedPage(count);
-				memcpy(src, tmp, count);
+				memcpy(tmp, src, count);
 				if (performOpt)
 					pageAllocator->SpoilLastPage(false, NULL);
 				src = tmp;
@@ -376,7 +376,7 @@ extern "C" {
 
 		cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, 0);
 
-		//if (!performOpt)
+		if (!performOpt)
 			ret = cudaDeviceSynchronize();
 		DIOGENES_IN_RUNTIME = false;
 		//std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		

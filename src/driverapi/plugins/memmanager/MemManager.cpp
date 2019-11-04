@@ -368,8 +368,7 @@ extern "C" {
 				if (performOpt)
 					pageAllocator->SpoilLastPage(true, dst);
 				dst = tmp;				
-			}
-			if ((void *)&stackAddr < dst){
+			} else if ((void *)&stackAddr > dst){
 				performOpt = false;
 			}
 		} else {
@@ -409,8 +408,7 @@ extern "C" {
 				if (performOpt)
 					pageAllocator->SpoilLastPage(true, dst);
 				dst = tmp;				
-			}
-			if ((void *)&stackAddr < dst){
+			} else if ((void *)&stackAddr > dst){
 				performOpt = false;
 			}
 		} else {

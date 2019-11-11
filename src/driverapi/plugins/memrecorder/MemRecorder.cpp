@@ -12,7 +12,7 @@
 #include <deque>
 #include <cuda_runtime_api.h>
 #include <cuda.h>
-
+#include "gotcha/gotcha.h"
 #include "MemRecDataFile.h"
 #include "StackPoint.h"
 #include "StackwalkingCommon.h"

@@ -672,7 +672,9 @@ extern "C" {
 
 
 	void * DIOGENES_REC_GLIBMALLOC(size_t size) {
-		return DIOGENES_libcmalloc_wrapper(size);
+		void * addr =  DIOGENES_libcmalloc_wrapper(size);
+		POSTPROCESS_GNUMALLOC((uint64_t)addr, size);
+		return addr;
 	}
 
 	void DIOGENES_REC_GLIBFREE(void * addr) {

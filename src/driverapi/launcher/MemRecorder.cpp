@@ -14,7 +14,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	_bmap.reset(new BinaryLocationIDMap());
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatch_object * libcuda = _proc->LoadLibrary(std::string("libcuda.so.1"));
-	BPatch_object * libcudart = _proc->LoadLibrary(std::string("libcudart.so.1"));
+	BPatch_object * libcudart = _proc->LoadLibrary(std::string("libcudart.so"));
 	BPatch_object * wrapper = _proc->LoadLibrary(std::string(LOCAL_INSTALL_PATH) + std::string("/lib/plugins/libDiogenesMemRecorder.so"));
 
 	std::unordered_map<std::string, std::vector<BPatch_function *>> preWrapperFunctions;

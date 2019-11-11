@@ -12,6 +12,8 @@
 #include <deque>
 #include <cuda_runtime_api.h>
 #include <cuda.h>
+#include <unistd.h>
+#include <dlfcn.h>
 #include "gotcha/gotcha.h"
 #include "MemRecDataFile.h"
 #include "StackPoint.h"

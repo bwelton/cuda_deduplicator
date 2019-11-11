@@ -128,33 +128,33 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 		InsertPrePostCall(wrapVector[0], funcVector[0], true, 0,false);		
 	}
 
-	for (auto x : gnu_preWrapperFunctions) {
-		auto funcName = x.first;
-		auto funcVector = x.second;
-		std::cerr << "[MemRecorder::InsertAnalysis] Starting pre wrap call of function - " << funcName << std::endl;		
-		assert(funcVector.size() == 1);
-		std::vector<BPatch_function*> wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, NULL);
-		if (wrapVector.size() == 0) {
-			std::cerr << "[MemRecorder::InsertAnalysis] ERROR!! Could not wrap function - " << funcName << std::endl;
-			continue;
-		}		
-		_wrapperReplacements[funcName] = ops->GenerateStackPoint(_proc->GetAddressSpace(), wrapVector[0]);
-		InsertPrePostCall(wrapVector[0], funcVector[0], false, parameterCounts[funcName], false);
-	}
+	// for (auto x : gnu_preWrapperFunctions) {
+	// 	auto funcName = x.first;
+	// 	auto funcVector = x.second;
+	// 	std::cerr << "[MemRecorder::InsertAnalysis] Starting pre wrap call of function - " << funcName << std::endl;		
+	// 	assert(funcVector.size() == 1);
+	// 	std::vector<BPatch_function*> wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, NULL);
+	// 	if (wrapVector.size() == 0) {
+	// 		std::cerr << "[MemRecorder::InsertAnalysis] ERROR!! Could not wrap function - " << funcName << std::endl;
+	// 		continue;
+	// 	}		
+	// 	_wrapperReplacements[funcName] = ops->GenerateStackPoint(_proc->GetAddressSpace(), wrapVector[0]);
+	// 	InsertPrePostCall(wrapVector[0], funcVector[0], false, parameterCounts[funcName], false);
+	// }
 
-	for (auto x : gnu_postWrapperFunctions) {
-		auto funcName = x.first;
-		auto funcVector = x.second;
-		std::cerr << "[MemRecorder::InsertAnalysis] Starting pre wrap call of function - " << funcName << std::endl;		
-		assert(funcVector.size() == 1);
-		std::vector<BPatch_function*> wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, NULL);
-		if (wrapVector.size() == 0) {
-			std::cerr << "[MemRecorder::InsertAnalysis] ERROR!! Could not wrap function - " << funcName << std::endl;
-			continue;
-		}		
-		_wrapperReplacements[funcName] = ops->GenerateStackPoint(_proc->GetAddressSpace(), wrapVector[0]);
-		InsertPrePostCall(wrapVector[0], funcVector[0], true, 0, getReturn[funcName]);
-	}
+	// for (auto x : gnu_postWrapperFunctions) {
+	// 	auto funcName = x.first;
+	// 	auto funcVector = x.second;
+	// 	std::cerr << "[MemRecorder::InsertAnalysis] Starting pre wrap call of function - " << funcName << std::endl;		
+	// 	assert(funcVector.size() == 1);
+	// 	std::vector<BPatch_function*> wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, NULL);
+	// 	if (wrapVector.size() == 0) {
+	// 		std::cerr << "[MemRecorder::InsertAnalysis] ERROR!! Could not wrap function - " << funcName << std::endl;
+	// 		continue;
+	// 	}		
+	// 	_wrapperReplacements[funcName] = ops->GenerateStackPoint(_proc->GetAddressSpace(), wrapVector[0]);
+	// 	InsertPrePostCall(wrapVector[0], funcVector[0], true, 0, getReturn[funcName]);
+	// }
 
 /*
 

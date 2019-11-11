@@ -540,7 +540,7 @@ extern "C" {
 	void POSTPROCESS_GNUFREE(uint64_t addr) {
 		if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
-			std::cout << "Processing Free at addr: " << std::hex << addr << std::endl;
+			//std::cout << "Processing Free at addr: " << std::hex << addr << std::endl;
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			DIOGENES_CACHED_POINTS.clear();
 			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
@@ -704,9 +704,9 @@ extern "C" {
 		return addr;
 	}
 
-	void DIOGENES_REC_GLIBFREE(void * addr) {
+	void DIOGENES_REC_GLIBFREE(uint64_t addr) {
 		POSTPROCESS_GNUFREE((uint64_t)addr);
-		DIOGENES_libcfree_wrapper(addr);
+		DIOGENES_libcfree_wrapper((void*)addr);
 	}
 /*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
 		DIOGENSE_GLIB_MALLOC_SIZE = size;

@@ -465,6 +465,7 @@ extern "C" {
 	void DIOGENES_SETUP_BINDINGS() {
 		PLUG_BUILD_FACTORY();
 		void * glibc = dlopen("libc.so.6", RTLD_LAZY); 
+		std::cerr << "[DIOGENES_SETUP_BINDINGS] Wrapping libc_malloc and libc_free" << std::endl;
 		DIOGENES_libcmalloc_wrapper = (typeof(&DIOGENES_REC_GLIBMALLOC))dlsym(glibc,"__GI___libc_malloc"); 
 		DIOGENES_libcfree_wrapper = (typeof(&DIOGENES_REC_GLIBFREE))dlsym(glibc,"__libc_free"); 
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); 

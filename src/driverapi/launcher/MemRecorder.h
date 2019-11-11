@@ -58,7 +58,7 @@ public:
 	void InsertAnalysis(StackRecMap & recs);
 	CallTransPtr PostProcessing();
 private:
-	void InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, int numParams);
+	void InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, int numParams, bool getRetExpression);
 	std::shared_ptr<DyninstProcess> _proc;
 	//std::vector<std::shared_ptr<DyninstFunction> > _dyninstFunctions;
 	std::map<uint64_t, std::shared_ptr<DyninstFunction>> _dyninstFunctions;

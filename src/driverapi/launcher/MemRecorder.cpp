@@ -21,6 +21,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	std::unordered_map<std::string, std::vector<BPatch_function *>> postWrapperFunctions;
 	std::unordered_map<std::string, int> parameterCounts;
 	std::unordered_map<std::string, bool> driverAPI;
+	std::unordered_map<std::string, bool> getReturn;
 
 	// Public API
 	preWrapperFunctions["cudaFree"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFree"), wrapper);
@@ -46,7 +47,15 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	postWrapperFunctions["cudaMemcpy"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsyncPost"), wrapper);
 	postWrapperFunctions["cudaFree"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFreePost"), wrapper);
 
+	// GNUWRAPPERS
+	std::unordered_map<std::string, std::vector<BPatch_function *>> gnu_preWrapperFunctions;
+	std::unordered_map<std::string, std::vector<BPatch_function *>> gnu_postWrapperFunctions;
+	gnu_preWrapperFunctions["__GI___libc_malloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_GLIBMALLOC_PRE"), NULL);
+	
+	gnu_postWrapperFunctions["__GI___libc_malloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_GLIBMALLOC_POST"), NULL);
 
+
+	getReturn["__GI___libc_malloc"] = true;
 	// Set parameter counts for each call
 	parameterCounts["cudaFree"] = 1;
 	parameterCounts["cudaMalloc"] = 2;
@@ -59,6 +68,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	parameterCounts["cuMemAlloc_v2"] = 2;
 	parameterCounts["cuMemAllocHost_v2"] = 2;
 	parameterCounts["cuMemFreeHost"] = 1;
+	parameterCounts["__GI___libc_malloc"] = 1;
 	// Set whether the call is in the driver API or not
 	driverAPI["cudaFree"] = false;
 	driverAPI["cudaMalloc"] = false;
@@ -94,7 +104,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 		}
 		_wrapperReplacements[funcName] = ops->GenerateStackPoint(_proc->GetAddressSpace(), wrapVector[0]);
 
-		InsertPrePostCall(wrapVector[0], funcVector[0], false, parameterCounts[funcName]);
+		InsertPrePostCall(wrapVector[0], funcVector[0], false, parameterCounts[funcName], false);
 	}
 
 	for (auto x : postWrapperFunctions) {
@@ -115,8 +125,37 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 			continue;
 		}
 
-		InsertPrePostCall(wrapVector[0], funcVector[0], true, 0);		
+		InsertPrePostCall(wrapVector[0], funcVector[0], true, 0,false);		
 	}
+
+	for (auto x : gnu_preWrapperFunctions) {
+		auto funcName = x.first;
+		auto funcVector = x.second;
+		std::cerr << "[MemRecorder::InsertAnalysis] Starting pre wrap call of function - " << funcName << std::endl;		
+		assert(funcVector.size() == 1);
+		std::vector<BPatch_function*> wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, NULL);
+		if (wrapVector.size() == 0) {
+			std::cerr << "[MemRecorder::InsertAnalysis] ERROR!! Could not wrap function - " << funcName << std::endl;
+			continue;
+		}		
+		_wrapperReplacements[funcName] = ops->GenerateStackPoint(_proc->GetAddressSpace(), wrapVector[0]);
+		InsertPrePostCall(wrapVector[0], funcVector[0], false, parameterCounts[funcName], false);
+	}
+
+	for (auto x : gnu_postWrapperFunctions) {
+		auto funcName = x.first;
+		auto funcVector = x.second;
+		std::cerr << "[MemRecorder::InsertAnalysis] Starting pre wrap call of function - " << funcName << std::endl;		
+		assert(funcVector.size() == 1);
+		std::vector<BPatch_function*> wrapVector = ops->FindFuncsByName(_proc->GetAddressSpace(), funcName, NULL);
+		if (wrapVector.size() == 0) {
+			std::cerr << "[MemRecorder::InsertAnalysis] ERROR!! Could not wrap function - " << funcName << std::endl;
+			continue;
+		}		
+		_wrapperReplacements[funcName] = ops->GenerateStackPoint(_proc->GetAddressSpace(), wrapVector[0]);
+		InsertPrePostCall(wrapVector[0], funcVector[0], true, 0, getReturn[funcName]);
+	}
+
 /*
 
 
@@ -262,7 +301,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 
 
 
-void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, int numParams) {
+void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_function * instrimentation, bool postCall, int numParams, bool getRetExpression) {
 	std::shared_ptr<DynOpsClass> ops = _proc->ReturnDynOps();
 	BPatchPointVecPtr locationEntry;
 	if (postCall == false)
@@ -276,6 +315,9 @@ void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_funct
 	for (int i = 0; i < numParams; i++){
 		recordArgs.push_back(new BPatch_paramExpr(i));
 	}	
+	if (postCall && getRetExpression) {
+		recordArgs.push_back(new BPatch_retExpr());
+	}
 
 	std::string libname = origFunction->getModule()->getObject()->pathName();
 	

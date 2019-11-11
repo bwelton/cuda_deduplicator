@@ -378,6 +378,8 @@ E_cuMemFree_v2 = 17,
 E_cuMemAlloc_v2 = 18,
 E_cuMemAllocHost_v2 = 19,
 E_cuMemFreeHost = 20,
+E_glibMalloc = 21,
+E_glibFree = 22,
 };
 
 struct EnumClassHash
@@ -407,6 +409,8 @@ void SetupDiogGlobalSPS() {
 	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cuMemAlloc_v2, StackPoint("cuMemAlloc_v2", "cuMemAlloc_v2",0,0)));
 	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cuMemAllocHost_v2, StackPoint("cuMemAllocHost_v2","cuMemAllocHost_v2",0,0)));
 	DIOG_GLOBAL_SPS->insert(std::make_pair(E_cuMemFreeHost, StackPoint("cuMemFreeHost","cuMemFreeHost",0,0)));
+	DIOG_GLOBAL_SPS->insert(std::make_pair(E_glibMalloc, StackPoint("__GI___libc_malloc","__GI___libc_malloc",0,0)));
+	DIOG_GLOBAL_SPS->insert(std::make_pair(E_glibFree, StackPoint("__libc_free","__libc_free",0,0)));
 	DIOG_GLOBAL_SPS->find(E_cudaFree)->second.raFramePos =(uint64_t)E_cudaFree; 
 	DIOG_GLOBAL_SPS->find(E_cudaMalloc)->second.raFramePos =(uint64_t)E_cudaMalloc; 
 	DIOG_GLOBAL_SPS->find(E_cudaMemcpyAsync)->second.raFramePos =(uint64_t)E_cudaMemcpyAsync; 
@@ -417,6 +421,8 @@ void SetupDiogGlobalSPS() {
 	DIOG_GLOBAL_SPS->find(E_cuMemFree_v2)->second.raFramePos =(uint64_t)E_cuMemFree_v2; 
 	DIOG_GLOBAL_SPS->find(E_cuMemAlloc_v2)->second.raFramePos =(uint64_t)E_cuMemAlloc_v2; 
 	DIOG_GLOBAL_SPS->find(E_cuMemFreeHost)->second.raFramePos = (uint64_t)E_cuMemFreeHost;
+	DIOG_GLOBAL_SPS->find(E_glibMalloc)->second.raFramePos = (uint64_t)E_glibMalloc;
+	DIOG_GLOBAL_SPS->find(E_glibFree)->second.raFramePos = (uint64_t)E_glibFree;
 };
 
 #define PLUG_BUILD_FACTORY() \
@@ -436,6 +442,9 @@ thread_local bool DIOGENES_SEEN_RUNTIMEMALLOCAPI = false;
 thread_local bool DIOGENES_SEEN_RUNTIMECPY = false;
 thread_local bool DIOGENES_SEEN_RUNTIMEFREE = false;
 thread_local std::vector<StackPoint> DIOGENES_CACHED_POINTS;
+thread_local volatile size_t DIOGENSE_GLIB_MALLOC_SIZE = 0;
+
+
 extern "C" {
 
 	void DIOGENES_REC_CudaMalloc(void ** mem, size_t size) {
@@ -482,6 +491,23 @@ extern "C" {
 				PLUG_FACTORY_PTR->GPUMallocData((uint64_t)addr, size, myID);
 			else
 				PLUG_FACTORY_PTR->AllocatePinnedMemory(addr, size);
+			DIOGENES_ReleaseGlobalLock();
+		}
+	}
+
+
+	void POSTPROCESS_GNUMALLOC(uint64_t addr, size_t size) {
+		if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
+			DIOGENES_CACHED_POINTS.clear();
+			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
+			auto n = local->find(E_glibMalloc);
+			if (n == local->end())
+				assert(n != local->end());
+			DIOGENES_CACHED_POINTS.push_back(n->second);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(DIOGENES_CACHED_POINTS));
+			PLUG_FACTORY_PTR->CPUMallocData(hostptr, size, myID);
 			DIOGENES_ReleaseGlobalLock();
 		}
 	}
@@ -554,6 +580,7 @@ extern "C" {
 			DIOGENES_ReleaseGlobalLock();
 		}		
 	}
+
 
 	
 	void DIOGENES_REC_cuMemAllocHostpost() {
@@ -628,6 +655,14 @@ extern "C" {
 	}
 
 
+
+	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
+		DIOGENSE_GLIB_MALLOC_SIZE = size;
+	}
+
+	void DIOGENES_REC_GLIBMALLOC_POST(uint64_t retAddress) {
+		POSTPROCESS_GNUMALLOC(retAddress,DIOGENSE_GLIB_MALLOC_SIZE);
+	}
 
 /*	void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
 		int64_t cache = DIOGENES_CTX_ID;

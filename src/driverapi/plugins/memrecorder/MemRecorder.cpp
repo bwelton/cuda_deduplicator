@@ -528,6 +528,22 @@ extern "C" {
 		}
 	}
 
+	void POSTPROCESS_GNUFREE(uint64_t addr) {
+		if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			PLUG_BUILD_FACTORY();
+			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
+			DIOGENES_CACHED_POINTS.clear();
+			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
+			auto n = local->find(E_glibFree);
+			if (n == local->end())
+				assert(n != local->end());
+			DIOGENES_CACHED_POINTS.push_back(n->second);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(DIOGENES_CACHED_POINTS));
+			PLUG_FACTORY_PTR->CPUFreeData(addr, myID);
+			DIOGENES_ReleaseGlobalLock();
+		}
+	}
+
 	void DIOGENES_RESET_MALLOCMEM() {
 		DIOGENES_MALLOC_MEMLOCATION = NULL;
 		DIOGENES_MALLOC_MEMSIZE = 0;
@@ -678,6 +694,7 @@ extern "C" {
 	}
 
 	void DIOGENES_REC_GLIBFREE(void * addr) {
+		POSTPROCESS_GNUFREE(addr);
 		DIOGENES_libcfree_wrapper(addr);
 	}
 /*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {

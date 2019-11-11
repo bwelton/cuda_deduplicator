@@ -96,7 +96,7 @@ public:
 	MemAddress * Set(uint64_t addr, uint64_t size, int64_t loc) {
 		MemAddress * n;
 		if (_addressMap.find(addr) != _addressMap.end()) {
-		   std::cerr << "We have already seen this address! Potential Memory Leak/Weirdness! " << std::dec << loc << std::endl;
+		   //std::cerr << "We have already seen this address! Potential Memory Leak/Weirdness! " << std::dec << loc << std::endl;
 			n = _addressMap[addr];
 		} else {
 			n = ReturnEmpty();
@@ -540,7 +540,7 @@ extern "C" {
 	void POSTPROCESS_GNUFREE(uint64_t addr) {
 		if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
-			//std::cout << "Processing Free at addr: " << std::hex << addr << std::endl;
+			std::cout << "Processing Free at addr: " << std::hex << addr << std::endl;
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			DIOGENES_CACHED_POINTS.clear();
 			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);

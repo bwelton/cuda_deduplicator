@@ -47,12 +47,12 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	postWrapperFunctions["cudaMemcpy"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsyncPost"), wrapper);
 	postWrapperFunctions["cudaFree"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFreePost"), wrapper);
 
-	// GNUWRAPPERS
-	std::unordered_map<std::string, std::vector<BPatch_function *>> gnu_preWrapperFunctions;
-	std::unordered_map<std::string, std::vector<BPatch_function *>> gnu_postWrapperFunctions;
-	gnu_preWrapperFunctions["__GI___libc_malloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_GLIBMALLOC_PRE"), NULL);
+	// // GNUWRAPPERS
+	// std::unordered_map<std::string, std::vector<BPatch_function *>> gnu_preWrapperFunctions;
+	// std::unordered_map<std::string, std::vector<BPatch_function *>> gnu_postWrapperFunctions;
+	// gnu_preWrapperFunctions["__GI___libc_malloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_GLIBMALLOC_PRE"), NULL);
 	
-	gnu_postWrapperFunctions["__GI___libc_malloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_GLIBMALLOC_POST"), NULL);
+	// gnu_postWrapperFunctions["__GI___libc_malloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_GLIBMALLOC_POST"), NULL);
 
 
 	getReturn["__GI___libc_malloc"] = true;

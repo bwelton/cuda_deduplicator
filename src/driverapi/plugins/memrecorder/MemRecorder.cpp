@@ -395,6 +395,16 @@ std::shared_ptr<MemTracker> DIOGENES_MEMORY_RECORDER;
 std::shared_ptr<StackKeyWriter> DIOGENES_MEM_KEYFILE;
 std::shared_ptr<WriteTotals> DIOG_WriteTotals;
 std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> DIOG_GLOBAL_SPS;
+extern "C" void * DIOGENES_REC_GLIBMALLOC(size_t size);
+extern "C" void DIOGENES_REC_GLIBFREE(void * addr);
+gotcha_wrappee_handle_t DIOGENES_libcmalloc_handle;
+gotcha_wrappee_handle_t DIOGENES_libcfree_handle;
+typeof(&DIOGENES_REC_GLIBMALLOC) DIOGENES_libcmalloc_wrapper;
+typeof(&DIOGENES_REC_GLIBFREE) DIOGENES_libcfree_wrapper;
+
+struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"__GI___libc_malloc", (void*)DIOGENES_REC_GLIBMALLOC,&DIOGENES_libcmalloc_handle},
+											   {"__libc_free", (void *)DIOGENES_REC_GLIBFREE, &DIOGENES_libcfree_handle}};
+
 
 void SetupDiogGlobalSPS() {
 	DIOG_GLOBAL_SPS.reset(new std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>());
@@ -430,6 +440,10 @@ void SetupDiogGlobalSPS() {
 		DIOGENES_MEMORY_RECORDER.reset(new MemTracker()); \
 		SetupDiogGlobalSPS();\
 		DIOGENES_MEM_KEYFILE.reset(new StackKeyWriter(fopen("DIOENES_MemRecUnknowns.bin","w"), static_cast<uint64_t>(DIOGENES_UNKNOWN_CTX_ID))); \
+		void * glibc = dlopen("libc.so.6", RTLD_LAZY); \
+		DIOGENES_libcmalloc_wrapper = (typeof(&DIOGENES_REC_GLIBMALLOC))dlsym(glibc,"__GI___libc_malloc"); \
+		DIOGENES_libcfree_wrapper = (typeof(&DIOGENES_REC_GLIBFREE))dlsym(glibc,"__libc_free"); \
+		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); \
 	} 
 
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_RECORDER.get()
@@ -655,14 +669,20 @@ extern "C" {
 	}
 
 
+	void * DIOGENES_REC_GLIBMALLOC(size_t size) {
+		return DIOGENES_libcmalloc_wrapper(size);
+	}
 
-	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
+	void DIOGENES_REC_GLIBFREE(void * addr) {
+		DIOGENES_libcfree_wrapper(addr);
+	}
+/*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
 		DIOGENSE_GLIB_MALLOC_SIZE = size;
 	}
 
 	void DIOGENES_REC_GLIBMALLOC_POST(uint64_t retAddress) {
 		POSTPROCESS_GNUMALLOC(retAddress,DIOGENSE_GLIB_MALLOC_SIZE);
-	}
+	}*/
 
 /*	void * DIOGENES_REC_MALLOCWrapper(size_t size)  {
 		int64_t cache = DIOGENES_CTX_ID;

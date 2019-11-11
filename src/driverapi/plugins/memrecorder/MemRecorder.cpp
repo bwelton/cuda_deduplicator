@@ -404,8 +404,8 @@ gotcha_wrappee_handle_t DIOGENES_libcfree_handle;
 typeof(&DIOGENES_REC_GLIBMALLOC) DIOGENES_libcmalloc_wrapper;
 typeof(&DIOGENES_REC_GLIBFREE) DIOGENES_libcfree_wrapper;
 
-struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"__GI___libc_malloc", (void*)DIOGENES_REC_GLIBMALLOC,&DIOGENES_libcmalloc_handle},
-											   {"__libc_free", (void *)DIOGENES_REC_GLIBFREE, &DIOGENES_libcfree_handle}};
+struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"malloc", (void*)DIOGENES_REC_GLIBMALLOC,&DIOGENES_libcmalloc_handle},
+											   {"free", (void *)DIOGENES_REC_GLIBFREE, &DIOGENES_libcfree_handle}};
 
 
 void SetupDiogGlobalSPS() {

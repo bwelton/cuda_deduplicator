@@ -437,15 +437,14 @@ void SetupDiogGlobalSPS() {
 	DIOG_GLOBAL_SPS->find(E_glibFree)->second.raFramePos = (uint64_t)E_glibFree;
 };
 
+
+
+
 #define PLUG_BUILD_FACTORY() \
 	if (DIOGENES_MEMORY_RECORDER.get() == NULL) { \
 		DIOGENES_MEMORY_RECORDER.reset(new MemTracker()); \
 		SetupDiogGlobalSPS();\
 		DIOGENES_MEM_KEYFILE.reset(new StackKeyWriter(fopen("DIOENES_MemRecUnknowns.bin","w"), static_cast<uint64_t>(DIOGENES_UNKNOWN_CTX_ID))); \
-		void * glibc = dlopen("libc.so.6", RTLD_LAZY); \
-		DIOGENES_libcmalloc_wrapper = (typeof(&DIOGENES_REC_GLIBMALLOC))dlsym(glibc,"__GI___libc_malloc"); \
-		DIOGENES_libcfree_wrapper = (typeof(&DIOGENES_REC_GLIBFREE))dlsym(glibc,"__libc_free"); \
-		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); \
 	} 
 
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_RECORDER.get()
@@ -462,6 +461,14 @@ thread_local volatile size_t DIOGENSE_GLIB_MALLOC_SIZE = 0;
 
 
 extern "C" {
+
+	void DIOGENES_SETUP_BINDINGS() {
+		PLUG_BUILD_FACTORY();
+		void * glibc = dlopen("libc.so.6", RTLD_LAZY); 
+		DIOGENES_libcmalloc_wrapper = (typeof(&DIOGENES_REC_GLIBMALLOC))dlsym(glibc,"__GI___libc_malloc"); 
+		DIOGENES_libcfree_wrapper = (typeof(&DIOGENES_REC_GLIBFREE))dlsym(glibc,"__libc_free"); 
+		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); 
+	}
 
 	void DIOGENES_REC_CudaMalloc(void ** mem, size_t size) {
 		DIOGENES_MALLOC_MEMLOCATION = mem;

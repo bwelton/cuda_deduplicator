@@ -87,6 +87,13 @@ BPatch_object * DyninstProcess::LoadLibrary(std::string library) {
 	return appProc->loadLibrary(original.c_str());
 }
 
+void DyninstProcess::CloseInsertionSet() {
+	if (_openInsertions) {
+		_aspace->finalizeInsertionSet(false);
+		_openInsertions = false;
+	}
+}
+
 bool DyninstProcess::RunUntilCompleation(std::string filename) {
 	int terminal_stdout, terminal_stderr;
 	/**

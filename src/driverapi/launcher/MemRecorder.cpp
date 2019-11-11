@@ -127,6 +127,15 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 
 		InsertPrePostCall(wrapVector[0], funcVector[0], true, 0,false);		
 	}
+	_proc->CloseInsertionSet();
+
+
+	std::vector<BPatch_function *> binderFunctions = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_SETUP_BINDINGS"), wrapper);
+	std::vector<BPatch_snippet*> recordArgs;
+	assert(binderFunctions.size() > 0);
+	BPatch_funcCallExpr entryExpr(*(binderFunctions[0]), recordArgs);
+	std::cerr << "[FixCudaProblems::InsertAnalysis] Fireing off one time call to setup API Capture Instrimentation\n";
+	dynamic_cast<BPatch_process*>(_proc->GetAddressSpace())->oneTimeCode(entryExpr);
 
 	// for (auto x : gnu_preWrapperFunctions) {
 	// 	auto funcName = x.first;

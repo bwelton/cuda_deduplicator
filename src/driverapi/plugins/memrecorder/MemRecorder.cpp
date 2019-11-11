@@ -507,7 +507,7 @@ extern "C" {
 				assert(n != local->end());
 			DIOGENES_CACHED_POINTS.push_back(n->second);
 			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(DIOGENES_CACHED_POINTS));
-			PLUG_FACTORY_PTR->CPUMallocData(hostptr, size, myID);
+			PLUG_FACTORY_PTR->CPUMallocData(addr, size, myID);
 			DIOGENES_ReleaseGlobalLock();
 		}
 	}

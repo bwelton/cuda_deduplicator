@@ -718,7 +718,7 @@ extern "C" {
 		
 		if (addr != NULL)
 			POSTPROCESS_GNUFREE((uint64_t)addr);
-		//DIOGENES_libcfree_wrapper(addr);
+		DIOGENES_libcfree_wrapper(addr);
 	}
 /*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
 		DIOGENSE_GLIB_MALLOC_SIZE = size;

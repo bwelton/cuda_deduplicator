@@ -458,7 +458,7 @@ thread_local bool DIOGENES_SEEN_RUNTIMECPY = false;
 thread_local bool DIOGENES_SEEN_RUNTIMEFREE = false;
 thread_local std::vector<StackPoint> DIOGENES_CACHED_POINTS;
 thread_local volatile size_t DIOGENSE_GLIB_MALLOC_SIZE = 0;
-
+thread_local volatile bool DIOGENES_IN_MEMORYFREE = false;
 
 extern "C" {
 
@@ -610,7 +610,9 @@ extern "C" {
 	}
 
 	void POSTPROCESS_FREE(uint64_t ptr, DIOG_IDNUMBER idType) {
-		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+
+		if (DIOGENES_IN_MEMORYFREE == false && DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			DIOGENES_IN_MEMORYFREE = true;
 			PLUG_BUILD_FACTORY();
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			DIOGENES_CACHED_POINTS.clear();
@@ -622,7 +624,8 @@ extern "C" {
 			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(DIOGENES_CACHED_POINTS));
 			PLUG_FACTORY_PTR->GPUFreeData(ptr, myID);
 			DIOGENES_ReleaseGlobalLock();
-		}		
+			DIOGENES_IN_MEMORYFREE = false;
+		}
 	}
 
 

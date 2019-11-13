@@ -96,11 +96,24 @@ extern "C" {
 	}
 
 
+	bool GET_FP_STACKWALK_NONSW(std::vector<StackPoint> & ret) {
+		void * local_stack[100];
+		int tmpretm = backtrace(local_stack, 100);
+		for (int i = 0; i < tmpretm; i++) {
+			StackPoint sp;
+			sp.libname = std::string("ABSOLUTE_ADDR_REQ_MUTATOR");
+			sp.libOffset = ((uint64_t*)local_stack)[i];
+			sp.raFramePos = sp.libOffset;
+			ret.push_back(sp);
+		}
+		return true;
+	}
+
 
 	bool GET_FP_STACKWALK(std::vector<StackPoint> & ret) {
 
-		void * local_stack[100];
-		int tmpretm = backtrace(local_stack, 100);
+		// void * local_stack[100];
+		// int tmpretm = backtrace(local_stack, 100);
 		INIT_FP_STACKWALKER();
 
 		std::vector<Frame> stackwalk;

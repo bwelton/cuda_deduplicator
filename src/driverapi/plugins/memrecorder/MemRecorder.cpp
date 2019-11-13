@@ -558,7 +558,7 @@ extern "C" {
 				std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 				std::vector<StackPoint> freeSiteStacks;
 				//DIOGENES_CACHED_POINTS.clear();
-				bool ret = GET_FP_STACKWALK(freeSiteStacks);
+				bool ret = GET_FP_STACKWALK_NONSW(freeSiteStacks);
 				auto n = local->find(E_glibFree);
 				if (n == local->end())
 					assert(n != local->end());

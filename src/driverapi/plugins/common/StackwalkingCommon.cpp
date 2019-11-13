@@ -11,6 +11,8 @@
 #include <memory>
 #include <execinfo.h>
 #include <unordered_map>
+#include <unistd.h>
+#include <dlfcn.h>
 
 #include "StackPoint.h"
 #include "framestepper.h"
@@ -96,6 +98,9 @@ extern "C" {
 
 
 	bool GET_FP_STACKWALK(std::vector<StackPoint> & ret) {
+
+		void * local_stack[100];
+		int ret = backtrace(local_stack, 100);
 		INIT_FP_STACKWALKER();
 
 		std::vector<Frame> stackwalk;

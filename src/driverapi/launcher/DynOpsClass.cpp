@@ -172,8 +172,10 @@ std::map<uint64_t, std::string> DynOpsClass::GetRealAddressAndLibName(BPatch_add
 	std::vector<BPatch_module*> modules;
 	img->getModules(modules);
 	for (auto i : modules){
-		ret[(uint64_t)(i->getBaseAddr())] = i->getObject()->pathName();
-	}
+		if (i->isSharedLib())
+			ret[(uint64_t)(i->getBaseAddr())] = i->getObject()->pathName();
+		else 
+	}		ret[0] = i->getObject()->pathName();
 	return ret;
 }
 

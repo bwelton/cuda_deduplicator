@@ -107,7 +107,7 @@ extern "C" {
 		for (auto frame : stackwalk) {
 			StackPoint sp;
 			uint64_t offset;
-			std::cerr << "RA/FP/SP: " << std::hex << frame.getRA() << ","  << frame.getFP() << "," << frame.getSP() << std::endl;
+			//std::cerr << "RA/FP/SP: " << std::hex << frame.getRA() << ","  << frame.getFP() << "," << frame.getSP() << std::endl;
 			frame.getLibOffset(lib, offset, stab);
 			sp.libname = lib;
 			sp.libOffset = offset;

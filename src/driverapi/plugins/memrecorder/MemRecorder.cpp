@@ -459,7 +459,7 @@ thread_local bool DIOGENES_SEEN_RUNTIMEFREE = false;
 thread_local std::vector<StackPoint> DIOGENES_CACHED_POINTS;
 thread_local volatile size_t DIOGENSE_GLIB_MALLOC_SIZE = 0;
 thread_local volatile bool DIOGENES_IN_MEMORYFREE = false;
-
+volatile bool SEEN_FIRST_CUDACALL = false;
 extern "C" {
 
 	void DIOGENES_SETUP_BINDINGS() {
@@ -502,6 +502,7 @@ extern "C" {
 	
 	void POSTPROCESS_MALLOC(uint64_t addr, size_t size, DIOG_IDNUMBER idType) {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			SEEN_FIRST_CUDACALL = true;
 			PLUG_BUILD_FACTORY();
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			DIOGENES_CACHED_POINTS.clear();
@@ -538,6 +539,8 @@ extern "C" {
 	}
 
 	void POSTPROCESS_GNUFREE(uint64_t addr) {
+		if (SEEN_FIRST_CUDACALL == false)
+			return;
 		if (DIOGENES_IN_MEMORYFREE == false){
 			DIOGENES_IN_MEMORYFREE = true;
 			if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
@@ -598,6 +601,7 @@ extern "C" {
 
 	void POSTPROCESS_COPY(uint64_t hostptr, DIOG_IDNUMBER idType) {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			SEEN_FIRST_CUDACALL = true;
 			PLUG_BUILD_FACTORY();
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			DIOGENES_CACHED_POINTS.clear();
@@ -615,6 +619,7 @@ extern "C" {
 
 	void POSTPROCESS_FREE(uint64_t ptr, DIOG_IDNUMBER idType) {
 		if (DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+			SEEN_FIRST_CUDACALL = true;
 			PLUG_BUILD_FACTORY();
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			DIOGENES_CACHED_POINTS.clear();

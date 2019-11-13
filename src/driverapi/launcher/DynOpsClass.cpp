@@ -175,7 +175,8 @@ std::map<uint64_t, std::string> DynOpsClass::GetRealAddressAndLibName(BPatch_add
 		if (i->isSharedLib())
 			ret[(uint64_t)(i->getBaseAddr())] = i->getObject()->pathName();
 		else 
-	}		ret[0] = i->getObject()->pathName();
+			ret[0] = i->getObject()->pathName();
+	}
 	return ret;
 }
 

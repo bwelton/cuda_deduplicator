@@ -542,6 +542,7 @@ extern "C" {
 			PLUG_BUILD_FACTORY();
 			//std::cout << "Processing Free at addr: " << std::hex << addr << std::endl;
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
+			std::vector<StackPoint> freeSiteStacks;
 			DIOGENES_CACHED_POINTS.clear();
 			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
 			auto n = local->find(E_glibFree);

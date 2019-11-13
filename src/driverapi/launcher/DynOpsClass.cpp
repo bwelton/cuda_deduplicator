@@ -166,6 +166,17 @@ void DynOpsClass::PowerFunctionCheck(BPatch_addressSpace * addr, BPatch_function
 
 }
 
+std::map<uint64_t, std::string> DynOpsClass::GetRealAddressAndLibName(BPatch_addressSpace * aspace) {
+	std::map<uint64_t, std::string> ret;
+	BPatch_image * img = aspace->getImage();
+	std::vector<BPatch_module*> modules;
+	img->getModules(modules);
+	for (auto i : modules){
+		ret[(uint64_t)(i->getBaseAddr())] = i->getObject()->pathName();
+	}
+	return ret;
+}
+
 std::vector<BPatch_function *> DynOpsClass::FindFuncsInObjectByName(BPatch_addressSpace * aspace, BPatch_object * obj, std::string name) {
 	std::vector<BPatch_function *> ret;
 	obj->findFunction(name, ret);

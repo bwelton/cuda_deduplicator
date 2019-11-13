@@ -83,6 +83,8 @@ public:
 
 	BPatch_function * FindFunctionInAddrList(BPatch_addressSpace * aspace, StackPoint & p);
 	void GenerateAddrList(BPatch_addressSpace * aspace);
+
+	std::map<uint64_t, std::string> GetRealAddressAndLibName(BPatch_addressSpace * aspace);
 private:
 	std::map<uint64_t, BPatch_function *> _powerFuncmap;
 	std::unordered_map<uint64_t, BPatch_function *> _addressList;

@@ -137,6 +137,8 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	std::cerr << "[FixCudaProblems::InsertAnalysis] Fireing off one time call to setup API Capture Instrimentation\n";
 	dynamic_cast<BPatch_process*>(_proc->GetAddressSpace())->oneTimeCode(entryExpr);
 
+	_absoluteAddrToPathname = ops->GetRealAddressAndLibName(_proc->GetAddressSpace());
+
 	// for (auto x : gnu_preWrapperFunctions) {
 	// 	auto funcName = x.first;
 	// 	auto funcVector = x.second;
@@ -335,7 +337,42 @@ void MemRecorder::InsertPrePostCall(BPatch_function * origFunction, BPatch_funct
 	assert(_proc->GetAddressSpace()->insertSnippet(recordAddrCall,*locationEntry) != NULL);
 }
 
+void MemRecorder::FixMemDataRecs() {
+	// Fix up missing stack entry information
+	std::map<uint64_t, std::vector<StackPoint> > m;
+	{
+		StackKeyReader r(fopen("DIOENES_MemRecUnknowns.bin","rb"));
+		m = r.ReadStacks();
+	}
+	for (auto & i : m) {
+		for (auto & entry : i.second) {
+			if (entry.libname.find("ABSOLUTE_ADDR_REQ_MUTATOR") != std::string::npos) {
+				if (_absoluteAddrToPathname.size() == 0){
+					std::cerr << "No offset to pathnames present, not performing correction for ficmemdatarecs" << std::endl;
+					return;
+				}
+				auto it = _absoluteAddrToPathname.find(entry.raFramePos);
+				if (it != _absoluteAddrToPathname.begin())
+					it = std::prev(it);
+				if (entry.raFramePos - it->first > entry.raFramePos){
+					std::cerr << "COULD NOT WRITE OUT ENTRY LIBOFFSET!" << std::endl;
+					continue;
+				}
+				entry.libOffset = entry.raFramePos - it->first;
+				entry.libname = it->second;
+			}
+		}
+	}
+
+	StackKeyWriter w(fopen("DIOENES_MemRecUnknowns.bin","wb"));
+	for(auto i : m){
+		w.InsertStack(i.first, i.second);
+	}
+}
+
+
 CallTransPtr MemRecorder::PostProcessing() {
+	FixMemDataRecs();
 	MemTransVec memVec;
 	GPUMallocVec gMallocVec;
 	CPUMallocVec cMallocVec;

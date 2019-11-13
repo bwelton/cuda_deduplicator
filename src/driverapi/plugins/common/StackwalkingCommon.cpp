@@ -100,7 +100,7 @@ extern "C" {
 	bool GET_FP_STACKWALK(std::vector<StackPoint> & ret) {
 
 		void * local_stack[100];
-		int ret = backtrace(local_stack, 100);
+		int tmpretm = backtrace(local_stack, 100);
 		INIT_FP_STACKWALKER();
 
 		std::vector<Frame> stackwalk;

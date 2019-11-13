@@ -523,7 +523,6 @@ extern "C" {
 	void POSTPROCESS_GNUMALLOC(uint64_t addr, size_t size) {
 		if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 			PLUG_BUILD_FACTORY();
-			std::vector<
 			//std::cout << "Processing Malloc at addr: " << std::hex << addr << " size of " << std::dec << size << std::endl;
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			DIOGENES_CACHED_POINTS.clear();
@@ -543,7 +542,6 @@ extern "C" {
 			PLUG_BUILD_FACTORY();
 			//std::cout << "Processing Free at addr: " << std::hex << addr << std::endl;
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
-			std::vector<StackPoint> freeStackPoints;
 			DIOGENES_CACHED_POINTS.clear();
 			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
 			auto n = local->find(E_glibFree);
@@ -710,6 +708,7 @@ extern "C" {
 		DIOGENES_libcfree_wrapper(addr);
 		if (addr != NULL)
 			POSTPROCESS_GNUFREE((uint64_t)addr);
+
 	}
 /*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
 		DIOGENSE_GLIB_MALLOC_SIZE = size;

@@ -548,8 +548,8 @@ extern "C" {
 	}
 
 	void POSTPROCESS_GNUFREE(uint64_t addr) {
-		if (SEEN_FIRST_CUDACALL == false)
-			return;
+		// if (SEEN_FIRST_CUDACALL == false)
+		// 	return;
 		if (DIOGENES_IN_MEMORYFREE == false){
 			DIOGENES_IN_MEMORYFREE = true;
 			if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {

@@ -543,13 +543,13 @@ extern "C" {
 			//std::cout << "Processing Free at addr: " << std::hex << addr << std::endl;
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 			std::vector<StackPoint> freeSiteStacks;
-			DIOGENES_CACHED_POINTS.clear();
-			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
+			//DIOGENES_CACHED_POINTS.clear();
+			bool ret = GET_FP_STACKWALK(freeSiteStacks);
 			auto n = local->find(E_glibFree);
 			if (n == local->end())
 				assert(n != local->end());
-			DIOGENES_CACHED_POINTS.push_back(n->second);
-			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(DIOGENES_CACHED_POINTS));
+			freeSiteStacks.push_back(n->second);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
 			PLUG_FACTORY_PTR->CPUFreeData(addr, myID);
 			DIOGENES_ReleaseGlobalLock();
 		}

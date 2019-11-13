@@ -460,6 +460,7 @@ thread_local bool DIOGENES_SEEN_RUNTIMEFREE = false;
 thread_local std::vector<StackPoint> DIOGENES_CACHED_POINTS;
 thread_local volatile size_t DIOGENSE_GLIB_MALLOC_SIZE = 0;
 thread_local volatile bool DIOGENES_IN_MEMORYFREE = false;
+thread_local volatile bool DIOGENSE_IN_MEMORYALLOC = false;
 volatile bool SEEN_FIRST_CUDACALL = false;
 extern "C" {
 
@@ -531,19 +532,23 @@ extern "C" {
 
 
 	void POSTPROCESS_GNUMALLOC(uint64_t addr, size_t size) {
-		if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
-			PLUG_BUILD_FACTORY();
-			//std::cout << "Processing Malloc at addr: " << std::hex << addr << " size of " << std::dec << size << std::endl;
-			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
-			std::vector<StackPoint> freeSiteStacks;
-			bool ret = GET_FP_STACKWALK(freeSiteStacks);
-			auto n = local->find(E_glibMalloc);
-			if (n == local->end())
-				assert(n != local->end());
-			freeSiteStacks.push_back(n->second);
-			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
-			PLUG_FACTORY_PTR->CPUMallocData(addr, size, myID);
-			DIOGENES_ReleaseGlobalLock();
+		if (DIOGENSE_IN_MEMORYALLOC == false) {
+			DIOGENSE_IN_MEMORYALLOC = true;
+			if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
+				PLUG_BUILD_FACTORY();
+				//std::cout << "Processing Malloc at addr: " << std::hex << addr << " size of " << std::dec << size << std::endl;
+				std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
+				std::vector<StackPoint> freeSiteStacks;
+				bool ret = GET_FP_STACKWALK_NONSW(freeSiteStacks);
+				auto n = local->find(E_glibMalloc);
+				if (n == local->end())
+					assert(n != local->end());
+				freeSiteStacks.push_back(n->second);
+				int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
+				PLUG_FACTORY_PTR->CPUMallocData(addr, size, myID);
+				DIOGENES_ReleaseGlobalLock();
+			}
+			DIOGENSE_IN_MEMORYALLOC = false;
 		}
 	}
 

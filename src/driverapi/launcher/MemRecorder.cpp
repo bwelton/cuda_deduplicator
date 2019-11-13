@@ -138,7 +138,8 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	dynamic_cast<BPatch_process*>(_proc->GetAddressSpace())->oneTimeCode(entryExpr);
 
 	_absoluteAddrToPathname = ops->GetRealAddressAndLibName(_proc->GetAddressSpace());
-
+	for (auto i : _absoluteAddrToPathname)
+		std::cerr << "OFFSET: " << std::dec << i.first << "//" << std::hex << i.first << " " << i.second << std::endl;
 	// for (auto x : gnu_preWrapperFunctions) {
 	// 	auto funcName = x.first;
 	// 	auto funcVector = x.second;

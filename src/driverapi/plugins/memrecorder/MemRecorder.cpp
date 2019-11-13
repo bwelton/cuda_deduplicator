@@ -445,6 +445,7 @@ void SetupDiogGlobalSPS() {
 		DIOGENES_MEMORY_RECORDER.reset(new MemTracker()); \
 		SetupDiogGlobalSPS();\
 		DIOGENES_MEM_KEYFILE.reset(new StackKeyWriter(fopen("DIOENES_MemRecUnknowns.bin","w"), static_cast<uint64_t>(DIOGENES_UNKNOWN_CTX_ID))); \
+		DIOGENES_SETUP_GOTCHA();\
 	} 
 
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_RECORDER.get()
@@ -463,12 +464,20 @@ volatile bool SEEN_FIRST_CUDACALL = false;
 extern "C" {
 
 	void DIOGENES_SETUP_BINDINGS() {
-		PLUG_BUILD_FACTORY();
+		// PLUG_BUILD_FACTORY();
+		// void * glibc = dlopen("libc.so.6", RTLD_LAZY); 
+		std::cerr << "[DIOGENES_SETUP_BINDINGS] In Original Wrapping for libc_malloc and libc_free" << std::endl;
+		// DIOGENES_libcmalloc_wrapper = (typeof(&DIOGENES_REC_GLIBMALLOC))dlsym(glibc,"malloc"); 
+		// DIOGENES_libcfree_wrapper = (typeof(&DIOGENES_REC_GLIBFREE))dlsym(glibc,"free"); 
+		// gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); 
+	}
+
+	void DIOGENES_SETUP_GOTCHA() {
 		void * glibc = dlopen("libc.so.6", RTLD_LAZY); 
 		std::cerr << "[DIOGENES_SETUP_BINDINGS] Wrapping libc_malloc and libc_free" << std::endl;
 		DIOGENES_libcmalloc_wrapper = (typeof(&DIOGENES_REC_GLIBMALLOC))dlsym(glibc,"malloc"); 
 		DIOGENES_libcfree_wrapper = (typeof(&DIOGENES_REC_GLIBFREE))dlsym(glibc,"free"); 
-		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); 
+		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); 		
 	}
 
 	void DIOGENES_REC_CudaMalloc(void ** mem, size_t size) {

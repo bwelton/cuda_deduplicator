@@ -525,13 +525,13 @@ extern "C" {
 			PLUG_BUILD_FACTORY();
 			//std::cout << "Processing Malloc at addr: " << std::hex << addr << " size of " << std::dec << size << std::endl;
 			std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
-			DIOGENES_CACHED_POINTS.clear();
-			bool ret = GET_FP_STACKWALK(DIOGENES_CACHED_POINTS);
+			std::vector<StackPoint> freeSiteStacks;
+			bool ret = GET_FP_STACKWALK(freeSiteStacks);
 			auto n = local->find(E_glibMalloc);
 			if (n == local->end())
 				assert(n != local->end());
-			DIOGENES_CACHED_POINTS.push_back(n->second);
-			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(DIOGENES_CACHED_POINTS));
+			freeSiteStacks.push_back(n->second);
+			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
 			PLUG_FACTORY_PTR->CPUMallocData(addr, size, myID);
 			DIOGENES_ReleaseGlobalLock();
 		}
@@ -706,10 +706,10 @@ extern "C" {
 	}
 
 	void DIOGENES_REC_GLIBFREE(void* addr) {
-		DIOGENES_libcfree_wrapper(addr);
+		
 		if (addr != NULL)
 			POSTPROCESS_GNUFREE((uint64_t)addr);
-
+		//DIOGENES_libcfree_wrapper(addr);
 	}
 /*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
 		DIOGENSE_GLIB_MALLOC_SIZE = size;

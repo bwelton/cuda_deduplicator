@@ -93,7 +93,7 @@ extern "C" {
 		local_walker = Walker::newWalker();
 	}
 
-	
+
 
 	bool GET_FP_STACKWALK(std::vector<StackPoint> & ret) {
 		INIT_FP_STACKWALKER();
@@ -107,6 +107,7 @@ extern "C" {
 		for (auto frame : stackwalk) {
 			StackPoint sp;
 			uint64_t offset;
+			std::cerr << "RA/FP/SP: " << std::hex << frame.getRA() << ","  << frame.getFP() << "," << frame.getSP() << std::endl;
 			frame.getLibOffset(lib, offset, stab);
 			sp.libname = lib;
 			sp.libOffset = offset;

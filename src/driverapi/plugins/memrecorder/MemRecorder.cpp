@@ -705,9 +705,9 @@ extern "C" {
 	}
 
 	void DIOGENES_REC_GLIBFREE(void* addr) {
-		//if (addr != NULL)
-		//	POSTPROCESS_GNUFREE((uint64_t)addr);
 		DIOGENES_libcfree_wrapper(addr);
+		if (addr != NULL)
+			POSTPROCESS_GNUFREE((uint64_t)addr);
 	}
 /*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
 		DIOGENSE_GLIB_MALLOC_SIZE = size;

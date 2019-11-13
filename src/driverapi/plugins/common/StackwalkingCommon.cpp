@@ -106,7 +106,8 @@ extern "C" {
 			StackPoint sp;
 			uint64_t offset;
 			std::cerr << "Frame RA/SP/FP: " << frame.getRA() << "," << frame.getSP() << "," << frame.getFP() << "," << frame.isTopFrame() << "," << frame.isBottomFrame() << std::endl;
-
+			if (frame.getRA() == 17592186093164)
+				break;
 			frame.getLibOffset(lib, offset, stab);
 			sp.libname = lib;
 			sp.libOffset = offset;

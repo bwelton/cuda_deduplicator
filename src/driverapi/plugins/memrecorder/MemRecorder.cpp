@@ -532,19 +532,33 @@ extern "C" {
 
 
 	void POSTPROCESS_GNUMALLOC(uint64_t addr, size_t size) {
-		if (DIOGENSE_IN_MEMORYALLOC == false) {
+		if (DIOGENSE_IN_MEMORYALLOC == false && DIOGENES_IN_MEMORYFREE == false) {
 			DIOGENSE_IN_MEMORYALLOC = true;
 			if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 				PLUG_BUILD_FACTORY();
 				//std::cout << "Processing Malloc at addr: " << std::hex << addr << " size of " << std::dec << size << std::endl;
 				std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 				std::vector<StackPoint> freeSiteStacks;
-				bool ret = GET_FP_STACKWALK_NONSW(freeSiteStacks);
-				auto n = local->find(E_glibMalloc);
-				if (n == local->end())
-					assert(n != local->end());
-				freeSiteStacks.push_back(n->second);
-				int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
+
+				int64_t myID = GET_FP_STACKWALK_FAST_NONSW(freeSiteStacks);
+				if (myID <= 1) {
+					auto n = local->find(E_glibMalloc);
+					if (n == local->end())
+						assert(n != local->end());
+					freeSiteStacks.push_back(n->second);
+					myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
+					freeSiteStacks.pop_back();
+					GET_FP_REGISTER_ID(myID, freeSiteStacks);
+					//freeSiteStacks.push_back(n->second);
+				}
+				//bool ret = GET_FP_STACKWALK_NONSW(freeSiteStacks);
+
+				// bool ret = GET_FP_STACKWALK_NONSW(freeSiteStacks);
+				// auto n = local->find(E_glibMalloc);
+				// if (n == local->end())
+				// 	assert(n != local->end());
+				// freeSiteStacks.push_back(n->second);
+				// int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
 				PLUG_FACTORY_PTR->CPUMallocData(addr, size, myID);
 				DIOGENES_ReleaseGlobalLock();
 			}
@@ -555,7 +569,7 @@ extern "C" {
 	void POSTPROCESS_GNUFREE(uint64_t addr) {
 		// if (SEEN_FIRST_CUDACALL == false)
 		// 	return;
-		if (DIOGENES_IN_MEMORYFREE == false){
+		if (DIOGENES_IN_MEMORYFREE == false && DIOGENSE_IN_MEMORYALLOC == false){
 			DIOGENES_IN_MEMORYFREE = true;
 			if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 				PLUG_BUILD_FACTORY();
@@ -563,12 +577,25 @@ extern "C" {
 				std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> local = DIOG_GLOBAL_SPS;
 				std::vector<StackPoint> freeSiteStacks;
 				//DIOGENES_CACHED_POINTS.clear();
-				bool ret = GET_FP_STACKWALK_NONSW(freeSiteStacks);
-				auto n = local->find(E_glibFree);
-				if (n == local->end())
-					assert(n != local->end());
-				freeSiteStacks.push_back(n->second);
-				int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
+
+				int64_t myID = GET_FP_STACKWALK_FAST_NONSW(freeSiteStacks);
+				if (myID <= 1) {
+					auto n = local->find(E_glibFree);
+					if (n == local->end())
+						assert(n != local->end());
+					freeSiteStacks.push_back(n->second);
+					myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
+					freeSiteStacks.pop_back();
+					GET_FP_REGISTER_ID(myID, freeSiteStacks);
+					//freeSiteStacks.push_back(n->second);
+				}
+
+				// bool ret = GET_FP_STACKWALK_NONSW(freeSiteStacks);
+				// auto n = local->find(E_glibFree);
+				// if (n == local->end())
+				// 	assert(n != local->end());
+				// freeSiteStacks.push_back(n->second);
+				// int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(freeSiteStacks));
 				PLUG_FACTORY_PTR->CPUFreeData(addr, myID);
 				DIOGENES_ReleaseGlobalLock();
 			}
@@ -732,7 +759,8 @@ extern "C" {
 		
 		if (addr != NULL)
 			POSTPROCESS_GNUFREE((uint64_t)addr);
-		DIOGENES_libcfree_wrapper(addr);
+		if (DIOGENES_TEAR_DOWN == false)
+			DIOGENES_libcfree_wrapper(addr);
 	}
 /*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
 		DIOGENSE_GLIB_MALLOC_SIZE = size;

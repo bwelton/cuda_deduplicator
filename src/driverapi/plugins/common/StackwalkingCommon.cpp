@@ -68,17 +68,17 @@ struct SWRecursiveMap{
 		if (_map.find(val) == _map.end()) {
 			_map[val] = new SWRecursiveMap();
 		}
-		_map[val]->Insert(input, pos+1);
+		_map[val]->Insert(input, pos+1,id);
 	};
 
-	bool Lookup(std::vector<uint64_t> & input, int pos) {
-		if(input.size() <= pos)
-			return true;
-		uint64_t val = input[pos];
-		if(_map.find(val) == _map.end())
-			return false;
-		return _map[val]->Lookup(input,pos+1);
-	};
+	// bool Lookup(std::vector<uint64_t> & input, int pos) {
+	// 	if(input.size() <= pos)
+	// 		return true;
+	// 	uint64_t val = input[pos];
+	// 	if(_map.find(val) == _map.end())
+	// 		return false;
+	// 	return _map[val]->Lookup(input,pos+1);
+	// };
 
 	int64_t IterativeLookup(uint64_t * input, int size, int pos) {
 		if (STACKWALK_SHUTDOWN_MODE == true)

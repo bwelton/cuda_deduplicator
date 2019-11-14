@@ -272,6 +272,12 @@ struct StackKeyWriter {
 	~StackKeyWriter() {
 		fclose(out);
 	}
+
+	uint64_t ReserveNextID() {
+		uint64_t ret = curPos;
+		curPos++;
+		return ret;
+	}
 	uint64_t InsertStackFastCheck(std::vector<StackPoint> & points) {
 		uint64_t hash = _fastHash.FindIfExists(points, 0);
 		if (hash == 0) {
@@ -298,6 +304,7 @@ struct StackKeyWriter {
 		fflush(out);
 		return hash;
 	};
+
 
 	uint64_t InsertStack(std::vector<StackPoint> & points){
 		uint64_t hash = h.HashStack(points);

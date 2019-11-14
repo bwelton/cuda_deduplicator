@@ -352,7 +352,7 @@ void MemRecorder::FixMemDataRecs() {
 					std::cerr << "No offset to pathnames present, not performing correction for ficmemdatarecs" << std::endl;
 					return;
 				}
-				auto it = _absoluteAddrToPathname.find(entry.libOffset);
+				auto it = _absoluteAddrToPathname.lower_bound(entry.libOffset);
 				if (it != _absoluteAddrToPathname.begin())
 					it = std::prev(it);
 				if (entry.libOffset - it->first > entry.libOffset){

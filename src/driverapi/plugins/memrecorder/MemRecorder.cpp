@@ -441,7 +441,8 @@ void SetupDiogGlobalSPS() {
 
 
 #define PLUG_BUILD_FACTORY() \
-	if (DIOGENES_MEMORY_RECORDER.get() == NULL) { \
+	if (DIOGENES_MEMORY_RECORDER.get() == NULL && DIOGENES_TEAR_DOWN == false) { \
+		atexit(DIOGENES_exitDestroyer); \
 		DIOGENES_MEMORY_RECORDER.reset(new MemTracker()); \
 		SetupDiogGlobalSPS();\
 		DIOGENES_MEM_KEYFILE.reset(new StackKeyWriter(fopen("DIOENES_MemRecUnknowns.bin","w"), static_cast<uint64_t>(DIOGENES_UNKNOWN_CTX_ID))); \
@@ -463,6 +464,11 @@ thread_local volatile bool DIOGENES_IN_MEMORYFREE = false;
 thread_local volatile bool DIOGENSE_IN_MEMORYALLOC = false;
 volatile bool SEEN_FIRST_CUDACALL = false;
 extern "C" {
+
+	void DIOGENES_exitDestroyer() {
+		DIOGENES_TEAR_DOWN = true;
+		DIOGENES_GetGlobalLock();
+	}
 
 	void DIOGENES_SETUP_BINDINGS() {
 		// PLUG_BUILD_FACTORY();
@@ -532,7 +538,7 @@ extern "C" {
 
 
 	void POSTPROCESS_GNUMALLOC(uint64_t addr, size_t size) {
-		if (DIOGENSE_IN_MEMORYALLOC == false && DIOGENES_IN_MEMORYFREE == false) {
+		if (DIOGENSE_IN_MEMORYALLOC == false && DIOGENES_IN_MEMORYFREE == false && DIOGENES_TEAR_DOWN == false) {
 			DIOGENSE_IN_MEMORYALLOC = true;
 			if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 				PLUG_BUILD_FACTORY();
@@ -569,7 +575,7 @@ extern "C" {
 	void POSTPROCESS_GNUFREE(uint64_t addr) {
 		// if (SEEN_FIRST_CUDACALL == false)
 		// 	return;
-		if (DIOGENES_IN_MEMORYFREE == false && DIOGENSE_IN_MEMORYALLOC == false){
+		if (DIOGENES_IN_MEMORYFREE == false && DIOGENSE_IN_MEMORYALLOC == false && DIOGENES_TEAR_DOWN == false){
 			DIOGENES_IN_MEMORYFREE = true;
 			if(DIOGENES_GetGlobalLock() && DIOGENES_TEAR_DOWN == false) {
 				PLUG_BUILD_FACTORY();
@@ -751,7 +757,8 @@ extern "C" {
 
 	void * DIOGENES_REC_GLIBMALLOC(size_t size) {
 		void * addr =  DIOGENES_libcmalloc_wrapper(size);
-		POSTPROCESS_GNUMALLOC((uint64_t)addr, size);
+		if (DIOGENES_TEAR_DOWN == false)
+			POSTPROCESS_GNUMALLOC((uint64_t)addr, size);
 		return addr;
 	}
 

@@ -158,5 +158,11 @@ struct MemRecDataFile {
 				exit(-1); 
 			}
 		}
+		// ret->allocSite = ptr[0];
+		// ret->copyID = ptr[1];
+		// ret->count = ptr[2];
+		// Memory Transfer Dump
+		for (auto i : MemTrans)
+			std::cerr << "[DEBUG_MemRecDataFile_Raw] " << "ID = " << i->copyID << " COUNT = " << i->count << " AllocSite = " << i->allocSite << std::endl;
 	};
 };

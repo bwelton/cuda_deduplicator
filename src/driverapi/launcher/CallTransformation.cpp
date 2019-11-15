@@ -204,7 +204,14 @@ void CallTransformation::BuildRequiredSet() {
 				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
 					mn.TranslateStackRecords(MR[n->id]);
 				alreadyTranslated.insert(n->id);
-				outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][MR[n->id].size()-2])  << std::endl;
+				for (int index = MR[n->id].size() - 2; index >= 0; index++) {
+					if (MR[n->id][index].libname.find("libstdc++") == std::string::npos){
+						outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][MR[n->id].size()-2])  << std::endl;
+						break;
+					}
+				}
+
+				//outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][MR[n->id].size()-2])  << std::endl;
 				for (auto k : n->children) {
 					if (k->id == -1)
 						continue;

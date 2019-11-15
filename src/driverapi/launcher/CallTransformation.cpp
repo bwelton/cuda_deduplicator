@@ -236,7 +236,7 @@ void CallTransformation::BuildRequiredSet() {
 		if (alreadyTranslated.find(i.first) == alreadyTranslated.end())
 			mn.TranslateStackRecords(i.second);		
 		if (!(traceDep.IsInSet(i.first))) {
-			outRemedies << "Remove Unnecessary Synchronization at " << GetFileLineString(mn.back())  << std::endl;
+			outRemedies << "Remove Unnecessary Synchronization at " << GetFileLineString(i.second.back())  << std::endl;
 		}
 	}
 

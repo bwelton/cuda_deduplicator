@@ -247,7 +247,12 @@ void CallTransformation::BuildRequiredSet() {
 					continue;
 				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
 					mn.TranslateStackRecords(MR[n->id]);
-				outRemedies << "\t\tGPU Malloc Site called at " <<  GetFileLineString(MR[n->id].back())  << std::endl;
+				for (int index = MR[n->id].size() -1; index >= 0; index--){
+					if (MR[n->id][index].libname.find("cudart") == std::string::npos){
+						outRemedies << "\t\tGPU Malloc Site called at " <<  GetFileLineString(MR[n->id][index])  << std::endl;
+						break;
+					}
+				}
 			}
 		}
 	}

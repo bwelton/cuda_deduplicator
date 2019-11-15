@@ -236,6 +236,8 @@ void CallTransformation::BuildRequiredSet() {
 			}
 		} else {
 			FreeSitePtr msite = _gpuGraph.GetFreeSite(matchSet[i]);
+			if (msite == NULL)
+				continue;
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);
 			outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;

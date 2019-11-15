@@ -240,6 +240,7 @@ void CallTransformation::BuildRequiredSet() {
 		}
 	}
 
+	std::cout << outRemedies.str() << std::endl;
 
 	// 	// LSStackGraphVec sgraph;
 // 	// std::map<uint64_t, int> _mapToSgraph;

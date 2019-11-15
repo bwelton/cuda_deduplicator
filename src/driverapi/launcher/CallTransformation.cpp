@@ -229,7 +229,7 @@ void CallTransformation::BuildRequiredSet() {
 
 
 
-					outRemedies << "\t\t\tCPU memory freed at " <<  GetFileLineString(MR[k->id].back())  << std::endl;
+					//outRemedies << "\t\t\tCPU memory freed at " <<  GetFileLineString(MR[k->id].back())  << std::endl;
 				}
 			}
 		} else {

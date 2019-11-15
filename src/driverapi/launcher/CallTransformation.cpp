@@ -1,4 +1,5 @@
 #include "CallTransformation.h"
+#include "PerformanceModel.h"
 
 CallTransformation::CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuVec, 
 	MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints, std::unordered_map<std::string, StackPoint> & wrapperReplacements) : _gpuVec(gpuVec), _cpuVec(cpuVec), _memVec(memVec), _idPoints(idPoints), _wrapperReplacements(wrapperReplacements) {
@@ -68,6 +69,15 @@ std::map<uint64_t, uint64_t> CallTransformation::MatchLStoMR(std::map<uint64_t, 
 
 }
 
+std::string GetFileLineString(StackPoint & p) {
+	std::stringstream ret;
+	if(p.lineNum > 0 && fileName != std::string("")) {
+		ret << "Line " << std::dec << p.lineNum << " in " << fileName;
+	} else {
+		ret << "Offset " << p.libOffset << " in " << libname;
+	}
+	return ret.str();
+}
 
 void CallTransformation::BuildRequiredSet() {
 	StackKeyReader r(fopen("LS_stackkey.txt","rb"));
@@ -163,13 +173,29 @@ void CallTransformation::BuildRequiredSet() {
 		std::cerr << "[CallTransformation::BuildRequiredSet] Following synchronization is NOT required: " << typeMap[matchSet[i]] <<  " at LS stack = " << matchSet[i] << std::endl;
 	}
 
-
 	StackKeyWriter outputKeys(fopen("AC_AutoCorrectStacks.txt", "wb"));
 
 	for (auto i : notRequired) {
 		MR[matchSet[i]].pop_back();
 		outputKeys.InsertStack(matchSet[i], MR[matchSet[i]]);
 	}
+
+
+	// Outpur list of remedies
+	PerformanceModel mn;
+	std::stringstream outRemedies;
+	for (auto i : notRequired) {	
+		std::string type = typeMap[matchSet[i]];
+		if (type.find("cuMemcpy") != std::string::npos || type.find("cudaMemcpy") != std::string::npos) {
+			TransferPointPtr trans = _transGraph.ReturnTransfer(i);
+			MallocSiteSet memSiteSet = trans->GetMallocSites();
+			mn.TranslateStackRecords(MR[matchSet[i]]);
+
+			outRemedies << "[SYNC] " << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
+			
+		}
+	}
+
 
 	// 	// LSStackGraphVec sgraph;
 // 	// std::map<uint64_t, int> _mapToSgraph;

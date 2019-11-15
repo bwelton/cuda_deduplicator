@@ -313,6 +313,13 @@ struct TransferGraph {
 		emptyMalloc.reset(new MallocSite(-1,p));
 	}
 
+
+	TransferPointPtr ReturnTransfer(int64_t id) {
+		if (transfers.find(id) != transfers.end())
+			return transfers[id];
+		return NULL;
+	};
+	
 	void AddTransfer(int64_t id, int64_t mallocID, int64_t count, MemGraph & cpuGraph, std::map<int64_t, StackPoint> & idPoints) {
 		MallocPtr tmp = cpuGraph.GetMallocSite(mallocID);
 		TransferPointPtr tpoint;
@@ -566,6 +573,10 @@ struct RemovePoints {
 
 	StackPointVec mallocReplacements;
 	StackPointVec freeReplacements;
+
+
+
+
 
 	void Serialize() {
 		StackKeyWriter out(fopen("AC_RemovePoints.txt","w"));

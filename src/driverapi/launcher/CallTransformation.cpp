@@ -188,12 +188,12 @@ void CallTransformation::BuildRequiredSet() {
 	for (auto i : notRequired) {	
 		std::string type = typeMap[matchSet[i]];
 		if (type.find("cuMemcpy") != std::string::npos || type.find("cudaMemcpy") != std::string::npos) {
-			TransferPointPtr trans = _transGraph.ReturnTransfer(i);
+			TransferPointPtr trans = _transGraph.ReturnTransfer(matchSet[i]);
 			MallocSiteSet memSiteSet = trans->GetMallocSites();
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);
 			alreadyTranslated.insert(matchSet[i]);
-			outRemedies << "[SYNC] " << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
+			outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
 			if (type.find("Async") != std::string::npos)
 				outRemedies << "\tProblem: Unnecessary synchronization caused by non-pinned CPU memory in transfer (use cudaMallocHost)\n";
 			else 
@@ -209,11 +209,34 @@ void CallTransformation::BuildRequiredSet() {
 					if (k->id == -1)
 						continue;
 					if (alreadyTranslated.find(k->id) == alreadyTranslated.end())
-						mn.TranslateStackRecords(k->id);
+						mn.TranslateStackRecords(MR[k->id]);
 					alreadyTranslated.insert(k->id);
-					outRemedies << "\t\t\tAssociated free called at " <<  GetFileLineString(MR[n->id].back())  << std::endl;
+					outRemedies << "\t\t\tAssociated free called at " <<  GetFileLineString(MR[k->id].back())  << std::endl;
 				}
 			}
+		} else {
+			FreeSitePtr msite = _gpuGraph.GetFreeSite(matchSet[i]);
+			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
+				mn.TranslateStackRecords(MR[matchSet[i]]);
+			outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
+			outRemedies << "\tProblem: Unnecessary Synchronization at CudaFree. Consider using a custom memory allocator" << std::endl;
+			for(auto n : msite->parents) {
+				if (n->id == -1)
+					continue;
+				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
+					mn.TranslateStackRecords(MR[n->id]);
+				outRemedies << "\t\tGPU Malloc Site called at " <<  GetFileLineString(MR[n->id].back())  << std::endl;
+			}
+		}
+	}
+	// Everything else
+	for (auto & i : LS) {
+		if (matchSet.find(i.first) != matchSet.end()) 
+			continue;
+		if (alreadyTranslated.find(i.first) == alreadyTranslated.end())
+			mn.TranslateStackRecords(i.second);		
+		if (!(traceDep.IsInSet(i.first))) {
+			outRemedies << "Remove Unnecessary Synchronization at " << GetFileLineString(mn.back())  << std::endl;
 		}
 	}
 
@@ -332,7 +355,7 @@ void CallTransformation::BuildGraph() {
 	auto MR = ReadMemRecorderKeys(typeMap);
 	std::map<int64_t, StackPoint> idPointKeys;
 	for (auto i : MR) {
-		idPointKeys[int64_t(i.first)] = i.second[i.size() - 2];
+		idPointKeys[int64_t(i.first)] = i.second.back();
 	}
 	BuildMemoryGraph(_cpuVec,idPointKeys, _cpuGraph);
 	BuildMemoryGraph(_gpuVec,idPointKeys, _gpuGraph);

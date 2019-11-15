@@ -204,14 +204,14 @@ void CallTransformation::BuildRequiredSet() {
 				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
 					mn.TranslateStackRecords(MR[n->id]);
 				alreadyTranslated.insert(n->id);
-				outRemedies << "\t\tCPU Malloc Site called at " <<  GetFileLineString(MR[n->id].back())  << std::endl;
+				outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][MR[n->id].size()-2])  << std::endl;
 				for (auto k : n->children) {
 					if (k->id == -1)
 						continue;
 					if (alreadyTranslated.find(k->id) == alreadyTranslated.end())
 						mn.TranslateStackRecords(MR[k->id]);
 					alreadyTranslated.insert(k->id);
-					outRemedies << "\t\t\tAssociated free called at " <<  GetFileLineString(MR[k->id].back())  << std::endl;
+					outRemedies << "\t\t\tCPU memory freed at " <<  GetFileLineString(MR[k->id].back())  << std::endl;
 				}
 			}
 		} else {

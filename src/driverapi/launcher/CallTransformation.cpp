@@ -184,15 +184,36 @@ void CallTransformation::BuildRequiredSet() {
 	// Outpur list of remedies
 	PerformanceModel mn;
 	std::stringstream outRemedies;
+	std::set<int64_t> alreadyTranslated;
 	for (auto i : notRequired) {	
 		std::string type = typeMap[matchSet[i]];
 		if (type.find("cuMemcpy") != std::string::npos || type.find("cudaMemcpy") != std::string::npos) {
 			TransferPointPtr trans = _transGraph.ReturnTransfer(i);
 			MallocSiteSet memSiteSet = trans->GetMallocSites();
-			mn.TranslateStackRecords(MR[matchSet[i]]);
-
+			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
+				mn.TranslateStackRecords(MR[matchSet[i]]);
+			alreadyTranslated.insert(matchSet[i]);
 			outRemedies << "[SYNC] " << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
-
+			if (type.find("Async") != std::string::npos)
+				outRemedies << "\tProblem: Unnecessary synchronization caused by non-pinned CPU memory in transfer (use cudaMallocHost)\n";
+			else 
+				outRemedies << "\tProblem: Unnecessary synchronous transfer, replace with cudaMemcpyAsync and pin CPU memory address\n";
+			for (auto n : memSiteSet) {
+				if (n->id == -1)
+					continue;
+				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
+					mn.TranslateStackRecords(MR[n->id]);
+				alreadyTranslated.insert(n->id);
+				outRemedies << "\t\tCPU Malloc Site called at " <<  GetFileLineString(MR[n->id].back())  << std::endl;
+				for (auto k : n->children) {
+					if (k->id == -1)
+						continue;
+					if (alreadyTranslated.find(k->id) == alreadyTranslated.end())
+						mn.TranslateStackRecords(k->id);
+					alreadyTranslated.insert(k->id);
+					outRemedies << "\t\t\tAssociated free called at " <<  GetFileLineString(MR[n->id].back())  << std::endl;
+				}
+			}
 		}
 	}
 
@@ -311,7 +332,7 @@ void CallTransformation::BuildGraph() {
 	auto MR = ReadMemRecorderKeys(typeMap);
 	std::map<int64_t, StackPoint> idPointKeys;
 	for (auto i : MR) {
-		idPointKeys[int64_t(i.first)] = i.second.back();
+		idPointKeys[int64_t(i.first)] = i.second[i.size() - 2];
 	}
 	BuildMemoryGraph(_cpuVec,idPointKeys, _cpuGraph);
 	BuildMemoryGraph(_gpuVec,idPointKeys, _gpuGraph);

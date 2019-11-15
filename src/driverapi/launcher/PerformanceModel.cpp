@@ -501,7 +501,7 @@ void PerformanceModel::TranslateStackRecords(std::vector<StackPoint> & points) {
 	std::map<uint64_t, std::vector<StackPoint> > tmp;
 	tmp[1] = points;
 	std::map<uint64_t, StackRecord> translateRecords; 
-	for (auto & i : ret)
+	for (auto & i : tmp)
 		translateRecords[i.first] = StackRecord(i.first, i.second);	
 	ExtractLineInfo(translateRecords);
 	points = translateRecords[1].GetStackpoints();

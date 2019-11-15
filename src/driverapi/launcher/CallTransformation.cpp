@@ -71,10 +71,10 @@ std::map<uint64_t, uint64_t> CallTransformation::MatchLStoMR(std::map<uint64_t, 
 
 std::string GetFileLineString(StackPoint & p) {
 	std::stringstream ret;
-	if(p.lineNum > 0 && fileName != std::string("")) {
-		ret << "Line " << std::dec << p.lineNum << " in " << fileName;
+	if(p.lineNum > 0 && p.fileName != std::string("")) {
+		ret << "Line " << std::dec << p.lineNum << " in " << p.fileName;
 	} else {
-		ret << "Offset " << p.libOffset << " in " << libname;
+		ret << "Offset " << p.libOffset << " in " << p.libname;
 	}
 	return ret.str();
 }
@@ -192,7 +192,7 @@ void CallTransformation::BuildRequiredSet() {
 			mn.TranslateStackRecords(MR[matchSet[i]]);
 
 			outRemedies << "[SYNC] " << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
-			
+
 		}
 	}
 

@@ -206,7 +206,7 @@ void CallTransformation::BuildRequiredSet() {
 				alreadyTranslated.insert(n->id);
 				for (int index = MR[n->id].size() - 2; index >= 0; index++) {
 					if (MR[n->id][index].libname.find("libstdc++") == std::string::npos){
-						outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][MR[n->id].size()-2])  << std::endl;
+						outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][index])  << std::endl;
 						break;
 					}
 				}

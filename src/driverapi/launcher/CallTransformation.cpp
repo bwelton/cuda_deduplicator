@@ -275,6 +275,7 @@ void CallTransformation::BuildRequiredSet() {
 			}
 		}
 	}
+	std::stringstream reqSet;
 	// Everything else
 	for (auto & i : LS) {
 		if (matchSet.find(i.first) != matchSet.end()) 
@@ -288,10 +289,25 @@ void CallTransformation::BuildRequiredSet() {
 			// int printCount = 0;
 			// for (int j = i.second.size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
 			// 	outRemedies << " called at " << GetFileLineString(i.second[j]) << std::endl;
+		} else {
+			outRemedies << "Required Synchronization at " << std::endl;
+			//utRemedies << type << " called at... " << std::endl;
+			PrintStackSet(reqSet, std::string("\t\t"),i.second, printStackSize);		
+
 		}
 	}
 
+
+	// Print the required set for debugging
+	// outRemedies << "REQUIRED SET BELOW [DEBUG]" << std::endl;
+	// for (auto i : required) {
+
+
+	// }
+
 	std::cout << outRemedies.str() << std::endl;
+	std::cout << " REQUIRED SYNCS [DEBUG]" << std::endl;
+	std::cout << reqSet.str() << std::endl;
 
 	// 	// LSStackGraphVec sgraph;
 // 	// std::map<uint64_t, int> _mapToSgraph;

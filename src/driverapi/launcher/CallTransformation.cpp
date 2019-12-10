@@ -81,9 +81,9 @@ std::string GetFileLineString(StackPoint & p) {
 void CallTransformation::PrintStackSet(std::stringstream & outdata, std::string header, std::vector<StackPoint> & sp, int count) {
 	int printCount = 0;
 	for (int i  = sp.size() - 1; printCount < count && i >= 0; i--, printCount++){
-		outdata << header << GetFileLineString(MR[matchSet[i]][j]) << std::endl;
+		outdata << header << GetFileLineString(sp[i]) << std::endl;
 	}
-	
+
 }
 void CallTransformation::BuildRequiredSet() {
 	int printStackSize = 7;

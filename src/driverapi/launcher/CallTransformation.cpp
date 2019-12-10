@@ -80,6 +80,7 @@ std::string GetFileLineString(StackPoint & p) {
 }
 
 void CallTransformation::BuildRequiredSet() {
+	int printStackSize = 7;
 	StackKeyReader r(fopen("LS_stackkey.txt","rb"));
 	std::map<uint64_t, std::string> typeMap;
 	std::map<uint64_t, std::vector<StackPoint> > LS = r.ReadStacks();
@@ -193,7 +194,9 @@ void CallTransformation::BuildRequiredSet() {
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);
 			alreadyTranslated.insert(matchSet[i]);
-			outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
+			int printCount = 0;
+			for (int j = MR[matchSet[i]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
+				outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]][j]) << std::endl;
 			if (type.find("Async") != std::string::npos)
 				outRemedies << "\tProblem: Unnecessary synchronization caused by non-pinned CPU memory in transfer (use cudaMallocHost)\n";
 			else 
@@ -204,7 +207,10 @@ void CallTransformation::BuildRequiredSet() {
 				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
 					mn.TranslateStackRecords(MR[n->id]);
 				alreadyTranslated.insert(n->id);
-				outRemedies << "\t\tCPU Malloc Site called at " <<  GetFileLineString(MR[n->id].back())  << std::endl;
+				outRemedies << "\t\tCPU Malloc Site called at " << std::endl;// <<  GetFileLineString(MR[n->id].back())  << std::endl;
+				printCount = 0;
+				for (int j = MR[matchSet[n->id]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
+					outRemedies << "\t\t\t" << GetFileLineString(MR[matchSet[n->id]][j]) << std::endl;
 				for (auto k : n->children) {
 					if (k->id == -1)
 						continue;
@@ -218,14 +224,19 @@ void CallTransformation::BuildRequiredSet() {
 			FreeSitePtr msite = _gpuGraph.GetFreeSite(matchSet[i]);
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);
-			outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
+			//outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
+			int printCount = 0;
+			for (int j = MR[matchSet[i]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
+				outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]][j]) << std::endl;
 			outRemedies << "\tProblem: Unnecessary Synchronization at CudaFree. Consider using a custom memory allocator" << std::endl;
 			for(auto n : msite->parents) {
 				if (n->id == -1)
 					continue;
 				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
 					mn.TranslateStackRecords(MR[n->id]);
-				outRemedies << "\t\tGPU Malloc Site called at " <<  GetFileLineString(MR[n->id].back())  << std::endl;
+				outRemedies << "\t\tGPU Malloc Site called at " << std::endl;//<<  GetFileLineString(MR[n->id].back())  << std::endl;
+				for (int j = MR[matchSet[n->id]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
+					outRemedies << "\t\t\t" << GetFileLineString(MR[matchSet[n->id]][j]) << std::endl;
 			}
 		}
 	}
@@ -236,7 +247,10 @@ void CallTransformation::BuildRequiredSet() {
 		if (alreadyTranslated.find(i.first) == alreadyTranslated.end())
 			mn.TranslateStackRecords(i.second);		
 		if (!(traceDep.IsInSet(i.first))) {
-			outRemedies << "Remove Unnecessary Synchronization at " << GetFileLineString(i.second.back())  << std::endl;
+			outRemedies << "Remove Unnecessary Synchronization at " << std::endl;
+			int printCount = 0;
+			for (int j = i.second.size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
+				outRemedies << " called at " << GetFileLineString(i.second[j]) << std::endl;
 		}
 	}
 

@@ -284,7 +284,7 @@ void CallTransformation::BuildRequiredSet() {
 		if (!(traceDep.IsInSet(i.first))) {
 			outRemedies << "Remove Unnecessary Synchronization at " << std::endl;
 			//utRemedies << type << " called at... " << std::endl;
-			PrintStackSet(outRemedies, std::string("\t\t\t"),i.second, printStackSize);
+			PrintStackSet(outRemedies, std::string("\t\t"),i.second, printStackSize);
 			// int printCount = 0;
 			// for (int j = i.second.size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
 			// 	outRemedies << " called at " << GetFileLineString(i.second[j]) << std::endl;

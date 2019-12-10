@@ -742,6 +742,7 @@ public:
 	RemovePointsPtr GetRemoveCalls();
 	std::map<uint64_t, std::vector<StackPoint> > ReadMemRecorderKeys(std::map<uint64_t, std::string> & typeMap);
 	std::map<uint64_t, uint64_t> MatchLStoMR(std::map<uint64_t, std::vector<StackPoint> > & LS, std::map<uint64_t, std::vector<StackPoint> > & MR);
+	void PrintStackSet(std::stringstream & outdata, std::string header, std::vector<StackPoint> & sp, int count);
 	//void GetCudaFreeMallocPairs(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, CudaFreeCallsites & callsites);
 	//void GetMemTransReplacement(std::map<uint64_t, std::shared_ptr<DyninstFunction> > & funcMap, MemTransCallsites & callsites);
 private:

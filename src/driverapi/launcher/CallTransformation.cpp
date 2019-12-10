@@ -78,7 +78,13 @@ std::string GetFileLineString(StackPoint & p) {
 	}
 	return ret.str();
 }
-
+void CallTransformation::PrintStackSet(std::stringstream & outdata, std::string header, std::vector<StackPoint> & sp, int count) {
+	int printCount = 0;
+	for (int i  = sp.size() - 1; printCount < count && i >= 0; i--, printCount++){
+		outdata << header << GetFileLineString(MR[matchSet[i]][j]) << std::endl;
+	}
+	
+}
 void CallTransformation::BuildRequiredSet() {
 	int printStackSize = 7;
 	StackKeyReader r(fopen("LS_stackkey.txt","rb"));

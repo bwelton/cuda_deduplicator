@@ -202,9 +202,12 @@ void CallTransformation::BuildRequiredSet() {
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);
 			alreadyTranslated.insert(matchSet[i]);
-			int printCount = 0;
-			for (int j = MR[matchSet[i]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
-				outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]][j]) << std::endl;
+			//int printCount = 0;
+			outRemedies << type << " called at... " << std::endl;
+			PrintStackSet(outRemedies, std::string("\t\t\t"),MR[matchSet[i]], printStackSize);
+
+			//for (int j = MR[matchSet[i]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
+			//	outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]][j]) << std::endl;
 			if (type.find("Async") != std::string::npos)
 				outRemedies << "\tProblem: Unnecessary synchronization caused by non-pinned CPU memory in transfer (use cudaMallocHost)\n";
 			else 
@@ -250,9 +253,13 @@ void CallTransformation::BuildRequiredSet() {
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);
 			//outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
-			int printCount = 0;
-			for (int j = MR[matchSet[i]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
-				outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]][j]) << std::endl;
+
+			outRemedies << type << " called at... " << std::endl;
+			PrintStackSet(outRemedies, std::string("\t\t\t"),MR[matchSet[i]], printStackSize);
+
+			//int printCount = 0;
+			//for (int j = MR[matchSet[i]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
+			//	outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]][j]) << std::endl;
 			outRemedies << "\tProblem: Unnecessary Synchronization at CudaFree. Consider using a custom memory allocator" << std::endl;
 			for(auto n : msite->parents) {
 				if (n->id == -1)
@@ -276,9 +283,11 @@ void CallTransformation::BuildRequiredSet() {
 			mn.TranslateStackRecords(i.second);		
 		if (!(traceDep.IsInSet(i.first))) {
 			outRemedies << "Remove Unnecessary Synchronization at " << std::endl;
-			int printCount = 0;
-			for (int j = i.second.size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
-				outRemedies << " called at " << GetFileLineString(i.second[j]) << std::endl;
+			utRemedies << type << " called at... " << std::endl;
+			PrintStackSet(outRemedies, std::string("\t\t\t"),i.second, printStackSize);
+			// int printCount = 0;
+			// for (int j = i.second.size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
+			// 	outRemedies << " called at " << GetFileLineString(i.second[j]) << std::endl;
 		}
 	}
 

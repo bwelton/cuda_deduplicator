@@ -190,6 +190,8 @@ void CallTransformation::BuildRequiredSet() {
 		std::string type = typeMap[matchSet[i]];
 		if (type.find("cuMemcpy") != std::string::npos || type.find("cudaMemcpy") != std::string::npos) {
 			TransferPointPtr trans = _transGraph.ReturnTransfer(matchSet[i]);
+			if (trans == NULL)
+				continue;
 			MallocSiteSet memSiteSet = trans->GetMallocSites();
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);
@@ -207,21 +209,38 @@ void CallTransformation::BuildRequiredSet() {
 				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
 					mn.TranslateStackRecords(MR[n->id]);
 				alreadyTranslated.insert(n->id);
-				outRemedies << "\t\tCPU Malloc Site called at " << std::endl;// <<  GetFileLineString(MR[n->id].back())  << std::endl;
-				printCount = 0;
-				for (int j = MR[matchSet[n->id]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
-					outRemedies << "\t\t\t" << GetFileLineString(MR[matchSet[n->id]][j]) << std::endl;
+				for (int index = MR[n->id].size() - 2; index >= 0; index--) {
+					if (MR[n->id][index].libname.find("libstdc++") == std::string::npos){
+						outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][index])  << std::endl;
+						break;
+					}
+				}
+
+				//outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][MR[n->id].size()-2])  << std::endl;
 				for (auto k : n->children) {
 					if (k->id == -1)
 						continue;
 					if (alreadyTranslated.find(k->id) == alreadyTranslated.end())
 						mn.TranslateStackRecords(MR[k->id]);
 					alreadyTranslated.insert(k->id);
-					outRemedies << "\t\t\tAssociated free called at " <<  GetFileLineString(MR[k->id].back())  << std::endl;
+
+					for (int index = MR[k->id].size() - 2; index >= 0; index--) {
+						if (MR[k->id][index].libname.find("libstdc++") == std::string::npos){
+							//outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[l->id][index])  << std::endl;
+							outRemedies << "\t\t\tCPU memory freed at " <<  GetFileLineString(MR[k->id][index])  << std::endl;
+							break;
+						}
+					}
+
+
+
+					//outRemedies << "\t\t\tCPU memory freed at " <<  GetFileLineString(MR[k->id].back())  << std::endl;
 				}
 			}
 		} else {
 			FreeSitePtr msite = _gpuGraph.GetFreeSite(matchSet[i]);
+			if (msite == NULL)
+				continue;
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);
 			//outRemedies << type << " called at " << GetFileLineString(MR[matchSet[i]].back()) << std::endl;
@@ -234,9 +253,12 @@ void CallTransformation::BuildRequiredSet() {
 					continue;
 				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
 					mn.TranslateStackRecords(MR[n->id]);
-				outRemedies << "\t\tGPU Malloc Site called at " << std::endl;//<<  GetFileLineString(MR[n->id].back())  << std::endl;
-				for (int j = MR[matchSet[n->id]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
-					outRemedies << "\t\t\t" << GetFileLineString(MR[matchSet[n->id]][j]) << std::endl;
+				for (int index = MR[n->id].size() -2; index >= 0; index--){
+					if (MR[n->id][index].libname.find("cudart") == std::string::npos){
+						outRemedies << "\t\tGPU Malloc Site called at " <<  GetFileLineString(MR[n->id][index])  << std::endl;
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -254,6 +276,7 @@ void CallTransformation::BuildRequiredSet() {
 		}
 	}
 
+	std::cout << outRemedies.str() << std::endl;
 
 	// 	// LSStackGraphVec sgraph;
 // 	// std::map<uint64_t, int> _mapToSgraph;

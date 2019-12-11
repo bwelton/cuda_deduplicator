@@ -138,7 +138,12 @@ void CallTransformation::BuildRequiredSet() {
 		}
 	}
 
+	// Outpur list of remedies
+	PerformanceModel mn;
+
 	// Second pass: cudaMemcpy/cudaMemcpyAsync
+	std::stringstream reqSet;
+	std::set<int64_t> alreadyTranslated;
 	for (size_t i = 0; i < lvec.size(); i++) {
 		auto tmp = lvec[i];
 		bool syncNotNeeded = false;
@@ -169,6 +174,11 @@ void CallTransformation::BuildRequiredSet() {
 			if(notRequired.find(tmp->id) != notRequired.end())
 				notRequired.erase(tmp->id);
 			required.insert(tmp->id);
+			if (alreadyTranslated.find(matchSet[tmp->id]) == alreadyTranslated.end())
+				mn.TranslateStackRecords(MR[matchSet[tmp->id]]);
+			reqSet << "Required Synchronization at " << std::endl;
+			//utRemedies << type << " called at... " << std::endl;
+			PrintStackSet(reqSet, std::string("\t\t"),MR[matchSet[tmp->id]], printStackSize);	
 		}
 	}	
 
@@ -188,10 +198,10 @@ void CallTransformation::BuildRequiredSet() {
 	}
 
 
-	// Outpur list of remedies
-	PerformanceModel mn;
+
 	std::stringstream outRemedies;
-	std::set<int64_t> alreadyTranslated;
+	//std::set<int64_t> alreadyTranslated;
+
 	for (auto i : notRequired) {	
 		std::string type = typeMap[matchSet[i]];
 		if (type.find("cuMemcpy") != std::string::npos || type.find("cudaMemcpy") != std::string::npos) {
@@ -275,7 +285,7 @@ void CallTransformation::BuildRequiredSet() {
 			}
 		}
 	}
-	std::stringstream reqSet;
+
 	// Everything else
 	for (auto & i : LS) {
 		if (matchSet.find(i.first) != matchSet.end()) 
@@ -290,7 +300,7 @@ void CallTransformation::BuildRequiredSet() {
 			// for (int j = i.second.size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)
 			// 	outRemedies << " called at " << GetFileLineString(i.second[j]) << std::endl;
 		} else {
-			outRemedies << "Required Synchronization at " << std::endl;
+			reqSet << "Required Synchronization at " << std::endl;
 			//utRemedies << type << " called at... " << std::endl;
 			PrintStackSet(reqSet, std::string("\t\t"),i.second, printStackSize);		
 

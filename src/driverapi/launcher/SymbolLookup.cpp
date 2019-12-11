@@ -77,7 +77,7 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 	std::vector<Dyninst::SymtabAPI::Statement::Ptr> lineNumbers;
 	_obj->getSourceLines(lineNumbers, offset);
 	if (lineNumbers.size() > 0) {
-		//lines.second.filename = lineNumbers[0]->getFile();
+		lines.second.filename = lineNumbers[0]->getFile();
 		lines.second.lineNum = lineNumbers[0]->getLine();
 	}
 	return true;

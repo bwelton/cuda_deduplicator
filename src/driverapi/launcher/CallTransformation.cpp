@@ -86,7 +86,7 @@ void CallTransformation::PrintStackSet(std::stringstream & outdata, std::string 
 
 }
 void CallTransformation::BuildRequiredSet() {
-	int printStackSize = 7;
+	int printStackSize = 10;
 	StackKeyReader r(fopen("LS_stackkey.txt","rb"));
 	std::map<uint64_t, std::string> typeMap;
 	std::map<uint64_t, std::vector<StackPoint> > LS = r.ReadStacks();

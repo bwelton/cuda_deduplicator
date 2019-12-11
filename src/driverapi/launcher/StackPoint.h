@@ -400,10 +400,10 @@ struct ReadLSTraceDepFile {
 		while (size > 0) {
 			fread(&id, 1, sizeof(uint64_t), _fid);
 			fread(&hashID, 1, sizeof(uint64_t), _fid);
-			if (size < size - (sizeof(uint64_t) * 2))
+			if (size < size - 2)
 				size = 0;
 			else
-				size = size - (sizeof(uint64_t) * 2);
+				size = size - 2;
 			_needed.insert(hashID);
 		}
 		for (auto i : _needed) {

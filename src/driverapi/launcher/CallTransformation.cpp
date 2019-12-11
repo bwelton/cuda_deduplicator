@@ -174,6 +174,9 @@ void CallTransformation::BuildRequiredSet() {
 			if(notRequired.find(tmp->id) != notRequired.end())
 				notRequired.erase(tmp->id);
 			required.insert(tmp->id);
+			auto it =  matchSet.find(tmp->id);
+			if (it == matchSet.end())
+				continue;
 			if (alreadyTranslated.find(matchSet[tmp->id]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[tmp->id]]);
 			reqSet << "Required Synchronization at " << std::endl;

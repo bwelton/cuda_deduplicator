@@ -72,7 +72,7 @@ std::map<uint64_t, uint64_t> CallTransformation::MatchLStoMR(std::map<uint64_t, 
 std::string GetFileLineString(StackPoint & p) {
 	std::stringstream ret;
 	if(p.lineNum > 0 && p.fileName != std::string("")) {
-		ret << "Line " << std::dec << p.lineNum << " in " << p.fileName;
+		ret << "Line " << std::dec << p.lineNum << " in " << p.fileName << " [DEBUG OFFSET = " << p.libOffset << "]";
 	} else {
 		ret << "Offset " << p.libOffset << " in " << p.libname;
 	}

@@ -406,6 +406,9 @@ struct ReadLSTraceDepFile {
 				size = size - (sizeof(uint64_t) * 2);
 			_needed.insert(hashID);
 		}
+		for (auto i : _needed) {
+			std::cout << "NEED LS ID OF = " << i << std::endl;
+		}
 	};
 
 	inline bool IsInSet(uint64_t id) {

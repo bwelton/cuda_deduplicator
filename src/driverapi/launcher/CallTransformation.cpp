@@ -179,6 +179,7 @@ void CallTransformation::BuildRequiredSet() {
 				continue;
 			if (alreadyTranslated.find(matchSet[tmp->id]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[tmp->id]]);
+			alreadyTranslated.insert(matchSet[tmp->id]);
 			reqSet << "Required Synchronization at " << std::endl;
 			//utRemedies << type << " called at... " << std::endl;
 			PrintStackSet(reqSet, std::string("\t\t"),MR[matchSet[tmp->id]], printStackSize);	

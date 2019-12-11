@@ -15,12 +15,17 @@ volatile bool SYNCTOOL_INCUDACALL = false;
 extern "C" {
 
 // Warpper Functions;
+	void DIOGENES_exitDestroyer_syncTool() {
+		SYNCTOOL_exited = 1;
+		//DIOGENES_GetGlobalLock();
+	}
 
 void INIT_SYNC_COMMON() {
 	if(SYNCTOOL_exited == 1)
 		return;
 	if (_dataAccessManager.get() != NULL)
 		return;
+	atexit(DIOGENES_exitDestroyer_syncTool);
 	// gotcha_set_priority("cuda/specialcases", 1);
 	// int result = gotcha_wrap(gotfuncs, 1, "cuda/specialcases");
 	// assert(result == GOTCHA_SUCCESS);
@@ -148,9 +153,10 @@ struct gotcha_binding_t SYNCTOOL_funcBinders[] = { {"memcpy",(void *)memcpyWrapp
 	}
 
 	void SYNC_RECORD_MEM_ACCESS(uint64_t addr, uint64_t id) {
-		SYNCTOOL_LOADSTORE_COUNT++;
+		
 		if (SYNCTOOL_exited == 1)
 			return;
+		SYNCTOOL_LOADSTORE_COUNT++;
 		//fprintf(stderr, "Inside of stack %llu\n",id);
 		INIT_SYNC_COMMON();
 		_LoadStoreDriver->EnterInstrimentation();

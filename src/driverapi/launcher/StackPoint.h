@@ -394,16 +394,14 @@ struct ReadLSTraceDepFile {
 		fseek(_fid, 0, SEEK_END);
 		size_t size = ftell(_fid);
 		fseek(_fid, 0, SEEK_SET);
-		size = size / (sizeof(uint64_t) * 2);
+		//size = size / (sizeof(uint64_t) * 2);
+		uint64_t count = 0;
 		uint64_t id = 0;
 		uint64_t hashID = 0;
 		while (size > 0) {
 			fread(&id, 1, sizeof(uint64_t), _fid);
 			fread(&hashID, 1, sizeof(uint64_t), _fid);
-			if (size < size - 2)
-				size = 0;
-			else
-				size = size - 2;
+			count += sizeof(uint64_t) * 2;
 			_needed.insert(hashID);
 		}
 		for (auto i : _needed) {

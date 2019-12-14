@@ -398,7 +398,7 @@ struct ReadLSTraceDepFile {
 		uint64_t count = 0;
 		uint64_t id = 0;
 		uint64_t hashID = 0;
-		while (size > 0) {
+		while (count + sizeof(uint64_t) * 2 <= size) {
 			fread(&id, 1, sizeof(uint64_t), _fid);
 			fread(&hashID, 1, sizeof(uint64_t), _fid);
 			count += sizeof(uint64_t) * 2;

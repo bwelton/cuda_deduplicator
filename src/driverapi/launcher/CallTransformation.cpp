@@ -225,7 +225,7 @@ void CallTransformation::BuildRequiredSet() {
 				mn.TranslateStackRecords(MR[matchSet[i]]);
 			alreadyTranslated.insert(matchSet[i]);
 			//int printCount = 0;
-			outRemedies << type << " called at... " << std::endl;
+			outRemedies << "(LS ID = " << i << " MR ID = " << matchSet[i] << " ) " << type << " called at... " << std::endl;
 			PrintStackSet(outRemedies, std::string("\t\t\t"),MR[matchSet[i]], printStackSize);
 
 			//for (int j = MR[matchSet[i]].size() - 1; printCount < printStackSize && j >= 0; j--, printCount++)

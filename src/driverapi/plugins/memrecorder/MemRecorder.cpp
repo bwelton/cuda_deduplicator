@@ -400,14 +400,20 @@ std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> DIOG
 extern "C" void * DIOGENES_REC_GLIBMALLOC(size_t size);
 extern "C" void DIOGENES_REC_GLIBFREE(void * addr);
 extern "C" cudaError_t DIOGENES_cudaFree(void * mem);
+extern "C" cudaError_t DIOGENES_cudaMemcpy(void * dst, void * src, size_t count, cudaMemcpyKind kind);
+
 gotcha_wrappee_handle_t DIOGENES_cudaFree_handle;
+gotcha_wrappee_handle_t DIOGENES_cudaMemcpy_handle;
 gotcha_wrappee_handle_t DIOGENES_libcmalloc_handle;
 gotcha_wrappee_handle_t DIOGENES_libcfree_handle;
+
+typeof(&DIOGENES_cudaMemcpy) DIOGENES_cudaMemcpy_wrapper;
 typeof(&DIOGENES_cudaFree) DIOGENES_cudaFree_wrapper;
 typeof(&DIOGENES_REC_GLIBMALLOC) DIOGENES_libcmalloc_wrapper;
 typeof(&DIOGENES_REC_GLIBFREE) DIOGENES_libcfree_wrapper;
 
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cudaFree,&DIOGENES_cudaFree_handle},
+											   {"cudaMemcpy", (void*)DIOGENES_cudaMemcpy,&DIOGENES_cudaMemcpy_handle},
 											   {"malloc", (void*)DIOGENES_REC_GLIBMALLOC,&DIOGENES_libcmalloc_handle},
 											   {"free", (void *)DIOGENES_REC_GLIBFREE, &DIOGENES_libcfree_handle}};
 
@@ -490,6 +496,7 @@ extern "C" {
 		DIOGENES_libcmalloc_wrapper = (typeof(&DIOGENES_REC_GLIBMALLOC))dlsym(glibc,"malloc"); 
 		DIOGENES_libcfree_wrapper = (typeof(&DIOGENES_REC_GLIBFREE))dlsym(glibc,"free"); 
 		DIOGENES_cudaFree_wrapper = (typeof(&DIOGENES_cudaFree))dlsym(cudarthandle,"cudaFree");
+		DIOGENES_cudaMemcpy_wrapper = (typeof(&DIOGENES_cudaMemcpy))dlsym(cudarthandle,"cudaMemcpy");
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); 		
 	}
 
@@ -784,6 +791,21 @@ extern "C" {
 			POSTPROCESS_FREE((uint64_t)ptr, E_cudaFree);
 		cudaError_t ret = DIOGENES_cudaFree_wrapper(ptr);
 		DIOGENES_SEEN_RUNTIMEFREE = false;
+		return ret;
+	}
+
+	cudaError_t DIOGENES_cudaMemcpy(void * dst, void * src, size_t count, cudaMemcpyKind kind) {
+		DIOGENES_SEEN_RUNTIMECPY = true;
+		void * hostptr = NULL;
+		if (kind == cudaMemcpyDeviceToHost) {
+			hostptr = dst;
+		} else if (kind == cudaMemcpyHostToDevice) {
+			hostptr = src;
+		}
+		if (hostptr != NULL)
+			POSTPROCESS_COPY((uint64_t)hostptr,E_cudaMemcpy);		
+		auto ret = DIOGENES_cudaMemcpy_wrapper(dst, src, count, kind);
+		DIOGENES_SEEN_RUNTIMECPY = false;
 		return ret;
 	}
 

@@ -446,7 +446,7 @@ void SetupDiogGlobalSPS() {
 		DIOGENES_MEMORY_RECORDER.reset(new MemTracker()); \
 		SetupDiogGlobalSPS();\
 		DIOGENES_MEM_KEYFILE.reset(new StackKeyWriter(fopen("DIOENES_MemRecUnknowns.bin","w"), static_cast<uint64_t>(DIOGENES_UNKNOWN_CTX_ID))); \
-		DIOGENES_SETUP_GOTCHA();\
+		//DIOGENES_SETUP_GOTCHA();\
 	} 
 
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_RECORDER.get()
@@ -740,7 +740,6 @@ extern "C" {
 	}
 
 	void DIOGENES_REC_CudaFree(void * ptr) {
-		DIOGENES_SEEN_RUNTIMEFREE = true;
 		POSTPROCESS_FREE((uint64_t)ptr, E_cudaFree);
 	}
 	void DIOGENES_REC_CudaFreePost(void * ptr) {

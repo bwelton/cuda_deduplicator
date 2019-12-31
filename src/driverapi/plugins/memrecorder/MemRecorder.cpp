@@ -739,6 +739,7 @@ extern "C" {
 	}
 
 	void DIOGENES_REC_CudaFree(void * ptr) {
+		DIOGENES_SEEN_RUNTIMEFREE = true;
 		POSTPROCESS_FREE((uint64_t)ptr, E_cudaFree);
 	}
 	void DIOGENES_REC_CudaFreePost(void * ptr) {

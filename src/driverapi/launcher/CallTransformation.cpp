@@ -58,6 +58,8 @@ std::map<uint64_t, uint64_t> CallTransformation::MatchLStoMR(std::map<uint64_t, 
 	
 	for (auto i : MR) {
 		auto tmpstore = i.second.back();
+		if (tmpstore.libname == "__libc_free" || tmpstore.libname == "__GI___libc_malloc")
+			continue;
 		i.second.pop_back();
 		uint64_t tmp = LSRecursive.FindEntry(i.second, 0);
 		i.second.push_back(tmpstore);

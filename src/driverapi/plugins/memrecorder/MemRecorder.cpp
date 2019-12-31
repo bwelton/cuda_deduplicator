@@ -399,12 +399,16 @@ std::shared_ptr<WriteTotals> DIOG_WriteTotals;
 std::shared_ptr<std::unordered_map<DIOG_IDNUMBER,StackPoint,EnumClassHash>> DIOG_GLOBAL_SPS;
 extern "C" void * DIOGENES_REC_GLIBMALLOC(size_t size);
 extern "C" void DIOGENES_REC_GLIBFREE(void * addr);
+extern "C" cudaError_t DIOGENES_cudaFree(void * mem);
+gotcha_wrappee_handle_t DIOGENES_cudaFree_handle;
 gotcha_wrappee_handle_t DIOGENES_libcmalloc_handle;
 gotcha_wrappee_handle_t DIOGENES_libcfree_handle;
+typeof(&DIOGENES_cudaFree) DIOGENES_cudaFree_wrapper;
 typeof(&DIOGENES_REC_GLIBMALLOC) DIOGENES_libcmalloc_wrapper;
 typeof(&DIOGENES_REC_GLIBFREE) DIOGENES_libcfree_wrapper;
 
-struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"malloc", (void*)DIOGENES_REC_GLIBMALLOC,&DIOGENES_libcmalloc_handle},
+struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cudaFree,&DIOGENES_cudaFree_handle},
+											   {"malloc", (void*)DIOGENES_REC_GLIBMALLOC,&DIOGENES_libcmalloc_handle},
 											   {"free", (void *)DIOGENES_REC_GLIBFREE, &DIOGENES_libcfree_handle}};
 
 
@@ -445,9 +449,10 @@ void SetupDiogGlobalSPS() {
 		atexit(DIOGENES_exitDestroyer); \
 		DIOGENES_MEMORY_RECORDER.reset(new MemTracker()); \
 		SetupDiogGlobalSPS();\
+		DIOGENES_SETUP_GOTCHA();\
 		DIOGENES_MEM_KEYFILE.reset(new StackKeyWriter(fopen("DIOENES_MemRecUnknowns.bin","w"), static_cast<uint64_t>(DIOGENES_UNKNOWN_CTX_ID))); \
 	} 
-		//DIOGENES_SETUP_GOTCHA();
+		//
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_RECORDER.get()
 
 int debugPrintCount = 0;
@@ -479,10 +484,12 @@ extern "C" {
 	}
 
 	void DIOGENES_SETUP_GOTCHA() {
-		void * glibc = dlopen("libc.so.6", RTLD_LAZY); 
+		void * glibc = dlopen("libc.so.6", RTLD_LAZY);
+		void * cudarthandle = dlopen("libcudart.so", RTLD_LAZY); 
 		std::cerr << "[DIOGENES_SETUP_BINDINGS] Wrapping libc_malloc and libc_free" << std::endl;
 		DIOGENES_libcmalloc_wrapper = (typeof(&DIOGENES_REC_GLIBMALLOC))dlsym(glibc,"malloc"); 
 		DIOGENES_libcfree_wrapper = (typeof(&DIOGENES_REC_GLIBFREE))dlsym(glibc,"free"); 
+		DIOGENES_cudaFree_wrapper = (typeof(&DIOGENES_cudaFree))dlsym(cudarthandle,"cudaFree");
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); 		
 	}
 
@@ -770,6 +777,16 @@ extern "C" {
 		if (DIOGENES_TEAR_DOWN == false)
 			DIOGENES_libcfree_wrapper(addr);
 	}
+
+	cudaError_t DIOGENES_cudaFree(void * ptr) {
+		DIOGENES_SEEN_RUNTIMEFREE = true;
+		if (ptr != NULL)
+			POSTPROCESS_FREE((uint64_t)ptr, E_cudaFree);
+		cudaError_t ret = DIOGENES_cudaFree_wrapper(ptr);
+		DIOGENES_SEEN_RUNTIMEFREE = false;
+		return ret;
+	}
+
 /*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
 		DIOGENSE_GLIB_MALLOC_SIZE = size;
 	}

@@ -678,7 +678,9 @@ extern "C" {
 			int64_t myID = static_cast<int64_t>(DIOGENES_MEM_KEYFILE->InsertStack(DIOGENES_CACHED_POINTS));
 			PLUG_FACTORY_PTR->GPUFreeData(ptr, myID);
 			DIOGENES_ReleaseGlobalLock();
-		}		
+		} else {
+			fprintf(stderr, "COULD NOT PROCESS FREE REQUEST!\n");
+		}	
 	}
 
 

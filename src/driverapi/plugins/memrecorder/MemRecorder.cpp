@@ -401,18 +401,22 @@ extern "C" void * DIOGENES_REC_GLIBMALLOC(size_t size);
 extern "C" void DIOGENES_REC_GLIBFREE(void * addr);
 extern "C" cudaError_t DIOGENES_cudaFree(void * mem);
 extern "C" cudaError_t DIOGENES_cudaMemcpy(void * dst, void * src, size_t count, cudaMemcpyKind kind);
+extern "C" cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream);
 
 gotcha_wrappee_handle_t DIOGENES_cudaFree_handle;
 gotcha_wrappee_handle_t DIOGENES_cudaMemcpy_handle;
 gotcha_wrappee_handle_t DIOGENES_libcmalloc_handle;
 gotcha_wrappee_handle_t DIOGENES_libcfree_handle;
+gotcha_wrappee_handle_t DIOGENES_cudaMemcpyAsync_handle;
 
 typeof(&DIOGENES_cudaMemcpy) DIOGENES_cudaMemcpy_wrapper;
 typeof(&DIOGENES_cudaFree) DIOGENES_cudaFree_wrapper;
 typeof(&DIOGENES_REC_GLIBMALLOC) DIOGENES_libcmalloc_wrapper;
 typeof(&DIOGENES_REC_GLIBFREE) DIOGENES_libcfree_wrapper;
+typeof(&DIOGENES_cudaMemcpyAsync) DIOGENES_cudaMemcpyAsync_wrapper;
 
 struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cudaFree,&DIOGENES_cudaFree_handle},
+											   {"cudaMemcpyAsync", (void*)DIOGENES_cudaMemcpyAsync,&DIOGENES_cudaMemcpyAsync_handle},
 											   {"cudaMemcpy", (void*)DIOGENES_cudaMemcpy,&DIOGENES_cudaMemcpy_handle},
 											   {"malloc", (void*)DIOGENES_REC_GLIBMALLOC,&DIOGENES_libcmalloc_handle},
 											   {"free", (void *)DIOGENES_REC_GLIBFREE, &DIOGENES_libcfree_handle}};
@@ -497,6 +501,7 @@ extern "C" {
 		DIOGENES_libcfree_wrapper = (typeof(&DIOGENES_REC_GLIBFREE))dlsym(glibc,"free"); 
 		DIOGENES_cudaFree_wrapper = (typeof(&DIOGENES_cudaFree))dlsym(cudarthandle,"cudaFree");
 		DIOGENES_cudaMemcpy_wrapper = (typeof(&DIOGENES_cudaMemcpy))dlsym(cudarthandle,"cudaMemcpy");
+		DIOGENES_cudaMemcpyAsync_wrapper = (typeof(&DIOGENES_cudaMemcpyAsync))dlsym(cudarthandle,"cudaMemcpyAsync");
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes"); 		
 	}
 
@@ -809,6 +814,20 @@ extern "C" {
 		return ret;
 	}
 
+	cudaError_t DIOGENES_cudaMemcpyAsync(void * dst, void * src, size_t count, cudaMemcpyKind kind, cudaStream_t stream) {
+		DIOGENES_SEEN_RUNTIMECPY = true;
+		void * hostptr = NULL;
+		if (kind == cudaMemcpyDeviceToHost) {
+			hostptr = dst;
+		} else if (kind == cudaMemcpyHostToDevice) {
+			hostptr = src;
+		}
+		if (hostptr != NULL)
+			POSTPROCESS_COPY((uint64_t)hostptr,E_cudaMemcpyAsync);	
+		auto ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
+		DIOGENES_SEEN_RUNTIMECPY = false;
+		return ret;
+	}
 /*	void DIOGENES_REC_GLIBMALLOC_PRE(size_t size) {
 		DIOGENSE_GLIB_MALLOC_SIZE = size;
 	}

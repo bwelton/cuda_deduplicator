@@ -26,7 +26,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	// Public API
 	//preWrapperFunctions["cudaFree"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFree"), wrapper);
 	preWrapperFunctions["cudaMalloc"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMalloc"), wrapper);
-	preWrapperFunctions["cudaMemcpyAsync"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsync"), wrapper);
+//	preWrapperFunctions["cudaMemcpyAsync"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsync"), wrapper);
 //	preWrapperFunctions["cudaMemcpy"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpy"), wrapper);
 	preWrapperFunctions["cudaMallocHost"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_HostCudaMalloc"), wrapper);
 
@@ -43,7 +43,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	postWrapperFunctions["cudaMallocHost"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cudaMallocHostpost"), wrapper);
 	postWrapperFunctions["cuMemAlloc_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAllocpost"), wrapper);
 	postWrapperFunctions["cuMemAllocHost_v2"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_cuMemAllocHostpost"), wrapper);
-	postWrapperFunctions["cudaMemcpyAsync"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsyncPost"), wrapper);
+//	postWrapperFunctions["cudaMemcpyAsync"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsyncPost"), wrapper);
 //	postWrapperFunctions["cudaMemcpy"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaMemcpyAsyncPost"), wrapper);
 	//postWrapperFunctions["cudaFree"] = ops->FindFuncsByName(_proc->GetAddressSpace(), std::string("DIOGENES_REC_CudaFreePost"), wrapper);
 
@@ -59,7 +59,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	// Set parameter counts for each call
 	//parameterCounts["cudaFree"] = 1;
 	parameterCounts["cudaMalloc"] = 2;
-	parameterCounts["cudaMemcpyAsync"] = 5;
+//	parameterCounts["cudaMemcpyAsync"] = 5;
 //	parameterCounts["cudaMemcpy"] = 4;
 	parameterCounts["cudaMallocHost"] = 2;
 	parameterCounts["cuMemcpyHtoD_v2"] = 3;
@@ -72,7 +72,7 @@ void MemRecorder::InsertAnalysis(StackRecMap & recs) {
 	// Set whether the call is in the driver API or not
 	//driverAPI["cudaFree"] = false;
 	driverAPI["cudaMalloc"] = false;
-	driverAPI["cudaMemcpyAsync"] = false;
+//	driverAPI["cudaMemcpyAsync"] = false;
 //	driverAPI["cudaMemcpy"] = false;
 	driverAPI["cudaMallocHost"] = false;
 	driverAPI["cuMemcpyHtoD_v2"] = true;

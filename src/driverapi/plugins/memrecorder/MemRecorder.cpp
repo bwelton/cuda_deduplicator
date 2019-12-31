@@ -446,9 +446,8 @@ void SetupDiogGlobalSPS() {
 		DIOGENES_MEMORY_RECORDER.reset(new MemTracker()); \
 		SetupDiogGlobalSPS();\
 		DIOGENES_MEM_KEYFILE.reset(new StackKeyWriter(fopen("DIOENES_MemRecUnknowns.bin","w"), static_cast<uint64_t>(DIOGENES_UNKNOWN_CTX_ID))); \
-		//DIOGENES_SETUP_GOTCHA();\
 	} 
-
+		//DIOGENES_SETUP_GOTCHA();
 #define PLUG_FACTORY_PTR DIOGENES_MEMORY_RECORDER.get()
 
 int debugPrintCount = 0;

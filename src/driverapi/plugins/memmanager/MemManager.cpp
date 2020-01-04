@@ -405,15 +405,15 @@ extern "C" {
 			if (!(pinManage->IsManagedPage(src))){
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				memcpy(tmp, src, count);
-				if (performOpt)
+				//if (performOpt)
 					pageAllocator->SpoilLastPage(false, NULL);
 				src = tmp;
 			}
 		} else if (kind == cudaMemcpyDeviceToHost) {
 			if (!(pinManage->IsManagedPage(dst)) && ((void *)&stackAddr < dst)){
 				void * tmp = pageAllocator->GetPinnedPage(count);
-				if (performOpt)
-					pageAllocator->SpoilLastPage(true, dst);
+				//if (performOpt)
+				pageAllocator->SpoilLastPage(true, dst);
 				dst = tmp;				
 			} else {
 				performOpt = false;

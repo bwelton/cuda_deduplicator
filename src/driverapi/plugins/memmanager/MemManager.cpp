@@ -103,7 +103,7 @@ struct RecursiveMap{
 	};
 
 	bool IterativeLookup(uint64_t * input, int size, int pos) {
-		std::cout << "\nLOOKUP STACK = "
+		std::cout << "\nLOOKUP STACK = ";
 		for (int i = pos; i < size; i++) {
 			std::cout << std::dec << input[i] << ",";
 		}

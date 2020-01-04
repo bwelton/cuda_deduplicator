@@ -67,7 +67,7 @@ struct RecursiveMap{
 		std::vector<std::vector<uint64_t>>  stacks = rs.ReadStacks();
 		for (auto i : stacks) {
 			std::cout << "\nTEST STACK = ";
-			for (auto n : stacks) {
+			for (auto n : i) {
 				std::cout << n << ",";
 			}
 			std::cout << std::endl;

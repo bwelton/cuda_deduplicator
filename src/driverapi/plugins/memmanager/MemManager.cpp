@@ -56,8 +56,8 @@ struct DataRecorderCountTool {
 		std::cout << "[DataRecorderCountTool] Total Trans Ops = " <<  total_trans << std::endl;
 		std::cout << "[DataRecorderCountTool] Total Trans Applied = " <<  trans_applied << std::endl;
 		std::cout << "[DataRecorderCountTool] Total Mem Free Applied Ops = " <<  memApplied << std::endl;
-	}
-}
+	};
+};
 struct RecursiveMap{
 	uint64_t _total_count;
 	std::map<uint64_t, RecursiveMap *> _map;

@@ -66,6 +66,11 @@ struct RecursiveMap{
 		RAStackReaderWriter rs(fopen("AC_BinStacks.bin", "rb"));
 		std::vector<std::vector<uint64_t>>  stacks = rs.ReadStacks();
 		for (auto i : stacks) {
+			std::cout << "\nTEST STACK = "
+			for (auto n : stacks) {
+				std::cout << std::dec << n << ",";
+			}
+			std::endl;
 			Insert(i, 0);
 		}
 		_total_count = 0;
@@ -98,6 +103,11 @@ struct RecursiveMap{
 	};
 
 	bool IterativeLookup(uint64_t * input, int size, int pos) {
+		std::cout << "\nLOOKUP STACK = "
+		for (int i = pos; i < size; i++) {
+			std::cout << std::dec << input[i] << ",";
+		}
+		std::cout << std::endl;
 		std::map<uint64_t, RecursiveMap *> * curMap = &_map;
 		int insize = size;
 		while (pos < insize) {

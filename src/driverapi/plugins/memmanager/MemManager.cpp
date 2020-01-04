@@ -405,7 +405,7 @@ extern "C" {
 			if (!(pinManage->IsManagedPage(src))){
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				memcpy(tmp, src, count);
-				//if (performOpt)
+				if (performOpt)
 					pageAllocator->SpoilLastPage(false, NULL);
 				src = tmp;
 			}
@@ -414,6 +414,7 @@ extern "C" {
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				//if (performOpt)
 				pageAllocator->SpoilLastPage(true, dst);
+				performOpt = false;
 				dst = tmp;				
 			} else {
 				performOpt = false;
@@ -456,7 +457,8 @@ extern "C" {
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				//if (performOpt)
 				pageAllocator->SpoilLastPage(true, dst);
-				dst = tmp;				
+				dst = tmp;		
+				performOpt = false;		
 			} else {
 				performOpt = false;
 			}

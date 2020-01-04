@@ -70,7 +70,7 @@ struct RecursiveMap{
 			for (auto n : stacks) {
 				std::cout << std::dec << n << ",";
 			}
-			std::endl;
+			std::cout << std::endl;
 			Insert(i, 0);
 		}
 		_total_count = 0;

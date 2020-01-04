@@ -25,6 +25,39 @@
 #include <string.h>
 
 bool DIOGENES_SHUTDOWN_MODE = false;
+
+struct DataRecorderCountTool {
+	uint64_t total_malloc;
+	uint64_t total_free;
+	uint64_t total_trans;
+	uint64_t trans_applied;
+	uint64_t memApplied;
+
+	DataRecorderCountTool() : total_malloc(0), total_free(0), total_trans(0), trans_applied(0), memApplied(0) {};
+	inline void AddMalloc() {
+		total_malloc++;
+	}
+	inline void AddFree() {
+		total_free++;
+	}
+	inline void AddTrans() {
+		total_trans++;
+	}
+	inline void TransApplied() {
+		trans_applied++;
+	}
+	inline void FreeApplied() {
+		memApplied++;
+	}
+
+	~DataRecorderCountTool() {
+		std::cout << "[DataRecorderCountTool] Total Malloc Ops = " <<  total_malloc << std::endl;
+		std::cout << "[DataRecorderCountTool] Total Free Ops = " <<  total_free << std::endl;
+		std::cout << "[DataRecorderCountTool] Total Trans Ops = " <<  total_trans << std::endl;
+		std::cout << "[DataRecorderCountTool] Total Trans Applied = " <<  trans_applied << std::endl;
+		std::cout << "[DataRecorderCountTool] Total Mem Free Applied Ops = " <<  memApplied << std::endl;
+	}
+}
 struct RecursiveMap{
 	uint64_t _total_count;
 	std::map<uint64_t, RecursiveMap *> _map;
@@ -138,7 +171,7 @@ typeof(&DIOGENES_cuMemAllocHost) DIOGENES_cuMemAllocHost_wrapper;
 typeof(&DIOGENES_cuMemcpyDtoH) DIOGENES_cuMemcpyDtoH_wrapper;
 typeof(&DIOGENES_cuMemcpyHtoD) DIOGENES_cuMemcpyHtoD_wrapper;
 std::shared_ptr<RecursiveMap> DIOGENES_StackChecker;
-
+std::shared_ptr<DataRecorderCountTool> DIOGENES_MemStatTool;
 uint64_t matchCount = 0;
 
 
@@ -274,6 +307,7 @@ extern "C" {
 	void DIOGENES_INIT_GOTCHA() {
 		DIOGENES_StackChecker.reset(new RecursiveMap());
 		DIOGENES_StackChecker->Init();
+		DIOGENES_MemStatTool.reset(new DataRecorderCountTool());
 		// make sure libcudart and libcuda are loaded into the binary.
 		void * cudarthandle = dlopen("libcudart.so", RTLD_LAZY);
 		void * libcudahandle = dlopen("libcuda.so", RTLD_LAZY);
@@ -293,8 +327,6 @@ extern "C" {
 		// Wrap functions
 		gotcha_wrap(DIOGNESE_gotfuncs, sizeof(DIOGNESE_gotfuncs)/sizeof(struct gotcha_binding_t), "diogenes");
 	}
-
-
 //Runtime API Wrappers
 	void DIOGENES_POSTSYNC_WRAPPER() {
 		if (DIOGENES_SHUTDOWN_MODE)
@@ -310,9 +342,13 @@ extern "C" {
 		if(mallocManager == NULL)
 			mallocManager = new CudaMemoryManager();
 		DIOGENES_IN_RUNTIME = true;
+		DIOGENES_MemStatTool->AddFree();
 		bool sync = mallocManager->FreeMemory(mem);
-		if (!CheckStack() && !sync) 
-			cudaDeviceSynchronize();
+		if (!CheckStack() && !sync) {
+			cudaDeviceSynchronize();			
+		} else {
+			DIOGENES_MemStatTool->FreeApplied();
+		}
 		DIOGENES_IN_RUNTIME = false;
 		return cudaSuccess;
 		//std::cerr << "In cuda free" << std::endl;
@@ -328,6 +364,7 @@ extern "C" {
 			mallocManager = new CudaMemoryManager();
 		DIOGENES_IN_RUNTIME = true;
 		*mem =  mallocManager->GetMemoryPage(size);
+		DIOGENES_MemStatTool->AddMalloc();
 		DIOGENES_IN_RUNTIME = false;
 		return cudaSuccess;
 		//return DIOGENES_cudaMalloc_wrapper(mem, size);
@@ -377,9 +414,11 @@ extern "C" {
 		}
 
 		cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, 0);
-
+		DIOGENES_MemStatTool->AddTrans();
 		if (!performOpt)
 			ret = cudaDeviceSynchronize();
+		else 
+			DIOGENES_MemStatTool->TransApplied();
 		DIOGENES_IN_RUNTIME = false;
 		//std::cerr << "In DIOGENES_cudaMemcpy free" << std::endl;		
 		return ret;
@@ -417,11 +456,14 @@ extern "C" {
 		}
 		//std::cerr << "Args = " << std::hex << dst << "," << src << "," << count << "," << kind << "," << stream << std::endl;
 		cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
-		assert(ret == cudaSuccess);
+		DIOGENES_MemStatTool->AddTrans();
+		//assert(ret == cudaSuccess);
 		DIOGENES_IN_RUNTIME = false;
-		// if (!performOpt)
-		// 	ret = cudaDeviceSynchronize();
-
+		if (!performOpt)
+		 	ret = cudaDeviceSynchronize();
+		else {
+		 	DIOGENES_MemStatTool->TransApplied();
+		}
 		//std::cerr << "In DIOGENES_cudaMemcpyAsync free" << std::endl;	
 		return ret;
 	}
@@ -469,9 +511,11 @@ extern "C" {
 		}
 		
 		CUresult ret = cuMemcpyDtoHAsync(tmp, src, count, 0);
+		DIOGENES_MemStatTool->AddTrans();
 		if(CheckStack() && ((void *)&stackAddr < dst)) {
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(true, dst);
+			DIOGENES_MemStatTool->TransApplied();
 			return ret;
 		}
 		ret = cuStreamSynchronize(0);
@@ -485,6 +529,7 @@ extern "C" {
 			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 		if (DIOGENES_IN_RUNTIME)
 			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
+
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();
 		if (pinManage == NULL)
@@ -500,9 +545,11 @@ extern "C" {
 		}
 
 		CUresult ret = cuMemcpyHtoDAsync(dst, tmp, count, 0);
+		DIOGENES_MemStatTool->AddTrans();
 		if(CheckStack()){
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(false, NULL);
+			DIOGENES_MemStatTool->TransApplied();
 			return ret;
 		}
 		if (ret != CUDA_SUCCESS)

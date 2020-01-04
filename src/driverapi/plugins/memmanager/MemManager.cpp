@@ -68,7 +68,7 @@ struct RecursiveMap{
 		for (auto i : stacks) {
 			std::cout << "\nTEST STACK = ";
 			for (auto n : stacks) {
-				std::cout << std::dec << n << ",";
+				std::cout << n << ",";
 			}
 			std::cout << std::endl;
 			Insert(i, 0);
@@ -105,7 +105,7 @@ struct RecursiveMap{
 	bool IterativeLookup(uint64_t * input, int size, int pos) {
 		std::cout << "\nLOOKUP STACK = ";
 		for (int i = pos; i < size; i++) {
-			std::cout << std::dec << input[i] << ",";
+			std::cout << input[i] << ",";
 		}
 		std::cout << std::endl;
 		std::map<uint64_t, RecursiveMap *> * curMap = &_map;

@@ -66,7 +66,7 @@ struct RecursiveMap{
 		RAStackReaderWriter rs(fopen("AC_BinStacks.bin", "rb"));
 		std::vector<std::vector<uint64_t>>  stacks = rs.ReadStacks();
 		for (auto i : stacks) {
-			std::cout << "\nTEST STACK = "
+			std::cout << "\nTEST STACK = ";
 			for (auto n : stacks) {
 				std::cout << std::dec << n << ",";
 			}

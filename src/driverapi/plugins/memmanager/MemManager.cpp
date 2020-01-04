@@ -201,7 +201,7 @@ struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cuda
 bool __attribute__ ((noinline)) CheckStack() {
 	void * local_stack[75];
 	int ret = backtrace(local_stack, 75);
-	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3);
+	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 2);
 }	
 
 

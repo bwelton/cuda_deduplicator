@@ -453,6 +453,7 @@ extern "C" {
 				src = tmp;
 			}
 		} else if (kind == cudaMemcpyDeviceToHost) {
+			performOpt = false;
 			if (((void *)&stackAddr > dst)){
 				performOpt = false;
 			}

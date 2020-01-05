@@ -226,12 +226,12 @@ void CallTransformation::BuildRequiredSet() {
 			TransferPointPtr trans = _transGraph.ReturnTransfer(matchSet[i]);
 			if (trans == NULL)
 				continue;
-			if (trans->GetMallocSites().size() == 0){
+			if (trans->GetMallocSites().size() == 0 && type.find("cuMemcpyHtoD") == std::string::npos){
 				required.insert(i);
 				continue;
 			}
 			for (auto m : trans->GetMallocSites()) {
-				if (m->id == -1){
+				if (m->id == -1 && type.find("cuMemcpyHtoD") == std::string::npos){
 					required.insert(i);
 					continue;
 				}

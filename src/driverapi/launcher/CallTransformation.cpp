@@ -323,9 +323,9 @@ void CallTransformation::BuildRequiredSet() {
 		MR[matchSet[i]].pop_back();
 		outputKeys.InsertStack(matchSet[i], MR[matchSet[i]]);
 		if (required.find(i) != required.end()) {
-			transLimiter->WriteLimiter(true);
+			transLimiter.WriteLimiter(true);
 		} else {
-			transLimiter->WriteLimiter(false);
+			transLimiter.WriteLimiter(false);
 		}
 	}
 

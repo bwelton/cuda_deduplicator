@@ -227,6 +227,10 @@ void CallTransformation::BuildRequiredSet() {
 			TransferPointPtr trans = _transGraph.ReturnTransfer(matchSet[i]);
 			if (trans == NULL)
 				continue;
+			if (trans->GetMallocSites().size() == 0){
+				required.insert(i);
+				continue;
+			}
 			for (auto m : trans->GetMallocSites()) {
 				if (m->id == -1){
 					required.insert(i);

@@ -60,8 +60,9 @@ struct DataRecorderCountTool {
 };
 struct RecursiveMap{
 	uint64_t _total_count;
+	bool onlyIfHtoD;
 	std::map<uint64_t, RecursiveMap *> _map;
-	RecursiveMap() : _total_count(0) {};
+	RecursiveMap() : _total_count(0), onlyIfHtoD(true) {};
 	void Init() {
 		RAStackReaderWriter rs(fopen("AC_BinStacks.bin", "rb"));
 		std::vector<std::vector<uint64_t>>  stacks = rs.ReadStacks();
@@ -83,14 +84,15 @@ struct RecursiveMap{
 		if (_total_count != 0)
 			std::cout << "NUMBER OF OPTI HITS = " << std::dec << _total_count << std::endl;
 	};
-	void Insert(std::vector<uint64_t> & input, int pos) {
+	void Insert(std::vector<uint64_t> & input, bool limitToHtoD, int pos) {
+		onlyIfHtoD = limitToHtoD;
 		if(input.size() <= pos)
 			return;
 		uint64_t val = input[pos];
 		if (_map.find(val) == _map.end()) {
 			_map[val] = new RecursiveMap();
 		}
-		_map[val]->Insert(input, pos+1);
+		_map[val]->Insert(input, limitToHtoD, pos+1);
 	};
 
 	bool Lookup(std::vector<uint64_t> & input, int pos) {
@@ -102,7 +104,7 @@ struct RecursiveMap{
 		return _map[val]->Lookup(input,pos+1);
 	};
 
-	bool IterativeLookup(uint64_t * input, int size, int pos) {
+	bool IterativeLookup(uint64_t * input, int size, int pos, bool & htodlimit) {
 		// std::cout << "\nLOOKUP STACK = ";
 		// for (int i = pos; i < size; i++) {
 		// 	std::cout << input[i] << ",";
@@ -110,11 +112,13 @@ struct RecursiveMap{
 		// std::cout << std::endl;
 		std::map<uint64_t, RecursiveMap *> * curMap = &_map;
 		int insize = size;
+		htodlimit = true;
 		while (pos < insize) {
 			auto it = curMap->find(input[pos]);
 			if (it == curMap->end()) 
 				return false;
 			curMap = &(it->second->_map);
+			htodlimit = curMap->onlyIfHtoD;
 			pos++;
 		}
 		_total_count++;
@@ -198,16 +202,17 @@ struct gotcha_binding_t DIOGNESE_gotfuncs[] = {{"cudaFree", (void*)DIOGENES_cuda
 			{"cuMemcpyDtoH_v2", (void*)DIOGENES_cuMemcpyDtoH,&DIOGENES_cuMemcpyDtoH_handle},
 			{"cuMemcpyHtoD_v2", (void*)DIOGENES_cuMemcpyHtoD,&DIOGENES_cuMemcpyHtoD_handle} };
 
-bool __attribute__ ((noinline)) CheckStack() {
+bool __attribute__ ((noinline)) CheckStack(bool & htodlimit) {
 	void * local_stack[75];
 	int ret = backtrace(local_stack, 75);
-	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 2);
+	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 2,htodlimit);
 }	
 
 bool __attribute__ ((noinline)) CheckStackInternal() {
 	void * local_stack[75];
+	bool dump;
 	int ret = backtrace(local_stack, 75);
-	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3);
+	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3, dump);
 }	
 
 
@@ -359,9 +364,10 @@ extern "C" {
 		if(mallocManager == NULL)
 			mallocManager = new CudaMemoryManager();
 		DIOGENES_IN_RUNTIME = true;
+		bool htodlimit;
 		DIOGENES_MemStatTool->AddFree();
 		bool sync = mallocManager->FreeMemory(mem);
-		if (!CheckStack() && !sync) {
+		if (!CheckStack(htodlimit) && !sync) {
 			cudaDeviceSynchronize();			
 		} else {
 			DIOGENES_MemStatTool->FreeApplied();
@@ -406,7 +412,8 @@ extern "C" {
 			pinManage = new PinnedPageManager();
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();
-		bool performOpt = CheckStack();
+		bool htodlimit;
+		bool performOpt = CheckStack(htodlimit);
 		void * stackAddr = NULL;
 		if (kind == cudaMemcpyHostToDevice) {
 			if (!(pinManage->IsManagedPage(src))){
@@ -449,7 +456,8 @@ extern "C" {
 			pinManage = new PinnedPageManager();
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();
-		bool performOpt = CheckStack();
+		bool htodlimit;
+		bool performOpt = CheckStack(htodlimit);
 		void * stackAddr = NULL;
 		if (kind == cudaMemcpyHostToDevice) {
 			if (!(pinManage->IsManagedPage(src))){
@@ -464,6 +472,8 @@ extern "C" {
 			// if (((void *)&stackAddr > dst)){
 			// 	performOpt = false;
 			// }
+			if (htodlimit == true)
+				performOpt = false;
 			if (!(pinManage->IsManagedPage(dst))) {
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				pageAllocator->SpoilLastPage(true, dst);

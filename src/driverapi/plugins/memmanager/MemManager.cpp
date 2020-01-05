@@ -598,7 +598,7 @@ extern "C" {
 		if(CheckStackInternal()){
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(false, NULL);
-			DIOGENES_MemStatTool->TransApplied();
+			//DIOGENES_MemStatTool->TransApplied();
 			return ret;
 		}
 		if (ret != CUDA_SUCCESS)

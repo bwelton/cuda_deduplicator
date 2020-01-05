@@ -417,7 +417,7 @@ extern "C" {
 				src = tmp;
 			}
 		} else if (kind == cudaMemcpyDeviceToHost) {
-			if (!(pinManage->IsManagedPage(dst)) && ((void *)&stackAddr < dst)){
+			if (!(pinManage->IsManagedPage(dst))){
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				//if (performOpt)
 				pageAllocator->SpoilLastPage(true, dst);
@@ -461,9 +461,9 @@ extern "C" {
 			}
 		} else if (kind == cudaMemcpyDeviceToHost) {
 			//performOpt = false;
-			if (((void *)&stackAddr > dst)){
-				performOpt = false;
-			}
+			// if (((void *)&stackAddr > dst)){
+			// 	performOpt = false;
+			// }
 			if (!(pinManage->IsManagedPage(dst))) {
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				pageAllocator->SpoilLastPage(true, dst);

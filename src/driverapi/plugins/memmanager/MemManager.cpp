@@ -204,6 +204,13 @@ bool __attribute__ ((noinline)) CheckStack() {
 	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 2);
 }	
 
+bool __attribute__ ((noinline)) CheckStackInternal() {
+	void * local_stack[75];
+	int ret = backtrace(local_stack, 75);
+	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3);
+}	
+
+
 
 struct CudaMemhostPageManager {
 	std::unordered_multimap<size_t, void *> cachedPages;
@@ -534,7 +541,7 @@ extern "C" {
 		
 		CUresult ret = cuMemcpyDtoHAsync(tmp, src, count, 0);
 		DIOGENES_MemStatTool->AddTrans();
-		if(CheckStack() && ((void *)&stackAddr < dst)) {
+		if(CheckStackInternal() && ((void *)&stackAddr < dst)) {
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(true, dst);
 			DIOGENES_MemStatTool->TransApplied();
@@ -568,7 +575,7 @@ extern "C" {
 
 		CUresult ret = cuMemcpyHtoDAsync(dst, tmp, count, 0);
 		DIOGENES_MemStatTool->AddTrans();
-		if(CheckStack()){
+		if(CheckStackInternal()){
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(false, NULL);
 			DIOGENES_MemStatTool->TransApplied();

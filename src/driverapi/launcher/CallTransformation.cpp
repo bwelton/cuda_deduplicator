@@ -213,10 +213,7 @@ void CallTransformation::BuildRequiredSet() {
 		if (notRequired.find(i) != notRequired.end())
 			notRequired.erase(i);
 	}
-	for (auto i : notRequired) {
-		MR[matchSet[i]].pop_back();
-		outputKeys.InsertStack(matchSet[i], MR[matchSet[i]]);
-	}
+
 
 
 
@@ -226,9 +223,16 @@ void CallTransformation::BuildRequiredSet() {
 	for (auto i : notRequired) {	
 		std::string type = typeMap[matchSet[i]];
 		if (type.find("cuMemcpy") != std::string::npos || type.find("cudaMemcpy") != std::string::npos) {
+
 			TransferPointPtr trans = _transGraph.ReturnTransfer(matchSet[i]);
 			if (trans == NULL)
 				continue;
+			for (auto m : trans->GetMallocSites()) {
+				if (m->id == -1){
+					required.insert(i);
+					continue;
+				}
+			}
 			MallocSiteSet memSiteSet = trans->GetMallocSites();
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);
@@ -306,7 +310,16 @@ void CallTransformation::BuildRequiredSet() {
 			}
 		}
 	}
+	for (auto i : required) {
+		if (notRequired.find(i) != notRequired.end())
+			notRequired.erase(i);
+	}
 
+
+	for (auto i : notRequired) {
+		MR[matchSet[i]].pop_back();
+		outputKeys.InsertStack(matchSet[i], MR[matchSet[i]]);
+	}
 	// Everything else
 	for (auto & i : LS) {
 		if (matchSet.find(i.first) != matchSet.end()) 

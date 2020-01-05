@@ -466,7 +466,7 @@ extern "C" {
 		bool performOpt = CheckStack(htodlimit);
 		void * stackAddr = NULL;
 		if (kind == cudaMemcpyHostToDevice) {
-			performOpt = true;
+			//performOpt = true;
 			if (!(pinManage->IsManagedPage(src))){
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				memcpy(tmp, src, count);

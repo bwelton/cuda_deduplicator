@@ -223,7 +223,6 @@ void CallTransformation::BuildRequiredSet() {
 	for (auto i : notRequired) {	
 		std::string type = typeMap[matchSet[i]];
 		if (type.find("cuMemcpy") != std::string::npos || type.find("cudaMemcpy") != std::string::npos) {
-
 			TransferPointPtr trans = _transGraph.ReturnTransfer(matchSet[i]);
 			if (trans == NULL)
 				continue;

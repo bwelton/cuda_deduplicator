@@ -504,7 +504,8 @@ extern "C" {
 		}
 		//std::cerr << "Args = " << std::hex << dst << "," << src << "," << count << "," << kind << "," << stream << std::endl;
 		cudaError_t ret = DIOGENES_cudaMemcpyAsync_wrapper(dst, src, count, kind, stream);
-		DIOGENES_MemStatTool->AddTrans();
+		if (kind == cudaMemcpyDeviceToHost)
+			DIOGENES_MemStatTool->AddTrans();
 		//assert(ret == cudaSuccess);
 		DIOGENES_IN_RUNTIME = false;
 		if (!performOpt)

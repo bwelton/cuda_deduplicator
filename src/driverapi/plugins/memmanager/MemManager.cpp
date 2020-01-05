@@ -84,15 +84,21 @@ struct RecursiveMap{
 		if (_total_count != 0)
 			std::cout << "NUMBER OF OPTI HITS = " << std::dec << _total_count << std::endl;
 	};
-	void Insert(std::vector<uint64_t> & input, bool limitToHtoD, int pos) {
-		onlyIfHtoD = limitToHtoD;
+	void Insert(std::vector<uint64_t> & input, int pos) {
 		if(input.size() <= pos)
 			return;
 		uint64_t val = input[pos];
+		if (val == 0) {
+			onlyIfHtoD = false;
+			return;
+		} else if (val == 1) {
+			onlyIfHtoD = true;
+			return;
+		}
 		if (_map.find(val) == _map.end()) {
 			_map[val] = new RecursiveMap();
 		}
-		_map[val]->Insert(input, limitToHtoD, pos+1);
+		_map[val]->Insert(input, pos+1);
 	};
 
 	bool Lookup(std::vector<uint64_t> & input, int pos) {

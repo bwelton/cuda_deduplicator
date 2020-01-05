@@ -494,6 +494,8 @@ struct HostToDeviceLimiter{
 
 	std::vector<uint64_t> ReadLimiter() {
 		std::vector<uint64_t> ret;
+		if (in == NULL)
+			return ret;
 		fseek(in, 0, SEEK_END);
   		uint64_t size = ftell(in);
   		fseek(in, 0, SEEK_SET);

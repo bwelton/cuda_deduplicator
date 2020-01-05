@@ -118,7 +118,7 @@ struct RecursiveMap{
 			if (it == curMap->end()) 
 				return false;
 			curMap = &(it->second->_map);
-			htodlimit = curMap->onlyIfHtoD;
+			htodlimit = it->second->onlyIfHtoD;
 			pos++;
 		}
 		_total_count++;

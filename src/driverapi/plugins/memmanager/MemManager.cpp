@@ -67,11 +67,11 @@ struct RecursiveMap{
 		RAStackReaderWriter rs(fopen("AC_BinStacks.bin", "rb"));
 		std::vector<std::vector<uint64_t>>  stacks = rs.ReadStacks();
 		for (auto i : stacks) {
-			std::cerr << "\nTEST STACK = ";
-			for (auto n : i) {
-				std::cerr << n << ",";
-			}
-			std::cerr << std::endl;
+			// std::cerr << "\nTEST STACK = ";
+			// for (auto n : i) {
+			// 	std::cerr << n << ",";
+			// }
+			// std::cerr << std::endl;
 			Insert(i, 0);
 		}
 		_total_count = 0;
@@ -111,11 +111,11 @@ struct RecursiveMap{
 	};
 
 	bool IterativeLookup(uint64_t * input, int size, int pos, bool & htodlimit) {
-		std::cerr << "\nLOOKUP STACK = ";
-		for (int i = pos; i < size; i++) {
-			std::cerr << input[i] << ",";
-		}
-		std::cerr << std::endl;
+		// std::cerr << "\nLOOKUP STACK = ";
+		// for (int i = pos; i < size; i++) {
+		// 	std::cerr << input[i] << ",";
+		// }
+		// std::cerr << std::endl;
 		std::map<uint64_t, RecursiveMap *> * curMap = &_map;
 		int insize = size;
 		htodlimit = true;
@@ -467,8 +467,8 @@ extern "C" {
 		bool performOpt = CheckStack(htodlimit);
 		void * stackAddr = NULL;
 		if (kind == cudaMemcpyHostToDevice) {
-			std::cerr << "DTOHTRANSFER!" << std::endl;
-			//performOpt = true;
+			//std::cerr << "DTOHTRANSFER!" << std::endl;
+			performOpt = true;
 			if (!(pinManage->IsManagedPage(src))){
 				void * tmp = pageAllocator->GetPinnedPage(count);
 				memcpy(tmp, src, count);

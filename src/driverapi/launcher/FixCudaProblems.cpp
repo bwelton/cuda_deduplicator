@@ -58,12 +58,14 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 		}
 	}
 
-
-	StackKeyReader r(fopen("AC_AutoCorrectStacks.txt","rb"));
+	HostToDeviceLimiter readLimiter(fopen("AC_translimit.bin","rb"));
+	StackKeyReader rLimits(fopen("AC_AutoCorrectStacks.txt","rb"));
 	std::map<uint64_t, std::vector<StackPoint> > m = r.ReadStacks();
 
 	{
 		RAStackReaderWriter writeAbsolutes(fopen("AC_BinStacks.bin","wb"));
+		std::vector<uint64_t> readBins = rLimits.readLimiter();
+		uint64_t currentPos = 0;
 		for (auto i : m) {
 			std::vector<uint64_t> absoluteOut;
 			for(auto x : i.second){
@@ -72,12 +74,16 @@ void FixCudaProblems::InsertAnalysis(StackRecMap & recs) {
 				absoluteOut.push_back(GetAbsoluteAddress(x));
 			}
 			std::reverse(absoluteOut.begin(), absoluteOut.end());
+			if (currentPos < readBins.size()){
+				absoluteOut.push_back(readBins[currentPos]);
+			}
 			writeAbsolutes.WriteRAStack(absoluteOut);
 			std::cerr << "Writing stack" << std::endl;
 			for (auto x : absoluteOut) {
 				std::cerr << x << ",";
 			}
 			std::cerr << std::endl;
+			currentPos++;
 		}
 	}
 

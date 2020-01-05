@@ -474,7 +474,41 @@ struct RAStackReaderWriter{
 	};
 
 };
+struct HostToDeviceLimiter{ 
+	FILE * in;
+	HostToDeviceLimiter(FILE * fp) {
+		in = fp;
+	};
+	~HostToDeviceLimiter() {
+		if (in != NULL)
+			fclose(in);
+	};
+	void WriteLimiter(bool limit){
+		uint64_t l;
+		if (limit == true)
+			l = 1;
+		else
+			l = 0;
+		fwrite(&l, 1, sizeof(uint64_t), in);
+	};
 
+	std::vector<uint64_t> ReadLimiter() {
+		std::vector<uint64_t> ret;
+		fseek(in, 0, SEEK_END);
+  		uint64_t size = ftell(in);
+  		fseek(in, 0, SEEK_SET);
+  		while(size > 0) {
+  			uint64_t tmp = 0;
+  			fread(&tmp, 1, sizeof(uint64_t), in);
+  			if (size - sizeof(uint64_t) > size)
+  				size = 0;
+  			else
+  				size = size - sizeof(uint64_t);
+  			ret.push_back(tmp);
+  		}
+  		return ret;
+	};
+};
 struct StackKeyReader {
 	FILE * in;
 	StackKeyReader(FILE * fp) {

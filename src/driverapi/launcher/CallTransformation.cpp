@@ -313,16 +313,22 @@ void CallTransformation::BuildRequiredSet() {
 			}
 		}
 	}
-	for (auto i : required) {
-		if (notRequired.find(i) != notRequired.end())
-			notRequired.erase(i);
-	}
-
+	// for (auto i : required) {
+	// 	if (notRequired.find(i) != notRequired.end())
+	// 		notRequired.erase(i);
+	// }
+	HostToDeviceLimiter transLimiter(fopen("AC_translimit.bin","wb"));
 
 	for (auto i : notRequired) {
 		MR[matchSet[i]].pop_back();
 		outputKeys.InsertStack(matchSet[i], MR[matchSet[i]]);
+		if (required.find(i) != required.end()) {
+			transLimiter->WriteLimiter(true);
+		} else {
+			transLimiter->WriteLimiter(false);
+		}
 	}
+
 	// Everything else
 	for (auto & i : LS) {
 		if (matchSet.find(i.first) != matchSet.end()) 

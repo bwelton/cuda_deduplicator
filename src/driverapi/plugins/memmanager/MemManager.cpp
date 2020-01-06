@@ -116,8 +116,6 @@ struct RecursiveMap{
 		// 	std::cerr << input[i] << ",";
 		// }
 		// std::cerr << std::endl;
-		htodlimit = false;
-		return true;
 		std::map<uint64_t, RecursiveMap *> * curMap = &_map;
 		int insize = size;
 		htodlimit = true;

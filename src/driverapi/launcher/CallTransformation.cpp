@@ -224,18 +224,23 @@ void CallTransformation::BuildRequiredSet() {
 		std::string type = typeMap[matchSet[i]];
 		if (type.find("cuMemcpy") != std::string::npos || type.find("cudaMemcpy") != std::string::npos) {
 			TransferPointPtr trans = _transGraph.ReturnTransfer(matchSet[i]);
+			bool MarkSkipped = false;
 			if (trans == NULL)
 				continue;
 			if (trans->GetMallocSites().size() == 0 && type.find("cuMemcpyHtoD") == std::string::npos){
 				required.insert(i);
-				continue;
+				MarkSkipped = true;
+				//continue;
 			}
 			for (auto m : trans->GetMallocSites()) {
 				if (m->id == -1 && type.find("cuMemcpyHtoD") == std::string::npos){
 					required.insert(i);
-					continue;
+					MarkSkipped = true;
+					//continue;
 				}
 			}
+			if (MarkSkipped)
+				continue;
 			MallocSiteSet memSiteSet = trans->GetMallocSites();
 			if (alreadyTranslated.find(matchSet[i]) == alreadyTranslated.end())
 				mn.TranslateStackRecords(MR[matchSet[i]]);

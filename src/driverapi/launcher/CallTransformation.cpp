@@ -261,12 +261,16 @@ void CallTransformation::BuildRequiredSet() {
 				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
 					mn.TranslateStackRecords(MR[n->id]);
 				alreadyTranslated.insert(n->id);
-				for (int index = MR[n->id].size() - 2; index >= 0; index--) {
-					if (MR[n->id][index].libname.find("libstdc++") == std::string::npos){
-						outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][index])  << std::endl;
-						break;
-					}
-				}
+
+				outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " << std::endl;
+				PrintStackSet(outRemedies, std::string("\t\t\t"),MR[n->id], printStackSize);
+
+				// for (int index = MR[n->id].size() - 2; index >= 0; index--) {
+				// 	if (MR[n->id][index].libname.find("libstdc++") == std::string::npos){
+				// 		outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][index])  << std::endl;
+				// 		break;
+				// 	}
+				// }
 
 				//outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[n->id][MR[n->id].size()-2])  << std::endl;
 				for (auto k : n->children) {
@@ -276,13 +280,17 @@ void CallTransformation::BuildRequiredSet() {
 						mn.TranslateStackRecords(MR[k->id]);
 					alreadyTranslated.insert(k->id);
 
-					for (int index = MR[k->id].size() - 2; index >= 0; index--) {
-						if (MR[k->id][index].libname.find("libstdc++") == std::string::npos){
-							//outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[l->id][index])  << std::endl;
-							outRemedies << "\t\t\tCPU memory freed at " <<  GetFileLineString(MR[k->id][index])  << std::endl;
-							break;
-						}
-					}
+
+					outRemedies << "\t\t\tCPU memory freed at " << std::endl;
+					PrintStackSet(outRemedies, std::string("\t\t\t\t"),MR[k->id], printStackSize);
+
+					// for (int index = MR[k->id].size() - 2; index >= 0; index--) {
+					// 	if (MR[k->id][index].libname.find("libstdc++") == std::string::npos){
+					// 		//outRemedies << "\t\tPin non-pinned CPU Memory Allocated At " <<  GetFileLineString(MR[l->id][index])  << std::endl;
+					// 		outRemedies << "\t\t\tCPU memory freed at " <<  GetFileLineString(MR[k->id][index])  << std::endl;
+					// 		break;
+					// 	}
+					// }
 
 
 
@@ -309,12 +317,14 @@ void CallTransformation::BuildRequiredSet() {
 					continue;
 				if (alreadyTranslated.find(n->id) == alreadyTranslated.end())
 					mn.TranslateStackRecords(MR[n->id]);
-				for (int index = MR[n->id].size() -2; index >= 0; index--){
+				outRemedies << "\t\tGPU Malloc Site called at" << std::endl;
+				PrintStackSet(outRemedies, std::string("\t\t\t"),MR[n->id], printStackSize);
+				/*for (int index = MR[n->id].size() -2; index >= 0; index--){
 					if (MR[n->id][index].libname.find("cudart") == std::string::npos){
 						outRemedies << "\t\tGPU Malloc Site called at " <<  GetFileLineString(MR[n->id][index])  << std::endl;
 						break;
 					}
-				}
+				}*/
 			}
 		}
 	}

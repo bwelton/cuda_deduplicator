@@ -560,7 +560,7 @@ extern "C" {
 		bool htodlimit = false;
 		if (pinManage == NULL)
 			pinManage = new PinnedPageManager();
-		cuStreamSynchronize(0);
+
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();
 
@@ -578,6 +578,7 @@ extern "C" {
 				if (!IsManagedPage)
 					pageAllocator->SpoilLastPage(true, dst);
 				DIOGENES_MemStatTool->TransApplied();
+						cuStreamSynchronize(0);
 				return ret;
 			}
 		}

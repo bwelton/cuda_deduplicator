@@ -604,12 +604,12 @@ extern "C" {
 		// if (!checkInternal)
 		// 	cudaStreamSynchronize(0);
 		if(!(pinManage->IsManagedPage(src))){
-			if(!pageAllocator->IsCachedPages(src,&tmp)){
+			//if(!pageAllocator->IsCachedPages(src,&tmp)){
 				tmp = pageAllocator->GetPinnedPage(count);
 				memcpy(tmp, src, count);
-			} else {
-				IsManagedPage = true;
-			}
+			//} else {
+			//	IsManagedPage = true;
+			//}
 		} else {
 			tmp = src;
 			IsManagedPage = true;

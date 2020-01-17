@@ -47,7 +47,7 @@ bool SymbolLookup::GetInfoAtLocation(uint64_t offset, std::pair<std::string, Lin
 		lines = std::make_pair(std::string("UNKNOWN"), tmp);
 		return false;
 	}
-	std::vector<Symbol *> ret = _obj->findSymbolByOffset(offset-0x4);
+	std::vector<Symbol *> ret = _obj->findSymbolByOffset(offset);
 	SymtabAPI::Function * func = NULL;
 	_obj->getContainingFunction(offset, func);
 	if (func == NULL) {

@@ -1,5 +1,6 @@
 #include "CallTransformation.h"
 #include "PerformanceModel.h"
+#include <cxxabi.h>
 
 CallTransformation::CallTransformation(GPUMallocVec & gpuVec,CPUMallocVec & cpuVec, 
 	MemTransVec & memVec, std::map<int64_t, StackPoint> & idPoints, std::unordered_map<std::string, StackPoint> & wrapperReplacements) : _gpuVec(gpuVec), _cpuVec(cpuVec), _memVec(memVec), _idPoints(idPoints), _wrapperReplacements(wrapperReplacements) {
@@ -80,8 +81,15 @@ std::map<uint64_t, uint64_t> CallTransformation::MatchLStoMR(std::map<uint64_t, 
 
 std::string GetFileLineString(StackPoint & p) {
 	std::stringstream ret;
+	int status;
 	if(p.lineNum > 0 && p.fileName != std::string("")) {
-		ret << p.funcName <<  " at line " << std::dec << p.lineNum << " in " << p.fileName << " [DEBUG OFFSET = " << p.libOffset << "]";
+		char * demang = abi::__cxa_demangle(p.funcName.c_str(), 0,0, &status);
+		if (status == 0){
+			ret << demang <<  " at line " << std::dec << p.lineNum << " in " << p.fileName << " [DEBUG OFFSET = " << p.libOffset << "]";
+			free(demang);
+		} else {
+			ret << p.funcName <<  " at line " << std::dec << p.lineNum << " in " << p.fileName << " [DEBUG OFFSET = " << p.libOffset << "]";
+		}
 	} else {
 		ret << "Offset " << p.libOffset << " in " << p.libname;
 	}

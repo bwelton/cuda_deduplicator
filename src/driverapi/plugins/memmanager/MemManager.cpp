@@ -561,7 +561,7 @@ extern "C" {
 		
 		CUresult ret = cuMemcpyDtoHAsync(tmp, src, count, 0);
 		DIOGENES_MemStatTool->AddTrans();
-		if(CheckStackInternal() && ((void *)&stackAddr < dst)) {
+		if(CheckStackInternal()) {
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(true, dst);
 			DIOGENES_MemStatTool->TransApplied();

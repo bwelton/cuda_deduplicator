@@ -220,7 +220,22 @@ bool __attribute__ ((noinline)) CheckStackInternal(bool & htodlimit) {
 	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3, htodlimit);
 }	
 
+struct DevCached{
+	void * cpuDst;
+	void * gpuDst;
+	size_t size;	
 
+	int IsOverlap(void * compCpuDst, size_t compCpuSize) {
+		if (compCpuDst < cpuDst)
+			if (compCpuDst+compCpuSize > cpuDst)
+				return -1;
+		if (compCpuDst > cpuDst)
+			if (cpuDst + size > compCpuDst)
+				return 1;
+		return 0;
+	};
+
+};
 
 struct CudaMemhostPageManager {
 	std::unordered_multimap<size_t, void *> cachedPages;
@@ -230,6 +245,9 @@ struct CudaMemhostPageManager {
 	std::unordered_map<void *, void *> copyPages;
 
 	std::unordered_map<void *, void *> copyPagesRev;
+
+
+	std::vector<DevCached> transfersActive;
 
 	CudaMemhostPageManager()  {
 		_currentIt = cachedPages.end();
@@ -262,6 +280,7 @@ struct CudaMemhostPageManager {
 		//std::cerr << "Clearing pages" << std::endl;
 		copyPagesRev.clear();
 		spoiledPages.clear();
+		transfersActive.clear();
 		copyPages.clear();
 	};
 
@@ -277,12 +296,59 @@ struct CudaMemhostPageManager {
 			spoiledPages[_currentIt->second] = _currentIt->first;
 			if(copy) {
 				copyPages[_currentIt->second] = dst;
-				copyPagesRev[dst] = _currentIt->second;
+				//copyPagesRev[dst] = _currentIt->second;
 			}
 			cachedPages.erase(_currentIt);
 			_currentIt = cachedPages.end();
 		}
 	};
+
+
+
+
+	void SetDtoHMemcpyAddress(void * dst, void * gpuAddr, size_t size) {
+		DevCached tmp;
+		tmp.cpuDst = dst;
+		tmp.gpuDst = gpuAddr;
+		tmp.size = size;
+		transfersActive.push_back(tmp);
+	};
+
+	bool IsOverlap(void * dst, size_t size) {
+		for (int i = transfersActive.size() - 1;  i >= 0; i--) {
+			if (transfersActive[i].IsOverlap(dst,size) != 0)
+				return true;
+		}
+		return false;
+	};
+	// void IsOverlap(void * dst, size_t size, CUdeviceptr origDst, CUdeviceptr & sourceStart, CUdeviceptr & dstStart, 
+	// 			   size_t & dtodsize, void * & cpuStart, CUdeviceptr & cpuDst, size_t & htodsize) {
+	// 	cpuStart = dst;
+	// 	htodsize = size;
+	// 	cpuDst = origDst;
+
+	// 	for (int i = transfersActive.size() - 1;  i >= 0; i--) {
+	// 		int overlapId = transfersActive[i].IsOverlap(dst,size);
+	// 		if (overlapId == 0)
+	// 			continue;
+	// 		if (transfersActive[i].IsOverlap(dst,size))	
+	// 	}
+
+	// }
+	// void SpoilLastPageWSize(bool copy, void * dst, size_t size) {
+	// 	if(_currentIt != cachedPages.end()) {
+	// 		spoiledPages[_currentIt->second] = _currentIt->first;
+	// 		if(copy) {
+	// 			copyPages[_currentIt->second] = dst;
+	// 			copyPagesRev[dst] = _currentIt->second;
+	// 			sizeMap[dst] = size;
+	// 		}
+	// 		cachedPages.erase(_currentIt);
+	// 		_currentIt = cachedPages.end();
+	// 	}
+	// };
+
+
 };
 struct CudaMemoryManager {
 	std::unordered_multimap<size_t, void *> cachedPages;
@@ -554,7 +620,7 @@ extern "C" {
 		if (DIOGENES_IN_RUNTIME)
 			return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
 
-		std::cerr << "DTOH - DST = " << std::hex << dst << " SIZE = " << std::dec << count << std::endl;
+		//std::cerr << "DTOH - DST = " << std::hex << dst << " SIZE = " << std::dec << count << std::endl;
 		void* stackAddr = NULL;
 		void * tmp = NULL;
 		bool IsManagedPage = false;
@@ -579,6 +645,7 @@ extern "C" {
 				if (!IsManagedPage)
 					pageAllocator->SpoilLastPage(true, dst);
 				DIOGENES_MemStatTool->TransApplied();
+				pageAllocator->SetDtoHMemcpyAddress(dst,(void*)src, size);
 						//cuStreamSynchronize(0);
 				return ret;
 			}
@@ -603,9 +670,9 @@ extern "C" {
 		void * tmp = NULL;
 		bool IsManagedPage = false;
 		bool htodlimit = false;
-		std::cerr << "HTOD - SRC = " << std::hex << src << " SIZE = " << std::dec << count << std::endl;
+		//std::cerr << "HTOD - SRC = " << std::hex << src << " SIZE = " << std::dec << count << std::endl;
 		bool checkInternal = CheckStackInternal(htodlimit);
-		if (!checkInternal || pageAllocator->IsCachedPages(src,&tmp))
+		if (!checkInternal || pageAllocator->IsOverlap(src,count))
 		 	cudaStreamSynchronize(0);
 		if(!(pinManage->IsManagedPage(src))){
 			//if(!pageAllocator->IsCachedPages(src,&tmp)){

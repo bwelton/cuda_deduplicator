@@ -589,7 +589,7 @@ extern "C" {
 		return ret;
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
-		cuStreamSynchronize(0);
+	//	cuStreamSynchronize(0);
 		if (DIOGENES_SHUTDOWN_MODE)
 			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 		if (DIOGENES_IN_RUNTIME)
@@ -604,7 +604,7 @@ extern "C" {
 		bool htodlimit = false;
 
 		bool checkInternal = CheckStackInternal(htodlimit);
-		if (!checkInternal)
+		if (!checkInternal || pageAllocator->IsCachedPages(src,&tmp))
 		 	cudaStreamSynchronize(0);
 		if(!(pinManage->IsManagedPage(src))){
 			//if(!pageAllocator->IsCachedPages(src,&tmp)){

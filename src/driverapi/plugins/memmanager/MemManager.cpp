@@ -599,7 +599,7 @@ extern "C" {
 		bool IsManagedPage = false;
 		if(!(pinManage->IsManagedPage(src))){
 
-			if(pinManage->IsCachedPages(src,&tmp))
+			if(pageAllocator->IsCachedPages(src,&tmp))
 				cuStreamSynchronize(0);
 
 			tmp = pageAllocator->GetPinnedPage(count);

@@ -601,7 +601,8 @@ extern "C" {
 		bool IsManagedPage = false;
 		bool htodlimit = false;
 		if(!(pinManage->IsManagedPage(src))){
-
+			if (!CheckStackInternal(htodlimit))
+				cudaStreamSynchronize(0);
 			// if(pageAllocator->IsCachedPages(src,&tmp))
 			// 	cuStreamSynchronize(0);
 

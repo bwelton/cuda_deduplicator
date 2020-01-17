@@ -598,12 +598,11 @@ extern "C" {
 		void * tmp = NULL;
 		bool IsManagedPage = false;
 		if(!(pinManage->IsManagedPage(src))){
-			if(!pageAllocator->IsCachedPages(src,&tmp)){
-				tmp = pageAllocator->GetPinnedPage(count);
-				memcpy(tmp, src, count);
-			} else {
-				IsManagedPage = true;
-			}
+
+			if(IsCachedPages(src,&tmp))
+				cuStreamSynchronize(0);
+			tmp = pageAllocator->GetPinnedPage(count);
+			memcpy(tmp, src, count);
 		} else {
 			tmp = src;
 			IsManagedPage = true;

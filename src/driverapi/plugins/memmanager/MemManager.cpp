@@ -599,6 +599,7 @@ extern "C" {
 			pinManage = new PinnedPageManager();
 		void * tmp = NULL;
 		bool IsManagedPage = false;
+		bool htodlimit = false;
 		if(!(pinManage->IsManagedPage(src))){
 
 			if(pageAllocator->IsCachedPages(src,&tmp))

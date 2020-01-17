@@ -554,6 +554,7 @@ extern "C" {
 		if (DIOGENES_IN_RUNTIME)
 			return DIOGENES_cuMemcpyDtoH_wrapper(dst, src, count);
 
+		std::cerr << "DTOH - DST = " << std::hex << dst << " SIZE = " << std::dec << count << std::endl;
 		void* stackAddr = NULL;
 		void * tmp = NULL;
 		bool IsManagedPage = false;
@@ -602,7 +603,7 @@ extern "C" {
 		void * tmp = NULL;
 		bool IsManagedPage = false;
 		bool htodlimit = false;
-
+		std::cerr << "HTOD - SRC = " << std::hex << src << " SIZE = " << std::dec << count << std::endl;
 		bool checkInternal = CheckStackInternal(htodlimit);
 		if (!checkInternal || pageAllocator->IsCachedPages(src,&tmp))
 		 	cudaStreamSynchronize(0);

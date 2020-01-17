@@ -601,6 +601,7 @@ extern "C" {
 
 			if(IsCachedPages(src,&tmp))
 				cuStreamSynchronize(0);
+
 			tmp = pageAllocator->GetPinnedPage(count);
 			memcpy(tmp, src, count);
 		} else {

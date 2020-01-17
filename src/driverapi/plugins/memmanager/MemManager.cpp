@@ -230,6 +230,8 @@ struct CudaMemhostPageManager {
 	std::unordered_map<void *, size_t> spoiledPages;
 	std::unordered_map<void *, void *> copyPages;
 
+	std::unordered_map<void *, void *> copyPagesRev;
+
 	CudaMemhostPageManager()  {
 		_currentIt = cachedPages.end();
 	};
@@ -259,15 +261,25 @@ struct CudaMemhostPageManager {
 			}
 		}
 		//std::cerr << "Clearing pages" << std::endl;
+		copyPagesRev.clear();
 		spoiledPages.clear();
 		copyPages.clear();
 	};
 
+	bool IsCachedPages(void * dst, void ** ptr) {
+		if(copyPagesRev.find(dst) == copyPagesRev.end())
+			return false;
+
+		*ptr = copyPagesRev[dst];
+		return true;
+	};
 	void SpoilLastPage(bool copy, void * dst) {
 		if(_currentIt != cachedPages.end()) {
 			spoiledPages[_currentIt->second] = _currentIt->first;
-			if(copy) 
+			if(copy) {
 				copyPages[_currentIt->second] = dst;
+				copyPagesRev[dst] = _currentIt->second;
+			}
 			cachedPages.erase(_currentIt);
 			_currentIt = cachedPages.end();
 		}
@@ -586,8 +598,12 @@ extern "C" {
 		void * tmp = NULL;
 		bool IsManagedPage = false;
 		if(!(pinManage->IsManagedPage(src))){
-			tmp = pageAllocator->GetPinnedPage(count);
-			memcpy(tmp, src, count);
+			if(!IsCachedPages(src,&tmp)){
+				tmp = pageAllocator->GetPinnedPage(count);
+				memcpy(tmp, src, count);
+			} else {
+				IsManagedPage = true;
+			}
 		} else {
 			tmp = src;
 			IsManagedPage = true;

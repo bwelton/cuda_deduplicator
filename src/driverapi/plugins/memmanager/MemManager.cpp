@@ -602,8 +602,8 @@ extern "C" {
 		bool htodlimit = false;
 		if(!(pinManage->IsManagedPage(src))){
 
-			if(pageAllocator->IsCachedPages(src,&tmp))
-				cuStreamSynchronize(0);
+			// if(pageAllocator->IsCachedPages(src,&tmp))
+			// 	cuStreamSynchronize(0);
 
 			tmp = pageAllocator->GetPinnedPage(count);
 			memcpy(tmp, src, count);

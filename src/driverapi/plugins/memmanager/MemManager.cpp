@@ -598,7 +598,7 @@ extern "C" {
 		void * tmp = NULL;
 		bool IsManagedPage = false;
 		if(!(pinManage->IsManagedPage(src))){
-			if(!IsCachedPages(src,&tmp)){
+			if(!pageAllocator->IsCachedPages(src,&tmp)){
 				tmp = pageAllocator->GetPinnedPage(count);
 				memcpy(tmp, src, count);
 			} else {

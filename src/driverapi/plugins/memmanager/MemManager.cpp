@@ -600,10 +600,12 @@ extern "C" {
 		void * tmp = NULL;
 		bool IsManagedPage = false;
 		bool htodlimit = false;
+		bool checkInternal = CheckStackInternal(htodlimit);
+		if (!checkInternal)
+			cudaStreamSynchronize(0);
 		if(!(pinManage->IsManagedPage(src))){
-			if (!CheckStackInternal(htodlimit))
-				cudaStreamSynchronize(0);
-			// if(pageAllocator->IsCachedPages(src,&tmp))
+
+			//if(pageAllocator->IsCachedPages(src,&tmp))
 			// 	cuStreamSynchronize(0);
 
 			tmp = pageAllocator->GetPinnedPage(count);
@@ -615,7 +617,7 @@ extern "C" {
 
 		CUresult ret = cuMemcpyHtoDAsync(dst, tmp, count, 0);
 		DIOGENES_MemStatTool->AddTrans();
-		if(CheckStackInternal(htodlimit)){
+		if(checkInternal){
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(false, NULL);
 			DIOGENES_MemStatTool->TransApplied();
@@ -623,7 +625,7 @@ extern "C" {
 		}
 		if (ret != CUDA_SUCCESS)
 			assert(ret == CUDA_SUCCESS);
-		return cuStreamSynchronize(0);
+		return CUDA_SUCCESS;//cuStreamSynchronize(0);
 	}
 
 }

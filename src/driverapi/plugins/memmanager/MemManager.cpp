@@ -214,11 +214,10 @@ bool __attribute__ ((noinline)) CheckStack(bool & htodlimit) {
 	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 2,htodlimit);
 }	
 
-bool __attribute__ ((noinline)) CheckStackInternal() {
+bool __attribute__ ((noinline)) CheckStackInternal(bool & htodlimit) {
 	void * local_stack[75];
-	bool dump;
 	int ret = backtrace(local_stack, 75);
-	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3, dump);
+	return DIOGENES_StackChecker->IterativeLookup((uint64_t*)local_stack, ret - 2, 3, htodlimit);
 }	
 
 
@@ -558,6 +557,7 @@ extern "C" {
 		void* stackAddr = NULL;
 		void * tmp = NULL;
 		bool IsManagedPage = false;
+		bool htodlimit = false;
 		if (pinManage == NULL)
 			pinManage = new PinnedPageManager();
 
@@ -573,11 +573,13 @@ extern "C" {
 		
 		CUresult ret = cuMemcpyDtoHAsync(tmp, src, count, 0);
 		DIOGENES_MemStatTool->AddTrans();
-		if(CheckStackInternal()) {
-			if (!IsManagedPage)
-				pageAllocator->SpoilLastPage(true, dst);
-			DIOGENES_MemStatTool->TransApplied();
-			return ret;
+		if(CheckStackInternal(htodlimit)) {
+			if (htodlimit == false) {
+				if (!IsManagedPage)
+					pageAllocator->SpoilLastPage(true, dst);
+				DIOGENES_MemStatTool->TransApplied();
+				return ret;
+			}
 		}
 		ret = cuStreamSynchronize(0);
 		if (!IsManagedPage)
@@ -611,7 +613,7 @@ extern "C" {
 
 		CUresult ret = cuMemcpyHtoDAsync(dst, tmp, count, 0);
 		DIOGENES_MemStatTool->AddTrans();
-		if(CheckStackInternal()){
+		if(CheckStackInternal(htodlimit)){
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(false, NULL);
 			DIOGENES_MemStatTool->TransApplied();

@@ -573,7 +573,7 @@ extern "C" {
 		
 		CUresult ret = cuMemcpyDtoHAsync(tmp, src, count, 0);
 		DIOGENES_MemStatTool->AddTrans();
-		if(CheckStackInternal(htodlimit) && ((void *)&stackAddr > dst)) {
+		if(CheckStackInternal(htodlimit)) {
 			if (htodlimit == false) {
 				if (!IsManagedPage)
 					pageAllocator->SpoilLastPage(true, dst);

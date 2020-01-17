@@ -696,7 +696,7 @@ extern "C" {
 		}
 		if (ret != CUDA_SUCCESS)
 			assert(ret == CUDA_SUCCESS);
-		return cuStreamSynchronize(0);
+		return CUDA_SUCCESS;//cuStreamSynchronize(0);
 	}
 
 }

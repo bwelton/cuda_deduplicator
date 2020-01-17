@@ -578,7 +578,7 @@ extern "C" {
 				if (!IsManagedPage)
 					pageAllocator->SpoilLastPage(true, dst);
 				DIOGENES_MemStatTool->TransApplied();
-						cuStreamSynchronize(0);
+						//cuStreamSynchronize(0);
 				return ret;
 			}
 		}
@@ -589,6 +589,7 @@ extern "C" {
 		return ret;
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
+		cuStreamSynchronize(0);
 		if (DIOGENES_SHUTDOWN_MODE)
 			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 		if (DIOGENES_IN_RUNTIME)
@@ -601,6 +602,7 @@ extern "C" {
 		void * tmp = NULL;
 		bool IsManagedPage = false;
 		bool htodlimit = false;
+
 		bool checkInternal = CheckStackInternal(htodlimit);
 		if (!checkInternal)
 		 	cudaStreamSynchronize(0);

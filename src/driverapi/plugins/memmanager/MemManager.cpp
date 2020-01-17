@@ -560,7 +560,7 @@ extern "C" {
 		bool htodlimit = false;
 		if (pinManage == NULL)
 			pinManage = new PinnedPageManager();
-
+		cuStreamSynchronize(0);
 		if(pageAllocator == NULL)
 			pageAllocator = new CudaMemhostPageManager();
 

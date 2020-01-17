@@ -601,15 +601,15 @@ extern "C" {
 		bool IsManagedPage = false;
 		bool htodlimit = false;
 		bool checkInternal = CheckStackInternal(htodlimit);
-		if (!checkInternal)
-			cudaStreamSynchronize(0);
+		// if (!checkInternal)
+		// 	cudaStreamSynchronize(0);
 		if(!(pinManage->IsManagedPage(src))){
-
-			//if(pageAllocator->IsCachedPages(src,&tmp))
-			// 	cuStreamSynchronize(0);
-
-			tmp = pageAllocator->GetPinnedPage(count);
-			memcpy(tmp, src, count);
+			if(!pageAllocator->IsCachedPages(src,&tmp)){
+				tmp = pageAllocator->GetPinnedPage(count);
+				memcpy(tmp, src, count);
+			} else {
+				IsManagedPage = true;
+			}
 		} else {
 			tmp = src;
 			IsManagedPage = true;
@@ -625,7 +625,7 @@ extern "C" {
 		}
 		if (ret != CUDA_SUCCESS)
 			assert(ret == CUDA_SUCCESS);
-		return CUDA_SUCCESS;//cuStreamSynchronize(0);
+		return cuStreamSynchronize(0);
 	}
 
 }

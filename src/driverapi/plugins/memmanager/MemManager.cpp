@@ -227,10 +227,10 @@ struct DevCached{
 
 	int IsOverlap(void * compCpuDst, size_t compCpuSize) {
 		if (compCpuDst < cpuDst)
-			if (compCpuDst+compCpuSize > cpuDst)
+			if (((uint64_t)compCpuDst)+compCpuSize > ((uint64_t)cpuDst))
 				return -1;
 		if (compCpuDst > cpuDst)
-			if (cpuDst + size > compCpuDst)
+			if (((uint64_t)cpuDst) + size > (uint64_t)compCpuDst)
 				return 1;
 		return 0;
 	};
@@ -645,7 +645,7 @@ extern "C" {
 				if (!IsManagedPage)
 					pageAllocator->SpoilLastPage(true, dst);
 				DIOGENES_MemStatTool->TransApplied();
-				pageAllocator->SetDtoHMemcpyAddress(dst,(void*)src, size);
+				pageAllocator->SetDtoHMemcpyAddress(dst,(void*)src, count);
 						//cuStreamSynchronize(0);
 				return ret;
 			}

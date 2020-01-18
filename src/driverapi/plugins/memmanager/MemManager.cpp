@@ -673,7 +673,7 @@ extern "C" {
 		//std::cerr << "HTOD - SRC = " << std::hex << src << " SIZE = " << std::dec << count << std::endl;
 		bool checkInternal = CheckStackInternal(htodlimit);
 		if (!checkInternal || pageAllocator->IsOverlap(src,count))
-		 	cudaStreamSynchronize(0);
+		 	cuStreamSynchronize(0);
 		if(!(pinManage->IsManagedPage(src))){
 			//if(!pageAllocator->IsCachedPages(src,&tmp)){
 				tmp = pageAllocator->GetPinnedPage(count);

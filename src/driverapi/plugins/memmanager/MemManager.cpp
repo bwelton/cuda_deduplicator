@@ -670,10 +670,13 @@ extern "C" {
 		void * tmp = NULL;
 		bool IsManagedPage = false;
 		bool htodlimit = false;
+		bool syncPerformed = false;
 		//std::cerr << "HTOD - SRC = " << std::hex << src << " SIZE = " << std::dec << count << std::endl;
 		bool checkInternal = CheckStackInternal(htodlimit);
-		if (!checkInternal || pageAllocator->IsOverlap(src,count))
+		if (!checkInternal || pageAllocator->IsOverlap(src,count)){
 		 	cuCtxSynchronize();
+		 	syncPerformed = true;
+		}
 		if(!(pinManage->IsManagedPage(src))){
 			//if(!pageAllocator->IsCachedPages(src,&tmp)){
 				tmp = pageAllocator->GetPinnedPage(count);
@@ -691,6 +694,7 @@ extern "C" {
 		if(checkInternal){
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(false, NULL);
+			if (!syncPerformed)
 			DIOGENES_MemStatTool->TransApplied();
 			//cuCtxSynchronize();
 			return ret;

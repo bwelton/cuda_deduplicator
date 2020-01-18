@@ -646,18 +646,18 @@ extern "C" {
 					pageAllocator->SpoilLastPage(true, dst);
 				DIOGENES_MemStatTool->TransApplied();
 				pageAllocator->SetDtoHMemcpyAddress(dst,(void*)src, count);
-				cuStreamSynchronize(0);
+				cuCtxSynchronize();
 				return ret;
 			}
 		}
-		ret = cuStreamSynchronize(0);
+		ret = cuCtxSynchronize();
 		if (!IsManagedPage)
 			memcpy(dst, tmp, count);
 
 		return ret;
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
-		cuStreamSynchronize(0);
+		cuCtxSynchronize();
 		if (DIOGENES_SHUTDOWN_MODE)
 			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 		if (DIOGENES_IN_RUNTIME)
@@ -673,7 +673,7 @@ extern "C" {
 		//std::cerr << "HTOD - SRC = " << std::hex << src << " SIZE = " << std::dec << count << std::endl;
 		bool checkInternal = CheckStackInternal(htodlimit);
 		if (!checkInternal || pageAllocator->IsOverlap(src,count))
-		 	cuStreamSynchronize(0);
+		 	cuCtxSynchronize();
 		if(!(pinManage->IsManagedPage(src))){
 			//if(!pageAllocator->IsCachedPages(src,&tmp)){
 				tmp = pageAllocator->GetPinnedPage(count);
@@ -692,12 +692,12 @@ extern "C" {
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(false, NULL);
 			DIOGENES_MemStatTool->TransApplied();
-			cuStreamSynchronize(0);
+			cuCtxSynchronize();
 			return ret;
 		}
 		if (ret != CUDA_SUCCESS)
 			assert(ret == CUDA_SUCCESS);
-		return cuStreamSynchronize(0);
+		return cuCtxSynchronize();
 	}
 
 }

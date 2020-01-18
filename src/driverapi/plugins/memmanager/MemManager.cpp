@@ -646,7 +646,7 @@ extern "C" {
 					pageAllocator->SpoilLastPage(true, dst);
 				DIOGENES_MemStatTool->TransApplied();
 				pageAllocator->SetDtoHMemcpyAddress(dst,(void*)src, count);
-						cuStreamSynchronize(0);
+				cuStreamSynchronize(0);
 				return ret;
 			}
 		}
@@ -696,7 +696,7 @@ extern "C" {
 		}
 		if (ret != CUDA_SUCCESS)
 			assert(ret == CUDA_SUCCESS);
-		return CUDA_SUCCESS;//cuStreamSynchronize(0);
+		return cuStreamSynchronize(0);
 	}
 
 }

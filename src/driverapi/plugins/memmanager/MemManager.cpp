@@ -657,7 +657,7 @@ extern "C" {
 		return ret;
 	}
 	CUresult DIOGENES_cuMemcpyHtoD(CUdeviceptr dst, void * src, size_t count) {
-		cuCtxSynchronize();
+		//cuCtxSynchronize();
 		if (DIOGENES_SHUTDOWN_MODE)
 			return DIOGENES_cuMemcpyHtoD_wrapper(dst, src, count);
 		if (DIOGENES_IN_RUNTIME)

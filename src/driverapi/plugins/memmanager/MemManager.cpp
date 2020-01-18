@@ -672,8 +672,8 @@ extern "C" {
 		bool htodlimit = false;
 		//std::cerr << "HTOD - SRC = " << std::hex << src << " SIZE = " << std::dec << count << std::endl;
 		bool checkInternal = CheckStackInternal(htodlimit);
-		if (!checkInternal || pageAllocator->IsOverlap(src,count))
-		 	cuCtxSynchronize();
+		// if (!checkInternal || pageAllocator->IsOverlap(src,count))
+		//  	cuCtxSynchronize();
 		if(!(pinManage->IsManagedPage(src))){
 			//if(!pageAllocator->IsCachedPages(src,&tmp)){
 				tmp = pageAllocator->GetPinnedPage(count);

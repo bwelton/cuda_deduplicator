@@ -646,7 +646,7 @@ extern "C" {
 					pageAllocator->SpoilLastPage(true, dst);
 				DIOGENES_MemStatTool->TransApplied();
 				pageAllocator->SetDtoHMemcpyAddress(dst,(void*)src, count);
-				cuCtxSynchronize();
+//				cuCtxSynchronize();
 				return ret;
 			}
 		}

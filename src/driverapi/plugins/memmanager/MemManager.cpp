@@ -692,6 +692,7 @@ extern "C" {
 			if (!IsManagedPage)
 				pageAllocator->SpoilLastPage(false, NULL);
 			DIOGENES_MemStatTool->TransApplied();
+			cuStreamSynchronize(0);
 			return ret;
 		}
 		if (ret != CUDA_SUCCESS)

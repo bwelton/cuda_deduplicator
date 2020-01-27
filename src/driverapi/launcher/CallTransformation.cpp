@@ -217,10 +217,10 @@ void CallTransformation::BuildRequiredSet() {
 	StackKeyWriter outputKeys(fopen("AC_AutoCorrectStacks.txt", "wb"));
 
 
-	// for (auto i : required) {
-	// 	if (notRequired.find(i) != notRequired.end())
-	// 		notRequired.erase(i);
-	// }
+	for (auto i : required) {
+		if (notRequired.find(i) != notRequired.end())
+			notRequired.erase(i);
+	}
 
 
 
@@ -336,10 +336,10 @@ void CallTransformation::BuildRequiredSet() {
 			}
 		}
 	}
-	for (auto i : required) {
-		if (notRequired.find(i) != notRequired.end())
-			notRequired.erase(i);
-	}
+	// for (auto i : required) {
+	// 	if (notRequired.find(i) != notRequired.end())
+	// 		notRequired.erase(i);
+	// }
 	HostToDeviceLimiter transLimiter(fopen("AC_translimit.bin","wb"));
 
 	for (auto i : notRequired) {
